@@ -1,6 +1,6 @@
 body {
-    background: #1A1A1A;
-    color: #F5F5F5;
+    background: #3C3F41;
+    color: #F8E8D2;
     font-family: 'Roboto', sans-serif;
     margin: 0;
 }
@@ -8,17 +8,26 @@ header {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    background: #8B0000;
+    background: #3C3F41;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 .logo {
     height: 50px;
 }
 nav a {
-    color: #F5F5F5;
+    color: #40C4C6;
     margin: 0 15px;
     text-decoration: none;
+    transition: color 0.3s;
+}
+nav a:hover {
+    color: #D4A017;
 }
 .hero {
+    position: relative;
     background: url('../assets/mountain.jpg') center/cover no-repeat;
     height: 60vh;
     display: flex;
@@ -26,17 +35,43 @@ nav a {
     justify-content: center;
     text-align: center;
 }
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+}
+.hero-text {
+    position: relative;
+    z-index: 1;
+}
 .hero-text h1 {
     font-family: 'Oswald', sans-serif;
     font-size: 48px;
-    color: #D4A017;
+    color: #A8C7E8;
+}
+.hero-text p {
+    font-size: 24px;
+    color: #F8E8D2;
 }
 .cta {
-    background: #D4A017;
+    background: #40C4C6;
     padding: 10px 20px;
-    color: #1A1A1A;
+    color: #3C3F41;
     text-decoration: none;
     border-radius: 5px;
+    transition: background 0.3s;
+}
+.cta:hover {
+    background: #D4A017;
+}
+.featured h2 {
+    font-family: 'Oswald', sans-serif;
+    color: #A8C7E8;
+    text-align: center;
+    margin: 20px 0;
 }
 .video-grid {
     display: grid;
@@ -44,7 +79,169 @@ nav a {
     gap: 20px;
     padding: 20px;
 }
+.video-card {
+    position: relative;
+    transform: rotate(2deg);
+    transition: transform 0.3s;
+}
+.video-card:hover {
+    transform: rotate(0deg);
+}
 .video-card img {
     width: 100%;
-    border: 2px solid #D4A017;
+    border: 2px solid #3A5F3D;
+}
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: #40C4C6;
+    clip-path: polygon(30% 20%, 30% 80%, 80% 50%);
+    opacity: 0.8;
+}
+footer {
+    background: #3C3F41;
+    text-align: center;
+    padding: 20px;
+    color: #F8E8D2;
+}
+.social-icons img {
+    width: 30px;
+    margin: 0 10px;
+    transition: transform 0.3s; /* Add a hover effect */
+}
+.social-icons img:hover {
+    transform: scale(1.2); /* Slight scale-up on hover */
+}
+/* Videos Page */
+.videos {
+    padding: 40px 20px;
+    text-align: center;
+}
+.videos h2 {
+    font-family: 'Oswald', sans-serif;
+    color: #A8C7E8;
+    margin-bottom: 20px;
+}
+.category-bar {
+    margin: 20px 0;
+    color: #40C4C6;
+}
+.category-bar span {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.category-bar span:hover {
+    color: #D4A017;
+}
+
+/* Community Page */
+.community {
+    padding: 40px 20px;
+    text-align: center;
+}
+.community h2 {
+    font-family: 'Oswald', sans-serif;
+    color: #A8C7E8;
+    margin-bottom: 20px;
+}
+.message-board {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.post {
+    background: #4A4A4A;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.post h3 {
+    color: #A8C7E8;
+    margin: 0;
+}
+.post p {
+    color: #F8E8D2;
+    font-size: 14px;
+}
+.comment-box {
+    margin-top: 20px;
+}
+.comment-box textarea {
+    width: 100%;
+    max-width: 500px;
+    height: 100px;
+    background: #4A4A4A;
+    color: #F8E8D2;
+    border: 1px solid #3A5F3D;
+    border-radius: 5px;
+    padding: 10px;
+}
+/* About Page */
+.about {
+    padding: 40px 20px;
+    text-align: center;
+}
+.about h2 {
+    font-family: 'Oswald', sans-serif;
+    color: #A8C7E8;
+    margin-bottom: 20px;
+}
+.about p {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    color: #F8E8D2;
+}
+.creator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.creator-card {
+    background: #4A4A4A;
+    padding: 20px;
+    border-radius: 5px;
+}
+.creator-card img {
+    width: 100%;
+    max-width: 150px;
+    border-radius: 50%;
+}
+.creator-card h3 {
+    font-family: 'Oswald', sans-serif;
+    color: #A8C7E8;
+    margin: 10px 0;
+}
+.creator-card p {
+    color: #F8E8D2;
+}
+.social-links a {
+    color: #40C4C6;
+    text-decoration: none;
+}
+.social-links a:hover {
+    color: #D4A017;
+}
+/* Merch Page */
+.merch {
+    padding: 40px 20px;
+    text-align: center;
+}
+.merch h2 {
+    font-family: 'Oswald', sans-serif;
+    color: #A8C7E8;
+    margin-bottom: 20px;
+}
+.merch p {
+    color: #F8E8D2;
+}
+.merch-preview {
+    max-width: 300px;
+    margin: 20px auto;
+    display: block;
+    border: 2px solid #3A5F3D;
 }
