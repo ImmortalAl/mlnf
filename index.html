@@ -1,354 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #0d0d1a; /* Deep cosmic blue for eternal depth */
-            --secondary: #1a1a33; /* Subtle twilight for timelessness */
-            --accent: #ff5e78; /* Vibrant life force, symbolizing liberation */
-            --text: #f0e6ff; /* Light, ethereal glow for immortality */
-            --highlight: #2a4066; /* Mystical midnight tone */
-            --success: #5cb85c; /* Evergreen vitality */
-            --warning: #ffca28; /* Golden eternity */
-            --danger: #ff4444; /* Blood-red urgency */
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: var(--primary);
-            color: var(--text);
-            overflow-x: hidden;
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80');
-            background-size: cover;
-            background-attachment: fixed;
-        }
-        
-        header {
-            background: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .logo i {
-            color: var(--accent);
-            font-size: 2rem;
-            animation: pulseGlow 2s infinite;
-        }
-        
-        .logo h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(to right, var(--accent), var(--warning));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
-        }
-        
-        nav ul {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            position: relative;
-            padding: 0.5rem 0;
-            transition: all 0.3s ease;
-        }
-        
-        nav a:hover {
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
-        }
-        
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-        
-        nav a:hover::after {
-            width: 100%;
-        }
-        
-        .auth-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.8rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, var(--accent), var(--warning));
-            color: var(--primary);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 94, 120, 0.6);
-        }
-        
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-        
-        .btn-outline:hover {
-            background: var(--accent);
-            color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 94, 120, 0.6);
-        }
-        
-        .hero {
-            background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.7)), 
-                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, transparent 50%, var(--primary) 100%);
-            animation: eternalPulse 10s infinite;
-        }
-        
-        .hero h2 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .eternal {
-            position: relative;
-            animation: eternalGlow 4s infinite ease-in-out;
-        }
-        
-        @keyframes eternalGlow {
-            0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7), 0 0 40px rgba(255, 202, 40, 0.5); }
-        }
-        
-        @keyframes eternalPulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 0.9; }
-        }
-        
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-        
-        .features {
-            padding: 5rem 2rem;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-            display: inline-block;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        .section-title h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--accent), var(--warning));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 94, 120, 0.4);
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(to right, var(--accent), var(--warning));
-            border-radius: 3px;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .feature-card {
-            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.8));
-            border-radius: 10px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            border-left: 5px solid var(--accent);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 94, 120, 0.15), transparent 70%);
-            z-index: 1;
-        }
-        
-        .feature-card i {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            background: linear-gradient(to right, var(--accent), var(--warning));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .feature-card p {
-            color: #d9ccff;
-            line-height: 1.6;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .divider {
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right, transparent, var(--accent), transparent);
-            margin: 4rem 0;
-        }
-        
-        /* Rest of the styles remain largely unchanged, but I'll update key sections */
-        .mindmap-preview {
-            width: 100%;
-            height: 500px;
-            background: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            margin: 3rem 0;
-            border: 1px solid rgba(255, 94, 120, 0.4);
-        }
-        
-        .mindmap-node {
-            background: linear-gradient(45deg, var(--highlight), var(--accent));
-            color: var(--text);
-            animation: floatEternal 4s ease-in-out infinite;
-        }
-        
-        @keyframes floatEternal {
-            0%, 100% { transform: translateY(0) rotate(2deg); }
-            50% { transform: translateY(-15px) rotate(-2deg); }
-        }
-        
-        .debate-arena {
-            background: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            border: 1px solid rgba(255, 94, 120, 0.4);
-        }
-        
-        footer {
-            background: linear-gradient(to top, var(--secondary), rgba(26, 26, 51, 0.9));
-            padding: 3rem 2rem;
-            margin-top: 5rem;
-            text-align: center;
-            border-top: 3px solid var(--accent);
-        }
-        
-        /* Add remaining styles from original unchanged */
-    </style>
+    <script src="scripts.js" defer></script>
+    
 </head>
 <body>
     <!-- Active Users Sidebar (unchanged) -->
@@ -371,19 +29,23 @@
     <header>
         <div class="logo">
             <i class="fas fa-infinity"></i>
-            <h1 class="eternal">Manifest Liberation</h1>
+            <h1 class="eternal">
+            <span class="full-title">Manifest Liberation</span>
+            <span class="short-title">MLNF</span>
+        </h1>
         </div>
         
         <nav id="mainNav">
-            <ul>
-                <li><a href="#features">Eternal Tools</a></li>
-                <li><a href="#news">Timeless Truths</a></li>
-                <li><a href="#debate">Immortal Discourse</a></li>
-                <li><a href="#archive">Forever Archive</a></li>
-                <li><a href="#community">Eternal Kin</a></li>
-                <li><a href="#manifesto">Our Creed</a></li>
-            </ul>
-        </nav>
+    <ul>
+        <li><a href="pages/profiles.html">Eternal Souls</a></li>
+        <li><a href="pages/news.html">Timeless Truths</a></li>
+        <li><a href="pages/debate.html">Immortal Discourse</a></li>
+        <li><a href="pages/archive.html">Forever Archive</a></li>
+        <li><a href="pages/blog.html">Soul Scrolls</a></li>
+        <li><a href="pages/mindmap.html">Threads of Eternity</a></li>
+        <li><a href="pages/messageboard.html">Echoes Unbound</a></li> <!-- New -->
+    </ul>
+</nav>
         
         <div class="auth-buttons">
             <button class="btn btn-primary">Join Eternity</button>
@@ -471,6 +133,14 @@
                     alike, forever free.
                 </p>
             </div>
+            <div class="feature-card">
+    <i class="fas fa-comment-dots"></i>
+    <h3>Echoes Unbound</h3>
+    <p>
+        A timeless agora where voices resonate freely. Thread your thoughts into the eternal 
+        tapestry of our collective wisdom, unshackled by fleeting rules.
+    </p>
+</div>
         </div>
         
         <!-- Mindmap Preview -->
