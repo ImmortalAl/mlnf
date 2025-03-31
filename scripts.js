@@ -1,4 +1,5 @@
-    document.getElementById('themeToggle').addEventListener('click', () => {
+// Theme Toggle (example)
+document.getElementById('themeToggle').addEventListener('click', () => {
     document.body.classList.toggle('light-theme');
 });
 
@@ -7,9 +8,11 @@ document.getElementById('mobileMenuBtn').addEventListener('click', () => {
     nav.classList.toggle('active');
 });
 
-// Theme Toggle (example)
-document.getElementById('themeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
+document.getElementById('showUsersBtn').addEventListener('click', () => {
+    document.getElementById('activeUsers').classList.add('active');
+});
+document.getElementById('closeUsers').addEventListener('click', () => {
+    document.getElementById('activeUsers').classList.remove('active');
 });
 
 document.querySelectorAll('nav a').forEach(anchor => {
@@ -23,6 +26,7 @@ document.querySelectorAll('nav a').forEach(anchor => {
         }
     });
 });
+
 
 // Message Board: New Thread (only if on messageboard.html)
 if (document.getElementById('newThreadBtn')) {
