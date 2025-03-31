@@ -1,3 +1,7 @@
+    document.getElementById('themeToggle').addEventListener('click', () => {
+    document.body.classList.toggle('light-theme');
+});
+
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
     const nav = document.getElementById('mainNav');
     nav.classList.toggle('active');
@@ -6,6 +10,18 @@ document.getElementById('mobileMenuBtn').addEventListener('click', () => {
 // Theme Toggle (example)
 document.getElementById('themeToggle').addEventListener('click', () => {
     document.body.classList.toggle('light-theme');
+});
+
+document.querySelectorAll('nav a').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = anchor.getAttribute('href');
+        if (targetId.startsWith('#')) {
+            document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+        } else {
+            window.location.href = targetId; // For page links
+        }
+    });
 });
 
 // Message Board: New Thread (only if on messageboard.html)

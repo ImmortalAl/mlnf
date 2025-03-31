@@ -23,7 +23,15 @@ body {
     overflow-x: hidden;
     background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80');
     background-size: cover;
+     background-position: center;
     background-attachment: fixed;
+}
+
+body.light-theme {
+    --primary: #f0f0f5;
+    --secondary: #e0e0eb;
+    --text: #1a1a33;
+    background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
 }
 
 header {
@@ -56,6 +64,47 @@ header {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+    line-height: 1;
+}
+
+.title-stack {
+    display: block; /* Stack vertically */
+    text-align: left;
+}
+
+.title-top,
+.title-bottom {
+    display: block; /* Each on its own line */
+}
+
+.short-title {
+    display: none; /* Hidden by default */
+}
+
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll; /* Fallback for mobile */
+        min-height: 100vh; /* Ensure background covers full height */
+    }
+    .title-stack {
+        display: none; /* Hide stacked title on mobile */
+    }
+    .short-title {
+        display: block; /* Show MLNF on mobile */
+    }
+    .logo h1 {
+        font-size: 1.5rem; /* Smaller for mobile */
+    }
+    .hero {
+        height: auto; /* Flexible height */
+        min-height: 50vh; /* Minimum to avoid collapse */
+        padding: 2rem; /* Extra padding for content */
+        background-attachment: scroll; /* Fix mobile rendering */
+    }
+     section {
+        min-height: 100vh; /* Ensure sections fill screen */
+    }
+    
 }
 
 nav ul {
