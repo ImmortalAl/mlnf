@@ -1,4 +1,3 @@
-// Theme Toggle (example)
 document.getElementById('themeToggle').addEventListener('click', () => {
     document.body.classList.toggle('light-theme');
 });
