@@ -1,35 +1,355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+
+ lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merch - Much Love, No Fear</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <meta name="description" content="Share timeless reflections in an eternal sanctuary.">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Soul Scrolls - Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        main {
+            padding: 3rem 2rem;
+            flex: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .blog-post {
+            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            transition: var(--transition);
+            border-left: 5px solid var(--accent);
+        }
+
+        .blog-post:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+        }
+
+        .blog-post h3 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-post p {
+            color: #d9ccff;
+            margin-bottom: 1rem;
+        }
+
+        .blog-post .author {
+            font-style: italic;
+            color: var(--success);
+            font-size: 0.9rem;
+        }
+
+        .active-users {
+            position: fixed;
+            right: -300px;
+            top: 70px;
+            width: 300px;
+            height: calc(100% - 70px);
+            background: var(--gradient-secondary);
+            padding: 1.5rem;
+            transition: right 0.3s ease;
+            z-index: 200;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .active-users.active {
+            right: 0;
+        }
+
+        .active-users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
+        }
+
+        .active-users h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .active-users ul {
+            list-style: none;
+            max-height: calc(100% - 100px);
+            overflow-y: auto;
+        }
+
+        .active-users li {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 0;
+        }
+
+        .profile-preview img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .profile-preview a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .profile-preview .status {
+            font-size: 0.8rem;
+            color: #d9ccff;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+
+        .show-users-btn {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background: var(--secondary);
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text);
+            z-index: 300;
+            transition: var(--transition);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 250;
+        }
+
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--accent);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+    </style>
 </head>
 <body>
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <ul>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar">
+                <div>
+                    <a href="profiles.html#ImmortalAl">ImmortalAl</a>
+                    <span class="online-dot"></span>
+                    <p class="status">Defending free speech</p>
+                </div>
+            </li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar">
+                <div>
+                    <a href="profiles.html#FreeSoul">FreeSoul</a>
+                    <span class="online-dot"></span>
+                    <p class="status">Seeking eternal liberty</p>
+                </div>
+            </li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar">
+                <div>
+                    <a href="profiles.html#EternalVoice">EternalVoice</a>
+                    <p class="status">Echoing truth</p>
+                </div>
+            </li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar">
+                <div>
+                    <a href="profiles.html#TruthSeeker">TruthSeeker</a>
+                    <span class="online-dot"></span>
+                    <p class="status">Unveiling hidden narratives</p>
+                </div>
+            </li>
+        </ul>
+    </aside>
+
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+
     <header>
-        <img src="assets/logo.gif" alt="MLNF Logo" class="logo">
+        <div class="logo">
+            <i class="fas fa-infinity"></i>
+            <h1>Manifest Liberation, Naturally Free</h1>
+        </div>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="videos.html">Videos</a>
-            <a href="community.html">Community</a>
-            <a href="about.html">About</a>
-            <a href="merch.html">Merch</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="profiles.html">Eternal Souls</a></li>
+                <li><a href="blog.html">Soul Scrolls</a></li>
+                <li><a href="messageboard.html">Echoes Unbound</a></li>
+                <li><a href="news.html">Boundless Chronicles</a></li>
+                <li><a href="debate.html">Clash of Immortals</a></li>
+                <li><a href="mindmap.html">Infinite Nexus</a></li>
+                <li><a href="archive.html">Timeless Vault</a></li>
+            </ul>
         </nav>
     </header>
-    <section class="merch">
-        <h2>Merch Coming Soon!</h2>
-        <p>Get ready to rep MLNF with style.</p>
-        <img src="assets/nofear.jpeg" alt="Merch Preview" class="merch-preview">
-    </section>
-    <footer>
-        <p>Stay Tuned @ MLNF 2025</p>
-        <div class="social-icons">
-            <a href="http://www.x.com/dkspiracy"><img src="assets/twitter-icon.jpg" alt="Twitter"></a>
-            <a href="http://dlive.tv/dkspiracy123"><img src="assets/dlive-icon.png" alt="DLive"></a>
-            <a href="http://dlive.tv/immortalal"><img src="assets/immortal-icon.jpg" alt="ImmortalAl"></a>
+
+    <main>
+        <section class="section-title">
+            <h2>Soul Scrolls</h2>
+            <p>Timeless reflections from liberated spirits</p>
+        </section>
+
+        <div class="blog-list">
+            <div class="blog-post">
+                <h3>Eternity Over Ephemera</h3>
+                <p>Why transcending time is the ultimate rebellion against control. In a world bound by fleeting narratives, we choose the eternal.</p>
+                <p class="author">— FreeSoul</p>
+            </div>
+            <div class="blog-post">
+                <h3>The Chains We Don’t See</h3>
+                <p>A personal journey through a censored world, unveiling the invisible shackles that bind us.</p>
+                <p class="author">— EternalVoice</p>
+            </div>
+            <div class="blog-post">
+                <h3>Beyond the Mortal Veil</h3>
+                <p>Reflections on shedding temporal illusions to embrace unbound truth.</p>
+                <p class="author">— ImmortalAl</p>
+            </div>
         </div>
+    </main>
+
+    <footer>
+        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
     </footer>
-    <script src="js/scripts.js"></script>
+
+    <script>
+        const activeUsers = document.getElementById('activeUsers');
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const closeUsersBtn = document.getElementById('closeUsers');
+
+        function toggleSidebar() {
+            activeUsers.classList.toggle('active');
+        }
+
+        showUsersBtn.addEventListener('click', toggleSidebar);
+        closeUsersBtn.addEventListener('click', toggleSidebar);
+    </script>
 </body>
 </html>
