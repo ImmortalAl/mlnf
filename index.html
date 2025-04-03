@@ -1,154 +1,1057 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+<!--
+Enhanced Manifest Liberation Website
+Improvements: Accessibility, Performance, UX, Security, and Interaction
+Website: Manifest Liberation, Naturally Free (MLNF)
+Vision: A refuge from mainstream society's controlled narratives, concealing vital truths. An immortal-themed sanctuary for free-thinkers to escape censorship, fostering a community to express freely without fear, countering dystopian tyranny.
+
+Features:
+- Eternal Souls (Profiles): Connect with liberated spirits.
+- Soul Scrolls (Blogging): Share timeless reflections.
+- Echoes Unbound (Message Board): Open discussions.
+- Boundless Chronicles (News): User-submitted stories of hidden truths.
+- Clash of Immortals (Debate Arena): Constructive debates on contentious topics.
+- Infinite Nexus (Mindmap): Collaborative web of eternal ideas.
+- Timeless Vault (Archive): Preserve uncensored user videos.
+
+Purpose: An immortal refuge empowering free-thinkers to manifest truth and freedom, unshackled by fleeting powers.
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A timeless sanctuary for liberated spirits to manifest truth and freedom.">
+    <meta name="theme-color" content="#0d0d1a">
+    <meta property="og:title" content="Manifest Liberation, Naturally Free">
+    <meta property="og:description" content="An immortal sanctuary for uncensored thought and eternal truth">
+    <meta property="og:image" content="https://yourdomain.com/social-cover.jpg">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Manifest Liberation, Naturally Free</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="scripts.js" defer></script>
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --danger: #ff4444;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body.light-theme {
+            --primary: #f0f0f5;
+            --secondary: #e0e0eb;
+            --text: #1a1a33;
+            --accent: #e63950;
+            background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+        }
+
+        .title-stack {
+            display: block;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .title-top, .title-bottom {
+            display: block;
+        }
+
+        .short-title {
+            display: none;
+            white-space: nowrap;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            position: relative;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        nav a:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after,
+        nav a:focus::after {
+            width: 100%;
+        }
+
+        .auth-buttons, .hero-buttons, .debate-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover, .btn-outline:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.7));
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .censorship-warning {
+            background: rgba(255, 68, 68, 0.1);
+            padding: 1rem;
+            text-align: center;
+            margin: 2rem 0;
+            border-left: 5px solid var(--danger);
+        }
+
+        .features {
+            padding: 5rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-accent);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+            border-radius: var(--border-radius);
+            padding: 2.5rem 2rem;
+            transition: var(--transition);
+            border-left: 5px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 94, 120, 0.1), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #d9ccff;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .launch-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .launch-btn:hover {
+            background: var(--warning);
+            transform: translateY(-2px);
+        }
+
+        .highlight-section, .debate-arena {
+            background: var(--gradient-secondary);
+            border: 1px solid rgba(255, 94, 120, 0.4);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .highlight-item {
+            background: rgba(255, 94, 120, 0.1);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .highlight-item h4 {
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-item p {
+            font-size: 0.9rem;
+            color: #d9ccff;
+        }
+
+        .highlight-item .author {
+            font-style: italic;
+            color: var(--success);
+            margin-top: 0.5rem;
+        }
+
+        .mindmap-preview {
+            width: 100%;
+            height: 500px;
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            position: relative;
+            margin: 3rem 0;
+            border: 1px solid rgba(255, 94, 120, 0.4);
+        }
+
+        .mindmap-node {
+            position: absolute;
+            background: linear-gradient(45deg, var(--highlight), var(--accent));
+            color: var(--text);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            animation: floatEternal 4s ease-in-out infinite;
+        }
+
+        .mindmap-node:hover {
+            transform: scale(1.1);
+            animation-play-state: paused;
+        }
+
+        .main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .node-truth { top: 25%; left: 25%; }
+        .node-freedom { top: 25%; left: 75%; }
+        .node-eternity { top: 75%; left: 25%; }
+        .node-unity { top: 75%; left: 75%; }
+
+        .mindmap-line {
+            position: absolute;
+            background: var(--accent);
+            height: 3px;
+        }
+
+        .line-1 { width: 141px; top: 50%; left: 50%; transform: rotate(135deg); }
+        .line-2 { width: 141px; top: 50%; left: 50%; transform: rotate(45deg); }
+        .line-3 { width: 141px; top: 50%; left: 50%; transform: rotate(225deg); }
+        .line-4 { width: 141px; top: 50%; left: 50%; transform: rotate(315deg); }
+
+        .debate-topic {
+            color: var(--accent);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .debate-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .debate-position {
+            background: rgba(255, 94, 120, 0.1);
+            padding: 1.8rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+        }
+
+        .debate-position:hover {
+            transform: translateY(-5px);
+        }
+
+        .debate-position h4 {
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+        }
+
+        .vote-count {
+            font-size: 0.9rem;
+            color: var(--success);
+            margin-left: 0.5rem;
+        }
+
+.active-users {
+    position: fixed;
+    right: -300px;
+    top: 70px; /* Adjust this value based on header height, e.g., header height + padding */
+    width: 300px;
+    height: calc(100% - 70px); /* Subtract header height to avoid overlap */
+    background: var(--gradient-secondary);
+    padding: 1.5rem;
+    transition: right 0.3s ease;
+    z-index: 200;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+}
+
+        .active-users.active {
+            right: 0;
+        }
+
+        .active-users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .active-users h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .active-users ul {
+            list-style: none;
+            max-height: calc(100% - 100px);
+            overflow-y: auto;
+        }
+
+        .active-users li {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 0;
+            transition: background 0.3s ease;
+        }
+
+        .active-users li:hover {
+            background: rgba(255, 94, 120, 0.2);
+            border-radius: var(--border-radius);
+        }
+
+        .profile-preview img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            object-fit: cover;
+        }
+
+        .profile-preview div {
+            flex: 1;
+        }
+
+        .profile-preview a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .profile-preview .status {
+            font-size: 0.8rem;
+            color: #d9ccff;
+            margin-top: 0.2rem;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            display: inline-block;
+        }
+
+        .show-users-btn, .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text);
+            z-index: 250;
+            transition: var(--transition);
+        }
+
+.show-users-btn {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background: var(--secondary);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text);
+    z-index: 300; /* Higher than .active-users z-index (200) */
+    transition: var(--transition);
+}
+
+.close-sidebar {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 250; /* Higher than sidebar to ensure clickability */
+}
+
+        .eternal {
+            animation: eternalGlow 4s infinite ease-in-out;
+        }
+
+        footer {
+            background: linear-gradient(to top, var(--secondary), rgba(26, 26, 51, 0.9));
+            text-align: center;
+            border-top: 3px solid var(--accent);
+            padding: 3rem 2rem;
+            margin-top: auto;
+        }
+
+        .social-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .social-links a {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+            header {
+                padding: 1rem;
+            }
+            .title-stack {
+                display: none;
+            }
+            .short-title {
+                display: block;
+            }
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            .logo h1::after {
+                content: '';
+                display: block;
+                width: 50%;
+                height: 2px;
+                background: var(--accent);
+                margin: 0.2rem 0;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            #mainNav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--secondary);
+                padding: 1rem;
+            }
+            #mainNav.active {
+                display: block;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 1.2rem;
+            }
+            nav a {
+                padding: 0;
+            }
+            nav a::after {
+                content: none;
+            }
+            nav a:hover::after {
+                width: 0;
+            }
+            .auth-buttons {
+                display: none;
+            }
+            .hero {
+                min-height: 50vh;
+                padding: 2rem;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .features {
+                padding: 2rem;
+            }
+            .feature-card {
+                padding: 1.5rem;
+            }
+            .debate-preview {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        @keyframes eternalGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7), 0 0 40px rgba(255, 202, 40, 0.5); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes floatEternal {
+            0%, 100% { transform: translateY(0) rotate(2deg); }
+            50% { transform: translateY(-15px) rotate(-2deg); }
+        }
+    </style>
 </head>
 <body>
-    <!-- Active Users Sidebar -->
-    <aside class="active-users" id="activeUsers">
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
-            <h3>Eternal Seekers <span class="online-dot"></span></h3>
-            <button class="close-sidebar" id="closeUsers">×</button>
+            <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
         <ul>
-            <li>ImmortalAl <span class="online-dot"></span></li>
-            <li>FreeSoul <span class="online-dot"></span></li>
-            <li>EternalVoice</li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar" width="40" height="40">
+                <div>
+                    <a href="pages/profiles.html#ImmortalAl">ImmortalAl</a>
+                    <span class="online-dot" aria-label="Online status"></span>
+                    <p class="status">Defending free speech</p>
+                </div>
+            </li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar" width="40" height="40">
+                <div>
+                    <a href="pages/profiles.html#FreeSoul">FreeSoul</a>
+                    <span class="online-dot" aria-label="Online status"></span>
+                    <p class="status">Seeking eternal liberty</p>
+                </div>
+            </li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar" width="40" height="40">
+                <div>
+                    <a href="pages/profiles.html#EternalVoice">EternalVoice</a>
+                    <p class="status">Echoing truth</p>
+                </div>
+            </li>
+            <li class="profile-preview">
+                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar" width="40" height="40">
+                <div>
+                    <a href="pages/profiles.html#TruthSeeker">TruthSeeker</a>
+                    <span class="online-dot" aria-label="Online status"></span>
+                    <p class="status">Unveiling hidden narratives</p>
+                </div>
+            </li>
         </ul>
     </aside>
 
-    <button class="show-users-btn" id="showUsersBtn">
-        <i class="fas fa-users"></i>
-    </button>
-
-    <button class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </button>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
 
     <header>
         <div class="logo">
-            <i class="fas fa-infinity"></i>
+            <i class="fas fa-infinity" aria-hidden="true"></i>
             <h1 class="eternal">
-                <span class="title-stack">
-                    <span class="title-top">Manifest Liberation</span>
-                    <span class="title-bottom">Naturally Free</span>
-                </span>
+                <span class="title-stack"><span class="title-top">Manifest Liberation</span><span class="title-bottom">Naturally Free</span></span>
                 <span class="short-title">MLNF</span>
             </h1>
         </div>
-        <nav id="mainNav">
+        <nav id="mainNav" aria-label="Main navigation">
             <ul>
-                <li><a href="pages/profiles.html">Eternal Souls</a></li>
-                <li><a href="pages/news.html">Timeless Truths</a></li>
-                <li><a href="pages/debate.html">Immortal Discourse</a></li>
-                <li><a href="pages/archive.html">Forever Archive</a></li>
-                <li><a href="pages/blog.html">Soul Scrolls</a></li>
-                <li><a href="pages/mindmap.html">Threads of Eternity</a></li>
-                <li><a href="pages/messageboard.html">Echoes Unbound</a></li>
+                <li><a href="pages/profiles.html"><i class="fas fa-user-secret"></i> Eternal Souls</a></li>
+                <li><a href="pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
+                <li><a href="pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+                <li><a href="pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+                <li><a href="pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+                <li><a href="pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+                <li><a href="pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
             </ul>
         </nav>
         <div class="auth-buttons">
             <button class="btn btn-primary">Join Eternity</button>
             <button class="btn btn-outline">Free Your Soul</button>
         </div>
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-            <i class="fas fa-bars"></i>
-        </button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
     </header>
 
-    <section class="hero">
-        <h2 class="eternal">Naturally Free Forever</h2>
-        <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
-        <div class="hero-buttons">
-            <button class="btn btn-primary">Embrace Immortality</button>
-            <button class="btn btn-outline">Seek Liberation</button>
-        </div>
-    </section>
+    <main>
+        <section class="hero" aria-labelledby="mainHeading">
+            <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
+            <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Embrace Immortality</button>
+                <button class="btn btn-outline">Seek Liberation</button>
+            </div>
+        </section>
 
-    <div class="censorship-warning">
-        <i class="fas fa-exclamation-triangle"></i>
-        <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control. Enter only if you seek to transcend the fleeting illusions of the mortal world.</p>
-    </div>
-
-    <section class="features" id="features">
-        <div class="section-title">
-            <h2>Our Timeless Arsenal</h2>
-            <p>Instruments of liberation for souls unbound</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fas fa-newspaper"></i>
-                <h3>Eternal Chronicles</h3>
-                <p>Our collective immortalizes truths beyond the reach of transient lies.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-project-diagram"></i>
-                <h3>Threads of Eternity</h3>
-                <p>Weave connections that span beyond time in our living tapestry.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-comments"></i>
-                <h3>Immortal Forum</h3>
-                <p>Discourse unbound by mortal limits—let truth reign everlasting.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-blog"></i>
-                <h3>Soul Scrolls</h3>
-                <p>Inscribe your essence for eternity, preserved beyond decay.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-video"></i>
-                <h3>Everlasting Vault</h3>
-                <p>Safeguard visions in our boundless archive, immune to erasure.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-user-secret"></i>
-                <h3>Veiled Paths</h3>
-                <p>Whisper truths through timeless channels, forever free.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-comment-dots"></i>
-                <h3>Echoes Unbound</h3>
-                <p>Thread your thoughts into the eternal tapestry of our wisdom.</p>
-            </div>
+        <div class="censorship-warning" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control. Enter only if you seek to transcend the fleeting illusions of the mortal world.</p>
         </div>
 
-        <div class="section-title" style="margin-top: 5rem;">
-            <h2>Weave the Infinite</h2>
-            <p>Our eternal map binds the unbound</p>
-        </div>
-        <div class="mindmap-preview" id="mindmapPreview">
-            <div class="mindmap-node main">Liberation</div>
-            <div class="mindmap-node node-truth">Truth</div>
-            <div class="mindmap-node node-freedom">Freedom</div>
-            <div class="mindmap-node node-eternity">Eternity</div>
-            <div class="mindmap-node node-unity">Unity</div>
-            <div class="mindmap-line line-1"></div>
-            <div class="mindmap-line line-2"></div>
-            <div class="mindmap-line line-3"></div>
-            <div class="mindmap-line line-4"></div>
-        </div>
+        <section class="features" id="features">
+            <div class="section-title">
+                <h2>Our Timeless Arsenal</h2>
+                <p>Instruments of liberation for souls unbound</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-user-secret"></i>
+                    <h3>Eternal Souls</h3>
+                    <p>Whisper truths through timeless channels, forever free. Connect privately with kindred spirits.</p>
+                    <a href="pages/profiles.html" class="launch-btn">Find Souls</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-scroll"></i>
+                    <h3>Soul Scrolls</h3>
+                    <p>Inscribe your essence for eternity, preserved beyond decay. Share your thoughts and read others’.</p>
+                    <a href="pages/blog.html" class="launch-btn">Write Now</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>Echoes Unbound</h3>
+                    <p>Thread your thoughts into the eternal tapestry of our wisdom. Post and discuss freely.</p>
+                    <a href="pages/messageboard.html" class="launch-btn">Start Thread</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-newspaper"></i>
+                    <h3>Boundless Chronicles</h3>
+                    <p>Our collective immortalizes truths beyond the reach of transient lies. Submit your stories and uncover hidden narratives.</p>
+                    <a href="pages/news.html" class="launch-btn">Explore News</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-gavel"></i>
+                    <h3>Clash of Immortals</h3>
+                    <p>Discourse unbound by mortal limits—let truth reign everlasting. Engage in timeless debates.</p>
+                    <a href="pages/debate.html" class="launch-btn">Enter Arena</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>Infinite Nexus</h3>
+                    <p>Weave connections that span beyond time in our living tapestry. Contribute to the collective mindmap.</p>
+                    <a href="pages/mindmap.html" class="launch-btn">Join the Map</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-vault"></i>
+                    <h3>Timeless Vault</h3>
+                    <p>Safeguard visions in our boundless archive, immune to erasure. Upload and preserve your videos.</p>
+                    <a href="pages/archive.html" class="launch-btn">Access Vault</a>
+                </div>
+            </div>
 
-        <div class="section-title" id="debate">
-            <h2>Clash of Immortals</h2>
-            <p>Where eternal minds forge truth</p>
-        </div>
-        <div class="debate-arena">
-            <div class="current-debate">
+            <div class="section-title" id="profiles">
+                <h2>Eternal Souls</h2>
+                <p>Connect with the unbound</p>
+            </div>
+            <div class="highlight-section">
+                <div class="highlight-item">
+                    <h4>ImmortalAl</h4>
+                    <p>Founder of MLNF, seeker of unshackled truth.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>FreeSoul</h4>
+                    <p>Advocate for timeless liberty and defiance.</p>
+                </div>
+                <a href="pages/profiles.html" class="btn btn-primary" style="margin-top: 1rem;">Meet More Souls</a>
+            </div>
+
+            <div class="section-title" id="blog">
+                <h2>Soul Scrolls</h2>
+                <p>Top reflections from liberated spirits</p>
+            </div>
+            <div class="highlight-section">
+                <div class="highlight-item">
+                    <h4>Eternity Over Ephemera</h4>
+                    <p>Why transcending time is the ultimate rebellion against control.</p>
+                    <p class="author">— FreeSoul</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>The Chains We Don’t See</h4>
+                    <p>A personal journey through a censored world.</p>
+                    <p class="author">— EternalVoice</p>
+                </div>
+                <a href="pages/blog.html" class="btn btn-primary" style="margin-top: 1rem;">Explore Blogs</a>
+            </div>
+
+            <div class="section-title" id="messageboard">
+                <h2>Echoes Unbound</h2>
+                <p>Hot threads from the eternal tapestry</p>
+            </div>
+            <div class="highlight-section">
+                <div class="highlight-item">
+                    <h4>Thread: Is Privacy Dead?</h4>
+                    <p>"In 2025, every click is watched—how do we fight back?"</p>
+                    <p class="author">— ImmortalAl (12 replies)</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>Thread: The Power of Collective Truth</h4>
+                    <p>"Can we crowdsource our way to freedom?"</p>
+                    <p class="author">— TruthSeeker (8 replies)</p>
+                </div>
+                <a href="pages/messageboard.html" class="btn btn-primary" style="margin-top: 1rem;">Join the Discussion</a>
+            </div>
+
+            <div class="section-title" id="news">
+                <h2>Boundless Chronicles</h2>
+                <p>Featured stories from the eternal chronicles</p>
+            </div>
+            <div class="highlight-section">
+                <div class="highlight-item">
+                    <h4>Unveiled: The Hidden War on Free Thought</h4>
+                    <p>A deep dive into the censorship mechanisms of 2025, exposing the unseen hands.</p>
+                    <p class="author">— ImmortalAl</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>April 2, 2025: A New Dawn for Truth</h4>
+                    <p>Breaking news on the resistance against digital tyranny.</p>
+                    <p class="author">— TruthSeeker</p>
+                </div>
+                <a href="pages/news.html" class="btn btn-primary" style="margin-top: 1rem;">Read More Stories</a>
+            </div>
+
+            <div class="section-title" id="debate">
+                <h2>Clash of Immortals</h2>
+                <p>Where eternal minds forge truth</p>
+            </div>
+            <div class="debate-arena">
                 <h3 class="debate-topic">Resolved: Freedom is an eternal right.</h3>
                 <p>Join the timeless struggle as liberated souls contest existence.</p>
+                <div class="debate-preview">
+                    <div class="debate-position">
+                        <h4>Affirmative</h4>
+                        <p>"Freedom transcends time; it’s woven into existence." - ImmortalAl</p>
+                        <div class="debate-actions">
+                            <button class="btn btn-primary">Vote Yes</button>
+                            <span class="vote-count">12 Votes</span>
+                        </div>
+                    </div>
+                    <div class="debate-position">
+                        <h4>Negative</h4>
+                        <p>"Freedom is a fleeting illusion, bound by power." - EternalVoice</p>
+                        <div class="debate-actions">
+                            <button class="btn btn-outline">Vote No</button>
+                            <span class="vote-count">8 Votes</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="pages/debate.html" class="btn btn-primary" style="margin-top: 1.5rem;">Join the Discourse</a>
             </div>
-        </div>
-    </section>
 
-    <footer>
-        <p>© 2025 Manifest Liberation, Naturally Free. Eternity is ours.</p>
+            <div class="section-title" id="mindmap">
+                <h2>Infinite Nexus</h2>
+                <p>Our living web binds the unbound</p>
+            </div>
+            <div class="mindmap-preview" id="mindmapPreview">
+                <div class="mindmap-node main">Liberation</div>
+                <div class="mindmap-node node-truth">Truth</div>
+                <div class="mindmap-node node-freedom">Freedom</div>
+                <div class="mindmap-node node-eternity">Eternity</div>
+                <div class="mindmap-node node-unity">Unity</div>
+                <div class="mindmap-line line-1"></div>
+                <div class="mindmap-line line-2"></div>
+                <div class="mindmap-line line-3"></div>
+                <div class="mindmap-line line-4"></div>
+            </div>
+            <a href="pages/mindmap.html" class="btn btn-primary" style="display: block; text-align: center; margin: 1rem auto;">Expand the Nexus</a>
+
+            <div class="section-title" id="archive">
+                <h2>Timeless Vault</h2>
+                <p>Featured visions preserved forever</p>
+            </div>
+            <div class="highlight-section">
+                <div class="highlight-item">
+                    <h4>Video: The Silent Rebellion</h4>
+                    <p>A 10-minute exposé on underground free speech movements.</p>
+                    <p class="author">— FreeSoul</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>Video: Truth Uncut</h4>
+                    <p>Raw footage from the April 2025 protests.</p>
+                    <p class="author">— EternalVoice</p>
+                </div>
+                <a href="pages/archive.html" class="btn btn-primary" style="margin-top: 1rem;">Watch More</a>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
+        <div class="social-links">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Mastodon"><i class="fab fa-mastodon"></i></a>
+            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        </div>
     </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        function updateTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            themeIcon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        themeToggle.addEventListener('click', updateTheme);
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+            themeIcon.className = 'fas fa-sun';
+        }
+
+        const mobileMenu = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+
+        function toggleMenu() {
+            const isExpanded = mainNav.classList.toggle('active');
+            mobileMenu.setAttribute('aria-expanded', isExpanded);
+            document.body.style.overflow = isExpanded ? 'hidden' : '';
+        }
+
+        mobileMenu.addEventListener('click', toggleMenu);
+
+        document.querySelectorAll('#mainNav a').forEach(link => {
+            link.addEventListener('click', () => {
+                mainNav.classList.remove('active');
+                mobileMenu.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            });
+        });
+
+const activeUsers = document.getElementById('activeUsers');
+const showUsersBtn = document.getElementById('showUsersBtn');
+const closeUsersBtn = document.getElementById('closeUsers');
+
+function toggleSidebar() {
+    activeUsers.classList.toggle('active');
+}
+
+showUsersBtn.addEventListener('click', toggleSidebar);
+closeUsersBtn.addEventListener('click', toggleSidebar);
+
+        document.querySelectorAll('.debate-actions button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                if (button.classList.contains('voted')) {
+                    e.preventDefault();
+                    button.setAttribute('aria-disabled', 'true');
+                    return;
+                }
+                
+                const voteCount = button.nextElementSibling;
+                const currentCount = parseInt(voteCount.textContent);
+                voteCount.textContent = `${currentCount + 1} Votes`;
+                button.classList.add('voted');
+                button.setAttribute('aria-disabled', 'true');
+            });
+        });
+
+        document.querySelectorAll('.mindmap-node').forEach(node => {
+            node.addEventListener('click', () => {
+                const concept = node.textContent;
+                alert(`Exploring ${concept} in the Eternal Nexus...`);
+            });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
