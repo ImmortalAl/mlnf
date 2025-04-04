@@ -1,21 +1,4 @@
 ﻿<!DOCTYPE html>
-<!--
-Enhanced Manifest Liberation Website
-Improvements: Accessibility, Performance, UX, Security, and Interaction
-Website: Manifest Liberation, Naturally Free (MLNF)
-Vision: A refuge from mainstream society's controlled narratives, concealing vital truths. An immortal-themed sanctuary for free-thinkers to escape censorship, fostering a community to express freely without fear, countering dystopian tyranny.
-
-Features:
-- Eternal Souls (Profiles): Connect with liberated spirits.
-- Soul Scrolls (Blogging): Share timeless reflections.
-- Echoes Unbound (Message Board): Open discussions.
-- Boundless Chronicles (News): User-submitted stories of hidden truths.
-- Clash of Immortals (Debate Arena): Constructive debates on contentious topics.
-- Infinite Nexus (Mindmap): Collaborative web of eternal ideas.
-- Timeless Vault (Archive): Preserve uncensored user videos.
-
-Purpose: An immortal refuge empowering free-thinkers to manifest truth and freedom, unshackled by fleeting powers.
--->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -60,7 +43,6 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
         }
 
         body.light-theme {
@@ -69,6 +51,42 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             --text: #1a1a33;
             --accent: #e63950;
             background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover, .btn-primary:hover, .btn-outline:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--primary);
         }
 
         header {
@@ -101,23 +119,13 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
         }
 
-        .title-stack {
-            display: block;
-            text-align: left;
-            white-space: nowrap;
-        }
-
-        .title-top, .title-bottom {
-            display: block;
-        }
-
-        .short-title {
-            display: none;
-            white-space: nowrap;
-        }
+        .title-stack { display: flex; flex-direction: column; }
+        .short-title { display: none; }
 
         nav ul {
             display: flex;
@@ -129,15 +137,8 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             color: var(--text);
             text-decoration: none;
             font-weight: 600;
-            padding: 0.5rem 0;
             position: relative;
-            display: inline-block;
             transition: var(--transition);
-        }
-
-        nav a:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 4px;
         }
 
         nav a::after {
@@ -151,48 +152,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             transition: var(--transition);
         }
 
-        nav a:hover::after,
-        nav a:focus::after {
-            width: 100%;
-        }
-
-        .auth-buttons, .hero-buttons, .debate-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.8rem;
-        }
-
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: var(--primary);
-        }
-
-        .btn-primary:hover, .btn-outline:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent);
-            color: var(--primary);
-        }
+        nav a:hover::after { width: 100%; }
 
         .mobile-menu-btn {
             display: none;
@@ -220,14 +180,6 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-
         .censorship-warning {
             background: rgba(255, 68, 68, 0.1);
             padding: 1rem;
@@ -244,14 +196,10 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             text-align: center;
             margin-bottom: 3rem;
             position: relative;
-            display: inline-block;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
         .section-title h2 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -261,39 +209,28 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             content: '';
             position: absolute;
             bottom: -10px;
-            left: 0;
-            width: 100%;
+            left: 50%;
+            width: 100px;
             height: 3px;
-            background: var(--gradient-accent);
+            background: var(--accent);
+            transform: translateX(-50%);
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 3rem;
+            max-width: 1400px;
+            margin: 3rem auto;
         }
 
         .feature-card {
             background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
             border-radius: var(--border-radius);
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             transition: var(--transition);
             border-left: 5px solid var(--accent);
             position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(255, 94, 120, 0.1), transparent);
-            opacity: 0;
-            transition: var(--transition);
         }
 
         .feature-card:hover {
@@ -301,41 +238,10 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             box-shadow: var(--shadow);
         }
 
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
         .feature-card i {
             font-size: 2.5rem;
             color: var(--accent);
             margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            color: #d9ccff;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .launch-btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: var(--primary);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .launch-btn:hover {
-            background: var(--warning);
-            transform: translateY(-2px);
         }
 
         .highlight-section, .debate-arena {
@@ -354,24 +260,10 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             border-left: 4px solid var(--accent);
         }
 
-        .highlight-item h4 {
-            color: var(--warning);
-            margin-bottom: 0.5rem;
-        }
-
-        .highlight-item p {
-            font-size: 0.9rem;
-            color: #d9ccff;
-        }
-
-        .highlight-item .author {
-            font-style: italic;
-            color: var(--success);
-            margin-top: 0.5rem;
-        }
+        .highlight-item h4 { color: var(--warning); }
+        .highlight-item .author { color: var(--success); font-style: italic; }
 
         .mindmap-preview {
-            width: 100%;
             height: 500px;
             background: var(--gradient-secondary);
             border-radius: var(--border-radius);
@@ -382,11 +274,10 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
 
         .mindmap-node {
             position: absolute;
-            background: linear-gradient(45deg, var(--highlight), var(--accent));
+            background: var(--accent);
             color: var(--text);
             padding: 1rem 1.5rem;
             border-radius: var(--border-radius);
-            cursor: pointer;
             transition: var(--transition);
             animation: floatEternal 4s ease-in-out infinite;
         }
@@ -406,24 +297,15 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             position: absolute;
             background: var(--accent);
             height: 3px;
+            width: 141px;
+            top: 50%;
+            left: 50%;
         }
 
-        .line-1 { width: 141px; top: 50%; left: 50%; transform: rotate(135deg); }
-        .line-2 { width: 141px; top: 50%; left: 50%; transform: rotate(45deg); }
-        .line-3 { width: 141px; top: 50%; left: 50%; transform: rotate(225deg); }
-        .line-4 { width: 141px; top: 50%; left: 50%; transform: rotate(315deg); }
-
-        .debate-topic {
-            color: var(--accent);
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .debate-preview {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
+        .line-1 { transform: rotate(135deg); }
+        .line-2 { transform: rotate(45deg); }
+        .line-3 { transform: rotate(225deg); }
+        .line-4 { transform: rotate(315deg); }
 
         .debate-position {
             background: rgba(255, 94, 120, 0.1);
@@ -433,92 +315,39 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             transition: var(--transition);
         }
 
-        .debate-position:hover {
-            transform: translateY(-5px);
+        .debate-position:hover { transform: translateY(-5px); }
+        .vote-count { color: var(--success); margin-left: 0.5rem; }
+
+        .active-users {
+            position: fixed;
+            right: -300px;
+            top: 70px;
+            width: 300px;
+            height: calc(100% - 70px);
+            background: var(--gradient-secondary);
+            padding: 1.5rem;
+            transition: right 0.3s ease;
+            z-index: 200;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+            border-left: 3px solid var(--accent);
         }
 
-        .debate-position h4 {
-            color: var(--warning);
-            margin-bottom: 0.5rem;
-        }
-
-        .vote-count {
-            font-size: 0.9rem;
-            color: var(--success);
-            margin-left: 0.5rem;
-        }
-
-.active-users {
-    position: fixed;
-    right: -300px;
-    top: 70px; /* Adjust this value based on header height, e.g., header height + padding */
-    width: 300px;
-    height: calc(100% - 70px); /* Subtract header height to avoid overlap */
-    background: var(--gradient-secondary);
-    padding: 1.5rem;
-    transition: right 0.3s ease;
-    z-index: 200;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-}
-
-        .active-users.active {
-            right: 0;
-        }
+        .active-users.active { right: 0; }
 
         .active-users-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
+            border-bottom: 1px solid rgba(255, 94, 120, 0.4);
             padding-bottom: 0.5rem;
         }
 
-        .active-users h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .active-users ul {
-            list-style: none;
-            max-height: calc(100% - 100px);
-            overflow-y: auto;
-        }
-
-        .active-users li {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 0;
-            transition: background 0.3s ease;
-        }
-
-        .active-users li:hover {
-            background: rgba(255, 94, 120, 0.2);
-            border-radius: var(--border-radius);
-        }
-
-        .profile-preview img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            object-fit: cover;
-        }
-
-        .profile-preview div {
-            flex: 1;
-        }
-
-        .profile-preview a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .profile-preview .status {
-            font-size: 0.8rem;
-            color: #d9ccff;
-            margin-top: 0.2rem;
+        .active-users-header h3 {
+            font-size: 1.4rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .online-dot {
@@ -526,8 +355,50 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             height: 10px;
             background: var(--success);
             border-radius: 50%;
-            margin-left: 0.5rem;
             display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        .profile-preview {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 94, 120, 0.1);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .profile-preview:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-preview img {
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+        }
+
+        .profile-preview a {
+            color: var(--text);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .profile-preview a:hover { color: var(--accent); }
+
+        .profile-preview .status {
+            font-size: 0.9rem;
+            color: var(--highlight);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         .show-users-btn, .theme-toggle {
@@ -544,38 +415,10 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             transition: var(--transition);
         }
 
-.show-users-btn {
-    position: fixed;
-    bottom: 70px;
-    right: 20px;
-    background: var(--secondary);
-    border: none;
-    padding: 0.8rem;
-    border-radius: 50%;
-    cursor: pointer;
-    color: var(--text);
-    z-index: 300; /* Higher than .active-users z-index (200) */
-    transition: var(--transition);
-}
-
-.close-sidebar {
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 1.5rem;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 250; /* Higher than sidebar to ensure clickability */
-}
-
-        .eternal {
-            animation: eternalGlow 4s infinite ease-in-out;
-        }
+        .show-users-btn { bottom: 70px; }
 
         footer {
-            background: linear-gradient(to top, var(--secondary), rgba(26, 26, 51, 0.9));
+            background: var(--gradient-secondary);
             text-align: center;
             border-top: 3px solid var(--accent);
             padding: 3rem 2rem;
@@ -595,38 +438,14 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             transition: var(--transition);
         }
 
-        .social-links a:hover {
-            color: var(--accent);
-        }
+        .social-links a:hover { color: var(--accent); }
 
         @media (max-width: 768px) {
-            body {
-                background-attachment: scroll;
-            }
-            header {
-                padding: 1rem;
-            }
-            .title-stack {
-                display: none;
-            }
-            .short-title {
-                display: block;
-            }
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-            .logo h1::after {
-                content: '';
-                display: block;
-                width: 50%;
-                height: 2px;
-                background: var(--accent);
-                margin: 0.2rem 0;
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            #mainNav {
+            header { padding: 1rem; }
+            .title-stack { display: none; }
+            .short-title { display: block; }
+            .mobile-menu-btn { display: block; }
+            nav#mainNav {
                 display: none;
                 position: absolute;
                 top: 100%;
@@ -635,52 +454,17 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                 background: var(--secondary);
                 padding: 1rem;
             }
-            #mainNav.active {
-                display: block;
-            }
-            nav ul {
-                flex-direction: column;
-                gap: 1.2rem;
-            }
-            nav a {
-                padding: 0;
-            }
-            nav a::after {
-                content: none;
-            }
-            nav a:hover::after {
-                width: 0;
-            }
-            .auth-buttons {
-                display: none;
-            }
-            .hero {
-                min-height: 50vh;
-                padding: 2rem;
-            }
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            .features {
-                padding: 2rem;
-            }
-            .feature-card {
-                padding: 1.5rem;
-            }
-            .debate-preview {
-                flex-direction: column;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .mobile-menu-btn {
-                display: none;
-            }
+            nav#mainNav.active { display: block; }
+            nav ul { flex-direction: column; gap: 1.2rem; }
+            .auth-buttons { display: none; }
+            .hero { min-height: 50vh; padding: 2rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .features { padding: 2rem; }
         }
 
         @keyframes eternalGlow {
             0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7), 0 0 40px rgba(255, 202, 40, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
         }
 
         @keyframes pulseGlow {
@@ -689,50 +473,51 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
         }
 
         @keyframes floatEternal {
-            0%, 100% { transform: translateY(0) rotate(2deg); }
-            50% { transform: translateY(-15px) rotate(-2deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
     </style>
 </head>
 <body>
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
-            <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
+            <h3>Eternal Seekers</h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
-        <ul>
-            <li class="profile-preview">
+        <div>
+            <div class="profile-preview">
                 <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar" width="40" height="40">
                 <div>
                     <a href="pages/profiles.html#ImmortalAl">ImmortalAl</a>
                     <span class="online-dot" aria-label="Online status"></span>
                     <p class="status">Defending free speech</p>
                 </div>
-            </li>
-            <li class="profile-preview">
+            </div>
+            <div class="profile-preview">
                 <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar" width="40" height="40">
                 <div>
                     <a href="pages/profiles.html#FreeSoul">FreeSoul</a>
                     <span class="online-dot" aria-label="Online status"></span>
                     <p class="status">Seeking eternal liberty</p>
                 </div>
-            </li>
-            <li class="profile-preview">
+            </div>
+            <div class="profile-preview">
                 <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar" width="40" height="40">
                 <div>
                     <a href="pages/profiles.html#EternalVoice">EternalVoice</a>
+                    <span class="online-dot" aria-label="Online status"></span>
                     <p class="status">Echoing truth</p>
                 </div>
-            </li>
-            <li class="profile-preview">
+            </div>
+            <div class="profile-preview">
                 <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar" width="40" height="40">
                 <div>
                     <a href="pages/profiles.html#TruthSeeker">TruthSeeker</a>
                     <span class="online-dot" aria-label="Online status"></span>
                     <p class="status">Unveiling hidden narratives</p>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
     </aside>
 
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
@@ -742,7 +527,10 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
         <div class="logo">
             <i class="fas fa-infinity" aria-hidden="true"></i>
             <h1 class="eternal">
-                <span class="title-stack"><span class="title-top">Manifest Liberation</span><span class="title-bottom">Naturally Free</span></span>
+                <span class="title-stack">
+                    <span>Manifest Liberation</span>
+                    <span>Naturally Free</span>
+                </span>
                 <span class="short-title">MLNF</span>
             </h1>
         </div>
@@ -776,7 +564,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
 
         <div class="censorship-warning" role="alert">
             <i class="fas fa-exclamation-triangle"></i>
-            <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control. Enter only if you seek to transcend the fleeting illusions of the mortal world.</p>
+            <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control.</p>
         </div>
 
         <section class="features" id="features">
@@ -789,43 +577,43 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                     <i class="fas fa-user-secret"></i>
                     <h3>Eternal Souls</h3>
                     <p>Whisper truths through timeless channels, forever free. Connect privately with kindred spirits.</p>
-                    <a href="pages/profiles.html" class="launch-btn">Find Souls</a>
+                    <a href="pages/profiles.html" class="btn btn-primary">Find Souls</a>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-scroll"></i>
                     <h3>Soul Scrolls</h3>
-                    <p>Inscribe your essence for eternity, preserved beyond decay. Share your thoughts and read others’.</p>
-                    <a href="pages/blog.html" class="launch-btn">Write Now</a>
+                    <p>Inscribe your essence for eternity, preserved beyond decay. Share your thoughts and read others'.</p>
+                    <a href="pages/blog.html" class="btn btn-primary">Write Now</a>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-comments"></i>
                     <h3>Echoes Unbound</h3>
                     <p>Thread your thoughts into the eternal tapestry of our wisdom. Post and discuss freely.</p>
-                    <a href="pages/messageboard.html" class="launch-btn">Start Thread</a>
+                    <a href="pages/messageboard.html" class="btn btn-primary">Start Thread</a>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-newspaper"></i>
                     <h3>Boundless Chronicles</h3>
-                    <p>Our collective immortalizes truths beyond the reach of transient lies. Submit your stories and uncover hidden narratives.</p>
-                    <a href="pages/news.html" class="launch-btn">Explore News</a>
+                    <p>Our collective immortalizes truths beyond the reach of transient lies. Submit your stories.</p>
+                    <a href="pages/news.html" class="btn btn-primary">Explore News</a>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-gavel"></i>
                     <h3>Clash of Immortals</h3>
                     <p>Discourse unbound by mortal limits—let truth reign everlasting. Engage in timeless debates.</p>
-                    <a href="pages/debate.html" class="launch-btn">Enter Arena</a>
+                    <a href="pages/debate.html" class="btn btn-primary">Enter Arena</a>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-project-diagram"></i>
                     <h3>Infinite Nexus</h3>
-                    <p>Weave connections that span beyond time in our living tapestry. Contribute to the collective mindmap.</p>
-                    <a href="pages/mindmap.html" class="launch-btn">Join the Map</a>
+                    <p>Weave connections that span beyond time in our living tapestry. Contribute to the mindmap.</p>
+                    <a href="pages/mindmap.html" class="btn btn-primary">Join the Map</a>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-vault"></i>
                     <h3>Timeless Vault</h3>
-                    <p>Safeguard visions in our boundless archive, immune to erasure. Upload and preserve your videos.</p>
-                    <a href="pages/archive.html" class="launch-btn">Access Vault</a>
+                    <p>Safeguard visions in our boundless archive, immune to erasure. Upload and preserve videos.</p>
+                    <a href="pages/archive.html" class="btn btn-primary">Access Vault</a>
                 </div>
             </div>
 
@@ -842,7 +630,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                     <h4>FreeSoul</h4>
                     <p>Advocate for timeless liberty and defiance.</p>
                 </div>
-                <a href="pages/profiles.html" class="btn btn-primary" style="margin-top: 1rem;">Meet More Souls</a>
+                <a href="pages/profiles.html" class="btn btn-primary">Meet More Souls</a>
             </div>
 
             <div class="section-title" id="blog">
@@ -860,7 +648,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                     <p>A personal journey through a censored world.</p>
                     <p class="author">— EternalVoice</p>
                 </div>
-                <a href="pages/blog.html" class="btn btn-primary" style="margin-top: 1rem;">Explore Blogs</a>
+                <a href="pages/blog.html" class="btn btn-primary">Explore Blogs</a>
             </div>
 
             <div class="section-title" id="messageboard">
@@ -878,7 +666,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                     <p>"Can we crowdsource our way to freedom?"</p>
                     <p class="author">— TruthSeeker (8 replies)</p>
                 </div>
-                <a href="pages/messageboard.html" class="btn btn-primary" style="margin-top: 1rem;">Join the Discussion</a>
+                <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
             </div>
 
             <div class="section-title" id="news">
@@ -888,7 +676,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
             <div class="highlight-section">
                 <div class="highlight-item">
                     <h4>Unveiled: The Hidden War on Free Thought</h4>
-                    <p>A deep dive into the censorship mechanisms of 2025, exposing the unseen hands.</p>
+                    <p>A deep dive into the censorship mechanisms of 2025.</p>
                     <p class="author">— ImmortalAl</p>
                 </div>
                 <div class="highlight-item">
@@ -896,7 +684,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                     <p>Breaking news on the resistance against digital tyranny.</p>
                     <p class="author">— TruthSeeker</p>
                 </div>
-                <a href="pages/news.html" class="btn btn-primary" style="margin-top: 1rem;">Read More Stories</a>
+                <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
             </div>
 
             <div class="section-title" id="debate">
@@ -924,7 +712,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                         </div>
                     </div>
                 </div>
-                <a href="pages/debate.html" class="btn btn-primary" style="margin-top: 1.5rem;">Join the Discourse</a>
+                <a href="pages/debate.html" class="btn btn-primary">Join the Discourse</a>
             </div>
 
             <div class="section-title" id="mindmap">
@@ -942,7 +730,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                 <div class="mindmap-line line-3"></div>
                 <div class="mindmap-line line-4"></div>
             </div>
-            <a href="pages/mindmap.html" class="btn btn-primary" style="display: block; text-align: center; margin: 1rem auto;">Expand the Nexus</a>
+            <a href="pages/mindmap.html" class="btn btn-primary">Expand the Nexus</a>
 
             <div class="section-title" id="archive">
                 <h2>Timeless Vault</h2>
@@ -959,7 +747,7 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
                     <p>Raw footage from the April 2025 protests.</p>
                     <p class="author">— EternalVoice</p>
                 </div>
-                <a href="pages/archive.html" class="btn btn-primary" style="margin-top: 1rem;">Watch More</a>
+                <a href="pages/archive.html" class="btn btn-primary">Watch More</a>
             </div>
         </section>
     </main>
@@ -974,84 +762,48 @@ Purpose: An immortal refuge empowering free-thinkers to manifest truth and freed
     </footer>
 
     <script>
-        const themeToggle = document.getElementById('themeToggle');
+        const $ = (id) => document.getElementById(id);
+        const toggleClass = (el, className) => el.classList.toggle(className);
+
+        // Theme Toggle
+        const themeToggle = $('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
-        
-        function updateTheme() {
-            const isLight = document.body.classList.toggle('light-theme');
-            themeIcon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+        themeToggle.addEventListener('click', () => {
+            const isLight = toggleClass(document.body, 'light-theme');
+            themeIcon.className = `fas fa-${isLight ? 'sun' : 'moon'}`;
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        }
-
-        themeToggle.addEventListener('click', updateTheme);
-
+        });
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-theme');
             themeIcon.className = 'fas fa-sun';
         }
 
-        const mobileMenu = document.getElementById('mobileMenuBtn');
-        const mainNav = document.getElementById('mainNav');
-
-        function toggleMenu() {
-            const isExpanded = mainNav.classList.toggle('active');
-            mobileMenu.setAttribute('aria-expanded', isExpanded);
-            document.body.style.overflow = isExpanded ? 'hidden' : '';
-        }
-
-        mobileMenu.addEventListener('click', toggleMenu);
-
-        document.querySelectorAll('#mainNav a').forEach(link => {
-            link.addEventListener('click', () => {
-                mainNav.classList.remove('active');
-                mobileMenu.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = '';
-            });
+        // Mobile Menu
+        const mobileMenu = $('mobileMenuBtn');
+        const mainNav = $('mainNav');
+        mobileMenu.addEventListener('click', () => {
+            const isActive = toggleClass(mainNav, 'active');
+            mobileMenu.setAttribute('aria-expanded', isActive);
+            document.body.style.overflow = isActive ? 'hidden' : '';
         });
 
-const activeUsers = document.getElementById('activeUsers');
-const showUsersBtn = document.getElementById('showUsersBtn');
-const closeUsersBtn = document.getElementById('closeUsers');
+        // Sidebar
+        const activeUsers = $('activeUsers');
+        $('showUsersBtn').addEventListener('click', () => toggleClass(activeUsers, 'active'));
+        $('closeUsers').addEventListener('click', () => toggleClass(activeUsers, 'active'));
 
-function toggleSidebar() {
-    activeUsers.classList.toggle('active');
-}
-
-showUsersBtn.addEventListener('click', toggleSidebar);
-closeUsersBtn.addEventListener('click', toggleSidebar);
-
-        document.querySelectorAll('.debate-actions button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                if (button.classList.contains('voted')) {
+        // Debate Voting
+        document.querySelectorAll('.debate-actions button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (btn.classList.contains('voted')) {
                     e.preventDefault();
-                    button.setAttribute('aria-disabled', 'true');
                     return;
                 }
-                
-                const voteCount = button.nextElementSibling;
-                const currentCount = parseInt(voteCount.textContent);
-                voteCount.textContent = `${currentCount + 1} Votes`;
-                button.classList.add('voted');
-                button.setAttribute('aria-disabled', 'true');
-            });
-        });
-
-        document.querySelectorAll('.mindmap-node').forEach(node => {
-            node.addEventListener('click', () => {
-                const concept = node.textContent;
-                alert(`Exploring ${concept} in the Eternal Nexus...`);
-            });
-        });
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                const voteCount = btn.nextElementSibling;
+                voteCount.textContent = `${parseInt(voteCount.textContent) + 1} Votes`;
+                btn.classList.add('voted');
             });
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92b069d6be93bf69',t:'MTc0Mzc2NTU5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
