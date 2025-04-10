@@ -116,6 +116,9 @@
       message.textContent = '';
     });
 
+const API_BASE_URL = 'https://your-backend-url.com'; // Replace later
+fetch(`${API_BASE_URL}/api/login`, { ... });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const username = document.getElementById('username').value;
