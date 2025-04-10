@@ -10,11 +10,8 @@
     <meta property="og:image" content="https://yourdomain.com/social-cover.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <title>Manifest Liberation, Naturally Free</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.0/dist/ethers.umd.min.js"></script>    
-<script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/bip39.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@ethersproject/wallet@5.7.0/dist/wallet.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+    <link rel="preconnect" href="https://mlnf-auth.onrender.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -31,6 +28,7 @@
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             --border-radius: 12px;
+	--header-height: 70px; /* Default value, overridden by JavaScript */
         }
 
         * {
@@ -41,8 +39,7 @@
         }
 
         body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
@@ -57,6 +54,11 @@
             --accent: #e63950;
             background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
         }
+
+main {
+    position: relative;
+    z-index: 1; /* Very low to stay below sidebar */
+}
 
         .btn {
             padding: 0.6rem 1.2rem;
@@ -174,6 +176,7 @@
             font-weight: 600;
             position: relative;
             transition: var(--transition);
+            scroll-behavior: smooth;
         }
 
         nav a::after {
@@ -225,6 +228,8 @@
 
         .features {
             padding: 5rem 2rem;
+position: relative;
+    z-index: 1; /* Ensure section stays low */
         }
 
         .section-title {
@@ -266,11 +271,13 @@
             transition: var(--transition);
             border-left: 5px solid var(--accent);
             position: relative;
+	z-index: 2
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow);
+	z-index: 3;
         }
 
         .feature-card i {
@@ -305,6 +312,7 @@
             position: relative;
             margin: 3rem 0;
             border: 1px solid rgba(255, 94, 120, 0.4);
+	z-index: 2;
         }
 
         .mindmap-node {
@@ -315,11 +323,13 @@
             border-radius: var(--border-radius);
             transition: var(--transition);
             animation: floatEternal 4s ease-in-out infinite;
+	z-index: 3;
         }
 
         .mindmap-node:hover {
             transform: scale(1.1);
             animation-play-state: paused;
+	z-index: 4;
         }
 
         .main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -356,13 +366,13 @@
         .active-users {
             position: fixed;
             right: -300px;
-            top: 70px;
+            top: var(--header-height);
             width: 300px;
-            height: calc(100% - 70px);
+            height: calc(100vh - var(--header-height));
             background: var(--gradient-secondary);
             padding: 1.5rem;
             transition: right 0.3s ease;
-            z-index: 200;
+            z-index: 2147483647;
             box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
             border-left: 3px solid var(--accent);
         }
@@ -413,6 +423,7 @@
         .profile-preview img {
             border-radius: 50%;
             border: 2px solid var(--accent);
+            loading: lazy;
         }
 
         .profile-preview a {
@@ -486,23 +497,6 @@
             z-index: 10000;
         }
 
-        .modal-content {
-            background: var(--gradient-secondary);
-            padding: 2rem;
-            max-width: 500px;
-            margin: 2rem auto;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-        }
-
-        .identity-card {
-            background: rgba(255,94,120,0.1);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-left: 3px solid var(--accent);
-            border-radius: var(--border-radius);
-        }
-
         .auth-modal {
             background: var(--gradient-secondary);
             padding: 2rem;
@@ -519,6 +513,7 @@
             color: var(--accent);
         }
 
+        .auth-modal input[type="text"],
         .auth-modal input[type="password"] {
             width: 100%;
             padding: 0.8rem;
@@ -615,39 +610,23 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
         }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
 <body>
-    <!-- Identity Modal -->
-    <div id="identityModal" class="modal">
-        <div class="modal-content">
-            <h3>Eternal Identity Forge</h3>
-            <div id="identityList"></div>
-            <button class="btn btn-primary" onclick="createNewIdentity()">
-                <i class="fas fa-hammer"></i> Forge New
-            </button>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="auth-modal">
+            <h3 id="authModalTitle">Enter Your Credentials</h3>
+            <input type="text" id="authUsername" placeholder="Username" required aria-label="Username">
+            <input type="password" id="authPassword" autocomplete="current-password" placeholder="Password" required aria-label="Password">
+            <div class="modal-actions">
+                <button type="submit" id="authSubmit" class="btn btn-primary">Unshackle</button>
+                <button type="button" id="authCancel" class="btn btn-outline">Cancel</button>
+            </div>
         </div>
     </div>
 
-    <!-- Auth Modal -->
-<div id="authModal" class="modal" style="display: none;">
-  <div class="auth-modal">
-    <h3 id="authModalTitle">Enter Your Credentials</h3>
-    <input type="text" id="authUsername" placeholder="Username" required>
-    <input type="password" id="authPassword" autocomplete="current-password" placeholder="Password" required>
-    <div class="modal-actions">
-      <button type="submit" id="authSubmit" class="btn btn-primary">Unshackle</button>
-      <button type="button" id="authCancel" class="btn btn-outline">Cancel</button>
-    </div>
-  </div>
-</div>
-
+    <!-- Active Users Sidebar -->
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3>Eternal Seekers</h3>
@@ -671,7 +650,7 @@
                 </div>
             </div>
             <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar" width="40, height=40">
+                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar" width="40" height="40">
                 <div>
                     <a href="pages/profiles.html#EternalVoice">EternalVoice</a>
                     <span class="online-dot" aria-label="Online status"></span>
@@ -721,9 +700,7 @@
                 <span class="btn-text">Free Your Soul</span>
                 <div class="soul-status" aria-hidden="true"></div>
             </button>
-            <button class="btn btn-outline" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+          
         </div>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
     </header>
@@ -732,10 +709,10 @@
         <section class="hero" aria-labelledby="mainHeading">
             <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
             <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
-            <<div class="hero-buttons">
-  <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
-  <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
-</div>
+            <div class="hero-buttons">
+                <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
+                <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
+            </div>
         </section>
 
         <div class="censorship-warning" role="alert">
@@ -966,6 +943,7 @@
         document.addEventListener('click', (e) => {
             if (!mainNav.contains(e.target) && !mobileMenu.contains(e.target)) {
                 mainNav.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
 
@@ -987,309 +965,116 @@
             });
         });
 
-        // Logout Functionality
-$('logoutBtn').addEventListener('click', () => authFlow.lockSoul());
+        // Authentication Flow
+        const authFlow = {
+    async initialize() {
+        this.checkAuthState();
+        $('freeSoulBtn').addEventListener('click', () => this.handleAuthFlow());
+    },
 
-        // ====================
-        // AUTHENTICATION FLOW
-        // ====================
-       const authFlow = {
-  async initialize() {
-    this.checkAuthState();
-    $('freeSoulBtn').addEventListener('click', () => this.handleAuthFlow());
-    // Optional: Auto-lock after 1 hour (3600000 ms)
-    setInterval(() => {
-      if (localStorage.getItem('sessionToken')) {
-        this.lockSoul();
-      }
-    }, 3600000);
-  },
-
-  async handleAuthFlow() {
-    const btn = $('freeSoulBtn');
-    if (btn.dataset.state === 'locked') {
-      await this.authenticate();
-    } else {
-      await this.lockSoul();
-    }
-  },
-
-  async authenticate() {
-    const btn = $('freeSoulBtn');
-    btn.classList.add('loading');
-
-    try {
-      const credentials = await this.showPasswordModal('Enter Your Credentials');
-      if (!credentials) {
-        throw new Error('Authentication cancelled');
-      }
-
-      const { username, password } = credentials;
-
-      const response = await fetch('https://mlnf-auth.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Authentication failed');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('sessionToken', data.token);
-      this.setAuthState(true);
-      createSoulParticles();
-    } catch (error) {
-      this.showAuthError(error.message);
-    } finally {
-      btn.classList.remove('loading');
-    }
-  },
-
-  async lockSoul() {
-    localStorage.removeItem('sessionToken');
-    this.setAuthState(false);
-  },
-
-  setAuthState(authenticated) {
-    const btn = $('freeSoulBtn');
-    btn.dataset.state = authenticated ? 'unlocked' : 'locked';
-    btn.querySelector('.fa').className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
-    btn.querySelector('.btn-text').textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
-  },
-
-  checkAuthState() {
-    const sessionToken = localStorage.getItem('sessionToken');
-    if (sessionToken) {
-      this.setAuthState(true);
-    } else {
-      this.setAuthState(false);
-    }
-  },
-
-  async showPasswordModal(title) {
-    return new Promise((resolve) => {
-      const modal = $('authModal');
-      $('authModalTitle').textContent = title;
-      $('authUsername').value = '';
-      $('authPassword').value = '';
-      modal.style.display = 'block';
-
-      const handleSubmit = () => {
-        const username = $('authUsername').value.trim();
-        const password = $('authPassword').value.trim();
-        if (username && password) {
-          modal.style.display = 'none';
-          resolve({ username, password });
+    async handleAuthFlow() {
+        const btn = $('freeSoulBtn');
+        if (btn.dataset.state === 'locked') {
+            await this.authenticate();
+        } else {
+            await this.lockSoul();
         }
-      };
+    },
 
-      const handleCancel = () => {
-        modal.style.display = 'none';
-        resolve(null);
-      };
+    async authenticate() {
+        const btn = $('freeSoulBtn');
+        btn.classList.add('loading');
+        try {
+            const credentials = await this.showAuthModal();
+            if (!credentials) throw new Error('Authentication cancelled');
+            const { username, password } = credentials;
+            const response = await fetch('https://mlnf-auth.onrender.com/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Authentication failed');
+            }
+            const data = await response.json();
+            localStorage.setItem('sessionToken', data.token);
+            this.setAuthState(true);
+            this.createSoulParticles();
+        } catch (error) {
+            alert(`Authentication failed: ${error.message}`);
+        } finally {
+            btn.classList.remove('loading');
+        }
+    },
 
-      $('authSubmit').onclick = handleSubmit;
-      $('authCancel').onclick = handleCancel;
-      $('authPassword').onkeydown = (e) => {
-        if (e.key === 'Enter') handleSubmit();
-      };
-    });
-  },
+    async lockSoul() {
+        localStorage.removeItem('sessionToken');
+        this.setAuthState(false);
+    },
 
-  showAuthError(message) {
-    alert(`Authentication failed: ${message}`);
-  },
+    setAuthState(authenticated) {
+        const btn = $('freeSoulBtn');
+        btn.dataset.state = authenticated ? 'unlocked' : 'locked';
+        btn.querySelector('.fa').className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
+        btn.querySelector('.btn-text').textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
+    },
+
+    checkAuthState() {
+        const sessionToken = localStorage.getItem('sessionToken');
+        this.setAuthState(!!sessionToken);
+    },
+
+    async showAuthModal() {
+        return new Promise((resolve) => {
+            const modal = $('authModal');
+            modal.style.display = 'block';
+            $('authSubmit').onclick = () => {
+                const username = $('authUsername').value.trim();
+                const password = $('authPassword').value.trim();
+                if (username && password) {
+                    modal.style.display = 'none';
+                    resolve({ username, password });
+                }
+            };
+            $('authCancel').onclick = () => {
+                modal.style.display = 'none';
+                resolve(null);
+            };
+        });
+    },
+
+    createSoulParticles() {
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'soul-particle';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 2000);
+        }
+    }
 };
 
-        const authAttempts = {
-            count: 0,
-            lastAttempt: 0,
-            
-            check() {
-                if(Date.now() - this.lastAttempt < 5000) {
-                    throw new Error('Resist hastiness. Meditate before trying again');
-                }
-                if(this.count > 3) {
-                    const delay = Math.pow(2, this.count) * 1000;
-                    throw new Error(`Contemplate existence for ${delay/1000} seconds`);
-                }
-            },
-            
-            record() {
-                this.count++;
-                this.lastAttempt = Date.now();
-            },
-            
-            reset() {
-                this.count = 0;
-                this.lastAttempt = 0;
-            }
-        };
+authFlow.initialize();
 
-        function createSoulParticles() {
-            const particles = new Array(20).fill().map(() => {
-                const particle = document.createElement('div');
-                particle.className = 'soul-particle';
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 2 + 1}s`;
-                return particle;
-            });
-            
-            particles.forEach(p => {
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 2000);
-            });
-        }
-
-        const identityStorage = {
-            getIdentities() {
-                return JSON.parse(localStorage.getItem('eternalIdentities') || '[]');
-            },
-            
-            async addIdentity(identity) {
-                const identities = this.getIdentities();
-                identities.push(identity);
-                localStorage.setItem('eternalIdentities', JSON.stringify(identities));
-            },
-
-            async signProfile(profile, derivationPath) {
-                const encryptedSeed = localStorage.getItem('encryptedSeed');
-                if(!encryptedSeed) throw new Error('No eternal code found');
-                
-                const password = await authFlow.showPasswordModal('Enter your encryption key:');
-                if (!password) throw new Error('Authentication cancelled');
-                
-                const seed = CryptoJS.AES.decrypt(encryptedSeed, password).toString(CryptoJS.enc.Utf8);
-                if(!bip39.validateMnemonic(seed)) throw new Error('Invalid eternal code');
-                
-                const wallet = await deriveKey(seed, derivationPath);
-                const signature = await wallet.signMessage(JSON.stringify(profile));
-                
-                return {
-                    ...profile,
-                    signature,
-                    address: wallet.address,
-                    derivationPath,
-                    timestamp: Date.now()
-                };
-            }
-        };
-
-        async function deriveKey(seed, path) {
-            const { ethers } = window;
-            const node = ethers.utils.HDNode.fromMnemonic(seed).derivePath(path);
-            return new ethers.Wallet(node.privateKey);
-        }
-
-        async function createNewIdentity() {
-            try {
-                const name = prompt('Enter new identity name:');
-                if (!name) return;
-                
-                const cryptoIndex = crypto.getRandomValues(new Uint32Array(1))[0] % 1000;
-                const path = `m/44'/60'/0'/0/${cryptoIndex}`;
-                const emojis = ['👤', '👻', '🦉', '🦊', '🐺', '🦅', '🦉', '🦇'];
-                const colors = ['#ff5e78', '#2a4066', '#5cb85c', '#ffca28', '#e63950', '#1a1a33'];
-                
-                const profile = {
-                    name,
-                    avatar: {
-                        emoji: emojis[Math.floor(Math.random() * emojis.length)],
-                        color: colors[Math.floor(Math.random() * colors.length)]
-                    }
-                };
-                
-                const signedProfile = await identityStorage.signProfile(profile, path);
-                await identityStorage.addIdentity(signedProfile);
-                
-                localStorage.setItem('currentIdentity', JSON.stringify(signedProfile));
-                updateIdentityDisplay();
-                renderIdentityList();
-                
-                alert(`Identity "${name}" forged successfully!`);
-            } catch (error) {
-                console.error('Error creating identity:', error);
-                alert('Failed to create identity: ' + error.message);
-            }
-        }
-
-        function switchIdentity(derivationPath) {
-            const identities = identityStorage.getIdentities();
-            const identity = identities.find(id => id.derivationPath === derivationPath);
-            
-            if (identity) {
-                localStorage.setItem('currentIdentity', JSON.stringify(identity));
-                updateIdentityDisplay();
-                alert(`Assumed identity: ${identity.name}`);
-            } else {
-                alert('Identity not found');
-            }
-        }
-
-        function updateIdentityDisplay() {
-            const currentIdentity = JSON.parse(localStorage.getItem('currentIdentity'));
-            const avatarElement = document.getElementById('currentAvatar');
-            
-            if (currentIdentity) {
-                avatarElement.innerHTML = currentIdentity.avatar.emoji;
-                avatarElement.style.backgroundColor = currentIdentity.avatar.color;
-            } else {
-                avatarElement.innerHTML = '👤';
-                avatarElement.style.backgroundColor = 'rgba(255,94,120,0.2)';
-            }
-        }
-
-        function renderIdentityList() {
-            const identities = identityStorage.getIdentities();
-            const list = document.getElementById('identityList');
-            
-            list.innerHTML = identities.map(identity => `
-                <div class="identity-card">
-                    <h4>${identity.name}</h4>
-                    <p>${identity.address}</p>
-                    <button onclick="switchIdentity('${identity.derivationPath}')" 
-                            class="btn btn-outline">
-                        Assume Form
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        document.getElementById('manageIdentity')?.addEventListener('click', () => {
-            document.getElementById('identityModal').style.display = 'block';
-            renderIdentityList();
-        });
-
-        window.addEventListener('click', (event) => {
-            const modal = document.getElementById('identityModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-
-        document.getElementById('toggleVeil')?.addEventListener('click', () => {
-            const identities = identityStorage.getIdentities();
-            if (identities.length === 0) {
-                alert('No identities found. Please create one first.');
-                return;
-            }
-            
-            const currentIdentity = JSON.parse(localStorage.getItem('currentIdentity'));
-            const currentIndex = identities.findIndex(id => id.derivationPath === currentIdentity?.derivationPath);
-            const nextIndex = (currentIndex + 1) % identities.length;
-            
-            localStorage.setItem('currentIdentity', JSON.stringify(identities[nextIndex]));
-            updateIdentityDisplay();
-            alert(`Shifted to identity: ${identities[nextIndex].name}`);
-        });
-
-        updateIdentityDisplay();
         authFlow.initialize();
+// Select the header and sidebar elements
+const header = document.querySelector('header');
+const sidebar = document.getElementById('activeUsers');
+
+// Function to update the header height CSS variable
+function updateHeaderHeight() {
+    const headerHeight = header.offsetHeight;
+    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+}
+
+// Initial update
+updateHeaderHeight();
+
+// Update on window resize
+window.addEventListener('resize', updateHeaderHeight);
     </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92dab9a51fda53a9',t:'MTc0NDIwOTI2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
