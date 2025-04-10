@@ -4,78 +4,115 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auth - Manifest Liberation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
+    :root {
+      --primary: #0d0d1a;
+      --secondary: #1a1a33;
+      --accent: #ff5e78;
+      --text: #f0e6ff;
+      --gradient-accent: linear-gradient(45deg, var(--accent), #ffca28);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      --border-radius: 12px;
+    }
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Arial', sans-serif;
-      background: #0a0a23;
-      color: #e0e0e0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    body {
+      background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)),
+                  url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
     }
     .container {
-      background: rgba(255, 255, 255, 0.05);
+      background: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
       width: 100%;
       max-width: 400px;
+      border: 1px solid rgba(255, 94, 120, 0.4);
     }
     h1 {
       text-align: center;
-      color: #00ffff;
       margin-bottom: 1.5rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
     label {
       display: block;
       margin-bottom: 0.5rem;
-      color: #b0b0b0;
+      color: var(--text);
     }
     input {
       width: 100%;
-      padding: 0.5rem;
-      border: none;
-      border-radius: 5px;
-      background: #1a1a3d;
-      color: #e0e0e0;
+      padding: 0.8rem;
+      border: 1px solid var(--accent);
+      border-radius: var(--border-radius);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
       font-size: 1rem;
     }
     button {
       width: 100%;
       padding: 0.75rem;
       border: none;
-      border-radius: 5px;
-      background: #00ffff;
-      color: #0a0a23;
+      border-radius: var(--border-radius);
+      background: var(--gradient-accent);
+      color: var(--primary);
       font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: var(--transition);
     }
     button:hover {
-      background: #00cccc;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
     }
     .toggle {
       text-align: center;
       margin-top: 1rem;
-      color: #b0b0b0;
     }
     .toggle a {
-      color: #00ffff;
+      color: var(--accent);
       text-decoration: none;
+      font-weight: 600;
+    }
+    .toggle a:hover {
+      color: #ffca28;
     }
     .message {
       text-align: center;
       margin-top: 1rem;
-      color: #00ff00;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
     }
-    .error {
-      color: #ff3333;
+    .message.success {
+      background: rgba(92, 184, 92, 0.2);
+      color: #5cb85c;
+    }
+    .message.error {
+      background: rgba(255, 68, 68, 0.2);
+      color: #ff4444;
+    }
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+        margin: 1rem;
+      }
     }
   </style>
 </head>
@@ -100,16 +137,30 @@
   </div>
 
   <script>
-    const form = document.getElementById('auth-form');
-    const title = document.getElementById('form-title');
-    const button = document.getElementById('submit-btn');
-    const toggleLink = document.getElementById('toggle-link');
-    const message = document.getElementById('message');
+    const $ = (id) => document.getElementById(id);
+    const form = $('auth-form');
+    const title = $('form-title');
+    const button = $('submit-btn');
+    const toggleLink = $('toggle-link');
+    const message = $('message');
     let isSignup = true;
 
-    const API_BASE_URL = window.location.hostname === 'localhost' 
-      ? 'http://localhost:3001' 
-      : 'https://mlnf-auth.onrender.com';
+    const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+
+    // Handle mode from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    if (mode === 'signup') {
+      isSignup = true;
+      title.textContent = 'Sign Up';
+      button.textContent = 'Sign Up';
+      toggleLink.textContent = 'Log In';
+    } else if (mode === 'login') {
+      isSignup = false;
+      title.textContent = 'Log In';
+      button.textContent = 'Log In';
+      toggleLink.textContent = 'Sign Up';
+    }
 
     toggleLink.addEventListener('click', (e) => {
       e.preventDefault();
@@ -122,31 +173,23 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+      const username = $('username').value;
+      const password = $('password').value;
       const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
 
       try {
-        const token = localStorage.getItem('token') || '';
-        const headers = {
-          'Content-Type': 'application/json'
-        };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
-          headers: headers,
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password }),
-          credentials: 'include'
+          credentials: 'include',
         });
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.error || 'Something went wrong');
 
-        localStorage.setItem('token', data.token);
-        message.className = 'message';
+        localStorage.setItem('sessionToken', data.token); // Consistent with index.html
+        message.className = 'message success';
         message.textContent = data.message || (isSignup ? 'Registration successful!' : 'Login successful!');
         form.reset();
 
