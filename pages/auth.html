@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth - Manifest Liberation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: #0a0a23;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #b0b0b0;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      background: #1a1a3d;
+      color: #e0e0e0;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 5px;
+      background: #00ffff;
+      color: #0a0a23;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #00cccc;
+    }
+    .toggle {
+      text-align: center;
+      margin-top: 1rem;
+      color: #b0b0b0;
+    }
+    .toggle a {
+      color: #00ffff;
+      text-decoration: none;
+    }
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      color: #00ff00;
+    }
+    .error {
+      color: #ff3333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="form-title">Sign Up</h1>
+    <form id="auth-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" id="submit-btn">Sign Up</button>
+    </form>
+    <div class="toggle">
+      Already have an account? <a href="#" id="toggle-link">Log In</a>
+    </div>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('auth-form');
+    const title = document.getElementById('form-title');
+    const button = document.getElementById('submit-btn');
+    const toggleLink = document.getElementById('toggle-link');
+    const message = document.getElementById('message');
+    let isSignup = true;
+
+    toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      isSignup = !isSignup;
+      title.textContent = isSignup ? 'Sign Up' : 'Log In';
+      button.textContent = isSignup ? 'Sign Up' : 'Log In';
+      toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
+      message.textContent = '';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
+      
+      try {
+        const response = await fetch('http://localhost:3001' + endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error || 'Something went wrong');
+        
+        localStorage.setItem('token', data.token);
+        message.className = 'message';
+        message.textContent = data.message;
+        form.reset();
+        // Redirect or update UI here (e.g., to profile-setup.html)
+        setTimeout(() => window.location.href = '../pages/profile-setup.html', 1000);
+      } catch (error) {
+        message.className = 'message error';
+        message.textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>

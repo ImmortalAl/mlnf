@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Soul - Profile Setup</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #bb86fc;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #bb86fc;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #bb86fc;
+            color: #121212;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a370d8;
+        }
+        .profile-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #2d2d2d;
+            border-radius: 4px;
+            display: none;
+        }
+        .info-item {
+            margin-bottom: 1rem;
+        }
+        .info-label {
+            color: #bb86fc;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        .info-value {
+            background-color: #3d3d3d;
+            padding: 0.5rem;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .error-message {
+            color: #ff7597;
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Eternal Soul Setup</h1>
+        <div id="errorMessage" class="error-message">No seed found. Please complete the authentication process first.</div>
+        <div class="form-group">
+            <label for="encryptionKey">Encryption Key</label>
+            <input type="password" id="encryptionKey" placeholder="Enter the same Encryption Key used during signup" required>
+        </div>
+        <button id="recoverBtn">Manifest Profile</button>
+        
+        <div id="profileInfo" class="profile-info">
+            <div class="info-item">
+                <div class="info-label">Soul Name:</div>
+                <div id="soulNameDisplay" class="info-value"></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Recovered Seed:</div>
+                <div id="seedDisplay" class="info-value"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we have an encrypted seed in localStorage
+            const encryptedSeed = localStorage.getItem('encryptedSeed');
+            const soulName = localStorage.getItem('soulName');
+            
+            if (!encryptedSeed) {
+                // Instead of immediately redirecting, show an error message
+                document.getElementById('errorMessage').style.display = 'block';
+                // Add a delay before redirecting to allow the user to see the message
+                setTimeout(function() {
+                    window.location.href = '../index.html';
+                }, 3000);
+                return;
+            }
+            
+            document.getElementById('recoverBtn').addEventListener('click', function() {
+                const encryptionKey = document.getElementById('encryptionKey').value.trim();
+                
+                if (!encryptionKey) {
+                    alert('Please enter your encryption key');
+                    return;
+                }
+                
+                try {
+                    // Attempt to decrypt the seed
+                    const decryptedBytes = CryptoJS.AES.decrypt(encryptedSeed, encryptionKey);
+                    const decryptedSeed = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                    
+                    if (!decryptedSeed) {
+                        throw new Error('Decryption failed');
+                    }
+                    
+                    // Display the profile info
+                    document.getElementById('soulNameDisplay').textContent = soulName;
+                    document.getElementById('seedDisplay').textContent = decryptedSeed;
+                    document.getElementById('profileInfo').style.display = 'block';
+                    
+                } catch (error) {
+                    alert('Invalid encryption key or corrupted data');
+                    console.error('Decryption error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

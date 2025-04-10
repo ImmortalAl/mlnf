@@ -1,29 +1,59 @@
-// Theme Toggle
-document.getElementById('themeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3001' 
+        : 'https://api.mlnf.net';
 
-// Mobile Menu Toggle
-document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-    const nav = document.getElementById('mainNav');
-    nav.classList.toggle('active');
-});
+    // Registration Handler
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: document.getElementById('register-username').value,
+                    password: document.getElementById('register-password').value
+                }),
+                credentials: 'include'
+            });
 
-// Sidebar Toggle
-document.getElementById('showUsersBtn').addEventListener('click', () => {
-    document.getElementById('activeUsers').classList.add('active');
-});
-document.getElementById('closeUsers').addEventListener('click', () => {
-    document.getElementById('activeUsers').classList.remove('active');
-});
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                window.location.href = '/pages/profile-setup.html';
+            } else {
+                alert(data.error || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            alert('Network error - check console');
+        }
+    });
 
-// Smooth Scroll for Internal Links
-document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-        const targetId = anchor.getAttribute('href');
-        if (targetId.startsWith('#')) {
-            e.preventDefault();
-            document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+    // Login Handler
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: document.getElementById('login-username').value,
+                    password: document.getElementById('login-password').value
+                }),
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                window.location.href = '/pages/profiles.html';
+            } else {
+                alert(data.error || 'Invalid credentials');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Network error - check console');
         }
     });
 });

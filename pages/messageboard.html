@@ -1,442 +1,160 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Echoes Unbound: A timeless messageboard for liberated thoughts.">
-    <meta name="theme-color" content="#0d0d1a">
-    <title>Echoes Unbound - Manifest Liberation, Naturally Free</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #0d0d1a;
-            --secondary: #1a1a33;
-            --accent: #ff5e78;
-            --text: #f0e6ff;
-            --highlight: #2a4066;
-            --success: #5cb85c;
-            --warning: #ffca28;
-            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
-            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background: var(--gradient-secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo i {
-            color: var(--accent);
-            font-size: 2.2rem;
-            animation: pulseGlow 2s infinite;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        nav ul {
-            display: flex;
-            gap: 1.8rem;
-            list-style: none;
-        }
-
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 0;
-            transition: var(--transition);
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
-
-        main {
-            padding: 3rem 2rem;
-            flex: 1;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: eternalGlow 4s infinite ease-in-out;
-        }
-
-        .messageboard {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .post-form {
-            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            border: 2px solid var(--accent);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .post-form::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 94, 120, 0.2), transparent);
-            animation: starryPulse 8s infinite ease-in-out;
-            z-index: 0;
-        }
-
-        .post-form * {
-            position: relative;
-            z-index: 1;
-        }
-
-        .post-form h3 {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        .post-form textarea {
-            width: 100%;
-            min-height: 100px;
-            background: rgba(13, 13, 26, 0.8);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 1rem;
-            color: var(--text);
-            resize: vertical;
-            transition: var(--transition);
-        }
-
-        .post-form textarea:focus {
-            outline: none;
-            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
-        }
-
-        .post-form button {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: var(--transition);
-        }
-
-        .post-form button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 94, 120, 0.7);
-        }
-
-        .thread-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .thread {
-            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            transition: var(--transition);
-            border-left: 5px solid var(--accent);
-            position: relative;
-        }
-
-        .thread:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow);
-        }
-
-        .thread h3 {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .thread .content {
-            background: rgba(255, 94, 120, 0.1);
-            padding: 1rem;
-            border-left: 4px solid var(--accent);
-            border-radius: var(--border-radius);
-            max-height: 100px;
-            overflow-y: auto;
-        }
-
-        .thread .meta {
-            font-size: 0.9rem;
-            color: var(--success);
-            font-style: italic;
-            margin-top: 0.5rem;
-        }
-
-        .messageboard-sidebar {
-            position: fixed;
-            right: -300px;
-            top: 70px;
-            width: 300px;
-            height: calc(100% - 70px);
-            background: var(--gradient-secondary);
-            padding: 1.5rem;
-            transition: right 0.3s ease;
-            z-index: 200;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .messageboard-sidebar.active {
-            right: 0;
-        }
-
-        .messageboard-sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
-        }
-
-        .messageboard-sidebar h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .messageboard-sidebar ul {
-            list-style: none;
-            max-height: calc(100% - 100px);
-            overflow-y: auto;
-        }
-
-        .messageboard-sidebar li {
-            padding: 0.8rem 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .messageboard-sidebar li:hover {
-            background: rgba(255, 94, 120, 0.1);
-            color: var(--accent);
-        }
-
-        .online-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--success);
-            border-radius: 50%;
-            margin-left: 0.5rem;
-        }
-
-        .show-messageboard-btn {
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            background: var(--secondary);
-            border: none;
-            padding: 0.8rem;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--text);
-            z-index: 300;
-            transition: var(--transition);
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 250;
-        }
-
-        footer {
-            background: var(--gradient-secondary);
-            text-align: center;
-            padding: 2rem;
-            border-top: 3px solid var(--accent);
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @keyframes eternalGlow {
-            0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7), 0 0 40px rgba(255, 202, 40, 0.5); }
-        }
-
-        @keyframes starryPulse {
-            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
-            50% { transform: translate(10px, 10px); opacity: 0.8; }
-        }
-
-        @media (max-width: 768px) {
-            body { background-attachment: scroll; }
-            .messageboard { padding: 0 1rem; }
-            .post-form textarea { min-height: 80px; }
-            .thread .content { max-height: 80px; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echoes Unbound - MLNF</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: #0a0a23;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+    }
+    .post-form {
+      margin-bottom: 2rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      background: #1a1a3d;
+      color: #e0e0e0;
+      font-size: 1rem;
+      resize: vertical;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      background: #00ffff;
+      color: #0a0a23;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00cccc;
+    }
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .post {
+      background: #1a1a3d;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+    .post-author {
+      color: #00ffff;
+      font-weight: bold;
+    }
+    .post-time {
+      color: #b0b0b0;
+      font-size: 0.9rem;
+    }
+    .message {
+      text-align: center;
+      margin: 1rem 0;
+      color: #00ff00;
+    }
+    .error {
+      color: #ff3333;
+    }
+  </style>
 </head>
 <body>
-    <aside class="messageboard-sidebar" id="messageboardSidebar" aria-label="Messageboard topics">
-        <div class="messageboard-sidebar-header">
-            <h3>Echoes Unbound <span class="online-dot" aria-hidden="true"></span></h3>
-            <button class="close-sidebar" id="closeMessageboard" aria-label="Close sidebar">×</button>
-        </div>
-        <ul>
-            <li data-thread="cosmic-thoughts">Cosmic Thoughts</li>
-            <li data-thread="eternal-debates">Eternal Debates</li>
-            <li data-thread="free-spirits">Free Spirits</li>
-            <li data-thread="beyond-realms">Beyond Realms</li>
-        </ul>
-    </aside>
+  <div class="container">
+    <h1>Echoes Unbound</h1>
+    <div class="post-form">
+      <textarea id="post-content" placeholder="Share your unbound thoughts..."></textarea>
+      <button id="submit-post">Echo Forth</button>
+    </div>
+    <div class="message" id="message"></div>
+    <div class="posts" id="posts"></div>
+  </div>
 
-    <button class="show-messageboard-btn" id="showMessageboardBtn" aria-label="Show messageboard topics"><i class="fas fa-comment-dots"></i></button>
+  <script>
+    const token = localStorage.getItem('token');
+    const messageDiv = document.getElementById('message');
+    const postsDiv = document.getElementById('posts');
 
-    <header>
-        <div class="logo">
-            <i class="fas fa-infinity"></i>
-            <h1>Manifest Liberation, Naturally Free</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="profiles.html">Eternal Souls</a></li>
-                <li><a href="blog.html">Soul Scrolls</a></li>
-                <li><a href="messageboard.html">Echoes Unbound</a></li>
-                <li><a href="news.html">Boundless Chronicles</a></li>
-                <li><a href="debate.html">Clash of Immortals</a></li>
-                <li><a href="mindmap.html">Infinite Nexus</a></li>
-                <li><a href="archive.html">Timeless Vault</a></li>
-            </ul>
-        </nav>
-    </header>
+    // Load posts on page load
+    async function loadPosts() {
+      try {
+        const response = await fetch('http://localhost:3001/api/posts');
+        const posts = await response.json();
+        if (!response.ok) throw new Error(posts.error || 'Failed to load posts');
+        postsDiv.innerHTML = posts.map(post => `
+          <div class="post">
+            <div class="post-author">${post.author.username}</div>
+            <div class="post-time">${new Date(post.timestamp).toLocaleString()}</div>
+            <div class="post-content">${post.content}</div>
+          </div>
+        `).join('');
+      } catch (error) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = error.message;
+      }
+    }
 
-    <main>
-        <section class="section-title">
-            <h2>Echoes Unbound</h2>
-            <p>Thread your thoughts into the eternal tapestry of liberated minds</p>
-        </section>
+    // Submit new post
+    document.getElementById('submit-post').addEventListener('click', async () => {
+      const content = document.getElementById('post-content').value.trim();
+      if (!content) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Please enter some content';
+        return;
+      }
+      if (!token) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Please log in to post';
+        return;
+      }
 
-        <div class="messageboard">
-            <div class="post-form">
-                <h3>Echo Your Soul</h3>
-                <textarea placeholder="Manifest your unbound thoughts here..."></textarea>
-                <button>Send to Eternity</button>
-            </div>
-
-            <div class="thread-list">
-                <div class="thread" id="thread-cosmic-thoughts">
-                    <h3>Cosmic Thoughts</h3>
-                    <div class="content">
-                        <p>The universe whispers truths if we dare to listen beyond the noise of time.</p>
-                    </div>
-                    <p class="meta">ImmortalAl • 5 Replies • 2 Hours Ago</p>
-                </div>
-                <div class="thread" id="thread-eternal-debates">
-                    <h3>Eternal Debates</h3>
-                    <div class="content">
-                        <p>Freedom vs. Order: an endless clash or a harmonious dance?</p>
-                    </div>
-                    <p class="meta">FreeSoul • 8 Replies • 1 Day Ago</p>
-                </div>
-                <div class="thread" id="thread-free-spirits">
-                    <h3>Free Spirits</h3>
-                    <div class="content">
-                        <p>Liberation is not a gift; it’s a fire we stoke ourselves.</p>
-                    </div>
-                    <p class="meta">EternalVoice • 3 Replies • 3 Days Ago</p>
-                </div>
-                <div class="thread" id="thread-beyond-realms">
-                    <h3>Beyond Realms</h3>
-                    <div class="content">
-                        <p>What lies past the veil of mortality? Let’s pierce it together.</p>
-                    </div>
-                    <p class="meta">TruthSeeker • 10 Replies • 5 Days Ago</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
-    </footer>
-
-    <script>
-        const messageboardSidebar = document.getElementById('messageboardSidebar');
-        const showMessageboardBtn = document.getElementById('showMessageboardBtn');
-        const closeMessageboardBtn = document.getElementById('closeMessageboard');
-
-        function toggleSidebar() {
-            messageboardSidebar.classList.toggle('active');
-        }
-
-        showMessageboardBtn.addEventListener('click', toggleSidebar);
-        closeMessageboardBtn.addEventListener('click', toggleSidebar);
-
-        // Thread Highlighting
-        document.querySelectorAll('.messageboard-sidebar li').forEach(item => {
-            item.addEventListener('click', () => {
-                const threadId = `thread-${item.getAttribute('data-thread')}`;
-                const thread = document.getElementById(threadId);
-                thread.scrollIntoView({ behavior: 'smooth' });
-                thread.style.boxShadow = '0 15px 30px rgba(255, 94, 120, 0.7)';
-                setTimeout(() => {
-                    thread.style.boxShadow = 'none';
-                }, 1000);
-            });
+      try {
+        const response = await fetch('http://localhost:3001/api/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ content })
         });
-    </script>
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Post failed');
+        
+        messageDiv.className = 'message';
+        messageDiv.textContent = data.message;
+        document.getElementById('post-content').value = '';
+        loadPosts(); // Refresh posts
+      } catch (error) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = error.message;
+      }
+    });
+
+    // Initial load
+    loadPosts();
+  </script>
 </body>
 </html>
