@@ -107,6 +107,10 @@
     const message = document.getElementById('message');
     let isSignup = true;
 
+    const API_BASE_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3001' 
+      : 'https://mlnf-auth.onrender.com'; // Replace with your actual Render URL
+
     toggleLink.addEventListener('click', (e) => {
       e.preventDefault();
       isSignup = !isSignup;
@@ -116,9 +120,6 @@
       message.textContent = '';
     });
 
-const API_BASE_URL = 'https://mlnf-auth.onrender.com'; // Replace later
-fetch(`${API_BASE_URL}/api/login`, { ... });
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const username = document.getElementById('username').value;
@@ -126,10 +127,11 @@ fetch(`${API_BASE_URL}/api/login`, { ... });
       const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
       
       try {
-        const response = await fetch('http://localhost:3001' + endpoint, {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password }),
+          credentials: 'include' // Add if your back-end uses cookies/sessions
         });
         const data = await response.json();
         
@@ -137,13 +139,16 @@ fetch(`${API_BASE_URL}/api/login`, { ... });
         
         localStorage.setItem('token', data.token);
         message.className = 'message';
-        message.textContent = data.message;
+        message.textContent = data.message || (isSignup ? 'Registration successful!' : 'Login successful!');
         form.reset();
-        // Redirect or update UI here (e.g., to profile-setup.html)
-        setTimeout(() => window.location.href = '../pages/profile-setup.html', 1000);
+
+        // Redirect based on action
+        const redirectUrl = isSignup ? '/pages/profile-setup.html' : '/pages/profiles.html';
+        setTimeout(() => window.location.href = redirectUrl, 1000);
       } catch (error) {
+        console.error('Auth error:', error);
         message.className = 'message error';
-        message.textContent = error.message;
+        message.textContent = error.message || 'Network error - please try again';
       }
     });
   </script>

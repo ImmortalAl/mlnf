@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = window.location.hostname === 'localhost' 
         ? 'http://localhost:3001' 
-        : 'https://mlnf-auth.onrender.com'; // Update this with your actual Render URL after deployment
+        : 'https://mlnf-auth.onrender.com'; 
 
     // Registration Handler
     document.getElementById('register-form').addEventListener('submit', async (e) => {
