@@ -109,7 +109,7 @@
 
     const API_BASE_URL = window.location.hostname === 'localhost' 
       ? 'http://localhost:3001' 
-      : 'https://mlnf-auth.onrender.com'; // Replace with your actual Render URL
+      : 'https://mlnf-auth.onrender.com';
 
     toggleLink.addEventListener('click', (e) => {
       e.preventDefault();
@@ -125,24 +125,31 @@
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
       const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
-      
+
       try {
+        const token = localStorage.getItem('token') || '';
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: JSON.stringify({ username, password }),
-          credentials: 'include' // Add if your back-end uses cookies/sessions
+          credentials: 'include'
         });
         const data = await response.json();
-        
+
         if (!response.ok) throw new Error(data.error || 'Something went wrong');
-        
+
         localStorage.setItem('token', data.token);
         message.className = 'message';
         message.textContent = data.message || (isSignup ? 'Registration successful!' : 'Login successful!');
         form.reset();
 
-        // Redirect based on action
         const redirectUrl = isSignup ? '/pages/profile-setup.html' : '/pages/profiles.html';
         setTimeout(() => window.location.href = redirectUrl, 1000);
       } catch (error) {
