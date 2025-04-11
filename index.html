@@ -967,31 +967,23 @@ const authFlow = {
     initialize() {
         const btn = $('freeSoulBtn');
         if (!btn) {
-            console.error('Free Your Soul button not found during initialization');
+            console.error('Free Your Soul button not found');
             return;
         }
         console.log('Initializing auth flow...');
         this.checkAuthState();
-        btn.addEventListener('click', () => {
-            console.log('Free Your Soul button clicked');
-            this.handleAuthFlow();
-        });
+        btn.addEventListener('click', () => this.handleAuthFlow());
         console.log('Event listener attached to Free Your Soul button');
     },
 
     handleAuthFlow() {
         const btn = $('freeSoulBtn');
-        if (!btn) {
-            console.error('Free Your Soul button not found in handleAuthFlow');
-            return;
-        }
+        if (!btn) return;
         const state = btn.dataset.state;
         console.log('Button state on click:', state);
         if (state === 'locked') {
-            console.log('Redirecting to login page...');
             window.location.href = '/pages/auth.html?mode=login';
         } else if (state === 'unlocked') {
-            console.log('Logging out...');
             this.lockSoul();
         } else {
             console.error('Unknown button state:', state);
@@ -1010,16 +1002,21 @@ const authFlow = {
             console.error('Free Your Soul button not found in setAuthState');
             return;
         }
-        const icon = btn.querySelector('.fa');
+        const icon = btn.querySelector('i[class*="fa"]'); // More flexible selector
         const text = btn.querySelector('.btn-text');
-        
-        if (!icon || !text) {
-            console.error('Button structure incomplete:', { icon: !!icon, text: !!text });
+
+        if (!icon) {
+            console.warn('Icon not found in button; proceeding with text update');
+        }
+        if (!text) {
+            console.error('Text not found in button; cannot update state');
             return;
         }
 
         btn.dataset.state = authenticated ? 'unlocked' : 'locked';
-        icon.className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
+        if (icon) {
+            icon.className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
+        }
         text.textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
         console.log('Auth state set to:', authenticated ? 'unlocked' : 'locked');
     },
@@ -1047,6 +1044,14 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded, running authFlow.initialize');
     authFlow.initialize();
 });
+
+// Debug Font Awesome loading
+const faLink = document.querySelector('link[href*="font-awesome"]');
+if (faLink) {
+    faLink.addEventListener('load', () => console.log('Font Awesome CSS loaded'));
+} else {
+    console.warn('Font Awesome link not found');
+}
 </script>
 </body>
 </html>
