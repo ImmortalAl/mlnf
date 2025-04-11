@@ -990,10 +990,14 @@ const authFlow = {
     async handleAuthFlow() {
         const btn = $('freeSoulBtn');
         if (!btn) return;
-        if (btn.dataset.state === 'locked') {
+        const state = btn.dataset.state;
+        console.log('Button state on click:', state); // Debugging
+        if (state === 'locked') {
             await this.authenticate();
+        } else if (state === 'unlocked') {
+            this.lockSoul();
         } else {
-            await this.lockSoul();
+            console.error('Unknown button state:', state);
         }
     },
 
@@ -1026,7 +1030,7 @@ const authFlow = {
         }
     },
 
-    async lockSoul() {
+    lockSoul() {
         localStorage.removeItem('sessionToken');
         this.setAuthState(false);
         console.log('Logged out successfully');
