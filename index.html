@@ -967,22 +967,31 @@ const authFlow = {
     initialize() {
         const btn = $('freeSoulBtn');
         if (!btn) {
-            console.error('Free Your Soul button not found');
+            console.error('Free Your Soul button not found during initialization');
             return;
         }
         console.log('Initializing auth flow...');
         this.checkAuthState();
-        btn.addEventListener('click', () => this.handleAuthFlow());
+        btn.addEventListener('click', () => {
+            console.log('Free Your Soul button clicked');
+            this.handleAuthFlow();
+        });
+        console.log('Event listener attached to Free Your Soul button');
     },
 
     handleAuthFlow() {
         const btn = $('freeSoulBtn');
-        if (!btn) return;
+        if (!btn) {
+            console.error('Free Your Soul button not found in handleAuthFlow');
+            return;
+        }
         const state = btn.dataset.state;
         console.log('Button state on click:', state);
         if (state === 'locked') {
+            console.log('Redirecting to login page...');
             window.location.href = '/pages/auth.html?mode=login';
         } else if (state === 'unlocked') {
+            console.log('Logging out...');
             this.lockSoul();
         } else {
             console.error('Unknown button state:', state);
@@ -1035,6 +1044,7 @@ const authFlow = {
 
 // Run after DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded, running authFlow.initialize');
     authFlow.initialize();
 });
 </script>
