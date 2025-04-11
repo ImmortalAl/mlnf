@@ -978,17 +978,18 @@ window.addEventListener('resize', updateHeaderHeight);
 // Authentication Flow
 const authFlow = {
     async initialize() {
-        this.checkAuthState();
-        const freeSoulBtn = $('freeSoulBtn');
-        if (freeSoulBtn) {
-            freeSoulBtn.addEventListener('click', () => this.handleAuthFlow());
-        } else {
+        const btn = $('freeSoulBtn');
+        if (!btn) {
             console.error('Free Your Soul button not found');
+            return;
         }
+        this.checkAuthState();
+        btn.addEventListener('click', () => this.handleAuthFlow());
     },
 
     async handleAuthFlow() {
         const btn = $('freeSoulBtn');
+        if (!btn) return;
         if (btn.dataset.state === 'locked') {
             await this.authenticate();
         } else {
@@ -998,6 +999,7 @@ const authFlow = {
 
     async authenticate() {
         const btn = $('freeSoulBtn');
+        if (!btn) return;
         btn.classList.add('loading');
         try {
             const credentials = await this.showAuthModal();
@@ -1027,14 +1029,26 @@ const authFlow = {
     async lockSoul() {
         localStorage.removeItem('sessionToken');
         this.setAuthState(false);
-        console.log('Logged out successfully'); // Debugging
+        console.log('Logged out successfully');
     },
 
     setAuthState(authenticated) {
         const btn = $('freeSoulBtn');
+        if (!btn) {
+            console.error('Free Your Soul button not found in setAuthState');
+            return;
+        }
+        const icon = btn.querySelector('.fa');
+        const text = btn.querySelector('.btn-text');
+        
+        if (!icon || !text) {
+            console.error('Button structure incomplete:', { icon: !!icon, text: !!text });
+            return;
+        }
+
         btn.dataset.state = authenticated ? 'unlocked' : 'locked';
-        btn.querySelector('.fa').className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
-        btn.querySelector('.btn-text').textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
+        icon.className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
+        text.textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
     },
 
     checkAuthState() {
@@ -1073,7 +1087,10 @@ const authFlow = {
     }
 };
 
-authFlow.initialize();
+// Run after DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    authFlow.initialize();
+});
     </script>
 </body>
 </html>
