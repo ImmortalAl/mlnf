@@ -14,603 +14,762 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --primary: #0d0d1a;
-            --secondary: #1a1a33;
-            --accent: #ff5e78;
-            --text: #f0e6ff;
-            --highlight: #2a4066;
-            --success: #5cb85c;
-            --warning: #ffca28;
-            --danger: #ff4444;
-            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
-            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
-	--header-height: 70px; /* Default value, overridden by JavaScript */
-        }
+    :root {
+        --primary: #0d0d1a;
+        --secondary: #1a1a33;
+        --accent: #ff5e78;
+        --text: #f0e6ff;
+        --highlight: #2a4066;
+        --success: #5cb85c;
+        --warning: #ffca28;
+        --danger: #ff4444;
+        --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+        --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        --border-radius: 12px;
+        --header-height: 70px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
 
-        body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    body {
+        background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-        body.light-theme {
-            --primary: #f0f0f5;
-            --secondary: #e0e0eb;
-            --text: #1a1a33;
-            --accent: #e63950;
-            background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
-        }
+    body.light-theme {
+        --primary: #f0f0f5;
+        --secondary: #e0e0eb;
+        --text: #1a1a33;
+        --accent: #e63950;
+        background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
+    }
 
-main {
-    position: relative;
-    z-index: 1; /* Very low to stay below sidebar */
-}
+    main {
+        position: relative;
+        z-index: 1;
+    }
 
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
 
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-        }
+    .btn-primary {
+        background: var(--gradient-accent);
+        color: var(--primary);
+        border: none;
+    }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
+    .btn-outline {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
 
-        .btn:hover, .btn-primary:hover, .btn-outline:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
+    .btn:hover, .btn-primary:hover, .btn-outline:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
 
-        .btn-outline:hover {
-            background: var(--accent);
-            color: var(--primary);
-        }
+    .btn-outline:hover {
+        background: var(--accent);
+        color: var(--primary);
+    }
 
-        #freeSoulBtn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+    #freeSoulBtn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
 
-        #freeSoulBtn[data-state="unlocked"] {
-            border-color: var(--success);
-            background: rgba(92, 184, 92, 0.1);
-        }
+    #freeSoulBtn[data-state="unlocked"] {
+        border-color: var(--success);
+        background: rgba(92, 184, 92, 0.1);
+    }
 
-        .soul-status {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background: var(--gradient-accent);
-            transition: width 2s ease;
-            z-index: -1;
-        }
+    .soul-status {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: var(--gradient-accent);
+        transition: width 2s ease;
+        z-index: -1;
+    }
 
-        .fa-lock-open {
-            color: var(--success);
-        }
+    .fa-lock-open {
+        color: var(--success);
+    }
 
-        #freeSoulBtn.loading .soul-status {
-            width: 100%;
-        }
+    #freeSoulBtn.loading .soul-status {
+        width: 100%;
+    }
 
-        header {
-            background: var(--gradient-secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
+    header {
+        background: var(--gradient-secondary);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--accent);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-        .logo i {
-            color: var(--accent);
-            font-size: 2.2rem;
-            animation: pulseGlow 2s infinite;
-        }
+    .logo i {
+        color: var(--accent);
+        font-size: 2.2rem;
+        animation: pulseGlow 2s infinite;
+    }
 
-        .logo h1 {
-            font-size: 1.8rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
+    .logo h1 {
+        font-size: 1.8rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
 
-        .title-stack { display: flex; flex-direction: column; }
-        .short-title { display: none; }
+    .title-stack { display: flex; flex-direction: column; }
+    .short-title { display: none; }
 
-        nav ul {
-            display: flex;
-            gap: 1.8rem;
-            list-style: none;
-        }
+    nav ul {
+        display: flex;
+        gap: 1.8rem;
+        list-style: none;
+    }
 
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            position: relative;
-            transition: var(--transition);
-            scroll-behavior: smooth;
-        }
+    nav a {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+        position: relative;
+        transition: var(--transition);
+        scroll-behavior: smooth;
+    }
 
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: var(--transition);
-        }
+    nav a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: var(--transition);
+    }
 
-        nav a:hover::after { width: 100%; }
+    nav a:hover::after { width: 100%; }
 
-        .mobile-menu-btn {
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .hero {
+        background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.7));
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 2rem;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+    }
+
+    .censorship-warning {
+        background: rgba(255, 68, 68, 0.1);
+        padding: 1rem;
+        text-align: center;
+        margin: 2rem 0;
+        border-left: 5px solid var(--danger);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 100px;
+        height: 3px;
+        background: var(--accent);
+        transform: translateX(-50%);
+    }
+
+    .features {
+        padding: 5rem 2rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(13, 13, 26, 0.6), rgba(26, 26, 51, 0.4));
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
+        max-width: 1440px;
+        margin: 3rem auto;
+    }
+
+    .feature-card {
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 94, 120, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 94, 120, 0.15), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        z-index: -1;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: var(--shadow);
+        border-color: var(--accent);
+    }
+
+    .feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .feature-card i {
+        font-size: 2.8rem;
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        transition: var(--transition);
+    }
+
+    .feature-card:hover i {
+        transform: scale(1.1);
+        color: var(--warning);
+    }
+
+    .feature-card h3 {
+        font-size: 1.6rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .feature-card p {
+        font-size: 1rem;
+        color: var(--text);
+        opacity: 0.9;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-weight: 400;
+        transition: var(--transition);
+    }
+
+    .feature-card:hover p {
+        opacity: 1;
+        color: var(--text);
+    }
+
+    .feature-card .spacer {
+        flex-grow: 1;
+    }
+
+    .feature-card .btn-primary {
+        background: var(--gradient-accent);
+        padding: 0.7rem 1.5rem;
+        transition: var(--transition);
+        align-self: center;
+    }
+
+    .feature-card:hover .btn-primary {
+        background: linear-gradient(45deg, var(--warning), var(--accent));
+        transform: translateY(-3px);
+    }
+
+    body.light-theme .feature-card {
+        background: linear-gradient(135deg, rgba(224, 224, 235, 0.95), rgba(240, 240, 245, 0.85));
+        border-color: rgba(230, 57, 80, 0.3);
+    }
+
+    body.light-theme .feature-card::before {
+        background: radial-gradient(circle, rgba(230, 57, 80, 0.15), transparent 70%);
+    }
+
+    body.light-theme .feature-card p {
+        color: var(--highlight);
+        opacity: 0.85;
+    }
+
+    body.light-theme .feature-card:hover p {
+        color: var(--accent);
+    }
+
+    .highlights {
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(13, 13, 26, 0.5), rgba(26, 26, 51, 0.3));
+    }
+
+    .highlight-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        max-width: 1440px;
+        margin: 2rem auto;
+        position: relative;
+    }
+
+    .highlight-grid .btn-primary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 200px;
+        margin: 1rem auto 0;
+        padding: 0.7rem 1.5rem;
+    }
+
+    .debate-arena {
+        padding: 4rem 2rem;
+        background: linear-gradient(to bottom, rgba(26, 26, 51, 0.9), rgba(13, 13, 26, 0.7));
+        border: 1px solid rgba(255, 94, 120, 0.4);
+        border-radius: var(--border-radius);
+        margin: 2rem auto;
+        max-width: 1440px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .debate-arena .debate-topic {
+        font-size: 1.8rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .debate-arena p {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .debate-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .mindmap-section {
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(13, 13, 26, 0.5), rgba(26, 26, 51, 0.3));
+    }
+
+    .mindmap-section .mindmap-preview {
+        height: 500px;
+        background: var(--gradient-secondary);
+        border-radius: var(--border-radius);
+        position: relative;
+        margin: 2rem auto;
+        border: 1px solid rgba(255, 94, 120, 0.4);
+        max-width: 1440px;
+    }
+
+    .mindmap-section .btn-primary {
+        display: block;
+        margin: 1rem auto;
+        text-align: center;
+    }
+
+    body.light-theme .highlights,
+    body.light-theme .mindmap-section {
+        background: linear-gradient(to bottom, rgba(240, 240, 245, 0.5), rgba(224, 224, 235, 0.3));
+    }
+
+    body.light-theme .debate-arena {
+        background: linear-gradient(to bottom, rgba(224, 224, 235, 0.9), rgba(240, 240, 245, 0.7));
+        border-color: rgba(230, 57, 80, 0.4);
+    }
+
+    .highlight-item {
+        background: rgba(255, 94, 120, 0.1);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--accent);
+    }
+
+    .highlight-item h4 { color: var(--warning); }
+    .highlight-item .author { color: var(--success); font-style: italic; }
+
+    .mindmap-node {
+        position: absolute;
+        background: var(--accent);
+        color: var(--text);
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        animation: floatEternal 4s ease-in-out infinite;
+        z-index: 3;
+    }
+
+    .mindmap-node:hover {
+        transform: scale(1.1);
+        animation-play-state: paused;
+        z-index: 4;
+    }
+
+    .main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .node-truth { top: 25%; left: 25%; }
+    .node-freedom { top: 25%; left: 75%; }
+    .node-eternity { top: 75%; left: 25%; }
+    .node-unity { top: 75%; left: 75%; }
+
+    .mindmap-line {
+        position: absolute;
+        background: var(--accent);
+        height: 3px;
+        width: 141px;
+        top: 50%;
+        left: 50%;
+    }
+
+    .line-1 { transform: rotate(135deg); }
+    .line-2 { transform: rotate(45deg); }
+    .line-3 { transform: rotate(225deg); }
+    .line-4 { transform: rotate(315deg); }
+
+    .debate-position {
+        background: rgba(255, 94, 120, 0.1);
+        padding: 1.8rem;
+        border-radius: var(--border-radius);
+        border-left: 4px solid var(--accent);
+        transition: var(--transition);
+    }
+
+    .debate-position:hover { transform: translateY(-5px); }
+    .vote-count { color: var(--success); margin-left: 0.5rem; }
+
+    .active-users {
+        position: fixed;
+        right: -300px;
+        top: var(--header-height);
+        width: 300px;
+        height: calc(100vh - var(--header-height));
+        background: var(--gradient-secondary);
+        padding: 1.5rem;
+        transition: right 0.3s ease;
+        z-index: 2147483647;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        border-left: 3px solid var(--accent);
+    }
+
+    .active-users.active { right: 0; }
+
+    .active-users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 94, 120, 0.4);
+        padding-bottom: 0.5rem;
+    }
+
+    .active-users-header h3 {
+        font-size: 1.4rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .online-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--success);
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+
+    .profile-preview {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 94, 120, 0.1);
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        transition: var(--transition);
+    }
+
+    .profile-preview:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow);
+    }
+
+    .profile-preview img {
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        loading: lazy;
+    }
+
+    .profile-preview a {
+        color: var(--text);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .profile-preview a:hover { color: var(--accent); }
+
+    .profile-preview .status {
+        font-size: 0.9rem;
+        color: var(--highlight);
+    }
+
+    .close-sidebar {
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .show-users-btn, .theme-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--secondary);
+        border: none;
+        padding: 0.8rem;
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--text);
+        z-index: 250;
+        transition: var(--transition);
+    }
+
+    .show-users-btn { bottom: 70px; }
+
+    footer {
+        background: var(--gradient-secondary);
+        text-align: center;
+        border-top: 3px solid var(--accent);
+        padding: 3rem 2rem;
+        margin-top: auto;
+    }
+
+    .social-links {
+        margin: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .social-links a {
+        color: var(--text);
+        font-size: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .social-links a:hover { color: var(--accent); }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 13, 26, 0.9);
+        z-index: 10000;
+    }
+
+    .auth-modal {
+        background: var(--gradient-secondary);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        max-width: 400px;
+        margin: 10% auto;
+        position: relative;
+        box-shadow: var(--shadow);
+    }
+
+    .auth-modal h3 {
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: var(--accent);
+    }
+
+    .auth-modal input[type="text"],
+    .auth-modal input[type="password"] {
+        width: 100%;
+        padding: 0.8rem;
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--accent);
+        border-radius: var(--border-radius);
+        color: var(--text);
+    }
+
+    .auth-modal .modal-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .auth-modal button {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .auth-modal button[type="submit"] {
+        background: var(--gradient-accent);
+        color: var(--primary);
+    }
+
+    .auth-modal button[type="button"] {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+    .auth-modal button:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .soul-particle {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: soulFloat ease-out forwards;
+        pointer-events: none;
+        z-index: 1000;
+    }
+
+    @keyframes soulFloat {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    @media (max-width: 768px) {
+        header { padding: 1rem; }
+        .title-stack { display: none; }
+        .short-title { display: block; }
+        .mobile-menu-btn { display: block; }
+        nav#mainNav {
             display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .hero {
-            background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.7));
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 2rem;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
-        }
-
-        .censorship-warning {
-            background: rgba(255, 68, 68, 0.1);
-            padding: 1rem;
-            text-align: center;
-            margin: 2rem 0;
-            border-left: 5px solid var(--danger);
-        }
-
-        .features {
-            padding: 5rem 2rem;
-position: relative;
-    z-index: 1; /* Ensure section stays low */
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .section-title::after {
-            content: '';
             position: absolute;
-            bottom: -10px;
-            left: 50%;
-            width: 100px;
-            height: 3px;
-            background: var(--accent);
-            transform: translateX(-50%);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 3rem auto;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            transition: var(--transition);
-            border-left: 5px solid var(--accent);
-            position: relative;
-	z-index: 2
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow);
-	z-index: 3;
-        }
-
-        .feature-card i {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .highlight-section, .debate-arena {
-            background: var(--gradient-secondary);
-            border: 1px solid rgba(255, 94, 120, 0.4);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .highlight-item {
-            background: rgba(255, 94, 120, 0.1);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--accent);
-        }
-
-        .highlight-item h4 { color: var(--warning); }
-        .highlight-item .author { color: var(--success); font-style: italic; }
-
-        .mindmap-preview {
-            height: 500px;
-            background: var(--gradient-secondary);
-            border-radius: var(--border-radius);
-            position: relative;
-            margin: 3rem 0;
-            border: 1px solid rgba(255, 94, 120, 0.4);
-	z-index: 2;
-        }
-
-        .mindmap-node {
-            position: absolute;
-            background: var(--accent);
-            color: var(--text);
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            animation: floatEternal 4s ease-in-out infinite;
-	z-index: 3;
-        }
-
-        .mindmap-node:hover {
-            transform: scale(1.1);
-            animation-play-state: paused;
-	z-index: 4;
-        }
-
-        .main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .node-truth { top: 25%; left: 25%; }
-        .node-freedom { top: 25%; left: 75%; }
-        .node-eternity { top: 75%; left: 25%; }
-        .node-unity { top: 75%; left: 75%; }
-
-        .mindmap-line {
-            position: absolute;
-            background: var(--accent);
-            height: 3px;
-            width: 141px;
-            top: 50%;
-            left: 50%;
-        }
-
-        .line-1 { transform: rotate(135deg); }
-        .line-2 { transform: rotate(45deg); }
-        .line-3 { transform: rotate(225deg); }
-        .line-4 { transform: rotate(315deg); }
-
-        .debate-position {
-            background: rgba(255, 94, 120, 0.1);
-            padding: 1.8rem;
-            border-radius: var(--border-radius);
-            border-left: 4px solid var(--accent);
-            transition: var(--transition);
-        }
-
-        .debate-position:hover { transform: translateY(-5px); }
-        .vote-count { color: var(--success); margin-left: 0.5rem; }
-
-        .active-users {
-            position: fixed;
-            right: -300px;
-            top: var(--header-height);
-            width: 300px;
-            height: calc(100vh - var(--header-height));
-            background: var(--gradient-secondary);
-            padding: 1.5rem;
-            transition: right 0.3s ease;
-            z-index: 2147483647;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-            border-left: 3px solid var(--accent);
-        }
-
-        .active-users.active { right: 0; }
-
-        .active-users-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.4);
-            padding-bottom: 0.5rem;
-        }
-
-        .active-users-header h3 {
-            font-size: 1.4rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .online-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--success);
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 0.5rem;
-        }
-
-        .profile-preview {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(255, 94, 120, 0.1);
-            border-radius: var(--border-radius);
-            margin-bottom: 1rem;
-            transition: var(--transition);
-        }
-
-        .profile-preview:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-        }
-
-        .profile-preview img {
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            loading: lazy;
-        }
-
-        .profile-preview a {
-            color: var(--text);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .profile-preview a:hover { color: var(--accent); }
-
-        .profile-preview .status {
-            font-size: 0.9rem;
-            color: var(--highlight);
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .show-users-btn, .theme-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 100%;
+            left: 0;
+            width: 100%;
             background: var(--secondary);
-            border: none;
-            padding: 0.8rem;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--text);
-            z-index: 250;
-            transition: var(--transition);
+            padding: 1rem;
         }
-
-        .show-users-btn { bottom: 70px; }
-
-        footer {
-            background: var(--gradient-secondary);
-            text-align: center;
-            border-top: 3px solid var(--accent);
-            padding: 3rem 2rem;
-            margin-top: auto;
-        }
-
-        .social-links {
-            margin: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-        }
-
-        .social-links a {
-            color: var(--text);
-            font-size: 1.5rem;
-            transition: var(--transition);
-        }
-
-        .social-links a:hover { color: var(--accent); }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(13,13,26,0.9);
-            z-index: 10000;
-        }
-
+        nav#mainNav.active { display: block; }
+        nav ul { flex-direction: column; gap: 1.2rem; }
+        .auth-buttons { display: none; }
+        .hero { min-height: 50vh; padding: 2rem; }
+        .hero h1 { font-size: 2.5rem; }
+        .features { padding: 2rem; }
         .auth-modal {
-            background: var(--gradient-secondary);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            max-width: 400px;
-            margin: 10% auto;
-            position: relative;
-            box-shadow: var(--shadow);
+            width: 90%;
+            margin: 20% auto;
         }
+    }
 
-        .auth-modal h3 {
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: var(--accent);
-        }
+    @keyframes eternalGlow {
+        0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
+        50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
+    }
 
-        .auth-modal input[type="text"],
-        .auth-modal input[type="password"] {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1.5rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--accent);
-            border-radius: var(--border-radius);
-            color: var(--text);
-        }
+    @keyframes pulseGlow {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+    }
 
-        .auth-modal .modal-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .auth-modal button {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .auth-modal button[type="submit"] {
-            background: var(--gradient-accent);
-            color: var(--primary);
-        }
-
-        .auth-modal button[type="button"] {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .auth-modal button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .soul-particle {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: soulFloat ease-out forwards;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        @keyframes soulFloat {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100vh); opacity: 0; }
-        }
-
-        @media (max-width: 768px) {
-            header { padding: 1rem; }
-            .title-stack { display: none; }
-            .short-title { display: block; }
-            .mobile-menu-btn { display: block; }
-            nav#mainNav {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: var(--secondary);
-                padding: 1rem;
-            }
-            nav#mainNav.active { display: block; }
-            nav ul { flex-direction: column; gap: 1.2rem; }
-            .auth-buttons { display: none; }
-            .hero { min-height: 50vh; padding: 2rem; }
-            .hero h1 { font-size: 2.5rem; }
-            .features { padding: 2rem; }
-            .auth-modal {
-                width: 90%;
-                margin: 20% auto;
-            }
-        }
-
-        @keyframes eternalGlow {
-            0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @keyframes floatEternal {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-    </style>
+    @keyframes floatEternal {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+</style>
 </head>
 <body>
      <!-- Active Users Sidebar -->
@@ -693,204 +852,233 @@ position: relative;
     </header>
 
     <main>
-        <section class="hero" aria-labelledby="mainHeading">
-            <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
-            <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
-            <div class="hero-buttons">
-                <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
-                <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
-            </div>
-        </section>
-
-        <div class="censorship-warning" role="alert">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control.</p>
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="mainHeading">
+        <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
+        <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
+        <div class="hero-buttons">
+            <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
+            <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
         </div>
+    </section>
 
-        <section class="features" id="features">
-            <div class="section-title">
-                <h2>Our Timeless Arsenal</h2>
-                <p>Instruments of liberation for souls unbound</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-user-secret"></i>
-                    <h3>Eternal Souls</h3>
-                    <p>Whisper truths through timeless channels, forever free. Connect privately with kindred spirits.</p>
-                    <a href="pages/profiles.html" class="btn btn-primary">Find Souls</a>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-scroll"></i>
-                    <h3>Soul Scrolls</h3>
-                    <p>Inscribe your essence for eternity, preserved beyond decay. Share your thoughts and read others'.</p>
-                    <a href="pages/blog.html" class="btn btn-primary">Write Now</a>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-comments"></i>
-                    <h3>Echoes Unbound</h3>
-                    <p>Thread your thoughts into the eternal tapestry of our wisdom. Post and discuss freely.</p>
-                    <a href="pages/messageboard.html" class="btn btn-primary">Start Thread</a>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-newspaper"></i>
-                    <h3>Boundless Chronicles</h3>
-                    <p>Our collective immortalizes truths beyond the reach of transient lies. Submit your stories.</p>
-                    <a href="pages/news.html" class="btn btn-primary">Explore News</a>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-gavel"></i>
-                    <h3>Clash of Immortals</h3>
-                    <p>Discourse unbound by mortal limits—let truth reign everlasting. Engage in timeless debates.</p>
-                    <a href="pages/debate.html" class="btn btn-primary">Enter Arena</a>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-project-diagram"></i>
-                    <h3>Infinite Nexus</h3>
-                    <p>Weave connections that span beyond time in our living tapestry. Contribute to the mindmap.</p>
-                    <a href="pages/mindmap.html" class="btn btn-primary">Join the Map</a>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-vault"></i>
-                    <h3>Timeless Vault</h3>
-                    <p>Safeguard visions in our boundless archive, immune to erasure. Upload and preserve videos.</p>
-                    <a href="pages/archive.html" class="btn btn-primary">Access Vault</a>
-                </div>
-            </div>
+    <!-- Censorship Warning (Standalone) -->
+    <div class="censorship-warning" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control.</p>
+    </div>
 
-            <div class="section-title" id="profiles">
-                <h2>Eternal Souls</h2>
-                <p>Connect with the unbound</p>
-            </div>
-            <div class="highlight-section">
-                <div class="highlight-item">
-                    <h4>ImmortalAl</h4>
-                    <p>Founder of MLNF, seeker of unshackled truth.</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>FreeSoul</h4>
-                    <p>Advocate for timeless liberty and defiance.</p>
-                </div>
-                <a href="pages/profiles.html" class="btn btn-primary">Meet More Souls</a>
-            </div>
+    <!-- Features Section -->
+    <section class="features" id="features" aria-labelledby="featuresHeading">
+        <div class="section-title">
+            <h2 id="featuresHeading">Our Timeless Arsenal</h2>
+            <p>Instruments of Liberation for Souls Unbound</p>
+        </div>
+        <div class="features-grid">
+            <article class="feature-card" data-feature="souls">
+                <i class="fas fa-user-secret"></i>
+                <h3>Eternal Souls</h3>
+                <p>Whisper truths through timeless channels, forever free. Connect with kindred spirits in unshackled unity.</p>
+                <div class="spacer"></div>
+                <a href="pages/profiles.html" class="btn btn-primary">Find Souls</a>
+            </article>
+            <article class="feature-card" data-feature="scrolls">
+                <i class="fas fa-scroll"></i>
+                <h3>Soul Scrolls</h3>
+                <p>Inscribe your essence for eternity, defying decay. Share and explore thoughts that echo beyond time.</p>
+                <div class="spacer"></div>
+                <a href="pages/blog.html" class="btn btn-primary">Write Now</a>
+            </article>
+            <article class="feature-card" data-feature="echoes">
+                <i class="fas fa-comments"></i>
+                <h3>Echoes Unbound</h3>
+                <p>Weave your voice into our eternal tapestry. Post and discuss freely in a realm without chains.</p>
+                <div class="spacer"></div>
+                <a href="pages/messageboard.html" class="btn btn-primary">Start Thread</a>
+            </article>
+            <article class="feature-card" data-feature="chronicles">
+                <i class="fas fa-newspaper"></i>
+                <h3>Boundless Chronicles</h3>
+                <p>Immortalize truths beyond transient lies. Submit stories that endure in our collective memory.</p>
+                <div class="spacer"></div>
+                <a href="pages/news.html" class="btn btn-primary">Explore News</a>
+            </article>
+            <article class="feature-card" data-feature="debate">
+                <i class="fas fa-gavel"></i>
+                <h3>Clash of Immortals</h3>
+                <p>Engage in discourse unbound by mortal limits. Let truth reign in our timeless arena.</p>
+                <div class="spacer"></div>
+                <a href="pages/debate.html" class="btn btn-primary">Enter Arena</a>
+            </article>
+            <article class="feature-card" data-feature="nexus">
+                <i class="fas fa-project-diagram"></i>
+                <h3>Infinite Nexus</h3>
+                <p>Link your spirit to our living web, spanning beyond time. Contribute to the eternal mindmap.</p>
+                <div class="spacer"></div>
+                <a href="pages/mindmap.html" class="btn btn-primary">Join the Map</a>
+            </article>
+            <article class="feature-card" data-feature="vault">
+                <i class="fas fa-vault"></i>
+                <h3>Timeless Vault</h3>
+                <p>Safeguard visions in an archive immune to erasure. Upload and preserve the infinite.</p>
+                <div class="spacer"></div>
+                <a href="pages/archive.html" class="btn btn-primary">Access Vault</a>
+            </article>
+        </div>
+    </section>
 
-            <div class="section-title" id="blog">
-                <h2>Soul Scrolls</h2>
-                <p>Top reflections from liberated spirits</p>
+    <!-- Eternal Souls Highlights -->
+    <section class="highlights" id="profiles" aria-labelledby="profilesHeading">
+        <div class="section-title">
+            <h2 id="profilesHeading">Eternal Souls</h2>
+            <p>Connect with the Unbound</p>
+        </div>
+        <div class="highlight-grid">
+            <div class="highlight-item">
+                <h4>ImmortalAl</h4>
+                <p>Founder of MLNF, seeker of unshackled truth.</p>
             </div>
-            <div class="highlight-section">
-                <div class="highlight-item">
-                    <h4>Eternity Over Ephemera</h4>
-                    <p>Why transcending time is the ultimate rebellion against control.</p>
-                    <p class="author">— FreeSoul</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>The Chains We Don't See</h4>
-                    <p>A personal journey through a censored world.</p>
-                    <p class="author">— EternalVoice</p>
-                </div>
-                <a href="pages/blog.html" class="btn btn-primary">Explore Blogs</a>
+            <div class="highlight-item">
+                <h4>FreeSoul</h4>
+                <p>Advocate for timeless liberty and defiance.</p>
             </div>
+            <a href="pages/profiles.html" class="btn btn-primary">Meet More Souls</a>
+        </div>
+    </section>
 
-            <div class="section-title" id="messageboard">
-                <h2>Echoes Unbound</h2>
-                <p>Hot threads from the eternal tapestry</p>
+    <!-- Soul Scrolls Highlights -->
+    <section class="highlights" id="blog" aria-labelledby="blogHeading">
+        <div class="section-title">
+            <h2 id="blogHeading">Soul Scrolls</h2>
+            <p>Top Reflections from Liberated Spirits</p>
+        </div>
+        <div class="highlight-grid">
+            <div class="highlight-item">
+                <h4>Eternity Over Ephemera</h4>
+                <p>Why transcending time is the ultimate rebellion against control.</p>
+                <p class="author">— FreeSoul</p>
             </div>
-            <div class="highlight-section">
-                <div class="highlight-item">
-                    <h4>Thread: Is Privacy Dead?</h4>
-                    <p>"In 2025, every click is watched—how do we fight back?"</p>
-                    <p class="author">— ImmortalAl (12 replies)</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Thread: The Power of Collective Truth</h4>
-                    <p>"Can we crowdsource our way to freedom?"</p>
-                    <p class="author">— TruthSeeker (8 replies)</p>
-                </div>
-                <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
+            <div class="highlight-item">
+                <h4>The Chains We Don’t See</h4>
+                <p>A personal journey through a censored world.</p>
+                <p class="author">— EternalVoice</p>
             </div>
+            <a href="pages/blog.html" class="btn btn-primary">Explore Blogs</a>
+        </div>
+    </section>
 
-            <div class="section-title" id="news">
-                <h2>Boundless Chronicles</h2>
-                <p>Featured stories from the eternal chronicles</p>
+    <!-- Echoes Unbound Highlights -->
+    <section class="highlights" id="messageboard" aria-labelledby="messageboardHeading">
+        <div class="section-title">
+            <h2 id="messageboardHeading">Echoes Unbound</h2>
+            <p>Hot Threads from the Eternal Tapestry</p>
+        </div>
+        <div class="highlight-grid">
+            <div class="highlight-item">
+                <h4>Thread: Is Privacy Dead?</h4>
+                <p>"In 2025, every click is watched—how do we fight back?"</p>
+                <p class="author">— ImmortalAl (12 replies)</p>
             </div>
-            <div class="highlight-section">
-                <div class="highlight-item">
-                    <h4>Unveiled: The Hidden War on Free Thought</h4>
-                    <p>A deep dive into the censorship mechanisms of 2025.</p>
-                    <p class="author">— ImmortalAl</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>April 2, 2025: A New Dawn for Truth</h4>
-                    <p>Breaking news on the resistance against digital tyranny.</p>
-                    <p class="author">— TruthSeeker</p>
-                </div>
-                <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
+            <div class="highlight-item">
+                <h4>Thread: The Power of Collective Truth</h4>
+                <p>"Can we crowdsource our way to freedom?"</p>
+                <p class="author">— TruthSeeker (8 replies)</p>
             </div>
+            <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
+        </div>
+    </section>
 
-            <div class="section-title" id="debate">
-                <h2>Clash of Immortals</h2>
-                <p>Where eternal minds forge truth</p>
+    <!-- Boundless Chronicles Highlights -->
+    <section class="highlights" id="news" aria-labelledby="newsHeading">
+        <div class="section-title">
+            <h2 id="newsHeading">Boundless Chronicles</h2>
+            <p>Featured Stories from the Eternal Chronicles</p>
+        </div>
+        <div class="highlight-grid">
+            <div class="highlight-item">
+                <h4>Unveiled: The Hidden War on Free Thought</h4>
+                <p>A deep dive into the censorship mechanisms of 2025.</p>
+                <p class="author">— ImmortalAl</p>
             </div>
-            <div class="debate-arena">
-                <h3 class="debate-topic">Resolved: Freedom is an eternal right.</h3>
-                <p>Join the timeless struggle as liberated souls contest existence.</p>
-                <div class="debate-preview">
-                    <div class="debate-position">
-                        <h4>Affirmative</h4>
-                        <p>"Freedom transcends time; it's woven into existence." - ImmortalAl</p>
-                        <div class="debate-actions">
-                            <button class="btn btn-primary">Vote Yes</button>
-                            <span class="vote-count">12 Votes</span>
-                        </div>
-                    </div>
-                    <div class="debate-position">
-                        <h4>Negative</h4>
-                        <p>"Freedom is a fleeting illusion, bound by power." - EternalVoice</p>
-                        <div class="debate-actions">
-                            <button class="btn btn-outline">Vote No</button>
-                            <span class="vote-count">8 Votes</span>
-                        </div>
-                    </div>
-                </div>
-                <a href="pages/debate.html" class="btn btn-primary">Join the Discourse</a>
+            <div class="highlight-item">
+                <h4>April 2, 2025: A New Dawn for Truth</h4>
+                <p>Breaking news on the resistance against digital tyranny.</p>
+                <p class="author">— TruthSeeker</p>
             </div>
+            <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
+        </div>
+    </section>
 
-            <div class="section-title" id="mindmap">
-                <h2>Infinite Nexus</h2>
-                <p>Our living web binds the unbound</p>
+    <!-- Clash of Immortals Debate -->
+    <section class="debate-arena" id="debate" aria-labelledby="debateHeading">
+        <div class="section-title">
+            <h2 id="debateHeading">Clash of Immortals</h2>
+            <p>Where Eternal Minds Forge Truth</p>
+        </div>
+        <h3 class="debate-topic">Resolved: Freedom is an Eternal Right</h3>
+        <p>Join the timeless struggle as liberated souls contest existence.</p>
+        <div class="debate-preview">
+            <div class="debate-position">
+                <h4>Affirmative</h4>
+                <p>"Freedom transcends time; it’s woven into existence." — ImmortalAl</p>
+                <div class="debate-actions">
+                    <button class="btn btn-primary">Vote Yes</button>
+                    <span class="vote-count">12 Votes</span>
+                </div>
             </div>
-            <div class="mindmap-preview" id="mindmapPreview">
-                <div class="mindmap-node main">Liberation</div>
-                <div class="mindmap-node node-truth">Truth</div>
-                <div class="mindmap-node node-freedom">Freedom</div>
-                <div class="mindmap-node node-eternity">Eternity</div>
-                <div class="mindmap-node node-unity">Unity</div>
-                <div class="mindmap-line line-1"></div>
-                <div class="mindmap-line line-2"></div>
-                <div class="mindmap-line line-3"></div>
-                <div class="mindmap-line line-4"></div>
+            <div class="debate-position">
+                <h4>Negative</h4>
+                <p>"Freedom is a fleeting illusion, bound by power." — EternalVoice</p>
+                <div class="debate-actions">
+                    <button class="btn btn-outline">Vote No</button>
+                    <span class="vote-count">8 Votes</span>
+                </div>
             </div>
-            <a href="pages/mindmap.html" class="btn btn-primary">Expand the Nexus</a>
+        </div>
+        <a href="pages/debate.html" class="btn btn-primary">Join the Discourse</a>
+    </section>
 
-            <div class="section-title" id="archive">
-                <h2>Timeless Vault</h2>
-                <p>Featured visions preserved forever</p>
+    <!-- Infinite Nexus Mindmap -->
+    <section class="mindmap-section" id="mindmap" aria-labelledby="mindmapHeading">
+        <div class="section-title">
+            <h2 id="mindmapHeading">Infinite Nexus</h2>
+            <p>Our Living Web Binds the Unbound</p>
+        </div>
+        <div class="mindmap-preview" id="mindmapPreview">
+            <div class="mindmap-node main">Liberation</div>
+            <div class="mindmap-node node-truth">Truth</div>
+            <div class="mindmap-node node-freedom">Freedom</div>
+            <div class="mindmap-node node-eternity">Eternity</div>
+            <div class="mindmap-node node-unity">Unity</div>
+            <div class="mindmap-line line-1"></div>
+            <div class="mindmap-line line-2"></div>
+            <div class="mindmap-line line-3"></div>
+            <div class="mindmap-line line-4"></div>
+        </div>
+        <a href="pages/mindmap.html" class="btn btn-primary">Expand the Nexus</a>
+    </section>
+
+    <!-- Timeless Vault Highlights -->
+    <section class="highlights" id="archive" aria-labelledby="archiveHeading">
+        <div class="section-title">
+            <h2 id="archiveHeading">Timeless Vault</h2>
+            <p>Featured Visions Preserved Forever</p>
+        </div>
+        <div class="highlight-grid">
+            <div class="highlight-item">
+                <h4>Video: The Silent Rebellion</h4>
+                <p>A 10-minute exposé on underground free speech movements.</p>
+                <p class="author">— FreeSoul</p>
             </div>
-            <div class="highlight-section">
-                <div class="highlight-item">
-                    <h4>Video: The Silent Rebellion</h4>
-                    <p>A 10-minute exposé on underground free speech movements.</p>
-                    <p class="author">— FreeSoul</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Video: Truth Uncut</h4>
-                    <p>Raw footage from the April 2025 protests.</p>
-                    <p class="author">— EternalVoice</p>
-                </div>
-                <a href="pages/archive.html" class="btn btn-primary">Watch More</a>
+            <div class="highlight-item">
+                <h4>Video: Truth Uncut</h4>
+                <p>Raw footage from the April 2025 protests.</p>
+                <p class="author">— EternalVoice</p>
             </div>
-        </section>
-    </main>
+            <a href="pages/archive.html" class="btn btn-primary">Watch More</a>
+        </div>
+    </section>
+</main>
 
     <footer role="contentinfo">
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
@@ -902,156 +1090,763 @@ position: relative;
     </footer>
 
 <script>
-const $ = (id) => document.getElementById(id);
-const toggleClass = (el, className) => el.classList.toggle(className);
-
-// Theme Toggle
-const themeToggle = $('themeToggle');
-const themeIcon = themeToggle.querySelector('i');
-themeToggle.addEventListener('click', () => {
-    const isLight = toggleClass(document.body, 'light-theme');
-    themeIcon.className = `fas fa-${isLight ? 'sun' : 'moon'}`;
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-});
-if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light-theme');
-    themeIcon.className = 'fas fa-sun';
-}
-
-// Mobile Menu
-const mobileMenu = $('mobileMenuBtn');
-const mainNav = $('mainNav');
-mobileMenu.addEventListener('click', () => {
-    const isActive = toggleClass(mainNav, 'active');
-    mobileMenu.setAttribute('aria-expanded', isActive);
-    document.body.style.overflow = isActive ? 'hidden' : '';
-});
-
-document.addEventListener('click', (e) => {
-    if (!mainNav.contains(e.target) && !mobileMenu.contains(e.target)) {
-        mainNav.classList.remove('active');
-        document.body.style.overflow = '';
+<style>
+    :root {
+        --primary: #0d0d1a;
+        --secondary: #1a1a33;
+        --accent: #ff5e78;
+        --text: #f0e6ff;
+        --highlight: #2a4066;
+        --success: #5cb85c;
+        --warning: #ffca28;
+        --danger: #ff4444;
+        --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+        --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        --border-radius: 12px;
+        --header-height: 70px;
     }
-});
 
-// Sidebar
-const activeUsers = $('activeUsers');
-$('showUsersBtn').addEventListener('click', () => toggleClass(activeUsers, 'active'));
-$('closeUsers').addEventListener('click', () => toggleClass(activeUsers, 'active'));
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
 
-// Debate Voting
-document.querySelectorAll('.debate-actions button').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        if (btn.classList.contains('voted')) {
-            e.preventDefault();
-            return;
+    body {
+        background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    body.light-theme {
+        --primary: #f0f0f5;
+        --secondary: #e0e0eb;
+        --text: #1a1a33;
+        --accent: #e63950;
+        background: linear-gradient(180deg, var(--primary), rgba(240, 240, 245, 0.8));
+    }
+
+    main {
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: var(--gradient-accent);
+        color: var(--primary);
+        border: none;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+    .btn:hover, .btn-primary:hover, .btn-outline:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .btn-outline:hover {
+        background: var(--accent);
+        color: var(--primary);
+    }
+
+    #freeSoulBtn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    #freeSoulBtn[data-state="unlocked"] {
+        border-color: var(--success);
+        background: rgba(92, 184, 92, 0.1);
+    }
+
+    .soul-status {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: var(--gradient-accent);
+        transition: width 2s ease;
+        z-index: -1;
+    }
+
+    .fa-lock-open {
+        color: var(--success);
+    }
+
+    #freeSoulBtn.loading .soul-status {
+        width: 100%;
+    }
+
+    header {
+        background: var(--gradient-secondary);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--accent);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .logo i {
+        color: var(--accent);
+        font-size: 2.2rem;
+        animation: pulseGlow 2s infinite;
+    }
+
+    .logo h1 {
+        font-size: 1.8rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .title-stack { display: flex; flex-direction: column; }
+    .short-title { display: none; }
+
+    nav ul {
+        display: flex;
+        gap: 1.8rem;
+        list-style: none;
+    }
+
+    nav a {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+        position: relative;
+        transition: var(--transition);
+        scroll-behavior: smooth;
+    }
+
+    nav a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: var(--transition);
+    }
+
+    nav a:hover::after { width: 100%; }
+
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .hero {
+        background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.7));
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 2rem;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+    }
+
+    .censorship-warning {
+        background: rgba(255, 68, 68, 0.1);
+        padding: 1rem;
+        text-align: center;
+        margin: 2rem 0;
+        border-left: 5px solid var(--danger);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 100px;
+        height: 3px;
+        background: var(--accent);
+        transform: translateX(-50%);
+    }
+
+    .features {
+        padding: 5rem 2rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(13, 13, 26, 0.6), rgba(26, 26, 51, 0.4));
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
+        max-width: 1440px;
+        margin: 3rem auto;
+    }
+
+    .feature-card {
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 94, 120, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 94, 120, 0.15), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        z-index: -1;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: var(--shadow);
+        border-color: var(--accent);
+    }
+
+    .feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .feature-card i {
+        font-size: 2.8rem;
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        transition: var(--transition);
+    }
+
+    .feature-card:hover i {
+        transform: scale(1.1);
+        color: var(--warning);
+    }
+
+    .feature-card h3 {
+        font-size: 1.6rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .feature-card p {
+        font-size: 1rem;
+        color: var(--text);
+        opacity: 0.9;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-weight: 400;
+        transition: var(--transition);
+    }
+
+    .feature-card:hover p {
+        opacity: 1;
+        color: var(--text);
+    }
+
+    .feature-card .spacer {
+        flex-grow: 1;
+    }
+
+    .feature-card .btn-primary {
+        background: var(--gradient-accent);
+        padding: 0.7rem 1.5rem;
+        transition: var(--transition);
+        align-self: center;
+    }
+
+    .feature-card:hover .btn-primary {
+        background: linear-gradient(45deg, var(--warning), var(--accent));
+        transform: translateY(-3px);
+    }
+
+    body.light-theme .feature-card {
+        background: linear-gradient(135deg, rgba(224, 224, 235, 0.95), rgba(240, 240, 245, 0.85));
+        border-color: rgba(230, 57, 80, 0.3);
+    }
+
+    body.light-theme .feature-card::before {
+        background: radial-gradient(circle, rgba(230, 57, 80, 0.15), transparent 70%);
+    }
+
+    body.light-theme .feature-card p {
+        color: var(--highlight);
+        opacity: 0.85;
+    }
+
+    body.light-theme .feature-card:hover p {
+        color: var(--accent);
+    }
+
+    .highlights {
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(13, 13, 26, 0.5), rgba(26, 26, 51, 0.3));
+    }
+
+    .highlight-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        max-width: 1440px;
+        margin: 2rem auto;
+        position: relative;
+    }
+
+    .highlight-grid .btn-primary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 200px;
+        margin: 1rem auto 0;
+        padding: 0.7rem 1.5rem;
+    }
+
+    .debate-arena {
+        padding: 4rem 2rem;
+        background: linear-gradient(to bottom, rgba(26, 26, 51, 0.9), rgba(13, 13, 26, 0.7));
+        border: 1px solid rgba(255, 94, 120, 0.4);
+        border-radius: var(--border-radius);
+        margin: 2rem auto;
+        max-width: 1440px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .debate-arena .debate-topic {
+        font-size: 1.8rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .debate-arena p {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .debate-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .mindmap-section {
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(13, 13, 26, 0.5), rgba(26, 26, 51, 0.3));
+    }
+
+    .mindmap-section .mindmap-preview {
+        height: 500px;
+        background: var(--gradient-secondary);
+        border-radius: var(--border-radius);
+        position: relative;
+        margin: 2rem auto;
+        border: 1px solid rgba(255, 94, 120, 0.4);
+        max-width: 1440px;
+    }
+
+    .mindmap-section .btn-primary {
+        display: block;
+        margin: 1rem auto;
+        text-align: center;
+    }
+
+    body.light-theme .highlights,
+    body.light-theme .mindmap-section {
+        background: linear-gradient(to bottom, rgba(240, 240, 245, 0.5), rgba(224, 224, 235, 0.3));
+    }
+
+    body.light-theme .debate-arena {
+        background: linear-gradient(to bottom, rgba(224, 224, 235, 0.9), rgba(240, 240, 245, 0.7));
+        border-color: rgba(230, 57, 80, 0.4);
+    }
+
+    .highlight-item {
+        background: rgba(255, 94, 120, 0.1);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--accent);
+    }
+
+    .highlight-item h4 { color: var(--warning); }
+    .highlight-item .author { color: var(--success); font-style: italic; }
+
+    .mindmap-node {
+        position: absolute;
+        background: var(--accent);
+        color: var(--text);
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        animation: floatEternal 4s ease-in-out infinite;
+        z-index: 3;
+    }
+
+    .mindmap-node:hover {
+        transform: scale(1.1);
+        animation-play-state: paused;
+        z-index: 4;
+    }
+
+    .main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .node-truth { top: 25%; left: 25%; }
+    .node-freedom { top: 25%; left: 75%; }
+    .node-eternity { top: 75%; left: 25%; }
+    .node-unity { top: 75%; left: 75%; }
+
+    .mindmap-line {
+        position: absolute;
+        background: var(--accent);
+        height: 3px;
+        width: 141px;
+        top: 50%;
+        left: 50%;
+    }
+
+    .line-1 { transform: rotate(135deg); }
+    .line-2 { transform: rotate(45deg); }
+    .line-3 { transform: rotate(225deg); }
+    .line-4 { transform: rotate(315deg); }
+
+    .debate-position {
+        background: rgba(255, 94, 120, 0.1);
+        padding: 1.8rem;
+        border-radius: var(--border-radius);
+        border-left: 4px solid var(--accent);
+        transition: var(--transition);
+    }
+
+    .debate-position:hover { transform: translateY(-5px); }
+    .vote-count { color: var(--success); margin-left: 0.5rem; }
+
+    .active-users {
+        position: fixed;
+        right: -300px;
+        top: var(--header-height);
+        width: 300px;
+        height: calc(100vh - var(--header-height));
+        background: var(--gradient-secondary);
+        padding: 1.5rem;
+        transition: right 0.3s ease;
+        z-index: 2147483647;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        border-left: 3px solid var(--accent);
+    }
+
+    .active-users.active { right: 0; }
+
+    .active-users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 94, 120, 0.4);
+        padding-bottom: 0.5rem;
+    }
+
+    .active-users-header h3 {
+        font-size: 1.4rem;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .online-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--success);
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+
+    .profile-preview {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 94, 120, 0.1);
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        transition: var(--transition);
+    }
+
+    .profile-preview:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow);
+    }
+
+    .profile-preview img {
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        loading: lazy;
+    }
+
+    .profile-preview a {
+        color: var(--text);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .profile-preview a:hover { color: var(--accent); }
+
+    .profile-preview .status {
+        font-size: 0.9rem;
+        color: var(--highlight);
+    }
+
+    .close-sidebar {
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .show-users-btn, .theme-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--secondary);
+        border: none;
+        padding: 0.8rem;
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--text);
+        z-index: 250;
+        transition: var(--transition);
+    }
+
+    .show-users-btn { bottom: 70px; }
+
+    footer {
+        background: var(--gradient-secondary);
+        text-align: center;
+        border-top: 3px solid var(--accent);
+        padding: 3rem 2rem;
+        margin-top: auto;
+    }
+
+    .social-links {
+        margin: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .social-links a {
+        color: var(--text);
+        font-size: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .social-links a:hover { color: var(--accent); }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 13, 26, 0.9);
+        z-index: 10000;
+    }
+
+    .auth-modal {
+        background: var(--gradient-secondary);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        max-width: 400px;
+        margin: 10% auto;
+        position: relative;
+        box-shadow: var(--shadow);
+    }
+
+    .auth-modal h3 {
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: var(--accent);
+    }
+
+    .auth-modal input[type="text"],
+    .auth-modal input[type="password"] {
+        width: 100%;
+        padding: 0.8rem;
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--accent);
+        border-radius: var(--border-radius);
+        color: var(--text);
+    }
+
+    .auth-modal .modal-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .auth-modal button {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .auth-modal button[type="submit"] {
+        background: var(--gradient-accent);
+        color: var(--primary);
+    }
+
+    .auth-modal button[type="button"] {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+    .auth-modal button:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .soul-particle {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: soulFloat ease-out forwards;
+        pointer-events: none;
+        z-index: 1000;
+    }
+
+    @keyframes soulFloat {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    @media (max-width: 768px) {
+        header { padding: 1rem; }
+        .title-stack { display: none; }
+        .short-title { display: block; }
+        .mobile-menu-btn { display: block; }
+        nav#mainNav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: var(--secondary);
+            padding: 1rem;
         }
-        const voteCount = btn.nextElementSibling;
-        voteCount.textContent = `${parseInt(voteCount.textContent) + 1} Votes`;
-        btn.classList.add('voted');
-    });
-});
-
-// Header Height Adjustment
-const header = document.querySelector('header');
-const sidebar = $('activeUsers');
-function updateHeaderHeight() {
-    const headerHeight = header.offsetHeight;
-    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-}
-updateHeaderHeight();
-window.addEventListener('resize', updateHeaderHeight);
-
-// Authentication Flow
-const authFlow = {
-    initialize() {
-        const btn = $('freeSoulBtn');
-        if (!btn) {
-            console.error('Free Your Soul button not found');
-            return;
-        }
-        console.log('Initializing auth flow...');
-        this.checkAuthState();
-        btn.addEventListener('click', () => this.handleAuthFlow());
-        console.log('Event listener attached to Free Your Soul button');
-    },
-
-    handleAuthFlow() {
-        const btn = $('freeSoulBtn');
-        if (!btn) return;
-        const state = btn.dataset.state;
-        console.log('Button state on click:', state);
-        if (state === 'locked') {
-            window.location.href = '/pages/auth.html?mode=login';
-        } else if (state === 'unlocked') {
-            this.lockSoul();
-        } else {
-            console.error('Unknown button state:', state);
-        }
-    },
-
-    lockSoul() {
-        localStorage.removeItem('sessionToken');
-        this.setAuthState(false);
-        console.log('Logged out successfully');
-    },
-
-    setAuthState(authenticated) {
-        const btn = $('freeSoulBtn');
-        if (!btn) {
-            console.error('Free Your Soul button not found in setAuthState');
-            return;
-        }
-        const icon = btn.querySelector('i[class*="fa"]'); // More flexible selector
-        const text = btn.querySelector('.btn-text');
-
-        if (!icon) {
-            console.warn('Icon not found in button; proceeding with text update');
-        }
-        if (!text) {
-            console.error('Text not found in button; cannot update state');
-            return;
-        }
-
-        btn.dataset.state = authenticated ? 'unlocked' : 'locked';
-        if (icon) {
-            icon.className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
-        }
-        text.textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
-        console.log('Auth state set to:', authenticated ? 'unlocked' : 'locked');
-    },
-
-    checkAuthState() {
-        const sessionToken = localStorage.getItem('sessionToken');
-        console.log('Checking auth state - sessionToken:', sessionToken);
-        this.setAuthState(!!sessionToken);
-    },
-
-    createSoulParticles() {
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'soul-particle';
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.animationDuration = `${Math.random() * 2 + 1}s`;
-            document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), 2000);
+        nav#mainNav.active { display: block; }
+        nav ul { flex-direction: column; gap: 1.2rem; }
+        .auth-buttons { display: none; }
+        .hero { min-height: 50vh; padding: 2rem; }
+        .hero h1 { font-size: 2.5rem; }
+        .features { padding: 2rem; }
+        .auth-modal {
+            width: 90%;
+            margin: 20% auto;
         }
     }
-};
 
-// Run after DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded, running authFlow.initialize');
-    authFlow.initialize();
-});
+    @keyframes eternalGlow {
+        0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
+        50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
+    }
 
-// Debug Font Awesome loading
-const faLink = document.querySelector('link[href*="font-awesome"]');
-if (faLink) {
-    faLink.addEventListener('load', () => console.log('Font Awesome CSS loaded'));
-} else {
-    console.warn('Font Awesome link not found');
-}
+    @keyframes pulseGlow {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    @keyframes floatEternal {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+</style>
 </script>
 </body>
 </html>

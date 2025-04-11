@@ -272,6 +272,32 @@
             box-shadow: var(--shadow);
         }
 
+.feature-card p {
+    font-size: 1rem; /* Slightly larger than default for readability */
+    color: var(--text); /* Keep #f0e6ff, but we’ll enhance it */
+    opacity: 0.9; /* Subtle fade for depth */
+    margin: 1rem 0; /* Space above and below */
+    line-height: 1.8; /* Taller than body’s 1.6 for elegance */
+    font-weight: 400; /* Light but not too thin */
+    transition: var(--transition); /* Smooth hover effect */
+}
+
+.feature-card:hover p {
+    opacity: 1; /* Full brightness on hover */
+    color: var(--highlight); /* Shift to #2a4066 (or a lighter shade in light theme) for contrast */
+}
+
+/* Light Theme Adjustment */
+body.light-theme .feature-card p {
+    color: var(--highlight); /* Darker #2a4066 for contrast on light bg */
+    opacity: 0.85;
+}
+
+body.light-theme .feature-card:hover p {
+    opacity: 1;
+    color: var(--accent); /* #e63950 for pop */
+}
+
         .feature-card i {
             font-size: 2.5rem;
             color: var(--accent);
