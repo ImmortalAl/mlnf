@@ -970,6 +970,7 @@ const authFlow = {
             console.error('Free Your Soul button not found');
             return;
         }
+        console.log('Initializing auth flow...');
         this.checkAuthState();
         btn.addEventListener('click', () => this.handleAuthFlow());
     },
@@ -978,9 +979,9 @@ const authFlow = {
         const btn = $('freeSoulBtn');
         if (!btn) return;
         const state = btn.dataset.state;
-        console.log('Button state on click:', state); // Debugging
+        console.log('Button state on click:', state);
         if (state === 'locked') {
-            window.location.href = '/pages/auth.html?mode=login'; // Redirect to auth page
+            window.location.href = '/pages/auth.html?mode=login';
         } else if (state === 'unlocked') {
             this.lockSoul();
         } else {
@@ -1011,10 +1012,12 @@ const authFlow = {
         btn.dataset.state = authenticated ? 'unlocked' : 'locked';
         icon.className = authenticated ? 'fas fa-lock-open' : 'fas fa-lock';
         text.textContent = authenticated ? 'Lock Soul' : 'Free Your Soul';
+        console.log('Auth state set to:', authenticated ? 'unlocked' : 'locked');
     },
 
     checkAuthState() {
         const sessionToken = localStorage.getItem('sessionToken');
+        console.log('Checking auth state - sessionToken:', sessionToken);
         this.setAuthState(!!sessionToken);
     },
 
@@ -1034,7 +1037,5 @@ const authFlow = {
 document.addEventListener('DOMContentLoaded', () => {
     authFlow.initialize();
 });
-    </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92e7b360a9aa6743',t:'MTc0NDM0NTMyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
