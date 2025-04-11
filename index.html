@@ -915,61 +915,76 @@ position: relative;
     </footer>
 
     <script>
-        const $ = (id) => document.getElementById(id);
-        const toggleClass = (el, className) => el.classList.toggle(className);
+const $ = (id) => document.getElementById(id);
+const toggleClass = (el, className) => el.classList.toggle(className);
 
-        // Theme Toggle
-        const themeToggle = $('themeToggle');
-        const themeIcon = themeToggle.querySelector('i');
-        themeToggle.addEventListener('click', () => {
-            const isLight = toggleClass(document.body, 'light-theme');
-            themeIcon.className = `fas fa-${isLight ? 'sun' : 'moon'}`;
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        });
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-theme');
-            themeIcon.className = 'fas fa-sun';
+// Theme Toggle
+const themeToggle = $('themeToggle');
+const themeIcon = themeToggle.querySelector('i');
+themeToggle.addEventListener('click', () => {
+    const isLight = toggleClass(document.body, 'light-theme');
+    themeIcon.className = `fas fa-${isLight ? 'sun' : 'moon'}`;
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-theme');
+    themeIcon.className = 'fas fa-sun';
+}
+
+// Mobile Menu
+const mobileMenu = $('mobileMenuBtn');
+const mainNav = $('mainNav');
+mobileMenu.addEventListener('click', () => {
+    const isActive = toggleClass(mainNav, 'active');
+    mobileMenu.setAttribute('aria-expanded', isActive);
+    document.body.style.overflow = isActive ? 'hidden' : '';
+});
+
+document.addEventListener('click', (e) => {
+    if (!mainNav.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mainNav.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+});
+
+// Sidebar
+const activeUsers = $('activeUsers');
+$('showUsersBtn').addEventListener('click', () => toggleClass(activeUsers, 'active'));
+$('closeUsers').addEventListener('click', () => toggleClass(activeUsers, 'active'));
+
+// Debate Voting
+document.querySelectorAll('.debate-actions button').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        if (btn.classList.contains('voted')) {
+            e.preventDefault();
+            return;
         }
+        const voteCount = btn.nextElementSibling;
+        voteCount.textContent = `${parseInt(voteCount.textContent) + 1} Votes`;
+        btn.classList.add('voted');
+    });
+});
 
-        // Mobile Menu
-        const mobileMenu = $('mobileMenuBtn');
-        const mainNav = $('mainNav');
-        mobileMenu.addEventListener('click', () => {
-            const isActive = toggleClass(mainNav, 'active');
-            mobileMenu.setAttribute('aria-expanded', isActive);
-            document.body.style.overflow = isActive ? 'hidden' : '';
-        });
+// Header Height Adjustment
+const header = document.querySelector('header');
+const sidebar = $('activeUsers');
+function updateHeaderHeight() {
+    const headerHeight = header.offsetHeight;
+    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+}
+updateHeaderHeight();
+window.addEventListener('resize', updateHeaderHeight);
 
-        document.addEventListener('click', (e) => {
-            if (!mainNav.contains(e.target) && !mobileMenu.contains(e.target)) {
-                mainNav.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-
-        // Sidebar
-        const activeUsers = $('activeUsers');
-        $('showUsersBtn').addEventListener('click', () => toggleClass(activeUsers, 'active'));
-        $('closeUsers').addEventListener('click', () => toggleClass(activeUsers, 'active'));
-
-        // Debate Voting
-        document.querySelectorAll('.debate-actions button').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (btn.classList.contains('voted')) {
-                    e.preventDefault();
-                    return;
-                }
-                const voteCount = btn.nextElementSibling;
-                voteCount.textContent = `${parseInt(voteCount.textContent) + 1} Votes`;
-                btn.classList.add('voted');
-            });
-        });
-
-        // Authentication Flow
-        const authFlow = {
+// Authentication Flow
+const authFlow = {
     async initialize() {
         this.checkAuthState();
-        $('freeSoulBtn').addEventListener('click', () => this.handleAuthFlow());
+        const freeSoulBtn = $('freeSoulBtn');
+        if (freeSoulBtn) {
+            freeSoulBtn.addEventListener('click', () => this.handleAuthFlow());
+        } else {
+            console.error('Free Your Soul button not found');
+        }
     },
 
     async handleAuthFlow() {
@@ -1012,6 +1027,7 @@ position: relative;
     async lockSoul() {
         localStorage.removeItem('sessionToken');
         this.setAuthState(false);
+        console.log('Logged out successfully'); // Debugging
     },
 
     setAuthState(authenticated) {
@@ -1058,23 +1074,6 @@ position: relative;
 };
 
 authFlow.initialize();
-
-        authFlow.initialize();
-// Select the header and sidebar elements
-const header = document.querySelector('header');
-const sidebar = document.getElementById('activeUsers');
-
-// Function to update the header height CSS variable
-function updateHeaderHeight() {
-    const headerHeight = header.offsetHeight;
-    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-}
-
-// Initial update
-updateHeaderHeight();
-
-// Update on window resize
-window.addEventListener('resize', updateHeaderHeight);
     </script>
 </body>
 </html>

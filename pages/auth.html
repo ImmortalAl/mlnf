@@ -137,70 +137,80 @@
   </div>
 
   <script>
-    const $ = (id) => document.getElementById(id);
-    const form = $('auth-form');
-    const title = $('form-title');
-    const button = $('submit-btn');
-    const toggleLink = $('toggle-link');
-    const message = $('message');
-    let isSignup = true;
+ const $ = (id) => document.getElementById(id);
+const form = $('auth-form');
+const title = $('form-title');
+const button = $('submit-btn');
+const toggleLink = $('toggle-link');
+const message = $('message');
+let isSignup = true;
 
-    const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+const API_BASE_URL = 'https://mlnf-auth.onrender.com';
 
-    // Handle mode from URL query parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode');
-    if (mode === 'signup') {
-      isSignup = true;
-      title.textContent = 'Sign Up';
-      button.textContent = 'Sign Up';
-      toggleLink.textContent = 'Log In';
-    } else if (mode === 'login') {
-      isSignup = false;
-      title.textContent = 'Log In';
-      button.textContent = 'Log In';
-      toggleLink.textContent = 'Sign Up';
-    }
+// Handle mode from URL query parameter
+const urlParams = new URLSearchParams(window.location.search);
+const mode = urlParams.get('mode');
+if (mode === 'signup') {
+    isSignup = true;
+    title.textContent = 'Sign Up';
+    button.textContent = 'Sign Up';
+    toggleLink.textContent = 'Log In';
+} else if (mode === 'login') {
+    isSignup = false;
+    title.textContent = 'Log In';
+    button.textContent = 'Log In';
+    toggleLink.textContent = 'Sign Up';
+}
 
-    toggleLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      isSignup = !isSignup;
-      title.textContent = isSignup ? 'Sign Up' : 'Log In';
-      button.textContent = isSignup ? 'Sign Up' : 'Log In';
-      toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
-      message.textContent = '';
-    });
+toggleLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    isSignup = !isSignup;
+    title.textContent = isSignup ? 'Sign Up' : 'Log In';
+    button.textContent = isSignup ? 'Sign Up' : 'Log In';
+    toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
+    message.textContent = '';
+});
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = $('username').value;
-      const password = $('password').value;
-      const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = $('username').value.trim();
+    const password = $('password').value.trim();
+    const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
 
-      try {
+    // Show loading state
+    button.disabled = true;
+    button.textContent = isSignup ? 'Signing Up...' : 'Logging In...';
+    message.textContent = '';
+
+    try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-          credentials: 'include',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include',
         });
+
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.error || 'Something went wrong');
 
-        localStorage.setItem('sessionToken', data.token); // Consistent with index.html
+        localStorage.setItem('sessionToken', data.token);
         message.className = 'message success';
         message.textContent = data.message || (isSignup ? 'Registration successful!' : 'Login successful!');
         form.reset();
 
         const redirectUrl = isSignup ? '/pages/profile-setup.html' : '/pages/profiles.html';
-        setTimeout(() => window.location.href = redirectUrl, 1000);
-      } catch (error) {
+        setTimeout(() => window.location.href = redirectUrl, 500); // Reduced from 1000ms
+    } catch (error) {
         console.error('Auth error:', error);
         message.className = 'message error';
         message.textContent = error.message || 'Network error - please try again';
-      }
-    });
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        button.textContent = isSignup ? 'Sign Up' : 'Log In';
+    }
+});
   </script>
 </body>
 </html>
