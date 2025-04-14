@@ -72,6 +72,4 @@ Community features and user interaction are not yet implemented.
 The subpages have not been developed. 
 
 Todo: 
-On the front page, we need to do something with the "free your soul button".
 We need to do something with the buttons "embrace immortality" and "seek liberation".
-Develop the authentication page.
