@@ -15,22 +15,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    :root {
-        --primary: #0d0d1a;
-        --secondary: #1a1a33;
-        --accent: #ff5e78;
-        --text: #f0e6ff;
-        --highlight: #2a4066;
-        --success: #5cb85c;
-        --warning: #ffca28;
-        --danger: #ff4444;
-        --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
-        --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-        --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        --border-radius: 12px;
-        --header-height: 70px;
-    }
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --danger: #ff4444;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+            --header-height: 70px;
+}
 
     * {
         margin: 0;
@@ -210,6 +210,17 @@
     body.light-theme .social-links a:hover {
         color: var(--accent);
     }
+
+        .modal-loading {
+            text-align: center;
+            padding: 1rem;
+            color: var(--highlight);
+        }
+        .modal-error {
+            color: var(--danger);
+            text-align: center;
+            padding: 0.5rem;
+        }
 
     /* Rest of the original styles */
     main {
@@ -1046,49 +1057,30 @@
 </head>
 <body>
      <!-- Active Users Sidebar -->
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3>Eternal Seekers</h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
-        <div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#ImmortalAl">ImmortalAl</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Defending free speech</p>
-                </div>
-            </div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#FreeSoul">FreeSoul</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Seeking eternal liberty</p>
-                </div>
-            </div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#EternalVoice">EternalVoice</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Echoing truth</p>
-                </div>
-            </div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#TruthSeeker">TruthSeeker</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Unveiling hidden narratives</p>
-                </div>
-            </div>
-        </div>
+        <div id="userList"></div>
     </aside>
 
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+
+<div class="modal" id="messageModal">
+        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Message <span id="recipientName"></span></h3>
+            <div id="messageHistory" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;"></div>
+            <form id="messageForm">
+                <input type="text" id="messageInput" placeholder="Type your message" required>
+                <div class="modal-actions">
+                    <button type="submit">Send</button>
+                    <button type="button" id="closeMessageModal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <header>
         <div class="logo">
@@ -1364,185 +1356,330 @@
     </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const showUsersBtn = document.getElementById('showUsersBtn');
-    const activeUsers = document.getElementById('activeUsers');
-    const closeUsers = document.getElementById('closeUsers');
-    const themeToggle = document.getElementById('themeToggle');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mainNav = document.getElementById('mainNav');
-    const freeSoulBtn = document.getElementById('freeSoulBtn');
-    const joinEternityBtn = document.querySelector('.auth-buttons .btn-primary');
-    const API_BASE_URL = 'https://mlnf-auth.onrender.com';
-    const heroSection = document.querySelector('.hero');
+    document.addEventListener('DOMContentLoaded', () => {
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const activeUsers = document.getElementById('activeUsers');
+        const closeUsers = document.getElementById('closeUsers');
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        const freeSoulBtn = document.getElementById('freeSoulBtn');
+        const joinEternityBtn = document.querySelector('.auth-buttons .btn-primary');
+        const userList = document.getElementById('userList');
+        const messageModal = document.getElementById('messageModal');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const messageHistory = document.getElementById('messageHistory');
+        const recipientName = document.getElementById('recipientName');
+        const closeMessageModal = document.getElementById('closeMessageModal');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const heroSection = document.querySelector('.hero');
+        let currentRecipient = '';
 
-    // Create mystical particles
-    function createParticles() {
-        const colors = [
-            getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
-            getComputedStyle(document.documentElement).getPropertyValue('--warning').trim(),
-            getComputedStyle(document.documentElement).getPropertyValue('--success').trim()
-        ];
-        
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            
-            // Random size between 2px and 6px
-            const size = Math.random() * 4 + 2;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            
-            // Random position
-            const xPos = Math.random() * 100;
-            particle.style.left = `${xPos}vw`;
-            
-            // Random color
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.background = color;
-            
-            // Random animation duration (5-15s)
-            const duration = Math.random() * 10 + 5;
-            particle.style.animationDuration = `${duration}s`;
-            
-            // Random delay
-            const delay = Math.random() * 5;
-            particle.style.animationDelay = `${delay}s`;
-            
-            // Random opacity
-            const opacity = Math.random() * 0.5 + 0.3;
-            particle.style.opacity = opacity;
-            
-            // Add glow effect
-            particle.style.boxShadow = `0 0 ${size*2}px ${size/2}px ${color}`;
-            
-            heroSection.appendChild(particle);
+        // Create mystical particles
+        function createParticles() {
+            const colors = [
+                getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--warning').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--success').trim()
+            ];
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                const xPos = Math.random() * 100;
+                particle.style.left = `${xPos}vw`;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = color;
+                const duration = Math.random() * 10 + 5;
+                particle.style.animationDuration = `${duration}s`;
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                const opacity = Math.random() * 0.5 + 0.3;
+                particle.style.opacity = opacity;
+                particle.style.boxShadow = `0 0 ${size*2}px ${size/2}px ${color}`;
+                heroSection.appendChild(particle);
+            }
         }
-    }
+        createParticles();
 
-    // Initialize particles
-    createParticles();
+        // Toggle active users sidebar
+        showUsersBtn.addEventListener('click', () => {
+            activeUsers.classList.toggle('active');
+            if (activeUsers.classList.contains('active')) {
+                fetchOnlineUsers();
+            }
+        });
 
-    // Toggle active users sidebar
-    showUsersBtn.addEventListener('click', () => {
-        activeUsers.classList.toggle('active');
-    });
+        closeUsers.addEventListener('click', () => {
+            activeUsers.classList.remove('active');
+        });
 
-    closeUsers.addEventListener('click', () => {
-        activeUsers.classList.remove('active');
-    });
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            const isLightTheme = document.body.classList.contains('light-theme');
+            themeToggle.querySelector('i').className = isLightTheme ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
+        });
 
-    // Toggle theme
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        const isLightTheme = document.body.classList.contains('light-theme');
-        themeToggle.querySelector('i').className = isLightTheme ? 'fas fa-sun' : 'fas fa-moon';
-        localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
-    });
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        themeToggle.querySelector('i').className = 'fas fa-sun';
-    }
-
-    // Toggle mobile menu
-    mobileMenuBtn.addEventListener('click', () => {
-        mainNav.classList.toggle('active');
-    });
-
-    // Check authentication status
-    function updateAuthUI() {
-        const token = localStorage.getItem('sessionToken');
-        if (token) {
-            freeSoulBtn.dataset.state = 'unlocked';
-            freeSoulBtn.querySelector('i').className = 'fas fa-lock-open';
-            freeSoulBtn.querySelector('.btn-text').textContent = 'Lock Soul';
-            joinEternityBtn.textContent = 'Profile';
-            joinEternityBtn.href = '/pages/profiles.html';
-        } else {
-            freeSoulBtn.dataset.state = 'locked';
-            freeSoulBtn.querySelector('i').className = 'fas fa-lock';
-            freeSoulBtn.querySelector('.btn-text').textContent = 'Free Your Soul';
-            joinEternityBtn.textContent = 'Join Eternity';
-            joinEternityBtn.href = '/pages/auth.html';
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            themeToggle.querySelector('i').className = 'fas fa-sun';
         }
-    }
 
-    // Initial check
-    updateAuthUI();
+        // Toggle mobile menu
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+        });
 
-    // Handle free soul button click (login/logout)
-    freeSoulBtn.addEventListener('click', async () => {
-        const token = localStorage.getItem('sessionToken');
-        
-        if (token) {
-            // Logout
+        // Check authentication status
+        function updateAuthUI() {
+            const token = localStorage.getItem('sessionToken');
+            if (token) {
+                freeSoulBtn.dataset.state = 'unlocked';
+                freeSoulBtn.querySelector('i').className = 'fas fa-lock-open';
+                freeSoulBtn.querySelector('.btn-text').textContent = 'Lock Soul';
+                joinEternityBtn.textContent = 'Profile';
+                joinEternityBtn.href = '/pages/profiles.html';
+            } else {
+                freeSoulBtn.dataset.state = 'locked';
+                freeSoulBtn.querySelector('i').className = 'fas fa-lock';
+                freeSoulBtn.querySelector('.btn-text').textContent = 'Free Your Soul';
+                joinEternityBtn.textContent = 'Join Eternity';
+                joinEternityBtn.href = '/pages/auth.html';
+            }
+        }
+        updateAuthUI();
+
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
+                return;
+            }
+            userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers...</p>';
             try {
-                freeSoulBtn.classList.add('loading');
-                await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                const response = await fetch(`${API_BASE_URL}/api/users/online`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const users = await response.json();
+                if (response.ok) {
+                    if (users.length === 0) {
+                        userList.innerHTML = '<p>No seekers are online.</p>';
+                    } else {
+                        userList.innerHTML = users.map(user => `
+                            <div class="profile-preview" data-username="${user.username}">
+                                <img src="${user.avatar}" alt="${user.username}'s avatar" width="40" height="40">
+                                <div>
+                                    <a href="#" class="username-link">${user.username}</a>
+                                    <span class="online-dot" aria-label="Online status"></span>
+                                    <p class="status">${user.status}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                        // Add click listeners for messaging
+                        document.querySelectorAll('.username-link').forEach(link => {
+                            link.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                currentRecipient = e.target.closest('.profile-preview').dataset.username;
+                                openMessageModal(currentRecipient);
+                            });
+                        });
+                    }
+                } else {
+                    userList.innerHTML = `<p class="modal-error">Error: ${users.error || 'Failed to fetch seekers'}</p>`;
+                }
+            } catch (error) {
+                userList.innerHTML = '<p class="modal-error">Failed to connect to server.</p>';
+                console.error('Fetch users error:', error);
+            }
+        }
+
+        // Open messaging modal
+        function openMessageModal(recipient) {
+            recipientName.textContent = recipient;
+            messageHistory.innerHTML = '<p class="modal-loading">Loading eternal messages...</p>';
+            messageModal.style.display = 'block';
+            fetchMessageHistory(recipient);
+        }
+
+        // Close messaging modal
+        closeMessageModal.addEventListener('click', () => {
+            messageModal.style.display = 'none';
+            currentRecipient = '';
+            messageInput.value = '';
+            messageHistory.innerHTML = '';
+        });
+
+        // Fetch message history
+        async function fetchMessageHistory(recipient) {
+            const token = localStorage.getItem('sessionToken');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/messages/history?recipient=${encodeURIComponent(recipient)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const messages = await response.json();
+                if (response.ok) {
+                    if (messages.length === 0) {
+                        messageHistory.innerHTML = '<p>No messages yet. Start the conversation!</p>';
+                    } else {
+                        messageHistory.innerHTML = messages.map(msg => `
+                            <div style="margin-bottom: 0.5rem; text-align: ${msg.sender === recipient ? 'left' : 'right'};">
+                                <strong>${msg.sender}:</strong> ${msg.message}
+                                <small style="display: block; color: var(--highlight);">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                            </div>
+                        `).join('');
+                    }
+                    messageHistory.scrollTop = messageHistory.scrollHeight;
+                } else {
+                    messageHistory.innerHTML = `<p class="modal-error">Error: ${messages.error || 'Failed to fetch messages'}</p>`;
+                }
+            } catch (error) {
+                messageHistory.innerHTML = '<p class="modal-error">Failed to connect to server.</p>';
+                console.error('Fetch messages error:', error);
+            }
+        }
+
+        // Send message
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('sessionToken');
+            const message = messageInput.value.trim();
+            if (!message || !currentRecipient) return;
+            sendMessageBtn.disabled = true;
+            sendMessageBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    credentials: 'include'
+                    body: JSON.stringify({ recipient: currentRecipient, message })
                 });
-                localStorage.removeItem('sessionToken');
-                freeSoulBtn.classList.remove('loading');
-                updateAuthUI();
-                
-                // Create particles for logout
-                for (let i = 0; i < 20; i++) {
-                    createSoulParticle(freeSoulBtn);
+                const data = await response.json();
+                if (data.success) {
+                    messageInput.value = '';
+                    fetchMessageHistory(currentRecipient);
+                } else {
+                    messageHistory.innerHTML += `<p class="modal-error">Error: ${data.error || 'Failed to send message'}</p>`;
                 }
             } catch (error) {
-                console.error('Logout error:', error);
-                freeSoulBtn.classList.remove('loading');
+                messageHistory.innerHTML += '<p class="modal-error">Failed to connect to server.</p>';
+                console.error('Send message error:', error);
+            } finally {
+                sendMessageBtn.disabled = false;
+                sendMessageBtn.textContent = 'Send';
             }
-        } else {
-            // Redirect to login
-            window.location.href = '/pages/auth.html?mode=login';
+        });
+
+        // Handle free soul button click (login/logout)
+        freeSoulBtn.addEventListener('click', async () => {
+            const token = localStorage.getItem('sessionToken');
+            if (token) {
+                // Logout
+                try {
+                    freeSoulBtn.classList.add('loading');
+                    const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.removeItem('sessionToken');
+                        updateAuthUI();
+                        userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
+                        // Create particles for logout
+                        for (let i = 0; i < 20; i++) {
+                            createSoulParticle(freeSoulBtn);
+                        }
+                    } else {
+                        console.error('Logout error:', data.error);
+                    }
+                    freeSoulBtn.classList.remove('loading');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    freeSoulBtn.classList.remove('loading');
+                }
+            } else {
+                // Redirect to login
+                window.location.href = '/pages/auth.html?mode=login';
+            }
+        });
+
+        // Listen for storage changes
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'sessionToken') {
+                updateAuthUI();
+                if (activeUsers.classList.contains('active')) {
+                    fetchOnlineUsers();
+                }
+            }
+        });
+
+        function createSoulParticle(element) {
+            const particle = document.createElement('div');
+            particle.className = 'soul-particle';
+            const rect = element.getBoundingClientRect();
+            const x = rect.left + rect.width/2;
+            const y = rect.top + rect.height/2;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            const duration = Math.random() * 3 + 2;
+            particle.style.animationDuration = `${duration}s`;
+            const colors = [
+                getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--warning').trim()
+            ];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(particle);
+            setTimeout(() => {
+                particle.remove();
+            }, duration * 1000);
         }
     });
-
-    // Listen for storage changes (to sync across tabs)
-    window.addEventListener('storage', (event) => {
-        if (event.key === 'sessionToken') {
-            updateAuthUI();
+    </script>
+    <script>
+    (function(){
+        function c(){
+            var b=a.contentDocument||a.contentWindow.document;
+            if(b){
+                var d=b.createElement('script');
+                d.innerHTML="window.__CF$cv$params={r:'931f0265184ebfd3',t:'MTc0NDkyNTI3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+                b.getElementsByTagName('head')[0].appendChild(d)
+            }
         }
-    });
-
-    function createSoulParticle(element) {
-        const particle = document.createElement('div');
-        particle.className = 'soul-particle';
-        
-        // Position particle at button center
-        const rect = element.getBoundingClientRect();
-        const x = rect.left + rect.width/2;
-        const y = rect.top + rect.height/2;
-        
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-        
-        // Randomize animation duration and delay
-        const duration = Math.random() * 3 + 2;
-        particle.style.animationDuration = `${duration}s`;
-        
-        // Randomize color between accent and warning
-        const colors = [getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), 
-                       getComputedStyle(document.documentElement).getPropertyValue('--warning').trim()];
-        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        
-        document.body.appendChild(particle);
-        
-        // Remove particle after animation completes
-        setTimeout(() => {
-            particle.remove();
-        }, duration * 1000);
-    }
-});
-</script>
+        if(document.body){
+            var a=document.createElement('iframe');
+            a.height=1;
+            a.width=1;
+            a.style.position='absolute';
+            a.style.top=0;
+            a.style.left=0;
+            a.style.border='none';
+            a.style.visibility='hidden';
+            document.body.appendChild(a);
+            if('loading'!==document.readyState)c();
+            else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
+            else{
+                var e=document.onreadystatechange||function(){};
+                document.onreadystatechange=function(b){
+                    e(b);
+                    'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+                }
+            }
+        }
+    })();
+    </script>
 </body>
 </html>

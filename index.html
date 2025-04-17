@@ -12,30 +12,31 @@
     <title>Manifest Liberation, Naturally Free</title>
     <link rel="preconnect" href="https://mlnf-auth.onrender.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    :root {
-        --primary: #0d0d1a;
-        --secondary: #1a1a33;
-        --accent: #ff5e78;
-        --text: #f0e6ff;
-        --highlight: #2a4066;
-        --success: #5cb85c;
-        --warning: #ffca28;
-        --danger: #ff4444;
-        --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
-        --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-        --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        --border-radius: 12px;
-        --header-height: 70px;
-    }
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --danger: #ff4444;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+            --header-height: 70px;
+}
 
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-family: 'Montserrat', system-ui, sans-serif;
     }
 
     body {
@@ -47,30 +48,38 @@
         flex-direction: column;
     }
 
-    /* Enhanced Light Theme */
+    /* Enhanced Light Theme with Better Contrast */
     body.light-theme {
-        --primary: #f8f8ff;  /* Ghost white for better contrast */
-        --secondary: #e8e8f5;  /* Slightly darker for depth */
-        --text: #0d0d1a;  /* Darkened text for better readability */
-        --accent: #c5304d;  /* Deeper, richer accent color */
-        --highlight: #3a3a5c;  /* Adjusted for better contrast */
-        background: linear-gradient(180deg, var(--primary), rgba(248, 248, 255, 0.9)), 
+        --primary: #ffffff;  /* Pure white for maximum contrast */
+        --secondary: #f0f0f5;  /* Very light gray */
+        --text: #1a1a33;  /* Dark blue-gray for high contrast */
+        --accent: #d62d4d;  /* Deeper, richer accent color */
+        --highlight: #3a3a5c;  /* Darker for better contrast */
+        --success: #2e7d32;  /* Darker green */
+        --warning: #ff8f00;  /* Darker orange */
+        --danger: #c62828;  /* Darker red */
+        background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.9)), 
                     url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80&duotone=FFFFFF,CCCCFF') center/cover fixed;
     }
 
-    body.light-theme nav a {
-        color: var(--highlight);
-        text-shadow: none;
+    /* Light Theme Text Contrast */
+    body.light-theme,
+    body.light-theme p,
+    body.light-theme .feature-card p,
+    body.light-theme .highlight-item,
+    body.light-theme .debate-position {
+        color: var(--text);
     }
 
+    /* Light Theme Cards */
     body.light-theme .feature-card {
-        background: linear-gradient(135deg, rgba(232, 232, 245, 0.95), rgba(248, 248, 255, 0.85));
-        border: 1px solid rgba(197, 48, 77, 0.3);
-        box-shadow: 0 5px 15px rgba(13, 13, 26, 0.1);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.95));
+        border: 1px solid rgba(214, 45, 77, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     body.light-theme .feature-card::before {
-        background: radial-gradient(circle, rgba(197, 48, 77, 0.1), transparent 70%);
+        background: radial-gradient(circle, rgba(214, 45, 77, 0.1), transparent 70%);
     }
 
     body.light-theme .feature-card p {
@@ -78,61 +87,25 @@
         opacity: 0.9;
     }
 
+    /* Light Theme Highlights */
     body.light-theme .highlight-item, 
     body.light-theme .debate-position {
-        background: rgba(197, 48, 77, 0.08);
+        background: rgba(214, 45, 77, 0.08);
         border-left-color: var(--accent);
     }
 
+    /* Light Theme Mindmap */
     body.light-theme .mindmap-node {
         background: var(--accent);
         color: var(--primary);
-        text-shadow: 0 0 10px rgba(197, 48, 77, 0.3);
+        text-shadow: 0 0 10px rgba(214, 45, 77, 0.3);
     }
 
     body.light-theme .mindmap-line {
-        background: rgba(197, 48, 77, 0.4);
+        background: rgba(214, 45, 77, 0.4);
     }
 
-    body.light-theme .soul-status {
-        background: linear-gradient(45deg, var(--accent), #d35400);
-    }
-
-    body.light-theme .censorship-warning {
-        background: rgba(255, 68, 68, 0.08);
-        border-left-color: var(--danger);
-    }
-
-    body.light-theme .active-users {
-        background: linear-gradient(to bottom, rgba(232, 232, 245, 0.95), rgba(248, 248, 255, 0.85));
-        border-left-color: var(--accent);
-    }
-
-    body.light-theme .profile-preview {
-        background: rgba(197, 48, 77, 0.05);
-    }
-
-    body.light-theme .logo i {
-        color: var(--accent);
-        animation: pulseGlow 2s infinite alternate;
-    }
-
-    @keyframes parchmentGlow {
-        from { box-shadow: 0 0 20px rgba(197, 48, 77, 0.1); }
-        to { box-shadow: 0 0 30px rgba(197, 48, 77, 0.2); }
-    }
-
-    body.light-theme .feature-card {
-        animation: parchmentGlow 3s ease-in-out infinite alternate;
-    }
-
-    body.light-theme h1, 
-    body.light-theme h2, 
-    body.light-theme h3, 
-    body.light-theme h4 {
-        text-shadow: 0 0 10px rgba(248, 248, 255, 0.7);
-    }
-
+    /* Light Theme Buttons */
     body.light-theme .btn-outline {
         border-color: var(--accent);
         color: var(--accent);
@@ -143,9 +116,9 @@
         color: var(--primary);
     }
 
-    /* Enhanced Navigation for Light Theme */
+    /* Light Theme Navigation */
     body.light-theme nav ul {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         border-radius: var(--border-radius);
         padding: 0.5rem 1rem;
@@ -155,14 +128,11 @@
     body.light-theme nav a {
         color: var(--highlight);
         font-weight: 600;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        transition: var(--transition);
     }
 
     body.light-theme nav a:hover {
         color: var(--accent);
-        background: rgba(197, 48, 77, 0.1);
+        background: rgba(214, 45, 77, 0.1);
     }
 
     body.light-theme nav a::after {
@@ -173,11 +143,84 @@
         color: var(--accent);
     }
 
-    /* Mobile Navigation Enhancements */
-    body.light-theme nav#mainNav.active {
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    /* Light Theme Header */
+    body.light-theme header {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.95));
+        border-bottom: 3px solid var(--accent);
     }
+
+    /* Light Theme Footer */
+    body.light-theme footer {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.95));
+        border-top: 3px solid var(--accent);
+    }
+
+    /* Light Theme Active Users */
+    body.light-theme .active-users {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.95));
+        border-left: 3px solid var(--accent);
+    }
+
+    /* Light Theme Profile Previews */
+    body.light-theme .profile-preview {
+        background: rgba(214, 45, 77, 0.05);
+    }
+
+    /* Light Theme Modal */
+    body.light-theme .auth-modal {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.95));
+    }
+
+    /* Light Theme Inputs */
+    body.light-theme .auth-modal input[type="text"],
+    body.light-theme .auth-modal input[type="password"] {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--accent);
+        color: var(--text);
+    }
+
+    /* Light Theme Hero Section */
+    body.light-theme .hero::before {
+        background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(240, 240, 245, 0.85));
+    }
+
+    /* Light Theme Censorship Warning */
+    body.light-theme .censorship-warning {
+        background: rgba(198, 40, 40, 0.1);
+        border-left: 5px solid var(--danger);
+    }
+
+    /* Light Theme Debate Arena */
+    body.light-theme .debate-arena {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(240, 240, 245, 0.85));
+        border: 1px solid rgba(214, 45, 77, 0.4);
+    }
+
+    /* Light Theme Mindmap Section */
+    body.light-theme .mindmap-section .mindmap-preview {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(240, 240, 245, 0.85));
+        border: 1px solid rgba(214, 45, 77, 0.4);
+    }
+
+    /* Light Theme Social Links */
+    body.light-theme .social-links a {
+        color: var(--highlight);
+    }
+
+    body.light-theme .social-links a:hover {
+        color: var(--accent);
+    }
+
+        .modal-loading {
+            text-align: center;
+            padding: 1rem;
+            color: var(--highlight);
+        }
+        .modal-error {
+            color: var(--danger);
+            text-align: center;
+            padding: 0.5rem;
+        }
 
     /* Rest of the original styles */
     main {
@@ -186,14 +229,14 @@
     }
 
     .btn {
-        padding: 0.6rem 1.2rem;
+        padding: 0.5rem 1rem;
         border-radius: var(--border-radius);
         font-weight: 600;
         cursor: pointer;
         transition: var(--transition);
         text-transform: uppercase;
         letter-spacing: 1px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-decoration: none;
         display: inline-block;
         text-align: center;
@@ -293,6 +336,7 @@
         display: flex;
         gap: 0.5rem;
         list-style: none;
+        flex-wrap: wrap; /* Allow nav items to wrap */
     }
 
     nav a {
@@ -339,7 +383,7 @@
         border: none;
         color: var(--text);
         font-size: 1.5rem;
-        cursor: button;
+        cursor: pointer;
         padding: 0.5rem;
         border-radius: 50%;
         transition: var(--transition);
@@ -349,21 +393,110 @@
         background: rgba(255, 255, 255, 0.1);
     }
 
+    /* Enhanced Hero Section */
     .hero {
-        background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.7));
-        min-height: 80vh;
+        position: relative;
+        min-height: 90vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
         padding: 0 2rem;
+        overflow: hidden;
+        z-index: 2;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(13, 13, 26, 0.85), rgba(26, 26, 51, 0.75));
+        z-index: -1;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        position: relative;
+        z-index: 3;
     }
 
     .hero h1 {
-        font-size: 3.5rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300;
+        font-size: 4rem;
         margin-bottom: 1.5rem;
         text-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+        letter-spacing: -1px;
+        line-height: 1.1;
+        background: linear-gradient(to right, var(--accent), var(--warning));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: eternalGlow 3s ease-in-out infinite alternate;
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        opacity: 0.9;
+        font-weight: 300;
+        letter-spacing: 0.5px;
+        line-height: 1.8;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .hero .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero .btn-primary {
+        background: var(--gradient-accent);
+    }
+
+    .hero .btn-outline {
+        border-width: 2px;
+    }
+
+    /* Mystical Particle Effects */
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 1;
+        animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(100vh) scale(0);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+        80% {
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(-100vh) scale(1);
+            opacity: 0;
+        }
     }
 
     .censorship-warning {
@@ -849,32 +982,6 @@
         100% { transform: translateY(-100vh); opacity: 0; }
     }
 
-    @media (max-width: 768px) {
-        header { padding: 1rem; }
-        .title-stack { display: none; }
-        .short-title { display: block; }
-        .mobile-menu-btn { display: block; }
-        nav#mainNav {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: var(--secondary);
-            padding: 1rem;
-        }
-        nav#mainNav.active { display: block; }
-        nav ul { flex-direction: column; gap: 1.2rem; }
-        .auth-buttons { display: none; }
-        .hero { min-height: 50vh; padding: 2rem; }
-        .hero h1 { font-size: 2.5rem; }
-        .features { padding: 2rem; }
-        .auth-modal {
-            width: 90%;
-            margin: 20% auto;
-        }
-    }
-
     @keyframes eternalGlow {
         0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
         50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
@@ -889,53 +996,91 @@
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-15px); }
     }
+
+    @media (max-width: 1024px) and (min-width: 769px) {
+        header {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        nav#mainNav {
+            flex: 1 1 100%;
+            order: 3;
+        }
+        nav ul {
+            justify-content: center;
+        }
+        .auth-buttons {
+            flex: 1 1 auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        header { 
+            padding: 1rem; 
+            flex-wrap: nowrap;
+        }
+        .title-stack { display: none; }
+        .short-title { display: block; }
+        .mobile-menu-btn { display: block; }
+        nav#mainNav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: var(--secondary);
+            padding: 1rem;
+        }
+        nav#mainNav.active { display: block; }
+        nav ul { 
+            flex-direction: column; 
+            gap: 1.2rem; 
+            flex-wrap: nowrap;
+        }
+        .auth-buttons { display: none; }
+        .hero { min-height: 70vh; padding: 2rem; }
+        .hero h1 { font-size: 2.5rem; }
+        .hero p { font-size: 1.1rem; }
+        .hero-buttons {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .auth-modal {
+            width: 90%;
+            margin: 20% auto;
+        }
+    }
 </style>
 </head>
 <body>
      <!-- Active Users Sidebar -->
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3>Eternal Seekers</h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
-        <div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#ImmortalAl">ImmortalAl</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Defending free speech</p>
-                </div>
-            </div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#FreeSoul">FreeSoul</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Seeking eternal liberty</p>
-                </div>
-            </div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#EternalVoice">EternalVoice</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Echoing truth</p>
-                </div>
-            </div>
-            <div class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar" width="40" height="40">
-                <div>
-                    <a href="pages/profiles.html#TruthSeeker">TruthSeeker</a>
-                    <span class="online-dot" aria-label="Online status"></span>
-                    <p class="status">Unveiling hidden narratives</p>
-                </div>
-            </div>
-        </div>
+        <div id="userList"></div>
     </aside>
 
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+
+<div class="modal" id="messageModal">
+        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Message <span id="recipientName"></span></h3>
+            <div id="messageHistory" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;"></div>
+            <form id="messageForm">
+                <input type="text" id="messageInput" placeholder="Type your message" required>
+                <div class="modal-actions">
+                    <button type="submit">Send</button>
+                    <button type="button" id="closeMessageModal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <header>
         <div class="logo">
@@ -966,7 +1111,6 @@
                 <span class="btn-text">Free Your Soul</span>
                 <div class="soul-status" aria-hidden="true"></div>
             </button>
-          
         </div>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
     </header>
@@ -974,11 +1118,13 @@
     <main>
     <!-- Hero Section -->
     <section class="hero" aria-labelledby="mainHeading">
-        <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
-        <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
-        <div class="hero-buttons">
-            <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
-            <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
+        <div class="hero-content">
+            <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
+            <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
+            <div class="hero-buttons">
+                <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
+                <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
+            </div>
         </div>
     </section>
 
@@ -1162,7 +1308,7 @@
     <section class="mindmap-section" id="mindmap" aria-labelledby="mindmapHeading">
         <div class="section-title">
             <h2 id="mindmapHeading">Infinite Nexus</h2>
-            <p>Our Living Web Binds the Unbound</p>
+        <p>Our Living Web Binds the Unbound</p>
         </div>
         <div class="mindmap-preview" id="mindmapPreview">
             <div class="mindmap-node main">Liberation</div>
@@ -1191,7 +1337,7 @@
                 <p class="author">— FreeSoul</p>
             </div>
             <div class="highlight-item">
-                <h4>Video: Truth Uncut</h4>
+                <h4 Video: Truth Uncut</h4>
                 <p>Raw footage from the April 2025 protests.</p>
                 <p class="author">— EternalVoice</p>
             </div>
@@ -1210,91 +1356,330 @@
     </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const showUsersBtn = document.getElementById('showUsersBtn');
-    const activeUsers = document.getElementById('activeUsers');
-    const closeUsers = document.getElementById('closeUsers');
-    const themeToggle = document.getElementById('themeToggle');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mainNav = document.getElementById('mainNav');
+    document.addEventListener('DOMContentLoaded', () => {
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const activeUsers = document.getElementById('activeUsers');
+        const closeUsers = document.getElementById('closeUsers');
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        const freeSoulBtn = document.getElementById('freeSoulBtn');
+        const joinEternityBtn = document.querySelector('.auth-buttons .btn-primary');
+        const userList = document.getElementById('userList');
+        const messageModal = document.getElementById('messageModal');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const messageHistory = document.getElementById('messageHistory');
+        const recipientName = document.getElementById('recipientName');
+        const closeMessageModal = document.getElementById('closeMessageModal');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const heroSection = document.querySelector('.hero');
+        let currentRecipient = '';
 
-    // Toggle active users sidebar
-    showUsersBtn.addEventListener('click', () => {
-        activeUsers.classList.toggle('active');
-    });
+        // Create mystical particles
+        function createParticles() {
+            const colors = [
+                getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--warning').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--success').trim()
+            ];
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                const xPos = Math.random() * 100;
+                particle.style.left = `${xPos}vw`;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = color;
+                const duration = Math.random() * 10 + 5;
+                particle.style.animationDuration = `${duration}s`;
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                const opacity = Math.random() * 0.5 + 0.3;
+                particle.style.opacity = opacity;
+                particle.style.boxShadow = `0 0 ${size*2}px ${size/2}px ${color}`;
+                heroSection.appendChild(particle);
+            }
+        }
+        createParticles();
 
-    closeUsers.addEventListener('click', () => {
-        activeUsers.classList.remove('active');
-    });
+        // Toggle active users sidebar
+        showUsersBtn.addEventListener('click', () => {
+            activeUsers.classList.toggle('active');
+            if (activeUsers.classList.contains('active')) {
+                fetchOnlineUsers();
+            }
+        });
 
-    // Toggle theme
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        const isLightTheme = document.body.classList.contains('light-theme');
-        themeToggle.querySelector('i').className = isLightTheme ? 'fas fa-sun' : 'fas fa-moon';
-        localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
-    });
+        closeUsers.addEventListener('click', () => {
+            activeUsers.classList.remove('active');
+        });
 
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        themeToggle.querySelector('i').className = 'fas fa-sun';
-    }
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            const isLightTheme = document.body.classList.contains('light-theme');
+            themeToggle.querySelector('i').className = isLightTheme ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
+        });
 
-    // Toggle mobile menu
-    mobileMenuBtn.addEventListener('click', () => {
-        mainNav.classList.toggle('active');
-    });
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            themeToggle.querySelector('i').className = 'fas fa-sun';
+        }
 
-    // Create soul particles on button hover
-    const freeSoulBtn = document.getElementById('freeSoulBtn');
-    freeSoulBtn.addEventListener('mouseenter', () => {
-        if (freeSoulBtn.dataset.state === 'locked') {
-            freeSoulBtn.classList.add('loading');
-            setTimeout(() => {
-                freeSoulBtn.classList.remove('loading');
+        // Toggle mobile menu
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+        });
+
+        // Check authentication status
+        function updateAuthUI() {
+            const token = localStorage.getItem('sessionToken');
+            if (token) {
                 freeSoulBtn.dataset.state = 'unlocked';
                 freeSoulBtn.querySelector('i').className = 'fas fa-lock-open';
-                freeSoulBtn.querySelector('.btn-text').textContent = 'Soul Freed!';
-                
-                // Create celebration particles
-                for (let i = 0; i < 20; i++) {
-                    createSoulParticle(freeSoulBtn);
+                freeSoulBtn.querySelector('.btn-text').textContent = 'Lock Soul';
+                joinEternityBtn.textContent = 'Profile';
+                joinEternityBtn.href = '/pages/profiles.html';
+            } else {
+                freeSoulBtn.dataset.state = 'locked';
+                freeSoulBtn.querySelector('i').className = 'fas fa-lock';
+                freeSoulBtn.querySelector('.btn-text').textContent = 'Free Your Soul';
+                joinEternityBtn.textContent = 'Join Eternity';
+                joinEternityBtn.href = '/pages/auth.html';
+            }
+        }
+        updateAuthUI();
+
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
+                return;
+            }
+            userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers...</p>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/online`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const users = await response.json();
+                if (response.ok) {
+                    if (users.length === 0) {
+                        userList.innerHTML = '<p>No seekers are online.</p>';
+                    } else {
+                        userList.innerHTML = users.map(user => `
+                            <div class="profile-preview" data-username="${user.username}">
+                                <img src="${user.avatar}" alt="${user.username}'s avatar" width="40" height="40">
+                                <div>
+                                    <a href="#" class="username-link">${user.username}</a>
+                                    <span class="online-dot" aria-label="Online status"></span>
+                                    <p class="status">${user.status}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                        // Add click listeners for messaging
+                        document.querySelectorAll('.username-link').forEach(link => {
+                            link.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                currentRecipient = e.target.closest('.profile-preview').dataset.username;
+                                openMessageModal(currentRecipient);
+                            });
+                        });
+                    }
+                } else {
+                    userList.innerHTML = `<p class="modal-error">Error: ${users.error || 'Failed to fetch seekers'}</p>`;
                 }
-            }, 2000);
+            } catch (error) {
+                userList.innerHTML = '<p class="modal-error">Failed to connect to server.</p>';
+                console.error('Fetch users error:', error);
+            }
+        }
+
+        // Open messaging modal
+        function openMessageModal(recipient) {
+            recipientName.textContent = recipient;
+            messageHistory.innerHTML = '<p class="modal-loading">Loading eternal messages...</p>';
+            messageModal.style.display = 'block';
+            fetchMessageHistory(recipient);
+        }
+
+        // Close messaging modal
+        closeMessageModal.addEventListener('click', () => {
+            messageModal.style.display = 'none';
+            currentRecipient = '';
+            messageInput.value = '';
+            messageHistory.innerHTML = '';
+        });
+
+        // Fetch message history
+        async function fetchMessageHistory(recipient) {
+            const token = localStorage.getItem('sessionToken');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/messages/history?recipient=${encodeURIComponent(recipient)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const messages = await response.json();
+                if (response.ok) {
+                    if (messages.length === 0) {
+                        messageHistory.innerHTML = '<p>No messages yet. Start the conversation!</p>';
+                    } else {
+                        messageHistory.innerHTML = messages.map(msg => `
+                            <div style="margin-bottom: 0.5rem; text-align: ${msg.sender === recipient ? 'left' : 'right'};">
+                                <strong>${msg.sender}:</strong> ${msg.message}
+                                <small style="display: block; color: var(--highlight);">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                            </div>
+                        `).join('');
+                    }
+                    messageHistory.scrollTop = messageHistory.scrollHeight;
+                } else {
+                    messageHistory.innerHTML = `<p class="modal-error">Error: ${messages.error || 'Failed to fetch messages'}</p>`;
+                }
+            } catch (error) {
+                messageHistory.innerHTML = '<p class="modal-error">Failed to connect to server.</p>';
+                console.error('Fetch messages error:', error);
+            }
+        }
+
+        // Send message
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('sessionToken');
+            const message = messageInput.value.trim();
+            if (!message || !currentRecipient) return;
+            sendMessageBtn.disabled = true;
+            sendMessageBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ recipient: currentRecipient, message })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    messageInput.value = '';
+                    fetchMessageHistory(currentRecipient);
+                } else {
+                    messageHistory.innerHTML += `<p class="modal-error">Error: ${data.error || 'Failed to send message'}</p>`;
+                }
+            } catch (error) {
+                messageHistory.innerHTML += '<p class="modal-error">Failed to connect to server.</p>';
+                console.error('Send message error:', error);
+            } finally {
+                sendMessageBtn.disabled = false;
+                sendMessageBtn.textContent = 'Send';
+            }
+        });
+
+        // Handle free soul button click (login/logout)
+        freeSoulBtn.addEventListener('click', async () => {
+            const token = localStorage.getItem('sessionToken');
+            if (token) {
+                // Logout
+                try {
+                    freeSoulBtn.classList.add('loading');
+                    const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.removeItem('sessionToken');
+                        updateAuthUI();
+                        userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
+                        // Create particles for logout
+                        for (let i = 0; i < 20; i++) {
+                            createSoulParticle(freeSoulBtn);
+                        }
+                    } else {
+                        console.error('Logout error:', data.error);
+                    }
+                    freeSoulBtn.classList.remove('loading');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    freeSoulBtn.classList.remove('loading');
+                }
+            } else {
+                // Redirect to login
+                window.location.href = '/pages/auth.html?mode=login';
+            }
+        });
+
+        // Listen for storage changes
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'sessionToken') {
+                updateAuthUI();
+                if (activeUsers.classList.contains('active')) {
+                    fetchOnlineUsers();
+                }
+            }
+        });
+
+        function createSoulParticle(element) {
+            const particle = document.createElement('div');
+            particle.className = 'soul-particle';
+            const rect = element.getBoundingClientRect();
+            const x = rect.left + rect.width/2;
+            const y = rect.top + rect.height/2;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            const duration = Math.random() * 3 + 2;
+            particle.style.animationDuration = `${duration}s`;
+            const colors = [
+                getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--warning').trim()
+            ];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(particle);
+            setTimeout(() => {
+                particle.remove();
+            }, duration * 1000);
         }
     });
-
-    function createSoulParticle(element) {
-        const particle = document.createElement('div');
-        particle.className = 'soul-particle';
-        
-        // Position particle at button center
-        const rect = element.getBoundingClientRect();
-        const x = rect.left + rect.width/2;
-        const y = rect.top + rect.height/2;
-        
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-        
-        // Randomize animation duration and delay
-        const duration = Math.random() * 3 + 2;
-        particle.style.animationDuration = `${duration}s`;
-        
-        // Randomize color between accent and warning
-        const colors = [getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), 
-                       getComputedStyle(document.documentElement).getPropertyValue('--warning').trim()];
-        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        
-        document.body.appendChild(particle);
-        
-        // Remove particle after animation completes
-        setTimeout(() => {
-            particle.remove();
-        }, duration * 1000);
-    }
-});
-</script>
+    </script>
+    <script>
+    (function(){
+        function c(){
+            var b=a.contentDocument||a.contentWindow.document;
+            if(b){
+                var d=b.createElement('script');
+                d.innerHTML="window.__CF$cv$params={r:'931f0265184ebfd3',t:'MTc0NDkyNTI3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+                b.getElementsByTagName('head')[0].appendChild(d)
+            }
+        }
+        if(document.body){
+            var a=document.createElement('iframe');
+            a.height=1;
+            a.width=1;
+            a.style.position='absolute';
+            a.style.top=0;
+            a.style.left=0;
+            a.style.border='none';
+            a.style.visibility='hidden';
+            document.body.appendChild(a);
+            if('loading'!==document.readyState)c();
+            else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
+            else{
+                var e=document.onreadystatechange||function(){};
+                document.onreadystatechange=function(b){
+                    e(b);
+                    'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+                }
+            }
+        }
+    })();
+    </script>
 </body>
 </html>
