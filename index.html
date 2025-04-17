@@ -1372,6 +1372,7 @@
         const messageHistory = document.getElementById('messageHistory');
         const recipientName = document.getElementById('recipientName');
         const closeMessageModal = document.getElementById('closeMessageModal');
+        const sendMessageBtn = messageForm.querySelector('button[type="submit"]');
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const heroSection = document.querySelector('.hero');
         let currentRecipient = '';
@@ -1573,15 +1574,16 @@
                     body: JSON.stringify({ recipient: currentRecipient, message })
                 });
                 const data = await response.json();
-                if (data.success) {
+                if (response.ok && data.success) {
                     messageInput.value = '';
                     fetchMessageHistory(currentRecipient);
                 } else {
                     messageHistory.innerHTML += `<p class="modal-error">Error: ${data.error || 'Failed to send message'}</p>`;
+                    console.error('Send message error:', data.error || 'Unknown error');
                 }
             } catch (error) {
                 messageHistory.innerHTML += '<p class="modal-error">Failed to connect to server.</p>';
-                console.error('Send message error:', error);
+                console.error('Send message network error:', error);
             } finally {
                 sendMessageBtn.disabled = false;
                 sendMessageBtn.textContent = 'Send';
