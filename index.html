@@ -1489,13 +1489,12 @@
                         document.querySelectorAll('.profile-preview').forEach(preview => {
                             const username = preview.dataset.username;
                             const avatarLink = preview.querySelector('.avatar-link');
-                            const userInfo = preview.querySelector('.user-info');
                             // Prevent avatar click from triggering messaging
                             avatarLink.addEventListener('click', (e) => {
                                 e.stopPropagation(); // Allow navigation to profile
                             });
-                            // Open messaging modal when clicking user info
-                            userInfo.addEventListener('click', (e) => {
+                            // Open messaging modal when clicking anywhere else in profile-preview
+                            preview.addEventListener('click', (e) => {
                                 e.preventDefault();
                                 currentRecipient = username;
                                 openMessageModal(currentRecipient);
