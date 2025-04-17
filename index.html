@@ -1372,7 +1372,6 @@
         const messageHistory = document.getElementById('messageHistory');
         const recipientName = document.getElementById('recipientName');
         const closeMessageModal = document.getElementById('closeMessageModal');
-        const sendMessageBtn = document.getElementById('sendMessageBtn');
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const heroSection = document.querySelector('.hero');
         let currentRecipient = '';
@@ -1476,19 +1475,29 @@
                     } else {
                         userList.innerHTML = users.map(user => `
                             <div class="profile-preview" data-username="${user.username}">
-                                <img src="${user.avatar}" alt="${user.username}'s avatar" width="40" height="40">
-                                <div>
+                                <a href="/pages/profiles.html?username=${encodeURIComponent(user.username)}" class="avatar-link">
+                                    <img src="${user.avatar}" alt="${user.username}'s avatar" width="40" height="40">
+                                </a>
+                                <div class="user-info">
                                     <a href="#" class="username-link">${user.username}</a>
                                     <span class="online-dot" aria-label="Online status"></span>
                                     <p class="status">${user.status}</p>
                                 </div>
                             </div>
                         `).join('');
-                        // Add click listeners for messaging
-                        document.querySelectorAll('.username-link').forEach(link => {
-                            link.addEventListener('click', (e) => {
+                        // Add click listeners for profile and messaging
+                        document.querySelectorAll('.profile-preview').forEach(preview => {
+                            const username = preview.dataset.username;
+                            const avatarLink = preview.querySelector('.avatar-link');
+                            const userInfo = preview.querySelector('.user-info');
+                            // Prevent avatar click from triggering messaging
+                            avatarLink.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Allow navigation to profile
+                            });
+                            // Open messaging modal when clicking user info
+                            userInfo.addEventListener('click', (e) => {
                                 e.preventDefault();
-                                currentRecipient = e.target.closest('.profile-preview').dataset.username;
+                                currentRecipient = username;
                                 openMessageModal(currentRecipient);
                             });
                         });
@@ -1648,38 +1657,6 @@
             }, duration * 1000);
         }
     });
-    </script>
-    <script>
-    (function(){
-        function c(){
-            var b=a.contentDocument||a.contentWindow.document;
-            if(b){
-                var d=b.createElement('script');
-                d.innerHTML="window.__CF$cv$params={r:'931f0265184ebfd3',t:'MTc0NDkyNTI3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
-                b.getElementsByTagName('head')[0].appendChild(d)
-            }
-        }
-        if(document.body){
-            var a=document.createElement('iframe');
-            a.height=1;
-            a.width=1;
-            a.style.position='absolute';
-            a.style.top=0;
-            a.style.left=0;
-            a.style.border='none';
-            a.style.visibility='hidden';
-            document.body.appendChild(a);
-            if('loading'!==document.readyState)c();
-            else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
-            else{
-                var e=document.onreadystatechange||function(){};
-                document.onreadystatechange=function(b){
-                    e(b);
-                    'loading'!==document.readyState&&(document.onreadystatechange=e,c())
-                }
-            }
-        }
-    })();
-    </script>
+</script>
 </body>
 </html>
