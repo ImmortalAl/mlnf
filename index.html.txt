@@ -1372,7 +1372,6 @@
         const messageHistory = document.getElementById('messageHistory');
         const recipientName = document.getElementById('recipientName');
         const closeMessageModal = document.getElementById('closeMessageModal');
-        const sendMessageBtn = document.getElementById('sendMessageBtn');
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const heroSection = document.querySelector('.hero');
         let currentRecipient = '';
@@ -1486,7 +1485,7 @@
                                 </div>
                             </div>
                         `).join('');
-                        // Add click listeners for messaging
+                        // Add click listeners for profile and messaging
                         document.querySelectorAll('.profile-preview').forEach(preview => {
                             const username = preview.dataset.username;
                             const avatarLink = preview.querySelector('.avatar-link');
