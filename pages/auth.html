@@ -21,7 +21,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
     body {
       background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)),
@@ -47,6 +47,8 @@
       background: var(--gradient-accent);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      font-weight: 300;
+      font-size: 2rem;
     }
     .form-group {
       margin-bottom: 1.5rem;
@@ -55,6 +57,7 @@
       display: block;
       margin-bottom: 0.5rem;
       color: var(--text);
+      font-weight: 600;
     }
     input {
       width: 100%;
@@ -64,6 +67,12 @@
       background: rgba(255, 255, 255, 0.1);
       color: var(--text);
       font-size: 1rem;
+      transition: var(--transition);
+    }
+    input:focus {
+      outline: none;
+      border-color: #ffca28;
+      box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
     }
     button {
       width: 100%;
@@ -82,6 +91,10 @@
       transform: translateY(-2px);
       box-shadow: var(--shadow);
     }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     .toggle {
       text-align: center;
       margin-top: 1rem;
@@ -90,6 +103,7 @@
       color: var(--accent);
       text-decoration: none;
       font-weight: 600;
+      transition: var(--transition);
     }
     .toggle a:hover {
       color: #ffca28;
@@ -112,6 +126,9 @@
       .container {
         width: 90%;
         margin: 1rem;
+      }
+      h1 {
+        font-size: 1.8rem;
       }
     }
   </style>
@@ -137,57 +154,57 @@
   </div>
 
   <script>
- const $ = (id) => document.getElementById(id);
-const form = $('auth-form');
-const title = $('form-title');
-const button = $('submit-btn');
-const toggleLink = $('toggle-link');
-const message = $('message');
-let isSignup = true;
+    const $ = (id) => document.getElementById(id);
+    const form = $('auth-form');
+    const title = $('form-title');
+    const button = $('submit-btn');
+    const toggleLink = $('toggle-link');
+    const message = $('message');
+    let isSignup = true;
 
-const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+    const API_BASE_URL = 'https://mlnf-auth.onrender.com';
 
-// Handle mode from URL query parameter
-const urlParams = new URLSearchParams(window.location.search);
-const mode = urlParams.get('mode');
-if (mode === 'signup') {
-    isSignup = true;
-    title.textContent = 'Sign Up';
-    button.textContent = 'Sign Up';
-    toggleLink.textContent = 'Log In';
-} else if (mode === 'login') {
-    isSignup = false;
-    title.textContent = 'Log In';
-    button.textContent = 'Log In';
-    toggleLink.textContent = 'Sign Up';
-}
+    // Handle mode from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    if (mode === 'signup') {
+      isSignup = true;
+      title.textContent = 'Sign Up';
+      button.textContent = 'Sign Up';
+      toggleLink.textContent = 'Log In';
+    } else if (mode === 'login') {
+      isSignup = false;
+      title.textContent = 'Log In';
+      button.textContent = 'Log In';
+      toggleLink.textContent = 'Sign Up';
+    }
 
-toggleLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    isSignup = !isSignup;
-    title.textContent = isSignup ? 'Sign Up' : 'Log In';
-    button.textContent = isSignup ? 'Sign Up' : 'Log In';
-    toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
-    message.textContent = '';
-});
+    toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      isSignup = !isSignup;
+      title.textContent = isSignup ? 'Sign Up' : 'Log In';
+      button.textContent = isSignup ? 'Sign Up' : 'Log In';
+      toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
+      message.textContent = '';
+    });
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const username = $('username').value.trim();
-    const password = $('password').value.trim();
-    const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = $('username').value.trim();
+      const password = $('password').value.trim();
+      const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
 
-    // Show loading state
-    button.disabled = true;
-    button.textContent = isSignup ? 'Signing Up...' : 'Logging In...';
-    message.textContent = '';
+      // Show loading state
+      button.disabled = true;
+      button.textContent = isSignup ? 'Signing Up...' : 'Logging In...';
+      message.textContent = '';
 
-    try {
+      try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-            credentials: 'include',
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+          credentials: 'include',
         });
 
         const data = await response.json();
@@ -199,18 +216,20 @@ form.addEventListener('submit', async (e) => {
         message.textContent = data.message || (isSignup ? 'Registration successful!' : 'Login successful!');
         form.reset();
 
-        const redirectUrl = isSignup ? '/pages/profile-setup.html' : '/pages/profiles.html';
-        setTimeout(() => window.location.href = redirectUrl, 500); // Reduced from 1000ms
-    } catch (error) {
+        // Redirect based on signup or login
+        const redirectUrl = isSignup ? '/pages/profile-setup.html' : '../lander.html';
+        setTimeout(() => window.location.href = redirectUrl, 500);
+      } catch (error) {
         console.error('Auth error:', error);
         message.className = 'message error';
         message.textContent = error.message || 'Network error - please try again';
-    } finally {
+      } finally {
         // Reset button state
         button.disabled = false;
         button.textContent = isSignup ? 'Sign Up' : 'Log In';
-    }
-});
+      }
+    });
   </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'932272ddac93bfa0',t:'MTc0NDk2MTM0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

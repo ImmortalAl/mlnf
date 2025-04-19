@@ -157,6 +157,30 @@
                 }
             });
         });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('sessionToken');
+  if (!token) {
+    window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
+  }
+});
+
+async function saveProfile(data) {
+  const token = localStorage.getItem('sessionToken');
+  try {
+    const response = await fetch('https://mlnf-auth.onrender.com/api/users/profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Failed to save profile');
+  } catch (error) {
+    console.error('Profile save error:', error);
+  }
+}
     </script>
 </body>
 </html>
