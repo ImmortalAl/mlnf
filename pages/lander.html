@@ -218,6 +218,11 @@
             color: #ff4444;
         }
 
+        .message.success {
+            background: rgba(68, 255, 68, 0.2);
+            color: #44ff44;
+        }
+
         .active-users {
             position: fixed;
             right: 0;
@@ -394,24 +399,28 @@
             if (!token || isTokenExpired(token)) {
                 message.className = 'message error';
                 message.textContent = 'Session expired. Redirecting to login...';
-                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 1000);
+                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
                 return null;
             }
             try {
                 const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
                 const data = await response.json();
                 console.log('User data:', data);
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to fetch user data');
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
                 }
                 return data;
             } catch (error) {
                 console.error('Fetch user error:', error);
                 message.className = 'message error';
-                message.textContent = `Error: ${error.message}`;
-                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 1000);
+                message.textContent = `Error: ${error.message}. Redirecting to login...`;
+                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
                 return null;
             }
         }
