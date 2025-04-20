@@ -218,6 +218,63 @@
             color: #ff4444;
         }
 
+        .active-users {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 300px;
+            background: var(--gradient-secondary);
+            padding: 1rem;
+            transform: translateX(100%);
+            transition: var(--transition);
+            z-index: 1001;
+            border-left: 3px solid var(--accent);
+        }
+
+        .active-users.active {
+            transform: translateX(0);
+        }
+
+        .active-users h3 {
+            font-family: 'Lato', sans-serif;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .active-users ul {
+            list-style: none;
+        }
+
+        .active-users li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .active-users img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+        }
+
+        .show-users-btn {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            background: var(--gradient-accent);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            cursor: pointer;
+            z-index: 1002;
+            transform: translateY(-50%);
+        }
+
         @keyframes pulseGlow {
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.1); opacity: 1; }
@@ -237,6 +294,9 @@
             }
             section {
                 padding: 1rem;
+            }
+            .active-users {
+                width: 100%;
             }
         }
     </style>
@@ -290,6 +350,13 @@
             </div>
         </section>
     </main>
+    <aside class="active-users" id="activeUsers">
+        <h3>Eternal Seekers</h3>
+        <ul id="onlineUsersList">
+            <!-- Populated dynamically -->
+        </ul>
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn"><i class="fas fa-users"></i></button>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script>
         const $ = (id) => document.getElementById(id);
@@ -354,6 +421,10 @@
             if (user) {
                 $('userName').textContent = `Welcome, ${user.displayName || user.username}`;
                 $('userAvatar').src = user.avatar || 'https://i.pravatar.cc/40';
+                $('userAvatar').onerror = () => {
+                    $('userAvatar').src = 'https://i.pravatar.cc/40';
+                    console.warn('Avatar failed to load, using default');
+                };
             }
         }
 
@@ -366,7 +437,9 @@
                 });
                 const notifications = await response.json();
                 if (response.ok) {
-                    $('notificationList').innerHTML = notifications.map(n => `<li>${n.message}</li>`).join('');
+                    $('notificationList').innerHTML = notifications.length
+                        ? notifications.map(n => `<li>${n.message}</li>`).join('')
+                        : '<li>No new notifications</li>';
                 }
             } catch (error) {
                 console.error('Fetch notifications error:', error);
@@ -382,7 +455,9 @@
                 });
                 const blogs = await response.json();
                 if (response.ok) {
-                    $('myBlogsList').innerHTML = blogs.map(b => `<li><a href="pages/blog.html?id=${b.id}">${b.title}</a></li>`).join('');
+                    $('myBlogsList').innerHTML = blogs.length
+                        ? blogs.map(b => `<li><a href="pages/blog.html?id=${b.id}">${b.title}</a></li>`).join('')
+                        : '<li>No blogs yet</li>';
                 }
             } catch (error) {
                 console.error('Fetch blogs error:', error);
@@ -395,15 +470,40 @@
                 const response = await fetch(`${API_BASE_URL}/api/activity`);
                 const activities = await response.json();
                 if (response.ok) {
-                    $('activityGrid').innerHTML = activities.map(a => `
-                        <div class="activity-card">
-                            <h3>${a.title}</h3>
-                            <p>${a.description}</p>
-                        </div>
-                    `).join('');
+                    $('activityGrid').innerHTML = activities.length
+                        ? activities.map(a => `
+                            <div class="activity-card">
+                                <h3>${a.title}</h3>
+                                <p>${a.description}</p>
+                            </div>
+                        `).join('')
+                        : '<div class="activity-card"><p>No recent activity</p></div>';
                 }
             } catch (error) {
                 console.error('Fetch activity error:', error);
+            }
+        }
+
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const token = localStorage.getItem('sessionToken');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/online`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const users = await response.json();
+                if (response.ok) {
+                    $('onlineUsersList').innerHTML = users.length
+                        ? users.map(u => `
+                            <li>
+                                <img src="${u.avatar || 'https://i.pravatar.cc/24'}" alt="${u.displayName || u.username}">
+                                <span>${u.displayName || u.username}</span>
+                            </li>
+                        `).join('')
+                        : '<li>No users online</li>';
+                }
+            } catch (error) {
+                console.error('Fetch online users error:', error);
             }
         }
 
@@ -419,7 +519,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ content })
+                    body: JSON.stringify({ content, title: content.slice(0, 50) })
                 });
                 const data = await response.json();
                 if (!response.ok) {
@@ -451,6 +551,11 @@
             window.location.href = 'index.html';
         });
 
+        // Toggle active users sidebar
+        $('showUsersBtn').addEventListener('click', () => {
+            $('activeUsers').classList.toggle('active');
+        });
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await fetchUserData();
@@ -459,6 +564,7 @@
                 fetchNotifications();
                 fetchMyBlogs();
                 fetchSiteActivity();
+                fetchOnlineUsers();
             }
         });
     </script>
