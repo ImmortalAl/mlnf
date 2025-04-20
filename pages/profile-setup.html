@@ -293,8 +293,11 @@
     // Check authentication
     document.addEventListener('DOMContentLoaded', async () => {
       const token = localStorage.getItem('sessionToken');
+      console.log('Token:', token);
       if (!token) {
-        window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
+        message.className = 'message error';
+        message.textContent = 'No session token found. Redirecting to login...';
+        setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 1000);
         return;
       }
 
@@ -303,13 +306,17 @@
         const response = await fetch(`${API_BASE_URL}/api/users/me`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error('Failed to fetch user data');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch user data');
+        }
         const user = await response.json();
+        console.log('User data:', user);
         $('username').value = user.username || '';
       } catch (error) {
         console.error('Fetch user error:', error);
         message.className = 'message error';
-        message.textContent = 'Error fetching user data';
+        message.textContent = `Error fetching user data: ${error.message}`;
       }
     });
 
@@ -347,13 +354,18 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const token = localStorage.getItem('sessionToken');
+      const displayName = $('displayName').value.trim();
+      const bio = $('bio').value.trim();
+      const status = $('status').value.trim();
       const formData = new FormData();
-      formData.append('displayName', $('displayName').value.trim());
-      formData.append('bio', $('bio').value.trim());
-      formData.append('status', $('status').value.trim());
+      formData.append('displayName', displayName);
+      formData.append('bio', bio);
+      formData.append('status', status);
       if (avatarInput.files[0]) {
         formData.append('avatar', avatarInput.files[0]);
+        console.log('Avatar file:', avatarInput.files[0].name);
       }
+      console.log('Form data:', { displayName, bio, status });
 
       saveBtn.disabled = true;
       saveBtn.textContent = 'Saving...';
@@ -366,14 +378,17 @@
           body: formData
         });
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Failed to save profile');
+        console.log('Response:', data);
+        if (!response.ok) {
+          throw new Error(data.details || data.error || 'Failed to save profile');
+        }
         message.className = 'message success';
         message.textContent = 'Profile saved successfully!';
         setTimeout(() => window.location.href = '../lander.html', 1000);
       } catch (error) {
         console.error('Save profile error:', error);
         message.className = 'message error';
-        message.textContent = error.message || 'Failed to save profile';
+        message.textContent = `Failed to save profile: ${error.message}`;
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save Profile';
