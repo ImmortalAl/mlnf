@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Connect with liberated spirits in an eternal sanctuary.">
+    <meta name="description" content="Connect with liberated spirits in an eternal sanctuary at Manifest Liberation, Naturally Free.">
     <meta name="theme-color" content="#0d0d1a">
+    <meta property="og:title" content="Eternal Souls - Manifest Liberation, Naturally Free">
+    <meta property="og:description" content="Discover profiles of free-thinkers united in a timeless community.">
+    <meta property="og:url" content="https://mlnf.net/pages/profiles.html">
+    <meta property="og:type" content="website">
     <title>Eternal Souls - Manifest Liberation, Naturally Free</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         :root {
             --primary: #0d0d1a;
@@ -224,6 +228,10 @@
             transition: var(--transition);
         }
 
+        .show-users-btn:hover {
+            background: var(--accent);
+        }
+
         .close-sidebar {
             background: none;
             border: none;
@@ -236,11 +244,38 @@
             z-index: 250;
         }
 
+        .error-message {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+
         footer {
             background: var(--gradient-secondary);
             text-align: center;
             padding: 2rem;
             border-top: 3px solid var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .profiles-grid {
+                grid-template-columns: 1fr;
+            }
+            .active-users {
+                width: 100%;
+                right: -100%;
+            }
         }
 
         @keyframes pulseGlow {
@@ -255,38 +290,8 @@
             <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
-        <ul>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar">
-                <div>
-                    <a href="profiles.html#ImmortalAl">ImmortalAl</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Defending free speech</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar">
-                <div>
-                    <a href="profiles.html#FreeSoul">FreeSoul</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Seeking eternal liberty</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar">
-                <div>
-                    <a href="profiles.html#EternalVoice">EternalVoice</a>
-                    <p class="status">Echoing truth</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar">
-                <div>
-                    <a href="profiles.html#TruthSeeker">TruthSeeker</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Unveiling hidden narratives</p>
-                </div>
-            </li>
+        <ul id="activeUsersList">
+            <!-- Dynamic active users will be populated here -->
         </ul>
     </aside>
 
@@ -316,32 +321,9 @@
             <h2>Eternal Souls</h2>
             <p>Connect with liberated spirits unbound by time</p>
         </section>
-
-        <div class="profiles-grid">
-            <div class="profile-card">
-                <img src="https://i.pravatar.cc/60?u=ImmortalAl" alt="ImmortalAl's avatar">
-                <h3>ImmortalAl</h3>
-                <p>Founder of MLNF, seeker of unshackled truth.</p>
-                <p class="status">Defending free speech</p>
-            </div>
-            <div class="profile-card">
-                <img src="https://i.pravatar.cc/60?u=FreeSoul" alt="FreeSoul's avatar">
-                <h3>FreeSoul</h3>
-                <p>Advocate for timeless liberty and defiance.</p>
-                <p class="status">Seeking eternal liberty</p>
-            </div>
-            <div class="profile-card">
-                <img src="https://i.pravatar.cc/60?u=EternalVoice" alt="EternalVoice's avatar">
-                <h3>EternalVoice</h3>
-                <p>Vocal rebel against fleeting tyranny.</p>
-                <p class="status">Echoing truth</p>
-            </div>
-            <div class="profile-card">
-                <img src="https://i.pravatar.cc/60?u=TruthSeeker" alt="TruthSeeker's avatar">
-                <h3>TruthSeeker</h3>
-                <p>Explorer of hidden narratives.</p>
-                <p class="status">Unveiling hidden truths</p>
-            </div>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        <div class="profiles-grid" id="profilesGrid">
+            <!-- Dynamic profiles will be populated here -->
         </div>
     </main>
 
@@ -350,16 +332,136 @@
     </footer>
 
     <script>
-        const activeUsers = document.getElementById('activeUsers');
-        const showUsersBtn = document.getElementById('showUsersBtn');
-        const closeUsersBtn = document.getElementById('closeUsers');
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
 
+        // Utility to select elements
+        const $ = (id) => document.getElementById(id);
+        const activeUsers = $('activeUsers');
+        const activeUsersList = $('activeUsersList');
+        const showUsersBtn = $('showUsersBtn');
+        const closeUsersBtn = $('closeUsers');
+        const profilesGrid = $('profilesGrid');
+        const errorMessage = $('errorMessage');
+
+        // Toggle sidebar
         function toggleSidebar() {
             activeUsers.classList.toggle('active');
         }
 
         showUsersBtn.addEventListener('click', toggleSidebar);
         closeUsersBtn.addEventListener('click', toggleSidebar);
+
+        // Check token validity
+        function checkToken() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'No session found. Redirecting to login...';
+                setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
+                return false;
+            }
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.exp * 1000 < Date.now()) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Session expired. Redirecting to login...';
+                    setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
+                    return false;
+                }
+            } catch (e) {
+                console.error('Invalid token format:', e);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Invalid session. Redirecting to login...';
+                setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
+                return false;
+            }
+            return token;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // Fetch all users
+        async function fetchUsers() {
+            const token = checkToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch users'}`);
+                }
+                const users = await response.json();
+                console.log('Users fetched:', users);
+                return users;
+            } catch (error) {
+                console.error('Fetch users error:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = `Error fetching profiles: ${error.message}`;
+                return [];
+            }
+        }
+
+        // Render profiles
+        function renderProfiles(users) {
+            profilesGrid.innerHTML = '';
+            if (users.length === 0) {
+                profilesGrid.innerHTML = '<p style="text-align: center; color: #d9ccff;">No profiles found.</p>';
+                return;
+            }
+            users.forEach(user => {
+                const card = document.createElement('div');
+                card.className = 'profile-card';
+                card.innerHTML = `
+                    <img src="${user.avatar || '/assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='/assets/images/default-avatar.png'">
+                    <h3>${escapeHTML(user.displayName || user.username)}</h3>
+                    <p>${escapeHTML(user.bio || 'No bio provided')}</p>
+                    <p class="status">${escapeHTML(user.status || 'No status set')}</p>
+                `;
+                profilesGrid.appendChild(card);
+            });
+        }
+
+        // Populate active users sidebar (mock for now, can be dynamic later)
+        function populateActiveUsers(users) {
+            activeUsersList.innerHTML = '';
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.className = 'profile-preview';
+                li.innerHTML = `
+                    <img src="${user.avatar || '/assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='/assets/images/default-avatar.png'">
+                    <div>
+                        <a href="profiles.html#${escapeHTML(user.username)}">${escapeHTML(user.displayName || user.username)}</a>
+                        <span class="online-dot"></span>
+                        <p class="status">${escapeHTML(user.status || 'No status set')}</p>
+                    </div>
+                `;
+                activeUsersList.appendChild(li);
+            });
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            const users = await fetchUsers();
+            if (users) {
+                renderProfiles(users);
+                populateActiveUsers(users.slice(0, 4)); // Show first 4 users in sidebar
+            }
+        });
     </script>
 </body>
 </html>
