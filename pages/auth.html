@@ -241,16 +241,22 @@
         }
 
         const data = await response.json();
+        if (!data.token) {
+          throw new Error('No token received from server');
+        }
+        console.log('Token received:', data.token.substring(0, 10) + '...');
         localStorage.setItem('sessionToken', data.token);
+        console.log('Token stored in localStorage:', localStorage.getItem('sessionToken').substring(0, 10) + '...');
         message.className = 'message success';
         message.textContent = isSignup ? 'Registration successful!' : 'Login successful!';
         form.reset();
 
         // Redirect based on signup or URL parameter
         const redirectUrl = isSignup ? '/pages/profile-setup.html' : `../${redirect}`;
+        console.log('Redirecting to:', redirectUrl);
         setTimeout(() => window.location.href = redirectUrl, 500);
       } catch (error) {
-        console.error('Auth error:', error);
+        console.error('Auth error:', error.message, error.stack);
         message.className = 'message error';
         message.textContent = error.message || 'Network error - please try again';
       } finally {
