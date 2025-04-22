@@ -364,8 +364,12 @@
                     console.error('Token missing exp claim:', decoded);
                     return false;
                 }
+                if (!decoded.id) {
+                    console.error('Token missing id claim:', decoded);
+                    return false;
+                }
                 const isValid = decoded.exp > now;
-                console.log('Token validation:', { isValid, exp: decoded.exp, now });
+                console.log('Token validation:', { isValid, exp: decoded.exp, now, id: decoded.id, username: decoded.username });
                 return isValid;
             } catch (error) {
                 console.error('Token decode error:', error.message, error.stack);
@@ -378,6 +382,7 @@
             const token = localStorage.getItem('sessionToken');
             console.log('Fetching user data with token:', token ? token.substring(0, 10) + '...' : 'No token');
             if (!token || !isTokenValid(token)) {
+                console.warn('Token invalid or missing, redirecting...');
                 message.className = 'message error';
                 message.textContent = 'Session expired or invalid. Redirecting to login...';
                 localStorage.removeItem('sessionToken');
@@ -400,6 +405,10 @@
                         errorMessage = 'Session invalid. Redirecting to login...';
                         localStorage.removeItem('sessionToken');
                         setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
+                    } else if (response.status === 400) {
+                        errorMessage = 'Invalid user ID in token';
+                    } else if (response.status === 404) {
+                        errorMessage = 'User not found';
                     } else {
                         errorMessage = `HTTP ${response.status}: ${text || 'Unknown error'}`;
                     }

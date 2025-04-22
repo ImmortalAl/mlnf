@@ -246,7 +246,11 @@
         }
         console.log('Token received:', data.token.substring(0, 10) + '...');
         localStorage.setItem('sessionToken', data.token);
-        console.log('Token stored in localStorage:', localStorage.getItem('sessionToken').substring(0, 10) + '...');
+        const storedToken = localStorage.getItem('sessionToken');
+        console.log('Token stored in localStorage:', storedToken ? storedToken.substring(0, 10) + '...' : 'Failed to store token');
+        if (!storedToken) {
+          throw new Error('Failed to store session token');
+        }
         message.className = 'message success';
         message.textContent = isSignup ? 'Registration successful!' : 'Login successful!';
         form.reset();
