@@ -3,306 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Manifest Liberation, Naturally Free - Set up your eternal profile">
-    <link rel="canonical" href="https://mlnf.net/pages/profile-setup.html">
-    <title>Profile Setup - Manifest Liberation</title>
+    <meta name="description" content="Set up your eternal profile on Manifest Liberation, Naturally Free.">
+    <title>Profile Setup - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0d0d1a;
             --secondary: #1a1a33;
             --accent: #ff5e78;
             --text: #f0e6ff;
-            --gradient-accent: linear-gradient(45deg, var(--accent), #ffca28);
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --danger: #ff4444;
+            --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
+            --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            --border-radius: 10px;
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Montserrat', sans-serif;
         }
+
         body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
             color: var(--text);
+            line-height: 1.6;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
+
         .container {
-            background: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
             padding: 2rem;
             border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            width: 100%;
             max-width: 500px;
-            border: 1px solid rgba(255, 94, 120, 0.4);
+            width: 90%;
+            box-shadow: var(--shadow), 0 0 30px rgba(255, 94, 120, 0.3);
+            border: 2px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+            animation: modalFadeIn 0.5s ease-out;
         }
-        h1 {
-            text-align: center;
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 94, 120, 0.2), transparent 70%);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
             margin-bottom: 1.5rem;
+            text-align: center;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 300;
-            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
+
         .form-group {
             margin-bottom: 1.5rem;
         }
+
         label {
             display: block;
+            font-size: 1rem;
             margin-bottom: 0.5rem;
-            color: var(--text);
-            font-weight: 600;
+            font-weight: 500;
         }
+
         input, textarea {
             width: 100%;
             padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--accent);
             border-radius: var(--border-radius);
-            background: rgba(255, 255, 255, 0.1);
             color: var(--text);
             font-size: 1rem;
             transition: var(--transition);
         }
+
         input:focus, textarea:focus {
             outline: none;
-            border-color: #ffca28;
+            border-color: var(--warning);
             box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: var(--border-radius);
-            background: var(--gradient-accent);
-            color: var(--primary);
-            font-size: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: var(--transition);
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .message {
-            text-align: center;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-        }
-        .message.success {
-            background: rgba(92, 184, 92, 0.2);
-            color: #5cb85c;
-        }
-        .message.error {
-            background: rgba(255, 68, 68, 0.2);
-            color: #ff4444;
-        }
+
         .avatar-preview {
-            display: block;
-            margin: 1rem auto;
-            width: 100px;
-            height: 100px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-preview img {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             border: 2px solid var(--accent);
-            object-fit: cover;
+            transition: var(--transition);
         }
+
+        .avatar-preview img:hover {
+            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+            min-width: 140px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.05) rotate(2deg);
+            box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         @media (max-width: 768px) {
             .container {
-                width: 90%;
+                padding: 1.5rem;
                 margin: 1rem;
             }
-            h1 {
-                font-size: 1.8rem;
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Setup Your Eternal Profile</h1>
-        <form id="profile-form">
-            <div class="form-group">
-                <label for="displayName">Display Name</label>
-                <input type="text" id="displayName" name="displayName" required>
+        <h2>Eternal Profile Setup</h2>
+        <div class="form-group">
+            <label for="encryptionKey">Enter Your Encryption Key</label>
+            <input type="password" id="encryptionKey" placeholder="Enter the key to unlock your identity..." required>
+        </div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Choose your eternal name..." required>
+        </div>
+        <div class="form-group">
+            <label for="avatar">Avatar</label>
+            <input type="text" id="avatar" placeholder="Enter an image URL or leave blank for default">
+            <div class="avatar-preview">
+                <img id="avatarPreview" src="../assets/images/default-avatar.png" alt="Avatar Preview">
+                <span>Preview</span>
             </div>
-            <div class="form-group">
-                <label for="bio">Bio</label>
-                <textarea id="bio" name="bio" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="avatar">Avatar</label>
-                <input type="file" id="avatar" name="avatar" accept="image/*">
-                <img src="/assets/images/default-avatar.png" alt="Avatar Preview" class="avatar-preview" id="avatarPreview">
-            </div>
-            <button type="submit" id="submit-btn">Save Profile</button>
-        </form>
-        <div class="message" id="message"></div>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <textarea id="status" placeholder="What is your eternal message?"></textarea>
+        </div>
+        <p id="errorMessage" class="error-message"></p>
+        <div class="form-actions">
+            <button id="saveProfile" class="btn btn-primary">Ascend to Eternity</button>
+            <a href="../lander.html" class="btn btn-outline">Return to Eternal Hearth</a>
+        </div>
     </div>
 
     <script>
-        const $ = (id) => document.getElementById(id);
-        const form = $('profile-form');
-        const avatarInput = $('avatar');
-        const avatarPreview = $('avatarPreview');
-        const message = $('message');
-        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
-
-        // Check token and redirect if invalid
-        function checkToken() {
-            const token = localStorage.getItem('sessionToken');
-            if (!token) {
-                message.className = 'message error';
-                message.textContent = 'No session found. Redirecting to login...';
-                setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
-                return false;
-            }
-            try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                if (payload.exp * 1000 < Date.now()) {
-                    message.className = 'message error';
-                    message.textContent = 'Session expired. Redirecting to login...';
-                    setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
-                    return false;
-                }
-            } catch (e) {
-                console.error('Invalid token format:', e);
-                message.className = 'message error';
-                message.textContent = 'Invalid session. Redirecting to login...';
-                setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
-                return false;
-            }
-            return token;
-        }
-
-        // Fetch current user data
-        async function fetchUserData() {
-            const token = checkToken();
-            if (!token) return;
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                });
-                if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch user data'}`);
-                }
-                const user = await response.json();
-                console.log('User data:', user);
-                return user;
-            } catch (error) {
-                console.error('Fetch user error:', error);
-                message.className = 'message error';
-                message.textContent = `Error fetching profile: ${error.message}`;
-            }
-        }
-
-        // Populate form with existing data
-        async function populateForm() {
-            const user = await fetchUserData();
-            if (user) {
-                $('displayName').value = user.displayName || '';
-                $('bio').value = user.bio || '';
-                avatarPreview.src = user.avatar || '/assets/images/default-avatar.png';
-                avatarPreview.onerror = () => {
-                    avatarPreview.src = '/assets/images/default-avatar.png';
-                    console.warn('Avatar failed to load, using default');
-                };
-            }
-        }
-
-        // Preview avatar
-        avatarInput.addEventListener('change', () => {
-            const file = avatarInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    avatarPreview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Submit profile
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const token = checkToken();
-            if (!token) return;
-
-            const displayName = $('displayName').value.trim();
-            const bio = $('bio').value.trim();
-            const avatar = avatarInput.files[0];
-
-            const formData = new FormData();
-            formData.append('displayName', displayName);
-            formData.append('bio', bio);
-            if (avatar) formData.append('avatar', avatar);
-
-            // Show loading state
-            const submitBtn = $('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
-            message.textContent = '';
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/users/profile`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formData,
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    const text = await response.text();
-                    let errorData;
-                    try {
-                        errorData = JSON.parse(text);
-                    } catch {
-                        throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
-                    }
-                    throw new Error(errorData.error || `Failed to save profile (HTTP ${response.status})`);
-                }
-
-                const user = await response.json();
-                message.className = 'message success';
-                message.textContent = 'Profile saved successfully!';
-                form.reset();
-                avatarPreview.src = user.avatar || '/assets/images/default-avatar.png';
-
-                // Redirect to lander
-                setTimeout(() => window.location.href = '/lander.html', 1000);
-            } catch (error) {
-                console.error('Profile save error:', error);
-                message.className = 'message error';
-                message.textContent = error.message || 'Network error - please try again';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Profile';
-            }
-        });
-
-        // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
-            populateForm();
+            const elements = {
+                encryptionKey: document.getElementById('encryptionKey'),
+                username: document.getElementById('username'),
+                avatar: document.getElementById('avatar'),
+                avatarPreview: document.getElementById('avatarPreview'),
+                status: document.getElementById('status'),
+                saveProfile: document.getElementById('saveProfile'),
+                errorMessage: document.getElementById('errorMessage')
+            };
+
+            const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+
+            // Check if encrypted seed exists
+            const encryptedSeed = localStorage.getItem('encryptedSeed');
+            if (!encryptedSeed) {
+                elements.errorMessage.textContent = 'No identity found. Please sign up again.';
+                setTimeout(() => window.location.href = 'auth.html?mode=signup', 3000);
+                return;
+            }
+
+            // Update avatar preview dynamically
+            elements.avatar.addEventListener('input', () => {
+                const url = elements.avatar.value.trim();
+                elements.avatarPreview.src = url || '../assets/images/default-avatar.png';
+                elements.avatarPreview.onerror = () => {
+                    elements.avatarPreview.src = '../assets/images/default-avatar.png';
+                };
+            });
+
+            elements.saveProfile.addEventListener('click', async () => {
+                const key = elements.encryptionKey.value.trim();
+                const username = elements.username.value.trim();
+                const avatar = elements.avatar.value.trim();
+                const status = elements.status.value.trim();
+
+                if (!key || !username) {
+                    elements.errorMessage.textContent = 'Encryption key and username are required.';
+                    return;
+                }
+
+                elements.saveProfile.disabled = true;
+                elements.saveProfile.textContent = 'Ascending...';
+                elements.errorMessage.textContent = '';
+
+                try {
+                    // Decrypt the seed phrase
+                    const seed = await decryptSeed(encryptedSeed, key);
+                    if (!seed) throw new Error('Invalid encryption key.');
+
+                    // Register user with the backend
+                    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username,
+                            seed,
+                            avatar: avatar || undefined,
+                            status: status || undefined
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to save profile'}`);
+                    }
+
+                    const data = await response.json();
+                    if (!data.token) throw new Error('No token received.');
+
+                    // Store the session token and clear encrypted seed
+                    localStorage.setItem('sessionToken', data.token);
+                    localStorage.removeItem('encryptedSeed');
+
+                    // Redirect to dashboard
+                    window.location.href = '../lander.html';
+                } catch (error) {
+                    console.error('Profile setup error:', error);
+                    elements.errorMessage.textContent = `Error: ${error.message}`;
+                    elements.saveProfile.disabled = false;
+                    elements.saveProfile.textContent = 'Ascend to Eternity';
+                }
+            });
+
+            async function decryptSeed(encryptedSeed, key) {
+                try {
+                    // Mock decryption for now (since we don't have actual crypto logic)
+                    // In a real app, use Web Crypto API or a library like crypto-js
+                    const expectedKey = localStorage.getItem('mockKey'); // Set during signup in auth.html
+                    if (key !== expectedKey) return null;
+                    return encryptedSeed; // Return the seed if key matches
+                } catch (error) {
+                    console.error('Decryption error:', error);
+                    return null;
+                }
+            }
         });
     </script>
 </body>
