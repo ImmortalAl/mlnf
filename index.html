@@ -646,7 +646,7 @@
 
         .profile-preview {
             display: flex;
-            align ITEMS: center;
+            align-items: center;
             padding: 1rem;
             margin-bottom: 1rem;
             background: rgba(255, 94, 120, 0.08);
@@ -918,7 +918,7 @@
             z-index: 1000;
         }
 
-        @keyframes soulFloat {
+        @keyframes soul_HW_float {
             0% { transform: translateY(0); opacity: 1; }
             100% { transform: translateY(-100vh); opacity: 0; }
         }
@@ -1359,37 +1359,72 @@
 
             elements.mobileMenuBtn.addEventListener('click', () => elements.mainNav.classList.toggle('active'));
 
-            function updateAuthUI() {
+            function checkToken() {
                 const token = localStorage.getItem('sessionToken');
+                if (!token) return false;
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.exp * 1000 < Date.now()) {
+                        localStorage.removeItem('sessionToken');
+                        return false;
+                    }
+                    return token;
+                } catch (e) {
+                    console.error('Invalid token format:', e);
+                    localStorage.removeItem('sessionToken');
+                    return false;
+                }
+            }
+
+            function updateAuthUI() {
+                const token = checkToken();
                 elements.freeSoulBtn.dataset.state = token ? 'unlocked' : 'locked';
                 elements.freeSoulBtn.querySelector('i').className = token ? 'fas fa-lock-open' : 'fas fa-lock';
                 elements.freeSoulBtn.querySelector('.btn-text').textContent = token ? 'Lock Soul' : 'Free Your Soul';
-                elements.joinEternityBtn.textContent = token ? 'Profile' : 'Join Eternity';
-                elements.joinEternityBtn.href = token ? '/pages/profiles.html' : '/pages/auth.html';
+                elements.joinEternityBtn.textContent = token ? 'Eternal Hearth' : 'Join Eternity';
+                elements.joinEternityBtn.href = token ? '/pages/lander.html' : '/pages/auth.html';
             }
             updateAuthUI();
 
             async function fetchOnlineUsers() {
-                const token = localStorage.getItem('sessionToken');
+                const token = checkToken();
                 if (!token) {
                     elements.userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
                     return;
                 }
                 elements.userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers...</p>';
                 try {
-                    const response = await fetch(`${API_BASE_URL}/api/users/online`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
+                    const response = await fetch(`${API_BASE_URL}/api/users`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
                     });
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch users'}`);
+                    }
                     const users = await response.json();
-                    elements.userList.innerHTML = users.length === 0 ? '<p>No seekers are online.</p>' : users.map(user => `
+                    console.log('Fetched users:', users);
+                    if (users.length === 0) {
+                        elements.userList.innerHTML = '<p>No seekers found.</p>';
+                        return;
+                    }
+                    // Mock online status for now
+                    const onlineUsers = users.map(user => ({
+                        ...user,
+                        isOnline: Math.random() > 0.3 // 70% chance of being "online"
+                    })).filter(user => user.isOnline);
+                    elements.userList.innerHTML = onlineUsers.length === 0 ? '<p>No seekers are online.</p>' : onlineUsers.map(user => `
                         <div class="profile-preview" data-username="${user.username}">
                             <a href="/pages/profiles.html?user=${encodeURIComponent(user.username)}" class="avatar-link">
-                                <img src="${user.avatar}" alt="${user.username}'s avatar" width="48" height="48">
+                                <img src="${user.avatar || '/assets/images/default-avatar.png'}" alt="${user.username}'s avatar" width="48" height="48" onerror="this.src='/assets/images/default-avatar.png'">
                             </a>
                             <div class="user-info">
                                 <a href="/pages/profiles.html?user=${encodeURIComponent(user.username)}" class="username-link">${user.username}</a>
                                 <span class="online-dot" aria-label="Online status"></span>
-                                <p class="status">${user.status}</p>
+                                <p class="status">${user.status || 'No status set'}</p>
                             </div>
                         </div>
                     `).join('');
@@ -1403,8 +1438,8 @@
                         });
                     });
                 } catch (error) {
-                    elements.userList.innerHTML = '<p class="modal-error">Failed to connect to server.</p>';
                     console.error('Fetch users error:', error);
+                    elements.userList.innerHTML = `<p class="modal-error">Error: ${error.message}</p>`;
                 }
             }
 
@@ -1431,11 +1466,19 @@
             });
 
             async function fetchMessageHistory(recipient) {
-                const token = localStorage.getItem('sessionToken');
+                const token = checkToken();
+                if (!token) {
+                    elements.messageHistory.innerHTML = '<p class="modal-error">Please login to view messages.</p>';
+                    return;
+                }
                 try {
                     const response = await fetch(`${API_BASE_URL}/api/messages/history?recipient=${encodeURIComponent(recipient)}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch messages'}`);
+                    }
                     const messages = await response.json();
                     elements.messageHistory.innerHTML = messages.length === 0 ? '<p>No whispers yet. Start the eternal conversation!</p>' : messages.map(msg => `
                         <div class="message-bubble ${msg.sender === recipient ? 'received' : 'sent'}">
@@ -1445,13 +1488,17 @@
                     `).join('');
                     elements.messageHistory.scrollTop = elements.messageHistory.scrollHeight;
                 } catch (error) {
-                    elements.messageHistory.innerHTML = '<p class="modal-error">Failed to connect to server.</p>';
                     console.error('Fetch messages error:', error);
+                    elements.messageHistory.innerHTML = `<p class="modal-error">Error: ${error.message}</p>`;
                 }
             }
 
             elements.sendMessageBtn.addEventListener('click', async () => {
-                const token = localStorage.getItem('sessionToken');
+                const token = checkToken();
+                if (!token) {
+                    elements.messageHistory.innerHTML = '<p class="modal-error">Please login to send messages.</p>';
+                    return;
+                }
                 const message = elements.messageInput.value.trim();
                 if (!message || !currentRecipient) return;
                 elements.sendMessageBtn.disabled = true;
@@ -1465,6 +1512,10 @@
                         },
                         body: JSON.stringify({ recipient: currentRecipient, message })
                     });
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to send message'}`);
+                    }
                     const data = await response.json();
                     if (data.success) {
                         elements.messageInput.value = '';
@@ -1473,8 +1524,8 @@
                         elements.messageHistory.innerHTML += `<p class="modal-error">Error: ${data.error || 'Failed to send message'}</p>`;
                     }
                 } catch (error) {
-                    elements.messageHistory.innerHTML += `<p class="modal-error">Failed to connect to server.</p>`;
                     console.error('Send message error:', error);
+                    elements.messageHistory.innerHTML += `<p class="modal-error">Error: ${error.message}</p>`;
                 } finally {
                     elements.sendMessageBtn.disabled = false;
                     elements.sendMessageBtn.textContent = 'Send Whisper';
@@ -1482,7 +1533,7 @@
             });
 
             elements.freeSoulBtn.addEventListener('click', async () => {
-                const token = localStorage.getItem('sessionToken');
+                const token = checkToken();
                 if (token) {
                     elements.freeSoulBtn.classList.add('loading');
                     try {
@@ -1493,6 +1544,10 @@
                                 'Authorization': `Bearer ${token}`
                             }
                         });
+                        if (!response.ok) {
+                            const text = await response.text();
+                            throw new Error(`HTTP ${response.status}: ${text || 'Failed to logout'}`);
+                        }
                         if (response.ok) {
                             localStorage.removeItem('sessionToken');
                             updateAuthUI();
@@ -1501,6 +1556,7 @@
                         }
                     } catch (error) {
                         console.error('Logout error:', error);
+                        elements.userList.innerHTML += `<p class="modal-error">Error: ${error.message}</p>`;
                     } finally {
                         elements.freeSoulBtn.classList.remove('loading');
                     }
