@@ -139,11 +139,11 @@
     <form id="auth-form">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" title="Username can only contain letters, numbers, and underscores">
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required minlength="6" title="Password must be at least 6 characters">
       </div>
       <button type="submit" id="submit-btn">Sign Up</button>
     </form>
@@ -164,9 +164,11 @@
 
     const API_BASE_URL = 'https://mlnf-auth.onrender.com';
 
-    // Handle mode from URL query parameter
+    // Handle mode and redirect from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('mode');
+    const redirect = urlParams.get('redirect') || 'lander.html';
+
     if (mode === 'signup') {
       isSignup = true;
       title.textContent = 'Sign Up';
@@ -186,7 +188,7 @@
       button.textContent = isSignup ? 'Sign Up' : 'Log In';
       toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
       message.textContent = '';
-      window.history.pushState({}, '', `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}`);
+      window.history.pushState({}, '', `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}&redirect=${redirect}`);
     });
 
     form.addEventListener('submit', async (e) => {
@@ -194,6 +196,23 @@
       const username = $('username').value.trim();
       const password = $('password').value.trim();
       const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
+
+      // Client-side validation
+      if (username.length < 3 || username.length > 20) {
+        message.className = 'message error';
+        message.textContent = 'Username must be 3-20 characters';
+        return;
+      }
+      if (!/^[A-Za-z0-9_]+$/.test(username)) {
+        message.className = 'message error';
+        message.textContent = 'Username can only contain letters, numbers, and underscores';
+        return;
+      }
+      if (password.length < 6) {
+        message.className = 'message error';
+        message.textContent = 'Password must be at least 6 characters';
+        return;
+      }
 
       // Show loading state
       button.disabled = true;
@@ -224,8 +243,8 @@
         message.textContent = isSignup ? 'Registration successful!' : 'Login successful!';
         form.reset();
 
-        // Redirect based on signup or login
-        const redirectUrl = isSignup ? '/pages/profile-setup.html' : '../lander.html';
+        // Redirect based on signup or URL parameter
+        const redirectUrl = isSignup ? '/pages/profile-setup.html' : `../${redirect}`;
         setTimeout(() => window.location.href = redirectUrl, 500);
       } catch (error) {
         console.error('Auth error:', error);
