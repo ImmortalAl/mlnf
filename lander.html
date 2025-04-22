@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
+    <link rel="canonical" href="https://mlnf.net">
     <title>MLNF Headquarters</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -98,6 +100,15 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .user-info:hover {
+            background: rgba(255, 94, 120, 0.2);
+            transform: scale(1.05);
         }
 
         .user-info img {
@@ -105,6 +116,10 @@
             height: 32px;
             border-radius: 50%;
             border: 2px solid var(--accent);
+        }
+
+        .user-info span {
+            font-weight: 600;
         }
 
         .btn {
@@ -193,6 +208,80 @@
             border-left: 4px solid var(--accent);
         }
 
+        .message {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+        }
+
+        .message.error {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .message.success {
+            background: rgba(68, 255, 68, 0.2);
+            color: #44ff44;
+        }
+
+        .active-users {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 300px;
+            background: var(--gradient-secondary);
+            padding: 1rem;
+            transform: translateX(100%);
+            transition: var(--transition);
+            z-index: 1001;
+            border-left: 3px solid var(--accent);
+        }
+
+        .active-users.active {
+            transform: translateX(0);
+        }
+
+        .active-users h3 {
+            font-family: 'Lato', sans-serif;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .active-users ul {
+            list-style: none;
+        }
+
+        .active-users li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .active-users img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+        }
+
+        .show-users-btn {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            background: var(--gradient-accent);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            cursor: pointer;
+            z-index: 1002;
+            transform: translateY(-50%);
+        }
+
         @keyframes pulseGlow {
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.1); opacity: 1; }
@@ -212,6 +301,9 @@
             }
             section {
                 padding: 1rem;
+            }
+            .active-users {
+                width: 100%;
             }
         }
     </style>
@@ -233,13 +325,14 @@
                 <li><a href="pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
             </ul>
         </nav>
-        <div class="user-info">
-            <img src="user-avatar.jpg" alt="User Avatar">
-            <span>Welcome, [Username]</span>
-            <button class="btn btn-primary" id="logoutBtn">Logout</button>
-        </div>
+        <a href="pages/profile-setup.html" class="user-info" id="userInfo" aria-label="User profile">
+            <img src="/assets/images/default-avatar.png" alt="User Avatar" id="userAvatar">
+            <span id="userName">Welcome, Guest</span>
+        </a>
+        <button class="btn btn-primary" id="logoutBtn" aria-label="Log out">Logout</button>
     </header>
     <main>
+        <div class="message" id="message"></div>
         <section class="notifications">
             <h2>Notifications</h2>
             <ul id="notificationList">
@@ -248,8 +341,12 @@
         </section>
         <section class="blog-composer">
             <h2>Compose New Scroll</h2>
+            <div class="form-group">
+                <label for="blog-title">Scroll Title</label>
+                <input type="text" id="blog-title" name="blog-title" required>
+            </div>
             <div id="editor"></div>
-            <button class="btn btn-primary" id="publishBtn">Publish</button>
+            <button class="btn btn-primary" id="publishBtn" aria-label="Publish blog post">Publish</button>
         </section>
         <section class="my-blogs">
             <h2>My Scrolls</h2>
@@ -264,8 +361,20 @@
             </div>
         </section>
     </main>
+    <aside class="active-users" id="activeUsers">
+        <button class="btn btn-primary" id="closeUsersBtn" aria-label="Close active users sidebar">Close</button>
+        <h3>Eternal Seekers</h3>
+        <ul id="onlineUsersList">
+            <!-- Populated dynamically -->
+        </ul>
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Toggle active users sidebar"><i class="fas fa-users"></i></button>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script>
+        const $ = (id) => document.getElementById(id);
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const message = $('message');
+
         // Initialize Quill editor
         var quill = new Quill('#editor', {
             theme: 'snow',
@@ -279,54 +388,251 @@
             }
         });
 
-        // Simulated API calls (replace with actual endpoints)
+        // Check token expiration
+        function isTokenExpired(token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.exp * 1000 < Date.now();
+            } catch (e) {
+                console.error('Invalid token format:', e);
+                return true;
+            }
+        }
+
+        // Fetch user data
+        async function fetchUserData() {
+            const token = localStorage.getItem('sessionToken');
+            console.log('Fetching user data with token:', token);
+            if (!token || isTokenExpired(token)) {
+                message.className = 'message error';
+                message.textContent = 'Session expired. Redirecting to login...';
+                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
+                return null;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(text);
+                    } catch {
+                        throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
+                    }
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('User data received:', data);
+                return data;
+            } catch (error) {
+                console.error('Fetch user error:', error);
+                message.className = 'message error';
+                message.textContent = `Error fetching user data: ${error.message}. Redirecting to login...`;
+                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
+                return null;
+            }
+        }
+
+        // Update user info
+        function updateUserInfo(user) {
+            if (user) {
+                const displayName = user.displayName || user.username || 'Guest';
+                $('userName').textContent = `Welcome, ${displayName}`;
+                $('userAvatar').src = user.avatar || '/assets/images/default-avatar.png';
+                $('userAvatar').onerror = () => {
+                    $('userAvatar').src = '/assets/images/default-avatar.png';
+                    console.warn('Avatar failed to load, using default');
+                };
+                console.log('User info updated:', { displayName, avatar: user.avatar });
+            } else {
+                console.warn('No user data, using defaults');
+                $('userName').textContent = 'Welcome, Guest';
+                $('userAvatar').src = '/assets/images/default-avatar.png';
+            }
+        }
+
+        // Fetch notifications
         async function fetchNotifications() {
             const token = localStorage.getItem('sessionToken');
-            const notifications = [
-                { message: "New comment on your scroll" },
-                { message: "Eternal seeker followed you" }
-            ];
-            document.getElementById('notificationList').innerHTML = notifications.map(n => `<li>${n.message}</li>`).join('');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/notifications`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch notifications'}`);
+                }
+                const notifications = await response.json();
+                $('notificationList').innerHTML = notifications.length
+                    ? notifications.map(n => `<li>${n.message}</li>`).join('')
+                    : '<li>No new notifications</li>';
+            } catch (error) {
+                console.error('Fetch notifications error:', error);
+            }
         }
 
+        // Fetch my blogs
         async function fetchMyBlogs() {
             const token = localStorage.getItem('sessionToken');
-            const blogs = [
-                { id: 1, title: "Eternal Thoughts" },
-                { id: 2, title: "Beyond Time" }
-            ];
-            document.getElementById('myBlogsList').innerHTML = blogs.map(b => `<li><a href="pages/blog.html?id=${b.id}">${b.title}</a></li>`).join('');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blogs/my`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch blogs'}`);
+                }
+                const blogs = await response.json();
+                $('myBlogsList').innerHTML = blogs.length
+                    ? blogs.map(b => `<li><a href="pages/blog.html?id=${b.id}">${b.title}</a></li>`).join('')
+                    : '<li>No blogs yet</li>';
+            } catch (error) {
+                console.error('Fetch blogs error:', error);
+            }
         }
 
+        // Fetch site activity
         async function fetchSiteActivity() {
-            const activities = [
-                { title: "Trending Scroll", description: "The Power of Truth" },
-                { title: "Active Debate", description: "Freedom vs. Control" }
-            ];
-            document.getElementById('activityGrid').innerHTML = activities.map(a => `
-                <div class="activity-card">
-                    <h3>${a.title}</h3>
-                    <p>${a.description}</p>
-                </div>
-            `).join('');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/activity`, {
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch activity'}`);
+                }
+                const activities = await response.json();
+                $('activityGrid').innerHTML = activities.length
+                    ? activities.map(a => `
+                        <div class="activity-card">
+                            <h3>${a.title}</h3>
+                            <p>${a.description}</p>
+                        </div>
+                    `).join('')
+                    : '<div class="activity-card"><p>No recent activity</p></div>';
+            } catch (error) {
+                console.error('Fetch activity error:', error);
+            }
         }
 
-        document.getElementById('publishBtn').addEventListener('click', () => {
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const token = localStorage.getItem('sessionToken');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/online`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch online users'}`);
+                }
+                const users = await response.json();
+                $('onlineUsersList').innerHTML = users.length
+                    ? users.map(u => `
+                        <li>
+                            <img src="${u.avatar || '/assets/images/default-avatar.png'}" alt="${u.displayName || u.username}">
+                            <span>${u.displayName || u.username}</span>
+                        </li>
+                    `).join('')
+                    : '<li>No users online</li>';
+            } catch (error) {
+                console.error('Fetch online users error:', error);
+            }
+        }
+
+        // Publish blog
+        $('publishBtn').addEventListener('click', async () => {
+            const token = localStorage.getItem('sessionToken');
             const content = quill.root.innerHTML;
-            console.log('Publishing:', content);
-            // Add API call to publish content
+            const title = $('blog-title').value.trim() || content.slice(0, 50);
+            console.log('Publishing:', { title, content });
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blogs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content, title }),
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(text);
+                    } catch {
+                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to publish blog'}`);
+                    }
+                    throw new Error(errorData.error || 'Failed to publish blog');
+                }
+                const data = await response.json();
+                message.className = 'message success';
+                message.textContent = 'Blog published successfully!';
+                quill.root.innerHTML = '';
+                $('blog-title').value = '';
+                fetchMyBlogs();
+            } catch (error) {
+                console.error('Publish error:', error);
+                message.className = 'message error';
+                message.textContent = `Error: ${error.message}`;
+            }
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        // Logout
+        $('logoutBtn').addEventListener('click', async () => {
+            const token = localStorage.getItem('sessionToken');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                message.className = 'message error';
+                message.textContent = 'Logout failed. Please try again.';
+                return;
+            }
             localStorage.removeItem('sessionToken');
             window.location.href = 'index.html';
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchNotifications();
-            fetchMyBlogs();
-            fetchSiteActivity();
+        // Toggle active users sidebar
+        $('showUsersBtn').addEventListener('click', () => {
+            $('activeUsers').classList.toggle('active');
+        });
+
+        // Close active users sidebar
+        $('closeUsersBtn').addEventListener('click', () => {
+            $('activeUsers').classList.remove('active');
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await fetchUserData();
+            updateUserInfo(user);
+            if (user) {
+                fetchNotifications();
+                fetchMyBlogs();
+                fetchSiteActivity();
+                fetchOnlineUsers();
+            }
         });
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9338bfca7b6aad5e',t:'MTc0NTE5NTE3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
