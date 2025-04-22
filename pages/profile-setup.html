@@ -206,7 +206,7 @@
 <body>
     <div class="container">
         <h2>Eternal Profile Setup</h2>
-        <div class="form-group">
+        <div class="form-group" id="encryptionKeyGroup">
             <label for="encryptionKey">Enter Your Encryption Key</label>
             <input type="password" id="encryptionKey" placeholder="Enter the key to unlock your identity..." required>
         </div>
@@ -236,6 +236,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const elements = {
+                encryptionKeyGroup: document.getElementById('encryptionKeyGroup'),
                 encryptionKey: document.getElementById('encryptionKey'),
                 username: document.getElementById('username'),
                 avatar: document.getElementById('avatar'),
@@ -247,12 +248,72 @@
 
             const API_BASE_URL = 'https://mlnf-auth.onrender.com';
 
-            // Check if encrypted seed exists
-            const encryptedSeed = localStorage.getItem('encryptedSeed');
-            if (!encryptedSeed) {
-                elements.errorMessage.textContent = 'No identity found. Please sign up again.';
-                setTimeout(() => window.location.href = 'auth.html?mode=signup', 3000);
-                return;
+            // Check token validity
+            function checkToken() {
+                const token = localStorage.getItem('sessionToken');
+                if (!token) return false;
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.exp * 1000 < Date.now()) {
+                        localStorage.removeItem('sessionToken');
+                        return false;
+                    }
+                    return token;
+                } catch (e) {
+                    console.error('Invalid token format:', e);
+                    localStorage.removeItem('sessionToken');
+                    return false;
+                }
+            }
+
+            // Initial auth check
+            async function initializePage() {
+                const token = checkToken();
+                const encryptedSeed = localStorage.getItem('encryptedSeed');
+
+                if (!token && !encryptedSeed) {
+                    elements.errorMessage.textContent = 'Please login or sign up to continue.';
+                    setTimeout(() => window.location.href = 'auth.html?mode=login', 3000);
+                    return;
+                }
+
+                if (token) {
+                    // User is logged in, fetch their data
+                    elements.encryptionKeyGroup.style.display = 'none'; // Hide encryption key input
+                    await fetchUserData(token);
+                } else if (encryptedSeed) {
+                    // New user after signup, show encryption key input
+                    elements.encryptionKeyGroup.style.display = 'block';
+                }
+            }
+
+            // Fetch user data to pre-fill form
+            async function fetchUserData(token) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
+                    });
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch user data'}`);
+                    }
+                    const user = await response.json();
+                    console.log('Fetched user:', user);
+                    elements.username.value = user.username || '';
+                    elements.avatar.value = user.avatar || '';
+                    elements.avatarPreview.src = user.avatar || '../assets/images/default-avatar.png';
+                    elements.status.value = user.status || '';
+                } catch (error) {
+                    console.error('Fetch user data error:', error);
+                    elements.errorMessage.textContent = `Error: ${error.message}`;
+                    // If fetch fails (e.g., invalid token), redirect to login
+                    localStorage.removeItem('sessionToken');
+                    setTimeout(() => window.location.href = 'auth.html?mode=login', 3000);
+                }
             }
 
             // Update avatar preview dynamically
@@ -264,14 +325,17 @@
                 };
             });
 
+            // Handle form submission
             elements.saveProfile.addEventListener('click', async () => {
+                const token = checkToken();
+                const encryptedSeed = localStorage.getItem('encryptedSeed');
                 const key = elements.encryptionKey.value.trim();
                 const username = elements.username.value.trim();
                 const avatar = elements.avatar.value.trim();
                 const status = elements.status.value.trim();
 
-                if (!key || !username) {
-                    elements.errorMessage.textContent = 'Encryption key and username are required.';
+                if (!username) {
+                    elements.errorMessage.textContent = 'Username is required.';
                     return;
                 }
 
@@ -280,36 +344,65 @@
                 elements.errorMessage.textContent = '';
 
                 try {
-                    // Decrypt the seed phrase
-                    const seed = await decryptSeed(encryptedSeed, key);
-                    if (!seed) throw new Error('Invalid encryption key.');
+                    if (token && !encryptedSeed) {
+                        // Update existing profile
+                        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                username,
+                                avatar: avatar || undefined,
+                                status: status || undefined
+                            })
+                        });
 
-                    // Register user with the backend
-                    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            username,
-                            seed,
-                            avatar: avatar || undefined,
-                            status: status || undefined
-                        })
-                    });
+                        if (!response.ok) {
+                            const text = await response.text();
+                            throw new Error(`HTTP ${response.status}: ${text || 'Failed to update profile'}`);
+                        }
 
-                    if (!response.ok) {
-                        const text = await response.text();
-                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to save profile'}`);
+                        // Redirect to dashboard
+                        window.location.href = '../lander.html';
+                    } else if (encryptedSeed) {
+                        // Register new user
+                        if (!key) {
+                            throw new Error('Encryption key is required.');
+                        }
+
+                        // Decrypt the seed phrase
+                        const seed = await decryptSeed(encryptedSeed, key);
+                        if (!seed) throw new Error('Invalid encryption key.');
+
+                        // Register user with the backend
+                        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                username,
+                                seed,
+                                avatar: avatar || undefined,
+                                status: status || undefined
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const text = await response.text();
+                            throw new Error(`HTTP ${response.status}: ${text || 'Failed to save profile'}`);
+                        }
+
+                        const data = await response.json();
+                        if (!data.token) throw new Error('No token received.');
+
+                        // Store the session token and clear encrypted seed
+                        localStorage.setItem('sessionToken', data.token);
+                        localStorage.removeItem('encryptedSeed');
+
+                        // Redirect to dashboard
+                        window.location.href = '../lander.html';
                     }
-
-                    const data = await response.json();
-                    if (!data.token) throw new Error('No token received.');
-
-                    // Store the session token and clear encrypted seed
-                    localStorage.setItem('sessionToken', data.token);
-                    localStorage.removeItem('encryptedSeed');
-
-                    // Redirect to dashboard
-                    window.location.href = '../lander.html';
                 } catch (error) {
                     console.error('Profile setup error:', error);
                     elements.errorMessage.textContent = `Error: ${error.message}`;
@@ -321,7 +414,6 @@
             async function decryptSeed(encryptedSeed, key) {
                 try {
                     // Mock decryption for now (since we don't have actual crypto logic)
-                    // In a real app, use Web Crypto API or a library like crypto-js
                     const expectedKey = localStorage.getItem('mockKey'); // Set during signup in auth.html
                     if (key !== expectedKey) return null;
                     return encryptedSeed; // Return the seed if key matches
@@ -330,6 +422,9 @@
                     return null;
                 }
             }
+
+            // Initialize the page
+            initializePage();
         });
     </script>
 </body>
