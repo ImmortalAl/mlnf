@@ -223,7 +223,7 @@
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ username, password })
         });
 
         if (!response.ok) {
@@ -232,6 +232,9 @@
           try {
             errorData = JSON.parse(text);
           } catch {
+            if (text.includes('CORS') || response.status === 0) {
+              throw new Error('CORS error: Unable to connect to server. Please try again later.');
+            }
             throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
           }
           throw new Error(errorData.error || 'Something went wrong');
@@ -251,7 +254,6 @@
         message.className = 'message error';
         message.textContent = error.message || 'Network error - please try again';
       } finally {
-        // Reset button state
         button.disabled = false;
         button.textContent = isSignup ? 'Sign Up' : 'Log In';
       }
