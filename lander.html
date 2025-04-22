@@ -214,7 +214,7 @@
         }
         .active-users h3 {
             font-family: 'Lato', sans-serif;
-            background: var(--gradient-accent);
+            background: var(--TOOLTIPgradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 1rem;
@@ -359,6 +359,7 @@
             }
             try {
                 const decoded = jwt_decode(token);
+                console.log('Decoded token:', decoded);
                 const now = Math.floor(Date.now() / 1000);
                 if (!decoded.exp) {
                     console.error('Token missing exp claim:', decoded);
@@ -382,14 +383,18 @@
             const token = localStorage.getItem('sessionToken');
             console.log('Fetching user data with token:', token ? token.substring(0, 10) + '...' : 'No token');
             if (!token || !isTokenValid(token)) {
-                console.warn('Token invalid or missing, redirecting...');
+                console.warn('Token invalid or missing, will redirect after 5s...');
                 message.className = 'message error';
-                message.textContent = 'Session expired or invalid. Redirecting to login...';
+                message.textContent = 'Session expired or invalid. Redirecting to login in 5 seconds...';
                 localStorage.removeItem('sessionToken');
-                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
+                setTimeout(() => {
+                    console.log('Executing redirect to auth.html');
+                    window.location.href = '/pages/auth.html?mode=login&redirect=lander.html';
+                }, 5000);
                 return null;
             }
             try {
+                console.log('Sending request to /api/users/me with token:', token.substring(0, 10) + '...');
                 const response = await fetch(`${API_BASE_URL}/api/users/me`, {
                     method: 'GET',
                     headers: {
@@ -402,9 +407,12 @@
                 if (!response.ok) {
                     let errorMessage;
                     if (response.status === 401 || response.status === 403) {
-                        errorMessage = 'Session invalid. Redirecting to login...';
+                        errorMessage = 'Session invalid. Redirecting to login in 5 seconds...';
                         localStorage.removeItem('sessionToken');
-                        setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
+                        setTimeout(() => {
+                            console.log('Executing redirect to auth.html');
+                            window.location.href = '/pages/auth.html?mode=login&redirect=lander.html';
+                        }, 5000);
                     } else if (response.status === 400) {
                         errorMessage = 'Invalid user ID in token';
                     } else if (response.status === 404) {
@@ -425,8 +433,11 @@
             } catch (error) {
                 console.error('Fetch user error:', error.message, error.stack);
                 message.className = 'message error';
-                message.textContent = `Error fetching user data: ${error.message}. Redirecting to login...`;
-                setTimeout(() => window.location.href = 'pages/auth.html?mode=login&redirect=lander.html', 2000);
+                message.textContent = `Error fetching user data: ${error.message}. Redirecting to login in 5 seconds...`;
+                setTimeout(() => {
+                    console.log('Executing redirect to auth.html');
+                    window.location.href = '/pages/auth.html?mode=login&redirect=lander.html';
+                }, 5000);
                 return null;
             }
         }
@@ -451,24 +462,28 @@
 
         // Logout
         $('logoutBtn').addEventListener('click', async () => {
+            console.log('Logout initiated');
             localStorage.removeItem('sessionToken');
             message.className = 'message success';
             message.textContent = 'Logged out successfully';
-            setTimeout(() => window.location.href = 'index.html', 1000);
+            setTimeout(() => window.location.href = '/index.html', 1000);
         });
 
         // Toggle active users sidebar
         $('showUsersBtn').addEventListener('click', () => {
+            console.log('Toggling active users sidebar');
             $('activeUsers').classList.toggle('active');
         });
 
         // Close active users sidebar
         $('closeUsersBtn').addEventListener('click', () => {
+            console.log('Closing active users sidebar');
             $('activeUsers').classList.remove('active');
         });
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('Page loaded, initializing...');
             const user = await fetchUserData();
             updateUserInfo(user);
         });
