@@ -682,7 +682,7 @@
 
         .profile-preview .username-link {
             color: var(--text);
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             transition: var(--transition);
         }
@@ -918,7 +918,7 @@
             z-index: 1000;
         }
 
-        @keyframes soul_HW_float {
+        @keyframes soulFloat {
             0% { transform: translateY(0); opacity: 1; }
             100% { transform: translateY(-100vh); opacity: 0; }
         }
@@ -1249,343 +1249,255 @@
                 <div class="mindmap-line line-3"></div>
                 <div class="mindmap-line line-4"></div>
             </div>
-            <a href="pages/mindmap.html" class="btn btn-primary">Expand the Nexus</a>
-        </section>
-
-        <section class="highlights" id="archive" aria-labelledby="archiveHeading">
-            <div class="section-title">
-                <h2 id="archiveHeading">Timeless Vault</h2>
-                <p>Featured Visions Preserved Forever</p>
-            </div>
-            <div class="highlight-grid">
-                <div class="highlight-item">
-                    <h4>Video: The Silent Rebellion</h4>
-                    <p>A 10-minute exposé on underground free speech movements.</p>
-                    <p class="author">— FreeSoul</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Video: Truth Uncut</h4>
-                    <p>Raw footage from the April 2025 protests.</p>
-                    <p class="author">— EternalVoice</p>
-                </div>
-                <a href="pages/archive.html" class="btn btn-primary">Watch More</a>
-            </div>
+            <a href="pages/mindmap.html" class="btn btn-primary">Contribute to the Nexus</a>
         </section>
     </main>
 
-    <footer role="contentinfo">
-        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
+    <footer>
+        <p>Manifest Liberation, Naturally Free &copy; 2025. An eternal sanctuary for unbound spirits.</p>
         <div class="social-links">
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" aria-label="Mastodon"><i class="fab fa-mastodon"></i></a>
-            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://x.com/mlnf" aria-label="Follow MLNF on X"><i class="fab fa-x"></i></a>
+            <a href="#" aria-label="Join MLNF on Discord"><i class="fab fa-discord"></i></a>
         </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const API_BASE_URL = 'https://mlnf-auth.onrender.com';
-            const elements = {
-                showUsersBtn: document.getElementById('showUsersBtn'),
-                activeUsers: document.getElementById('activeUsers'),
-                closeUsers: document.getElementById('closeUsers'),
-                themeToggle: document.getElementById('themeToggle'),
-                mobileMenuBtn: document.getElementById('mobileMenuBtn'),
-                mainNav: document.getElementById('mainNav'),
-                freeSoulBtn: document.getElementById('freeSoulBtn'),
-                joinEternityBtn: document.querySelector('.auth-buttons .btn-primary'),
-                userList: document.getElementById('userList'),
-                messageModal: document.getElementById('messageModal'),
-                messageInput: document.getElementById('messageInput'),
-                messageHistory: document.getElementById('messageHistory'),
-                recipientName: document.getElementById('recipientName'),
-                closeMessageModal: document.getElementById('closeMessageModal'),
-                sendMessageBtn: document.getElementById('sendMessageBtn'),
-                heroSection: document.querySelector('.hero')
-            };
-            let currentRecipient = '';
+        // Backend API URL
+        const API_URL = 'https://mlnf-auth.onrender.com/api';
 
-            function createParticles() {
-                const colors = ['--accent', '--warning', '--success'].map(c => getComputedStyle(document.documentElement).getPropertyValue(c).trim());
-                for (let i = 0; i < 30; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    const size = Math.random() * 4 + 2;
-                    Object.assign(particle.style, {
-                        width: `${size}px`,
-                        height: `${size}px`,
-                        left: `${Math.random() * 100}vw`,
-                        background: colors[Math.floor(Math.random() * colors.length)],
-                        animationDuration: `${Math.random() * 10 + 5}s`,
-                        animationDelay: `${Math.random() * 5}s`,
-                        opacity: Math.random() * 0.5 + 0.3,
-                        boxShadow: `0 0 ${size*2}px ${size/2}px ${colors[Math.floor(Math.random() * colors.length)]}`
-                    });
-                    elements.heroSection.appendChild(particle);
-                }
-            }
-            createParticles();
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            themeToggle.innerHTML = document.body.classList.contains('light-theme')
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        });
 
-            function toggleSidebar() {
-                elements.activeUsers.classList.toggle('active');
-                if (elements.activeUsers.classList.contains('active')) {
-                    fetchOnlineUsers();
-                    document.body.classList.add('sidebar-open');
-                } else {
-                    document.body.classList.remove('sidebar-open');
-                }
-            }
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
 
-            elements.showUsersBtn.addEventListener('click', toggleSidebar);
-            elements.closeUsers.addEventListener('click', toggleSidebar);
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mainNav.classList.contains('active')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
 
-            document.addEventListener('click', (e) => {
-                if (!elements.activeUsers.contains(e.target) && !elements.showUsersBtn.contains(e.target) && elements.activeUsers.classList.contains('active')) {
-                    toggleSidebar();
-                }
-            });
+        // Particles animation
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = `${Math.random() * 8 + 4}px`;
+            particle.style.height = particle.style.width;
+            particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, 0.7)`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 10000);
+        }
+        setInterval(createParticle, 500);
 
-            elements.themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('light-theme');
-                const isLightTheme = document.body.classList.contains('light-theme');
-                elements.themeToggle.querySelector('i').className = isLightTheme ? 'fas fa-sun' : 'fas fa-moon';
-                localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
-            });
-
-            if (localStorage.getItem('theme') === 'light') {
-                document.body.classList.add('light-theme');
-                elements.themeToggle.querySelector('i').className = 'fas fa-sun';
-            }
-
-            elements.mobileMenuBtn.addEventListener('click', () => elements.mainNav.classList.toggle('active'));
-
-            function checkToken() {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) return false;
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    if (payload.exp * 1000 < Date.now()) {
-                        localStorage.removeItem('sessionToken');
-                        return false;
+        // Soul liberation button
+        const freeSoulBtn = document.getElementById('freeSoulBtn');
+        freeSoulBtn.addEventListener('click', () => {
+            if (freeSoulBtn.dataset.state === 'locked') {
+                freeSoulBtn.classList.add('loading');
+                freeSoulBtn.disabled = true;
+                setTimeout(() => {
+                    freeSoulBtn.classList.remove('loading');
+                    freeSoulBtn.dataset.state = 'unlocked';
+                    freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+                    freeSoulBtn.disabled = false;
+                    for (let i = 0; i < 10; i++) {
+                        setTimeout(() => {
+                            const particle = document.createElement('div');
+                            particle.className = 'soul-particle';
+                            particle.style.left = `${freeSoulBtn.offsetLeft + Math.random() * freeSoulBtn.offsetWidth}px`;
+                            particle.style.top = `${freeSoulBtn.offsetTop + Math.random() * freeSoulBtn.offsetHeight}px`;
+                            particle.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                            document.body.appendChild(particle);
+                            setTimeout(() => particle.remove(), 3000);
+                        }, i * 100);
                     }
-                    return token;
-                } catch (e) {
-                    console.error('Invalid token format:', e);
-                    localStorage.removeItem('sessionToken');
-                    return false;
-                }
-            }
-
-            function updateAuthUI() {
-                const token = checkToken();
-                elements.freeSoulBtn.dataset.state = token ? 'unlocked' : 'locked';
-                elements.freeSoulBtn.querySelector('i').className = token ? 'fas fa-lock-open' : 'fas fa-lock';
-                elements.freeSoulBtn.querySelector('.btn-text').textContent = token ? 'Lock Soul' : 'Free Your Soul';
-                elements.joinEternityBtn.textContent = token ? 'Eternal Hearth' : 'Join Eternity';
-                elements.joinEternityBtn.href = token ? '/lander.html' : '/pages/auth.html';
-            }
-            updateAuthUI();
-
-            async function fetchOnlineUsers() {
-                const token = checkToken();
-                if (!token) {
-                    elements.userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
-                    return;
-                }
-                elements.userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers...</p>';
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/users`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        credentials: 'include'
-                    });
-                    if (!response.ok) {
-                        const text = await response.text();
-                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch users'}`);
-                    }
-                    const users = await response.json();
-                    console.log('Fetched users:', users);
-                    if (users.length === 0) {
-                        elements.userList.innerHTML = '<p>No seekers found.</p>';
-                        return;
-                    }
-                    // Mock online status for now
-                    const onlineUsers = users.map(user => ({
-                        ...user,
-                        isOnline: Math.random() > 0.3 // 70% chance of being "online"
-                    })).filter(user => user.isOnline);
-                    elements.userList.innerHTML = onlineUsers.length === 0 ? '<p>No seekers are online.</p>' : onlineUsers.map(user => `
-                        <div class="profile-preview" data-username="${user.username}">
-                            <a href="/pages/profiles.html?user=${encodeURIComponent(user.username)}" class="avatar-link">
-                                <img src="${user.avatar || '/assets/images/default-avatar.png'}" alt="${user.username}'s avatar" width="48" height="48" onerror="this.src='/assets/images/default-avatar.png'">
-                            </a>
-                            <div class="user-info">
-                                <a href="/pages/profiles.html?user=${encodeURIComponent(user.username)}" class="username-link">${user.username}</a>
-                                <span class="online-dot" aria-label="Online status"></span>
-                                <p class="status">${user.status || 'No status set'}</p>
-                            </div>
-                        </div>
-                    `).join('');
-                    document.querySelectorAll('.profile-preview').forEach(preview => {
-                        preview.addEventListener('click', (e) => {
-                            if (!e.target.closest('.avatar-link') && !e.target.closest('.username-link')) {
-                                e.preventDefault();
-                                currentRecipient = preview.dataset.username;
-                                openMessageModal(currentRecipient);
-                            }
-                        });
-                    });
-                } catch (error) {
-                    console.error('Fetch users error:', error);
-                    elements.userList.innerHTML = `<p class="modal-error">Error: ${error.message}</p>`;
-                }
-            }
-
-            function openMessageModal(recipient) {
-                elements.recipientName.textContent = recipient;
-                elements.messageHistory.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
-                elements.messageModal.style.display = 'flex';
-                fetchMessageHistory(recipient);
-            }
-
-            function closeMessageModal() {
-                elements.messageModal.style.display = 'none';
-                currentRecipient = '';
-                elements.messageInput.value = '';
-                elements.messageHistory.innerHTML = '';
-            }
-
-            elements.closeMessageModal.addEventListener('click', closeMessageModal);
-
-            elements.messageModal.addEventListener('click', (e) => {
-                if (e.target === elements.messageModal) {
-                    closeMessageModal();
-                }
-            });
-
-            async function fetchMessageHistory(recipient) {
-                const token = checkToken();
-                if (!token) {
-                    elements.messageHistory.innerHTML = '<p class="modal-error">Please login to view messages.</p>';
-                    return;
-                }
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/messages/history?recipient=${encodeURIComponent(recipient)}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (!response.ok) {
-                        const text = await response.text();
-                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch messages'}`);
-                    }
-                    const messages = await response.json();
-                    elements.messageHistory.innerHTML = messages.length === 0 ? '<p>No whispers yet. Start the eternal conversation!</p>' : messages.map(msg => `
-                        <div class="message-bubble ${msg.sender === recipient ? 'received' : 'sent'}">
-                            <strong>${msg.sender}:</strong> ${msg.message}
-                            <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
-                        </div>
-                    `).join('');
-                    elements.messageHistory.scrollTop = elements.messageHistory.scrollHeight;
-                } catch (error) {
-                    console.error('Fetch messages error:', error);
-                    elements.messageHistory.innerHTML = `<p class="modal-error">Error: ${error.message}</p>`;
-                }
-            }
-
-            elements.sendMessageBtn.addEventListener('click', async () => {
-                const token = checkToken();
-                if (!token) {
-                    elements.messageHistory.innerHTML = '<p class="modal-error">Please login to send messages.</p>';
-                    return;
-                }
-                const message = elements.messageInput.value.trim();
-                if (!message || !currentRecipient) return;
-                elements.sendMessageBtn.disabled = true;
-                elements.sendMessageBtn.textContent = 'Sending...';
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ recipient: currentRecipient, message })
-                    });
-                    if (!response.ok) {
-                        const text = await response.text();
-                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to send message'}`);
-                    }
-                    const data = await response.json();
-                    if (data.success) {
-                        elements.messageInput.value = '';
-                        fetchMessageHistory(currentRecipient);
-                    } else {
-                        elements.messageHistory.innerHTML += `<p class="modal-error">Error: ${data.error || 'Failed to send message'}</p>`;
-                    }
-                } catch (error) {
-                    console.error('Send message error:', error);
-                    elements.messageHistory.innerHTML += `<p class="modal-error">Error: ${error.message}</p>`;
-                } finally {
-                    elements.sendMessageBtn.disabled = false;
-                    elements.sendMessageBtn.textContent = 'Send Whisper';
-                }
-            });
-
-            elements.freeSoulBtn.addEventListener('click', async () => {
-                const token = checkToken();
-                if (token) {
-                    elements.freeSoulBtn.classList.add('loading');
-                    try {
-                        const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-                        if (!response.ok) {
-                            const text = await response.text();
-                            throw new Error(`HTTP ${response.status}: ${text || 'Failed to logout'}`);
-                        }
-                        if (response.ok) {
-                            localStorage.removeItem('sessionToken');
-                            updateAuthUI();
-                            elements.userList.innerHTML = '<p class="modal-error">Please login to view seekers.</p>';
-                            for (let i = 0; i < 20; i++) createSoulParticle(elements.freeSoulBtn);
-                        }
-                    } catch (error) {
-                        console.error('Logout error:', error);
-                        elements.userList.innerHTML += `<p class="modal-error">Error: ${error.message}</p>`;
-                    } finally {
-                        elements.freeSoulBtn.classList.remove('loading');
-                    }
-                } else {
-                    window.location.href = '/pages/auth.html?mode=login';
-                }
-            });
-
-            window.addEventListener('storage', (event) => {
-                if (event.key === 'sessionToken') {
-                    updateAuthUI();
-                    if (elements.activeUsers.classList.contains('active')) fetchOnlineUsers();
-                }
-            });
-
-            function createSoulParticle(element) {
-                const particle = document.createElement('div');
-                particle.className = 'soul-particle';
-                const rect = element.getBoundingClientRect();
-                Object.assign(particle.style, {
-                    left: `${rect.left + rect.width/2}px`,
-                    top: `${rect.top + rect.height/2}px`,
-                    animationDuration: `${Math.random() * 3 + 2}s`,
-                    background: ['--accent', '--warning'].map(c => getComputedStyle(document.documentElement).getPropertyValue(c).trim())[Math.floor(Math.random() * 2)]
-                });
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), parseFloat(particle.style.animationDuration) * 1000);
+                }, 2000);
             }
         });
+
+        // Sidebar toggle
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const activeUsers = document.getElementById('activeUsers');
+        const closeUsers = document.getElementById('closeUsers');
+        showUsersBtn.addEventListener('click', () => {
+            activeUsers.classList.add('active');
+            fetchOnlineUsers();
+        });
+        closeUsers.addEventListener('click', () => {
+            activeUsers.classList.remove('active');
+        });
+
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers...</p>';
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    userList.innerHTML = '<p class="modal-error">Please login to view seekers</p>';
+                    setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
+                    return;
+                }
+
+                const response = await fetch(`${API_URL}/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        userList.innerHTML = '<p class="modal-error">Session expired. Redirecting to login...</p>';
+                        localStorage.removeItem('token');
+                        setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
+                        return;
+                    }
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+
+                const users = await response.json();
+                if (users.length === 0) {
+                    userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
+                    return;
+                }
+
+                userList.innerHTML = users.map(user => `
+                    <div class="profile-preview" data-username="${user.username}">
+                        <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.username}'s avatar">
+                        <div class="user-info">
+                            <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
+                            <span class="online-dot"></span>
+                            <p class="status">${user.status || 'No status set'}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Add click handlers for messaging
+                document.querySelectorAll('.profile-preview').forEach(preview => {
+                    preview.addEventListener('click', () => {
+                        const username = preview.dataset.username;
+                        openMessageModal(username);
+                    });
+                });
+            } catch (error) {
+                console.error('Fetch users error:', error);
+                userList.innerHTML = '<p class="modal-error">Failed to summon seekers. Please try again.</p>';
+            }
+        }
+
+        // Messaging modal
+        const messageModal = document.getElementById('messageModal');
+        const recipientName = document.getElementById('recipientName');
+        const messageHistory = document.getElementById('messageHistory');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const closeMessageModal = document.getElementById('closeMessageModal');
+
+        function openMessageModal(username) {
+            recipientName.textContent = username;
+            messageHistory.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
+            messageModal.style.display = 'block';
+            loadMessages(username);
+        }
+
+        async function loadMessages(recipient) {
+            // Placeholder for message fetching logic
+            messageHistory.innerHTML = `
+                <div class="message-bubble received">
+                    Greetings, eternal seeker! <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+                <div class="message-bubble sent">
+                    Hail, fellow spirit! <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+            `;
+        }
+
+        sendMessageBtn.addEventListener('click', async () => {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            messageHistory.innerHTML += `
+                <div class="message-bubble sent">
+                    ${message} <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+            `;
+            messageInput.value = '';
+            messageHistory.scrollTop = messageHistory.scrollHeight;
+
+            // Placeholder for sending message to backend
+            try {
+                const token = localStorage.getItem('token');
+                // await fetch(`${API_URL}/messages`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     },
+                //     body: JSON.stringify({ recipient: recipientName.textContent, message })
+                // });
+            } catch (error) {
+                console.error('Send message error:', error);
+                messageHistory.innerHTML += '<p class="modal-error">Failed to send whisper</p>';
+            }
+        });
+
+        closeMessageModal.addEventListener('click', () => {
+            messageModal.style.display = 'none';
+            messageInput.value = '';
+            messageHistory.innerHTML = '';
+        });
+
+        // Token validation
+        async function checkToken() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+
+            try {
+                const response = await fetch(`${API_URL}/users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    localStorage.removeItem('token');
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Token check error:', error);
+                localStorage.removeItem('token');
+                return false;
+            }
+        }
+
+        // Initialize
+        async function init() {
+            const isAuthenticated = await checkToken();
+            if (isAuthenticated) {
+                freeSoulBtn.dataset.state = 'unlocked';
+                freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+            }
+        }
+        init();
     </script>
 </body>
 </html>
