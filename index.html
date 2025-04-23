@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#0d0d1a">
     <meta property="og:title" content="Manifest Liberation, Naturally Free">
     <meta property="og:description" content="An immortal sanctuary for uncensored thought and eternal truth">
-    <meta property="og:image" content="https://yourdomain.com/social-cover.jpg">
+    <meta property="og:image" content="https://mlnf.net/social-cover.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <title>Manifest Liberation, Naturally Free</title>
     <link rel="preconnect" href="https://mlnf-auth.onrender.com" crossorigin>
@@ -1051,7 +1051,7 @@
             </ul>
         </nav>
         <div class="auth-buttons">
-            <a href="pages/auth.html" class="btn btn-primary">Join Eternity</a>
+            <a href="pages/lander.html" class="btn btn-primary" id="authButton">Join Eternity</a>
             <button class="btn btn-outline" id="freeSoulBtn" data-state="locked">
                 <i class="fas fa-lock"></i>
                 <span class="btn-text">Free Your Soul</span>
@@ -1352,8 +1352,10 @@
         const activeUsers = document.getElementById('activeUsers');
         const closeUsers = document.getElementById('closeUsers');
         showUsersBtn.addEventListener('click', () => {
-            activeUsers.classList.add('active');
-            fetchOnlineUsers();
+            activeUsers.classList.toggle('active');
+            if (activeUsers.classList.contains('active')) {
+                fetchOnlineUsers();
+            }
         });
         closeUsers.addEventListener('click', () => {
             activeUsers.classList.remove('active');
@@ -1365,14 +1367,17 @@
             userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers... <span class="spinner"></span></p>';
 
             const token = localStorage.getItem('sessionToken');
+            console.log('Fetching online users with token:', token ? token.substring(0, 10) + '...' : 'No token');
+
             if (!token) {
-                userList.innerHTML = '<p class="modal-error">Please login to view seekers</p>';
+                userList.innerHTML = '<p class="modal-error">Please login to view seekers. Redirecting...</p>';
                 setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
                 return;
             }
 
             for (let attempt = 1; attempt <= retryCount; attempt++) {
                 try {
+                    console.log(`Attempt ${attempt} to fetch online users`);
                     const response = await fetch(`${API_URL}/users`, {
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -1380,6 +1385,7 @@
                         }
                     });
 
+                    console.log('Fetch users response status:', response.status);
                     if (!response.ok) {
                         if (response.status === 401 || response.status === 403) {
                             userList.innerHTML = '<p class="modal-error">Session expired. Redirecting to login...</p>';
@@ -1387,13 +1393,21 @@
                             setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
                             return;
                         }
-                        throw new Error(`HTTP error ${response.status}`);
+                        throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
                     }
 
                     const users = await response.json();
+                    console.log('Fetched users:', users);
+
                     if (users.length === 0) {
-                        userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
-                        return;
+                        // Fallback: try to show current user
+                        const currentUser = await fetchCurrentUser();
+                        if (currentUser && currentUser.online) {
+                            users.push(currentUser);
+                        } else {
+                            userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
+                            return;
+                        }
                     }
 
                     userList.innerHTML = users.map(user => `
@@ -1416,9 +1430,9 @@
                     });
                     return; // Success, exit retry loop
                 } catch (error) {
-                    console.error(`Fetch users attempt ${attempt} failed:`, error);
+                    console.error(`Fetch users attempt ${attempt} failed:`, error.message, error.stack);
                     if (attempt === retryCount) {
-                        userList.innerHTML = '<p class="modal-error">Failed to summon seekers. Please try again.</p>';
+                        userList.innerHTML = '<p class="modal-error">Failed to summon seekers: ${error.message}. Please try again.</p>';
                         return;
                     }
                     await new Promise(resolve => setTimeout(resolve, delay));
@@ -1429,7 +1443,11 @@
         // Fetch current user data
         async function fetchCurrentUser() {
             const token = localStorage.getItem('sessionToken');
-            if (!token) return null;
+            console.log('Fetching current user with token:', token ? token.substring(0, 10) + '...' : 'No token');
+            if (!token) {
+                console.warn('No session token found for current user');
+                return null;
+            }
 
             try {
                 const response = await fetch(`${API_URL}/users/me`, {
@@ -1438,15 +1456,19 @@
                         'Content-Type': 'application/json'
                     }
                 });
+                console.log('Fetch current user response status:', response.status);
                 if (!response.ok) {
                     if (response.status === 401 || response.status === 403) {
+                        console.warn('Invalid or expired token. Clearing session.');
                         localStorage.removeItem('sessionToken');
                     }
-                    return null;
+                    throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
                 }
-                return await response.json();
+                const user = await response.json();
+                console.log('Current user fetched:', user.username);
+                return user;
             } catch (error) {
-                console.error('Fetch current user error:', error);
+                console.error('Fetch current user error:', error.message, error.stack);
                 return null;
             }
         }
@@ -1516,7 +1538,11 @@
         // Token validation
         async function checkToken() {
             const token = localStorage.getItem('sessionToken');
-            if (!token) return false;
+            console.log('Checking token:', token ? token.substring(0, 10) + '...' : 'No token');
+            if (!token) {
+                console.warn('No session token found');
+                return false;
+            }
 
             try {
                 const response = await fetch(`${API_URL}/users/me`, {
@@ -1525,20 +1551,42 @@
                         'Content-Type': 'application/json'
                     }
                 });
+                console.log('Token check response status:', response.status);
                 if (!response.ok) {
+                    console.warn('Token validation failed with status:', response.status);
                     localStorage.removeItem('sessionToken');
                     return false;
                 }
                 return true;
             } catch (error) {
-                console.error('Token check error:', error);
+                console.error('Token check error:', error.message, error.stack);
                 localStorage.removeItem('sessionToken');
                 return false;
             }
         }
 
+        // Update auth button
+        async function updateAuthButton() {
+            const authButton = document.getElementById('authButton');
+            const isAuthenticated = await checkToken();
+            console.log('Authentication status:', isAuthenticated);
+            if (isAuthenticated) {
+                authButton.textContent = 'Eternal Hearth';
+                authButton.href = 'pages/lander.html';
+                authButton.classList.add('btn-primary');
+                authButton.classList.remove('btn-outline');
+            } else {
+                authButton.textContent = 'Join Eternity';
+                authButton.href = 'pages/auth.html';
+                authButton.classList.add('btn-primary');
+                authButton.classList.remove('btn-outline');
+            }
+        }
+
         // Initialize
         async function init() {
+            console.log('Initializing MLNF');
+            await updateAuthButton();
             const isAuthenticated = await checkToken();
             if (isAuthenticated) {
                 freeSoulBtn.dataset.state = 'unlocked';
