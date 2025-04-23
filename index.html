@@ -1051,7 +1051,7 @@
             </ul>
         </nav>
         <div class="auth-buttons">
-            <a href="/lander.html" class="btn btn-primary" id="authButton">Join Eternity</a>
+            <a href="pages/auth.html" class="btn btn-primary" id="authButton">Join Eternity</a>
             <button class="btn btn-outline" id="freeSoulBtn" data-state="locked">
                 <i class="fas fa-lock"></i>
                 <span class="btn-text">Free Your Soul</span>
@@ -1375,9 +1375,10 @@
                 return;
             }
 
+            let users = [];
             for (let attempt = 1; attempt <= retryCount; attempt++) {
                 try {
-                    console.log(`Attempt ${attempt} to fetch online users`);
+                    console.log(`Attempt ${attempt} to fetch online users from ${API_URL}/users`);
                     const response = await fetch(`${API_URL}/users`, {
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -1385,7 +1386,12 @@
                         }
                     });
 
-                    console.log('Fetch users response status:', response.status);
+                    console.log('Fetch users response:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        headers: Object.fromEntries(response.headers.entries())
+                    });
+
                     if (!response.ok) {
                         if (response.status === 401 || response.status === 403) {
                             userList.innerHTML = '<p class="modal-error">Session expired. Redirecting to login...</p>';
@@ -1396,48 +1402,50 @@
                         throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
                     }
 
-                    const users = await response.json();
+                    users = await response.json();
                     console.log('Fetched users:', users);
-
-                    if (users.length === 0) {
-                        // Fallback: try to show current user
-                        const currentUser = await fetchCurrentUser();
-                        if (currentUser && currentUser.online) {
-                            users.push(currentUser);
-                        } else {
-                            userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
-                            return;
-                        }
-                    }
-
-                    userList.innerHTML = users.map(user => `
-                        <div class="profile-preview" data-username="${user.username}" role="listitem" aria-label="User ${user.username}">
-                            <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.username}'s avatar">
-                            <div class="user-info">
-                                <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
-                                <span class="online-dot" aria-hidden="true"></span>
-                                <p class="status">${user.status || 'No status set'}</p>
-                            </div>
-                        </div>
-                    `).join('');
-
-                    // Add click handlers for messaging
-                    document.querySelectorAll('.profile-preview').forEach(preview => {
-                        preview.addEventListener('click', () => {
-                            const username = preview.dataset.username;
-                            openMessageModal(username);
-                        });
-                    });
-                    return; // Success, exit retry loop
+                    break; // Success, exit retry loop
                 } catch (error) {
                     console.error(`Fetch users attempt ${attempt} failed:`, error.message, error.stack);
                     if (attempt === retryCount) {
-                        userList.innerHTML = '<p class="modal-error">Failed to summon seekers: ${error.message}. Please try again.</p>';
-                        return;
+                        userList.innerHTML = `<p class="modal-error">Failed to summon seekers: ${error.message}. Falling back to current user...</p>`;
+                        // Fallback to current user
+                        const currentUser = await fetchCurrentUser();
+                        if (currentUser && currentUser.online) {
+                            users = [currentUser];
+                        } else {
+                            userList.innerHTML = '<p class="modal-error">No eternal seekers online. Please try again later.</p>';
+                            return;
+                        }
+                    } else {
+                        await new Promise(resolve => setTimeout(resolve, delay));
                     }
-                    await new Promise(resolve => setTimeout(resolve, delay));
                 }
             }
+
+            if (users.length === 0) {
+                userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
+                return;
+            }
+
+            userList.innerHTML = users.map(user => `
+                <div class="profile-preview" data-username="${user.username}" role="listitem" aria-label="User ${user.username}">
+                    <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.username}'s avatar">
+                    <div class="user-info">
+                        <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
+                        <span class="online-dot" aria-hidden="true"></span>
+                        <p class="status">${user.status || 'No status set'}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers for messaging
+            document.querySelectorAll('.profile-preview').forEach(preview => {
+                preview.addEventListener('click', () => {
+                    const username = preview.dataset.username;
+                    openMessageModal(username);
+                });
+            });
         }
 
         // Fetch current user data
@@ -1456,7 +1464,11 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                console.log('Fetch current user response status:', response.status);
+                console.log('Fetch current user response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
                 if (!response.ok) {
                     if (response.status === 401 || response.status === 403) {
                         console.warn('Invalid or expired token. Clearing session.');
@@ -1551,7 +1563,11 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                console.log('Token check response status:', response.status);
+                console.log('Token check response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
                 if (!response.ok) {
                     console.warn('Token validation failed with status:', response.status);
                     localStorage.removeItem('sessionToken');
