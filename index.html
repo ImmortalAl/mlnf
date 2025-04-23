@@ -111,6 +111,22 @@
             padding: 0.5rem;
         }
 
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 4px solid var(--accent);
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         main {
             position: relative;
             z-index: 1;
@@ -1254,7 +1270,7 @@
     </main>
 
     <footer>
-        <p>Manifest Liberation, Naturally Free &copy; 2025. An eternal sanctuary for unbound spirits.</p>
+        <p>Manifest Liberation, Naturally Free © 2025. An eternal sanctuary for unbound spirits.</p>
         <div class="social-links">
             <a href="https://x.com/mlnf" aria-label="Follow MLNF on X"><i class="fab fa-x"></i></a>
             <a href="#" aria-label="Join MLNF on Discord"><i class="fab fa-discord"></i></a>
@@ -1343,63 +1359,95 @@
             activeUsers.classList.remove('active');
         });
 
-        // Fetch online users
-        async function fetchOnlineUsers() {
+        // Fetch online users with retry
+        async function fetchOnlineUsers(retryCount = 3, delay = 1000) {
             const userList = document.getElementById('userList');
-            userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers...</p>';
+            userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers... <span class="spinner"></span></p>';
+
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                userList.innerHTML = '<p class="modal-error">Please login to view seekers</p>';
+                setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
+                return;
+            }
+
+            for (let attempt = 1; attempt <= retryCount; attempt++) {
+                try {
+                    const response = await fetch(`${API_URL}/users`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            userList.innerHTML = '<p class="modal-error">Session expired. Redirecting to login...</p>';
+                            localStorage.removeItem('sessionToken');
+                            setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
+                            return;
+                        }
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+
+                    const users = await response.json();
+                    if (users.length === 0) {
+                        userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
+                        return;
+                    }
+
+                    userList.innerHTML = users.map(user => `
+                        <div class="profile-preview" data-username="${user.username}" role="listitem" aria-label="User ${user.username}">
+                            <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.username}'s avatar">
+                            <div class="user-info">
+                                <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
+                                <span class="online-dot" aria-hidden="true"></span>
+                                <p class="status">${user.status || 'No status set'}</p>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Add click handlers for messaging
+                    document.querySelectorAll('.profile-preview').forEach(preview => {
+                        preview.addEventListener('click', () => {
+                            const username = preview.dataset.username;
+                            openMessageModal(username);
+                        });
+                    });
+                    return; // Success, exit retry loop
+                } catch (error) {
+                    console.error(`Fetch users attempt ${attempt} failed:`, error);
+                    if (attempt === retryCount) {
+                        userList.innerHTML = '<p class="modal-error">Failed to summon seekers. Please try again.</p>';
+                        return;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+        // Fetch current user data
+        async function fetchCurrentUser() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) return null;
 
             try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    userList.innerHTML = '<p class="modal-error">Please login to view seekers</p>';
-                    setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
-                    return;
-                }
-
-                const response = await fetch(`${API_URL}/users`, {
+                const response = await fetch(`${API_URL}/users/me`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
-
                 if (!response.ok) {
                     if (response.status === 401 || response.status === 403) {
-                        userList.innerHTML = '<p class="modal-error">Session expired. Redirecting to login...</p>';
-                        localStorage.removeItem('token');
-                        setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
-                        return;
+                        localStorage.removeItem('sessionToken');
                     }
-                    throw new Error(`HTTP error ${response.status}`);
+                    return null;
                 }
-
-                const users = await response.json();
-                if (users.length === 0) {
-                    userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
-                    return;
-                }
-
-                userList.innerHTML = users.map(user => `
-                    <div class="profile-preview" data-username="${user.username}">
-                        <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.username}'s avatar">
-                        <div class="user-info">
-                            <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
-                            <span class="online-dot"></span>
-                            <p class="status">${user.status || 'No status set'}</p>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Add click handlers for messaging
-                document.querySelectorAll('.profile-preview').forEach(preview => {
-                    preview.addEventListener('click', () => {
-                        const username = preview.dataset.username;
-                        openMessageModal(username);
-                    });
-                });
+                return await response.json();
             } catch (error) {
-                console.error('Fetch users error:', error);
-                userList.innerHTML = '<p class="modal-error">Failed to summon seekers. Please try again.</p>';
+                console.error('Fetch current user error:', error);
+                return null;
             }
         }
 
@@ -1444,7 +1492,7 @@
 
             // Placeholder for sending message to backend
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 // await fetch(`${API_URL}/messages`, {
                 //     method: 'POST',
                 //     headers: {
@@ -1467,7 +1515,7 @@
 
         // Token validation
         async function checkToken() {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('sessionToken');
             if (!token) return false;
 
             try {
@@ -1478,13 +1526,13 @@
                     }
                 });
                 if (!response.ok) {
-                    localStorage.removeItem('token');
+                    localStorage.removeItem('sessionToken');
                     return false;
                 }
                 return true;
             } catch (error) {
                 console.error('Token check error:', error);
-                localStorage.removeItem('token');
+                localStorage.removeItem('sessionToken');
                 return false;
             }
         }
@@ -1495,6 +1543,11 @@
             if (isAuthenticated) {
                 freeSoulBtn.dataset.state = 'unlocked';
                 freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+                // Check current user's online status and refresh sidebar if open
+                const currentUser = await fetchCurrentUser();
+                if (currentUser && currentUser.online && activeUsers.classList.contains('active')) {
+                    fetchOnlineUsers();
+                }
             }
         }
         init();
