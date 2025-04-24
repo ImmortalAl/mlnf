@@ -535,23 +535,25 @@
                 return;
             }
             try {
-                const response = await fetchWithRetry(`${API_BASE_URL}/api/users`, {
+                const response = await fetchWithRetry(`${API_BASE_URL}/api/users?limit=10`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
-                const text = await response.text();
-                let users;
-                try {
-                    users = JSON.parse(text);
-                } catch (e) {
-                    console.error(`Invalid JSON from /api/users: ${text.slice(0, 200)}`);
-                    throw new Error('Invalid JSON response from server');
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch users'}`);
                 }
+                const data = await response.json();
+                if (DEBUG_MODE) console.log('Online users response:', data);
+                
+                // Ensure users is an array
+                const users = Array.isArray(data.users) ? data.users : (Array.isArray(data) ? data : []);
                 const userList = $('onlineUsersList');
                 userList.innerHTML = users.length === 0 ? '<li>No users online</li>' : '';
+                
                 users.forEach(user => {
                     const li = document.createElement('li');
                     li.innerHTML = `
@@ -652,10 +654,6 @@
         $('closeUsersBtn').addEventListener('click', () => $('activeUsers').classList.remove('active'));
         $('refreshUsersBtn').addEventListener('click', fetchOnlineUsers);
 
-        // Event listeners
-        $('publishBtn').addEventListener('click', publishBlog);
-        $('logoutBtn').addEventListener('click', logout);
-
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await fetchUserData();
@@ -665,5 +663,6 @@
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351373d984c457e',t:'MTc0NTQ1MTcyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'935218513c33763d',t:'MTc0NTQ2MDk0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

@@ -95,7 +95,7 @@
 
         .section-title {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .section-title h2 {
@@ -103,6 +103,29 @@
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            padding: 0.8rem;
+            width: min(100%, 400px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--warning);
+            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
 
         .profiles-grid {
@@ -117,6 +140,7 @@
             padding: 2rem;
             transition: var(--transition);
             border-left: 5px solid var(--accent);
+            cursor: pointer;
         }
 
         .profile-card:hover {
@@ -144,6 +168,38 @@
         .profile-card .status {
             font-style: italic;
             color: var(--success);
+        }
+
+        .profile-card .joined {
+            font-size: 0.9rem;
+            color: #a8a8ff;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            background: var(--secondary);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination button:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .active-users {
@@ -186,13 +242,14 @@
             display: flex;
             align-items: center;
             padding: 0.8rem 0;
+            gap: 0.5rem;
         }
 
         .profile-preview img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 1rem;
+            margin-right: 0.5rem;
         }
 
         .profile-preview a {
@@ -204,6 +261,21 @@
         .profile-preview .status {
             font-size: 0.8rem;
             color: #d9ccff;
+        }
+
+        .profile-preview .message-btn {
+            background: var(--accent);
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: var(--border-radius);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .profile-preview .message-btn:hover {
+            background: var(--warning);
         }
 
         .online-dot {
@@ -253,6 +325,25 @@
             margin-bottom: 2rem;
         }
 
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #d9ccff;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+            margin-left: 0.5rem;
+        }
+
         footer {
             background: var(--gradient-secondary);
             text-align: center;
@@ -276,6 +367,13 @@
                 width: 100%;
                 right: -100%;
             }
+            .search-bar input {
+                width: 100%;
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @keyframes pulseGlow {
@@ -321,9 +419,16 @@
             <h2>Eternal Souls</h2>
             <p>Connect with liberated spirits unbound by time</p>
         </section>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search by username or display name..." aria-label="Search profiles">
+        </div>
         <div id="errorMessage" class="error-message" style="display: none;"></div>
+        <div id="loading" class="loading" style="display: none;">Loading profiles...</div>
         <div class="profiles-grid" id="profilesGrid">
             <!-- Dynamic profiles will be populated here -->
+        </div>
+        <div class="pagination" id="pagination">
+            <!-- Dynamic pagination buttons will be populated here -->
         </div>
     </main>
 
@@ -333,6 +438,7 @@
 
     <script>
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const DEBUG_MODE = true;
 
         // Utility to select elements
         const $ = (id) => document.getElementById(id);
@@ -342,6 +448,12 @@
         const closeUsersBtn = $('closeUsers');
         const profilesGrid = $('profilesGrid');
         const errorMessage = $('errorMessage');
+        const loading = $('loading');
+        const searchInput = $('searchInput');
+        const pagination = $('pagination');
+
+        let currentPage = 1;
+        let currentQuery = '';
 
         // Toggle sidebar
         function toggleSidebar() {
@@ -357,22 +469,24 @@
             if (!token) {
                 errorMessage.style.display = 'block';
                 errorMessage.textContent = 'No session found. Redirecting to login...';
-                setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
+                setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profiles.html', 2000);
                 return false;
             }
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 if (payload.exp * 1000 < Date.now()) {
+                    localStorage.removeItem('sessionToken');
                     errorMessage.style.display = 'block';
                     errorMessage.textContent = 'Session expired. Redirecting to login...';
-                    setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
+                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profiles.html', 2000);
                     return false;
                 }
             } catch (e) {
                 console.error('Invalid token format:', e);
+                localStorage.removeItem('sessionToken');
                 errorMessage.style.display = 'block';
                 errorMessage.textContent = 'Invalid session. Redirecting to login...';
-                setTimeout(() => window.location.href = '/pages/auth.html?mode=login', 2000);
+                setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profiles.html', 2000);
                 return false;
             }
             return token;
@@ -388,80 +502,214 @@
                 .replace(/'/g, '&#39;');
         }
 
-        // Fetch all users
-        async function fetchUsers() {
+        // Fetch with retry and timeout
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 30000) {
+            if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}, Headers:`, options.headers);
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
+                    options.signal = controller.signal;
+                    const response = await fetch(url, options);
+                    clearTimeout(timeoutId);
+                    if (DEBUG_MODE) {
+                        console.log(`Response: ${options.method} ${url}, Status: ${response.status}`);
+                        console.log(`CORS Headers:`, {
+                            'Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                            'Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                            'Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                        });
+                    }
+                    if (response.ok) {
+                        return response;
+                    }
+                    const text = await response.text();
+                    console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
+                    throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
+                        throw new Error('Request timed out');
+                    }
+                    if (i === retries - 1) throw error;
+                    console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                }
+            }
+        }
+
+        // Fetch users
+        async function fetchUsers(page = 1, query = '') {
             const token = checkToken();
-            if (!token) return;
+            if (!token) return null;
             try {
-                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                loading.style.display = 'block';
+                profilesGrid.style.display = 'none';
+                pagination.style.display = 'none';
+                const url = new URL(`${API_BASE_URL}/api/users`);
+                url.searchParams.set('page', page);
+                url.searchParams.set('limit', '12');
+                if (query) url.searchParams.set('q', query);
+                
+                const response = await fetchWithRetry(url, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
+                    }
                 });
-                if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch users'}`);
-                }
-                const users = await response.json();
-                console.log('Users fetched:', users);
-                return users;
+                const data = await response.json();
+                if (DEBUG_MODE) console.log('Users fetched:', data);
+                loading.style.display = 'none';
+                profilesGrid.style.display = 'grid';
+                pagination.style.display = 'flex';
+                return data;
             } catch (error) {
                 console.error('Fetch users error:', error);
+                loading.style.display = 'none';
                 errorMessage.style.display = 'block';
-                errorMessage.textContent = `Error fetching profiles: ${error.message}`;
-                return [];
+                errorMessage.textContent = error.message.includes('NetworkError') 
+                    ? 'Failed to connect to server. Please try again.'
+                    : `Error fetching profiles: ${error.message}`;
+                return null;
             }
         }
 
         // Render profiles
         function renderProfiles(users) {
             profilesGrid.innerHTML = '';
-            if (users.length === 0) {
+            if (!users || users.length === 0) {
                 profilesGrid.innerHTML = '<p style="text-align: center; color: #d9ccff;">No profiles found.</p>';
                 return;
             }
             users.forEach(user => {
                 const card = document.createElement('div');
                 card.className = 'profile-card';
+                card.dataset.username = user.username;
+                const truncatedBio = user.bio && user.bio.length > 100 
+                    ? escapeHTML(user.bio.slice(0, 100)) + '...' 
+                    : escapeHTML(user.bio || 'No bio provided');
+                const joinedDate = new Date(user.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
                 card.innerHTML = `
-                    <img src="${user.avatar || '/assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='/assets/images/default-avatar.png'">
+                    <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='../assets/images/default-avatar.png'">
                     <h3>${escapeHTML(user.displayName || user.username)}</h3>
-                    <p>${escapeHTML(user.bio || 'No bio provided')}</p>
+                    <p>${truncatedBio}</p>
                     <p class="status">${escapeHTML(user.status || 'No status set')}</p>
+                    <p class="joined">Joined ${joinedDate}</p>
                 `;
+                card.addEventListener('click', () => {
+                    window.location.href = `profiles/${user.username}.html`;
+                });
                 profilesGrid.appendChild(card);
             });
         }
 
-        // Populate active users sidebar (mock for now, can be dynamic later)
-        function populateActiveUsers(users) {
-            activeUsersList.innerHTML = '';
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.className = 'profile-preview';
-                li.innerHTML = `
-                    <img src="${user.avatar || '/assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='/assets/images/default-avatar.png'">
-                    <div>
-                        <a href="profiles.html#${escapeHTML(user.username)}">${escapeHTML(user.displayName || user.username)}</a>
-                        <span class="online-dot"></span>
-                        <p class="status">${escapeHTML(user.status || 'No status set')}</p>
-                    </div>
-                `;
-                activeUsersList.appendChild(li);
+        // Render pagination
+        function renderPagination(paginationData) {
+            pagination.innerHTML = '';
+            if (!paginationData || paginationData.pages <= 1) return;
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Previous';
+            prevBtn.disabled = paginationData.page === 1;
+            prevBtn.addEventListener('click', () => {
+                if (paginationData.page > 1) {
+                    currentPage = paginationData.page - 1;
+                    fetchAndRenderUsers(currentPage, currentQuery);
+                }
             });
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = paginationData.page === paginationData.pages;
+            nextBtn.addEventListener('click', () => {
+                if (paginationData.page < paginationData.pages) {
+                    currentPage = paginationData.page + 1;
+                    fetchAndRenderUsers(currentPage, currentQuery);
+                }
+            });
+            
+            pagination.appendChild(prevBtn);
+            pagination.appendChild(nextBtn);
+        }
+
+        // Populate active users sidebar
+        async function populateActiveUsers() {
+            const token = checkToken();
+            if (!token) return;
+            try {
+                const response = await fetchWithRetry(`${API_BASE_URL}/api/users?limit=10`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const { users } = await response.json();
+                activeUsersList.innerHTML = '';
+                if (users.length === 0) {
+                    activeUsersList.innerHTML = '<li style="color: #d9ccff;">No active users.</li>';
+                    return;
+                }
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.className = 'profile-preview';
+                    li.innerHTML = `
+                        <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='../assets/images/default-avatar.png'">
+                        <div>
+                            <a href="profiles/${user.username}.html">${escapeHTML(user.displayName || user.username)}</a>
+                            <span class="online-dot"></span>
+                            <p class="status">${escapeHTML(user.status || 'No status set')}</p>
+                        </div>
+                        <button class="message-btn" data-username="${user.username}" disabled title="Messaging coming soon">Message</button>
+                    `;
+                    activeUsersList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Fetch active users error:', error);
+                activeUsersList.innerHTML = '<li style="color: #d9ccff;">Error loading active users.</li>';
+            }
+        }
+
+        // Fetch and render users
+        async function fetchAndRenderUsers(page = 1, query = '') {
+            const data = await fetchUsers(page, query);
+            if (data) {
+                renderProfiles(data.users);
+                renderPagination(data.pagination);
+            }
+        }
+
+        // Search handler
+        searchInput.addEventListener('input', debounce(() => {
+            currentQuery = searchInput.value.trim();
+            currentPage = 1;
+            fetchAndRenderUsers(currentPage, currentQuery);
+        }, 300));
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
-            const users = await fetchUsers();
-            if (users) {
-                renderProfiles(users);
-                populateActiveUsers(users.slice(0, 4)); // Show first 4 users in sidebar
-            }
+            await fetchAndRenderUsers(currentPage, currentQuery);
+            await populateActiveUsers();
+            // Refresh active users every 30s
+            setInterval(populateActiveUsers, 30000);
         });
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351eba4bb1f9ae2',t:'MTc0NTQ1OTExOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
