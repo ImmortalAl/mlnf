@@ -251,8 +251,8 @@
             }
 
             // Fetch with retry and timeout
-            async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 20000) {
-                if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}`);
+            async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 30000) {
+                if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}, Headers:`, options.headers);
                 for (let i = 0; i < retries; i++) {
                     try {
                         const controller = new AbortController();
@@ -260,7 +260,14 @@
                         options.signal = controller.signal;
                         const response = await fetch(url, options);
                         clearTimeout(timeoutId);
-                        if (DEBUG_MODE) console.log(`Response: ${options.method} ${url}, Status: ${response.status}, Headers:`, response.headers.get('Access-Control-Allow-Methods'));
+                        if (DEBUG_MODE) {
+                            console.log(`Response: ${options.method} ${url}, Status: ${response.status}`);
+                            console.log(`CORS Headers:`, {
+                                'Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                                'Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                                'Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                            });
+                        }
                         if (response.ok) {
                             return response;
                         }
@@ -396,6 +403,8 @@
                     console.error('Profile update error:', error);
                     elements.errorMessage.textContent = error.message.includes('NetworkError') 
                         ? 'Failed to connect to server. Please try again.'
+                        : error.message.includes('Did not find method') 
+                        ? 'CORS configuration error. Please contact support.'
                         : `Error: ${error.message}`;
                     elements.saveProfile.disabled = false;
                     elements.saveProfile.textContent = 'Ascend to Eternity';
@@ -407,5 +416,6 @@
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351bafc28f3bfb8',t:'MTc0NTQ1NzEyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351dd396a1f06e2',t:'MTc0NTQ1ODUyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
