@@ -23,14 +23,12 @@
             --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
             --border-radius: 10px;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Montserrat', sans-serif;
         }
-
         body {
             background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
             color: var(--text);
@@ -41,7 +39,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .container {
             background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
             padding: 2rem;
@@ -54,7 +51,6 @@
             overflow: hidden;
             animation: modalFadeIn 0.5s ease-out;
         }
-
         .container::before {
             content: '';
             position: absolute;
@@ -66,7 +62,6 @@
             opacity: 0.3;
             z-index: -1;
         }
-
         h2 {
             font-family: 'Montserrat', sans-serif;
             font-size: 2rem;
@@ -78,18 +73,15 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
-
         .form-group {
             margin-bottom: 1.5rem;
         }
-
         label {
             display: block;
             font-size: 1rem;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
-
         input, textarea {
             width: 100%;
             padding: 0.8rem;
@@ -100,25 +92,21 @@
             font-size: 1rem;
             transition: var(--transition);
         }
-
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--warning);
             box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
-
         textarea {
             resize: vertical;
             min-height: 100px;
         }
-
         .avatar-preview {
             display: flex;
             align-items: center;
             gap: 1rem;
             margin-bottom: 1rem;
         }
-
         .avatar-preview img {
             width: 64px;
             height: 64px;
@@ -126,18 +114,21 @@
             border: 2px solid var(--accent);
             transition: var(--transition);
         }
-
         .avatar-preview img:hover {
             box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
         }
-
         .error-message {
             color: var(--danger);
             font-size: 0.9rem;
             margin-top: 0.5rem;
             text-align: center;
         }
-
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
         .btn {
             padding: 0.7rem 1.4rem;
             border-radius: var(--border-radius);
@@ -151,52 +142,43 @@
             display: inline-block;
             text-align: center;
         }
-
         .btn-primary {
             background: var(--gradient-accent);
             color: var(--primary);
             border: none;
             min-width: 140px;
         }
-
         .btn-outline {
             background: transparent;
             border: 1px solid var(--accent);
             color: var(--accent);
         }
-
         .btn:hover {
             transform: translateY(-2px) scale(1.05) rotate(2deg);
             box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
         }
-
         .form-actions {
             display: flex;
             justify-content: space-between;
             gap: 1rem;
             flex-wrap: wrap;
         }
-
         @keyframes modalFadeIn {
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
-
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
                 margin: 1rem;
             }
-
             h2 {
                 font-size: 1.5rem;
             }
-
             .form-actions {
                 flex-direction: column;
                 gap: 0.75rem;
             }
-
             .btn {
                 width: 100%;
             }
@@ -206,13 +188,13 @@
 <body>
     <div class="container">
         <h2>Eternal Profile Setup</h2>
-        <div class="form-group" id="encryptionKeyGroup">
-            <label for="encryptionKey">Enter Your Encryption Key</label>
-            <input type="password" id="encryptionKey" placeholder="Enter the key to unlock your identity..." required>
-        </div>
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" placeholder="Choose your eternal name..." required>
+        </div>
+        <div class="form-group">
+            <label for="displayName">Display Name</label>
+            <input type="text" id="displayName" placeholder="Your public name (optional)">
         </div>
         <div class="form-group">
             <label for="avatar">Avatar</label>
@@ -227,6 +209,7 @@
             <textarea id="status" placeholder="What is your eternal message?"></textarea>
         </div>
         <p id="errorMessage" class="error-message"></p>
+        <p id="successMessage" class="success-message"></p>
         <div class="form-actions">
             <button id="saveProfile" class="btn btn-primary">Ascend to Eternity</button>
             <a href="../lander.html" class="btn btn-outline">Return to Eternal Hearth</a>
@@ -236,17 +219,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const elements = {
-                encryptionKeyGroup: document.getElementById('encryptionKeyGroup'),
-                encryptionKey: document.getElementById('encryptionKey'),
                 username: document.getElementById('username'),
+                displayName: document.getElementById('displayName'),
                 avatar: document.getElementById('avatar'),
                 avatarPreview: document.getElementById('avatarPreview'),
                 status: document.getElementById('status'),
                 saveProfile: document.getElementById('saveProfile'),
-                errorMessage: document.getElementById('errorMessage')
+                errorMessage: document.getElementById('errorMessage'),
+                successMessage: document.getElementById('successMessage')
             };
 
             const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+            const DEBUG_MODE = true;
 
             // Check token validity
             function checkToken() {
@@ -266,53 +250,75 @@
                 }
             }
 
+            // Fetch with retry and timeout
+            async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 15000) {
+                if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}`);
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), timeout);
+                        options.signal = controller.signal;
+                        const response = await fetch(url, options);
+                        clearTimeout(timeoutId);
+                        if (response.ok) {
+                            if (DEBUG_MODE) console.log(`Success: ${options.method} ${url}, Status: ${response.status}`);
+                            return response;
+                        }
+                        const text = await response.text();
+                        console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
+                        throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
+                    } catch (error) {
+                        if (error.name === 'AbortError') {
+                            console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
+                            throw new Error('Request timed out');
+                        }
+                        if (i === retries - 1) throw error;
+                        console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                    }
+                }
+            }
+
             // Initial auth check
             async function initializePage() {
                 const token = checkToken();
-                const encryptedSeed = localStorage.getItem('encryptedSeed');
-
-                if (!token && !encryptedSeed) {
-                    elements.errorMessage.textContent = 'Please login or sign up to continue.';
-                    setTimeout(() => window.location.href = 'auth.html?mode=login', 3000);
+                if (!token) {
+                    elements.errorMessage.textContent = 'Please log in or sign up to continue.';
+                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 3000);
                     return;
                 }
-
-                if (token) {
-                    // User is logged in, fetch their data
-                    elements.encryptionKeyGroup.style.display = 'none'; // Hide encryption key input
-                    await fetchUserData(token);
-                } else if (encryptedSeed) {
-                    // New user after signup, show encryption key input
-                    elements.encryptionKeyGroup.style.display = 'block';
-                }
+                await fetchUserData(token);
             }
 
             // Fetch user data to pre-fill form
             async function fetchUserData(token) {
                 try {
-                    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                    const response = await fetchWithRetry(`${API_BASE_URL}/api/users/me`, {
+                        method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
-                        },
-                        credentials: 'include'
+                        }
                     });
-                    if (!response.ok) {
-                        const text = await response.text();
-                        throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch user data'}`);
+                    const text = await response.text();
+                    let user;
+                    try {
+                        user = JSON.parse(text);
+                    } catch (e) {
+                        console.error(`Invalid JSON from /api/users/me: ${text.slice(0, 200)}`);
+                        throw new Error('Invalid JSON response from server');
                     }
-                    const user = await response.json();
-                    console.log('Fetched user:', user);
+                    if (DEBUG_MODE) console.log('Fetched user:', user);
                     elements.username.value = user.username || '';
+                    elements.displayName.value = user.displayName || '';
                     elements.avatar.value = user.avatar || '';
                     elements.avatarPreview.src = user.avatar || '../assets/images/default-avatar.png';
                     elements.status.value = user.status || '';
                 } catch (error) {
                     console.error('Fetch user data error:', error);
-                    elements.errorMessage.textContent = `Error: ${error.message}`;
-                    // If fetch fails (e.g., invalid token), redirect to login
+                    elements.errorMessage.textContent = `Error fetching profile: ${error.message}`;
                     localStorage.removeItem('sessionToken');
-                    setTimeout(() => window.location.href = 'auth.html?mode=login', 3000);
+                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 3000);
                 }
             }
 
@@ -328,9 +334,14 @@
             // Handle form submission
             elements.saveProfile.addEventListener('click', async () => {
                 const token = checkToken();
-                const encryptedSeed = localStorage.getItem('encryptedSeed');
-                const key = elements.encryptionKey.value.trim();
+                if (!token) {
+                    elements.errorMessage.textContent = 'Session expired. Please log in again.';
+                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 3000);
+                    return;
+                }
+
                 const username = elements.username.value.trim();
+                const displayName = elements.displayName.value.trim();
                 const avatar = elements.avatar.value.trim();
                 const status = elements.status.value.trim();
 
@@ -342,90 +353,49 @@
                 elements.saveProfile.disabled = true;
                 elements.saveProfile.textContent = 'Ascending...';
                 elements.errorMessage.textContent = '';
+                elements.successMessage.textContent = '';
 
                 try {
-                    if (token && !encryptedSeed) {
-                        // Update existing profile
-                        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                username,
-                                avatar: avatar || undefined,
-                                status: status || undefined
-                            })
-                        });
+                    const response = await fetchWithRetry(`${API_BASE_URL}/api/users/me`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            username,
+                            displayName: displayName || undefined,
+                            avatar: avatar || undefined,
+                            status: status || undefined
+                        })
+                    });
 
+                    const text = await response.text();
+                    try {
+                        const data = JSON.parse(text);
                         if (!response.ok) {
-                            const text = await response.text();
-                            throw new Error(`HTTP ${response.status}: ${text || 'Failed to update profile'}`);
+                            throw new Error(data.error || `HTTP ${response.status}: Failed to update profile`);
                         }
-
-                        // Redirect to dashboard
-                        window.location.href = '../lander.html';
-                    } else if (encryptedSeed) {
-                        // Register new user
-                        if (!key) {
-                            throw new Error('Encryption key is required.');
-                        }
-
-                        // Decrypt the seed phrase
-                        const seed = await decryptSeed(encryptedSeed, key);
-                        if (!seed) throw new Error('Invalid encryption key.');
-
-                        // Register user with the backend
-                        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                username,
-                                seed,
-                                avatar: avatar || undefined,
-                                status: status || undefined
-                            })
-                        });
-
-                        if (!response.ok) {
-                            const text = await response.text();
-                            throw new Error(`HTTP ${response.status}: ${text || 'Failed to save profile'}`);
-                        }
-
-                        const data = await response.json();
-                        if (!data.token) throw new Error('No token received.');
-
-                        // Store the session token and clear encrypted seed
-                        localStorage.setItem('sessionToken', data.token);
-                        localStorage.removeItem('encryptedSeed');
-
-                        // Redirect to dashboard
-                        window.location.href = '../lander.html';
+                        elements.successMessage.textContent = 'Profile updated successfully!';
+                        setTimeout(() => window.location.href = '../lander.html', 2000);
+                    } catch (e) {
+                        console.error(`Invalid JSON from PATCH /api/users/me: ${text.slice(0, 200)}`);
+                        throw new Error('Invalid JSON response from server');
                     }
                 } catch (error) {
-                    console.error('Profile setup error:', error);
-                    elements.errorMessage.textContent = `Error: ${error.message}`;
+                    console.error('Profile update error:', error);
+                    elements.errorMessage.textContent = error.message.includes('NetworkError') 
+                        ? 'Failed to connect to server. Please try again.'
+                        : `Error: ${error.message}`;
                     elements.saveProfile.disabled = false;
                     elements.saveProfile.textContent = 'Ascend to Eternity';
                 }
             });
 
-            async function decryptSeed(encryptedSeed, key) {
-                try {
-                    // Mock decryption for now (since we don't have actual crypto logic)
-                    const expectedKey = localStorage.getItem('mockKey'); // Set during signup in auth.html
-                    if (key !== expectedKey) return null;
-                    return encryptedSeed; // Return the seed if key matches
-                } catch (error) {
-                    console.error('Decryption error:', error);
-                    return null;
-                }
-            }
-
             // Initialize the page
             initializePage();
         });
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351bafc28f3bfb8',t:'MTc0NTQ1NzEyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

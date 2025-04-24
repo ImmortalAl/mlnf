@@ -354,8 +354,9 @@
     <aside class="active-users" id="activeUsers">
         <button class="btn btn-primary" id="closeUsersBtn" aria-label="Close active users sidebar">Close</button>
         <h3>Eternal Seekers</h3>
+        <button class="btn btn-primary" id="refreshUsersBtn" aria-label="Refresh online users">Refresh Users</button>
         <ul id="onlineUsersList">
-            <li>Loading online users...</li>
+            <li>Click "Refresh Users" to load online users</li>
         </ul>
     </aside>
     <button class="show-users-btn" id="showUsersBtn" aria-label="Toggle active users sidebar"><i class="fas fa-users"></i></button>
@@ -378,8 +379,7 @@
         const $ = id => document.getElementById(id);
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const message = $('message');
-        let onlineUsersInterval;
-        const DEBUG_MODE = true; // Enable for detailed logging
+        const DEBUG_MODE = true;
 
         // Initialize Quill editor
         const quill = new Quill('#editor', {
@@ -415,7 +415,7 @@
         }
 
         // Fetch with retry and timeout
-        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 10000) {
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 15000) {
             if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}`);
             for (let i = 0; i < retries; i++) {
                 try {
@@ -424,7 +424,10 @@
                     options.signal = controller.signal;
                     const response = await fetch(url, options);
                     clearTimeout(timeoutId);
-                    if (response.ok) return response;
+                    if (response.ok) {
+                        if (DEBUG_MODE) console.log(`Success: ${options.method} ${url}, Status: ${response.status}`);
+                        return response;
+                    }
                     const text = await response.text();
                     console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
                     throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
@@ -563,7 +566,7 @@
                 });
             } catch (error) {
                 console.error('Error fetching online users:', error);
-                $('onlineUsersList').innerHTML = '<li>Error loading online users</li>';
+                $('onlineUsersList').innerHTML = `<li>Error loading online users: ${error.message}</li>`;
             }
         }
 
@@ -586,8 +589,9 @@
                 return;
             }
 
+            if (DEBUG_MODE) console.log('Starting blog publish sequence');
             try {
-                if (DEBUG_MODE) console.log('Attempting to publish blog post');
+                if (DEBUG_MODE) console.log('Sending POST /api/blogs');
                 const response = await fetchWithRetry(`${API_BASE_URL}/api/blogs`, {
                     method: 'POST',
                     headers: {
@@ -607,8 +611,7 @@
                     message.textContent = 'Blog post published successfully!';
                     $('blog-title').value = '';
                     quill.root.innerHTML = '';
-                    // Temporarily disable fetchMyBlogs to isolate issue
-                    // await fetchMyBlogs();
+                    if (DEBUG_MODE) console.log('Blog post published, skipping fetchMyBlogs for testing');
                     setTimeout(() => message.textContent = '', 3000);
                 } catch (e) {
                     console.error(`Invalid JSON from POST /api/blogs: ${text.slice(0, 200)}`);
@@ -639,7 +642,6 @@
                 }
             }
             localStorage.removeItem('sessionToken');
-            clearInterval(onlineUsersInterval);
             message.className = 'message success';
             message.textContent = 'Logged out successfully';
             setTimeout(() => window.location.href = '/index.html', 1000);
@@ -648,6 +650,7 @@
         // Toggle active users sidebar
         $('showUsersBtn').addEventListener('click', () => $('activeUsers').classList.toggle('active'));
         $('closeUsersBtn').addEventListener('click', () => $('activeUsers').classList.remove('active'));
+        $('refreshUsersBtn').addEventListener('click', fetchOnlineUsers);
 
         // Event listeners
         $('publishBtn').addEventListener('click', publishBlog);
@@ -658,9 +661,7 @@
             const user = await fetchUserData();
             updateUserInfo(user);
             await fetchMyBlogs();
-            // Temporarily disable online users polling to isolate issue
-            // await fetchOnlineUsers();
-            // onlineUsersInterval = setInterval(fetchOnlineUsers, 30000);
+            // Online users loaded manually via Refresh Users button
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351373d984c457e',t:'MTc0NTQ1MTcyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
