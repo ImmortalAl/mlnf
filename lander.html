@@ -379,6 +379,7 @@
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const message = $('message');
         let onlineUsersInterval;
+        const DEBUG_MODE = true; // Enable for detailed logging
 
         // Initialize Quill editor
         const quill = new Quill('#editor', {
@@ -413,18 +414,27 @@
             }
         }
 
-        // Fetch with retry
-        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+        // Fetch with retry and timeout
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 10000) {
+            if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}`);
             for (let i = 0; i < retries; i++) {
                 try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
+                    options.signal = controller.signal;
                     const response = await fetch(url, options);
+                    clearTimeout(timeoutId);
                     if (response.ok) return response;
                     const text = await response.text();
-                    console.error(`Fetch failed: HTTP ${response.status}, Response: ${text}`);
+                    console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
                     throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
                 } catch (error) {
+                    if (error.name === 'AbortError') {
+                        console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
+                        throw new Error('Request timed out');
+                    }
                     if (i === retries - 1) throw error;
-                    console.log(`Retrying fetch (${i + 1}/${retries}) after ${delay}ms`);
+                    console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
                     await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                 }
             }
@@ -452,7 +462,7 @@
                 try {
                     return JSON.parse(text);
                 } catch (e) {
-                    console.error('Invalid JSON:', text);
+                    console.error(`Invalid JSON from /api/users/me: ${text.slice(0, 200)}`);
                     throw new Error('Invalid JSON response from server');
                 }
             } catch (error) {
@@ -493,7 +503,14 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                const blogs = await response.json();
+                const text = await response.text();
+                let blogs;
+                try {
+                    blogs = JSON.parse(text);
+                } catch (e) {
+                    console.error(`Invalid JSON from /api/blogs/my: ${text.slice(0, 200)}`);
+                    throw new Error('Invalid JSON response from server');
+                }
                 const blogList = $('myBlogsList');
                 blogList.innerHTML = blogs.length === 0 ? '<li>No blog posts yet</li>' : '';
                 blogs.forEach(blog => {
@@ -522,7 +539,14 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                const users = await response.json();
+                const text = await response.text();
+                let users;
+                try {
+                    users = JSON.parse(text);
+                } catch (e) {
+                    console.error(`Invalid JSON from /api/users: ${text.slice(0, 200)}`);
+                    throw new Error('Invalid JSON response from server');
+                }
                 const userList = $('onlineUsersList');
                 userList.innerHTML = users.length === 0 ? '<li>No users online</li>' : '';
                 users.forEach(user => {
@@ -563,6 +587,7 @@
             }
 
             try {
+                if (DEBUG_MODE) console.log('Attempting to publish blog post');
                 const response = await fetchWithRetry(`${API_BASE_URL}/api/blogs`, {
                     method: 'POST',
                     headers: {
@@ -572,6 +597,7 @@
                     body: JSON.stringify({ title, content })
                 });
                 const text = await response.text();
+                if (DEBUG_MODE) console.log(`Raw response from POST /api/blogs: ${text.slice(0, 200)}`);
                 try {
                     const data = JSON.parse(text);
                     if (!response.ok) {
@@ -581,10 +607,11 @@
                     message.textContent = 'Blog post published successfully!';
                     $('blog-title').value = '';
                     quill.root.innerHTML = '';
-                    await fetchMyBlogs();
+                    // Temporarily disable fetchMyBlogs to isolate issue
+                    // await fetchMyBlogs();
                     setTimeout(() => message.textContent = '', 3000);
                 } catch (e) {
-                    console.error('Invalid JSON response:', text);
+                    console.error(`Invalid JSON from POST /api/blogs: ${text.slice(0, 200)}`);
                     throw new Error('Invalid JSON response from server');
                 }
             } catch (error) {
@@ -631,8 +658,9 @@
             const user = await fetchUserData();
             updateUserInfo(user);
             await fetchMyBlogs();
-            await fetchOnlineUsers();
-            onlineUsersInterval = setInterval(fetchOnlineUsers, 30000);
+            // Temporarily disable online users polling to isolate issue
+            // await fetchOnlineUsers();
+            // onlineUsersInterval = setInterval(fetchOnlineUsers, 30000);
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351373d984c457e',t:'MTc0NTQ1MTcyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
