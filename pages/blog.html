@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html
-
- lang="en">
+ï»¿<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +7,7 @@
     <meta name="theme-color" content="#0d0d1a">
     <title>Soul Scrolls - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
     <style>
         :root {
             --primary: #0d0d1a;
@@ -24,14 +23,12 @@
             --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             --border-radius: 12px;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
-
         body {
             background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
                         url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
@@ -41,7 +38,6 @@
             display: flex;
             flex-direction: column;
         }
-
         header {
             background: var(--gradient-secondary);
             padding: 1rem 2rem;
@@ -54,26 +50,27 @@
             z-index: 1000;
             backdrop-filter: blur(10px);
         }
-
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
         .logo i {
             color: var(--accent);
             font-size: 2.2rem;
             animation: pulseGlow 2s infinite;
         }
-
         .logo h1 {
             font-size: 1.8rem;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         nav ul {
             display: flex;
             gap: 1.8rem;
             list-style: none;
         }
-
         nav a {
             color: var(--text);
             text-decoration: none;
@@ -81,28 +78,23 @@
             padding: 0.5rem 0;
             transition: var(--transition);
         }
-
         nav a:hover {
             color: var(--accent);
         }
-
         main {
             padding: 3rem 2rem;
             flex: 1;
         }
-
         .section-title {
             text-align: center;
             margin-bottom: 3rem;
         }
-
         .section-title h2 {
             font-size: 2.5rem;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .blog-list {
             display: flex;
             flex-direction: column;
@@ -110,7 +102,6 @@
             max-width: 800px;
             margin: 0 auto;
         }
-
         .blog-post {
             background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
             border-radius: var(--border-radius);
@@ -118,29 +109,28 @@
             transition: var(--transition);
             border-left: 5px solid var(--accent);
         }
-
         .blog-post:hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow);
         }
-
         .blog-post h3 {
             font-size: 1.5rem;
             color: var(--accent);
             margin-bottom: 0.5rem;
         }
-
-        .blog-post p {
+        .blog-post .content {
             color: #d9ccff;
             margin-bottom: 1rem;
         }
-
         .blog-post .author {
             font-style: italic;
             color: var(--success);
             font-size: 0.9rem;
         }
-
+        .blog-post .date {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
         .active-users {
             position: fixed;
             right: -300px;
@@ -152,12 +142,11 @@
             transition: right 0.3s ease;
             z-index: 200;
             box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
         }
-
         .active-users.active {
             right: 0;
         }
-
         .active-users-header {
             display: flex;
             justify-content: space-between;
@@ -165,42 +154,36 @@
             margin-bottom: 1.5rem;
             border-bottom: 1px solid rgba(255, 94, 120, 0.3);
         }
-
         .active-users h3 {
             font-size: 1.2rem;
             font-weight: 600;
         }
-
         .active-users ul {
             list-style: none;
             max-height: calc(100% - 100px);
             overflow-y: auto;
         }
-
         .active-users li {
             display: flex;
             align-items: center;
             padding: 0.8rem 0;
+            gap: 0.5rem;
         }
-
         .profile-preview img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             margin-right: 1rem;
         }
-
         .profile-preview a {
             color: var(--text);
             text-decoration: none;
             font-weight: 500;
         }
-
         .profile-preview .status {
             font-size: 0.8rem;
             color: #d9ccff;
         }
-
         .online-dot {
             width: 10px;
             height: 10px;
@@ -208,7 +191,6 @@
             border-radius: 50%;
             margin-left: 0.5rem;
         }
-
         .show-users-btn {
             position: fixed;
             bottom: 70px;
@@ -222,7 +204,9 @@
             z-index: 300;
             transition: var(--transition);
         }
-
+        .show-users-btn:hover {
+            background: var(--accent);
+        }
         .close-sidebar {
             background: none;
             border: none;
@@ -234,17 +218,33 @@
             right: 10px;
             z-index: 250;
         }
-
         footer {
             background: var(--gradient-secondary);
             text-align: center;
             padding: 2rem;
             border-top: 3px solid var(--accent);
         }
-
         @keyframes pulseGlow {
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.1); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .blog-post {
+                padding: 1.5rem;
+            }
+            .active-users {
+                width: 100%;
+                top: 0;
+                height: 100%;
+            }
         }
     </style>
 </head>
@@ -252,45 +252,13 @@
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
-            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">Ã—</button>
         </div>
-        <ul>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar">
-                <div>
-                    <a href="profiles.html#ImmortalAl">ImmortalAl</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Defending free speech</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar">
-                <div>
-                    <a href="profiles.html#FreeSoul">FreeSoul</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Seeking eternal liberty</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar">
-                <div>
-                    <a href="profiles.html#EternalVoice">EternalVoice</a>
-                    <p class="status">Echoing truth</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar">
-                <div>
-                    <a href="profiles.html#TruthSeeker">TruthSeeker</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Unveiling hidden narratives</p>
-                </div>
-            </li>
+        <ul id="onlineUsersList">
+            <li>Loading active users...</li>
         </ul>
     </aside>
-
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-
     <header>
         <div class="logo">
             <i class="fas fa-infinity"></i>
@@ -309,40 +277,41 @@
             </ul>
         </nav>
     </header>
-
     <main>
         <section class="section-title">
             <h2>Soul Scrolls</h2>
             <p>Timeless reflections from liberated spirits</p>
         </section>
-
-        <div class="blog-list">
+        <div class="blog-list" id="blogList">
             <div class="blog-post">
-                <h3>Eternity Over Ephemera</h3>
-                <p>Why transcending time is the ultimate rebellion against control. In a world bound by fleeting narratives, we choose the eternal.</p>
-                <p class="author">— FreeSoul</p>
-            </div>
-            <div class="blog-post">
-                <h3>The Chains We Don’t See</h3>
-                <p>A personal journey through a censored world, unveiling the invisible shackles that bind us.</p>
-                <p class="author">— EternalVoice</p>
-            </div>
-            <div class="blog-post">
-                <h3>Beyond the Mortal Veil</h3>
-                <p>Reflections on shedding temporal illusions to embrace unbound truth.</p>
-                <p class="author">— ImmortalAl</p>
+                <p>Loading blog posts...</p>
             </div>
         </div>
     </main>
-
     <footer>
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
     </footer>
-
     <script>
+        // Embedded jwt-decode
+        function jwt_decode(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                throw new Error('Invalid JWT token');
+            }
+        }
+
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const activeUsers = document.getElementById('activeUsers');
         const showUsersBtn = document.getElementById('showUsersBtn');
         const closeUsersBtn = document.getElementById('closeUsers');
+        const blogList = document.getElementById('blogList');
+        let onlineUsersInterval;
 
         function toggleSidebar() {
             activeUsers.classList.toggle('active');
@@ -350,6 +319,101 @@
 
         showUsersBtn.addEventListener('click', toggleSidebar);
         closeUsersBtn.addEventListener('click', toggleSidebar);
+
+        // Check token validity
+        function isTokenValid(token) {
+            if (!token) return false;
+            try {
+                const decoded = jwt_decode(token);
+                const now = Math.floor(Date.now() / 1000);
+                return decoded.exp > now && decoded.id;
+            } catch (error) {
+                console.error('Token decode error:', error.message);
+                return false;
+            }
+        }
+
+        // Fetch blog posts
+        async function fetchBlogPosts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blogs`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Failed to fetch blog posts`);
+                }
+                const posts = await response.json();
+                blogList.innerHTML = posts.length === 0 ? '<div class="blog-post"><p>No blog posts yet.</p></div>' : '';
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'blog-post';
+                    postElement.id = post._id;
+                    postElement.innerHTML = `
+                        <h3>${post.title}</h3>
+                        <div class="content">${DOMPurify.sanitize(post.content)}</div>
+                        <p class="author">â€” ${post.author.displayName || post.author.username}</p>
+                        <p class="date">${new Date(post.createdAt).toLocaleDateString()}</p>
+                    `;
+                    blogList.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error('Error fetching blog posts:', error);
+                blogList.innerHTML = '<div class="blog-post"><p>Error loading blog posts</p></div>';
+            }
+        }
+
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token || !isTokenValid(token)) {
+                document.getElementById('onlineUsersList').innerHTML = '<li>Please log in to view online users</li>';
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Failed to fetch online users`);
+                }
+                const users = await response.json();
+                const userList = document.getElementById('onlineUsersList');
+                userList.innerHTML = users.length === 0 ? '<li>No users online</li>' : '';
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.className = 'profile-preview';
+                    li.innerHTML = `
+                        <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.displayName || user.username}'s avatar">
+                        <div>
+                            <a href="/pages/profiles.html#${user._id}">${user.displayName || user.username}</a>
+                            <span class="online-dot"></span>
+                            ${user.status ? `<p class="status">${user.status}</p>` : ''}
+                        </div>
+                    `;
+                    li.querySelector('img').onerror = () => {
+                        li.querySelector('img').src = 'https://i.pravatar.cc/40';
+                    };
+                    userList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching online users:', error);
+                document.getElementById('onlineUsersList').innerHTML = '<li>Error loading online users</li>';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchBlogPosts();
+            fetchOnlineUsers();
+            onlineUsersInterval = setInterval(fetchOnlineUsers, 30000);
+            window.addEventListener('beforeunload', () => clearInterval(onlineUsersInterval));
+        });
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351373d9d915084',t:'MTc0NTQ1MTcyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

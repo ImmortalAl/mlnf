@@ -1,4 +1,4 @@
-Project Overview:
+ï»¿Project Overview:
 You are holding my hand through the development of a website called "Manifest Liberation, Naturally Free" (MLNF), an immortal-themed website to serve as a refuge for free-thinkers to crowdsource truth and knowledge that is concealed by the conventional world of tyrannical censorship, to engage in discourse, to build a timeless community and to transcend conventional boundaries.
 
 Key features:
@@ -44,12 +44,12 @@ Mobile Responsiveness: Ensure all new features work seamlessly on mobile devices
 
 The directory structure on the local machine is like this. The back-end root, "mlnf-auth", is a sibling to the front-end root, "MLNF".
 Here is the front-end directory structure:
-¦   index.html
-¦   scripts.js
-¦   styles.css
+Â¦   index.html
+Â¦   scripts.js
+Â¦   styles.css
 +---assets
-¦   +---images
-¦   +---uploads
+Â¦   +---images
+Â¦   +---uploads
 +---pages
         archive.html
         auth.html
