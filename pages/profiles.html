@@ -19,10 +19,9 @@
             --text: #f0e6ff;
             --highlight: #2a4066;
             --success: #5cb85c;
-            --warning: #ffca28;
-            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-accent: linear-gradient(45deg, var(--accent), #ff8f00);
             --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             --border-radius: 12px;
         }
@@ -55,6 +54,12 @@
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .logo i {
@@ -91,6 +96,9 @@
         main {
             padding: 3rem 2rem;
             flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .section-title {
@@ -109,11 +117,15 @@
             display: flex;
             justify-content: center;
             margin-bottom: 2rem;
+            position: relative;
+            width: min(100%, 400px);
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .search-bar input {
-            padding: 0.8rem;
-            width: min(100%, 400px);
+            padding: 0.8rem 2.5rem 0.8rem 0.8rem;
+            width: 100%;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--accent);
             border-radius: var(--border-radius);
@@ -124,14 +136,38 @@
 
         .search-bar input:focus {
             outline: none;
-            border-color: var(--warning);
+            border-color: var(--accent);
             box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        .search-bar .clear-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .search-bar .clear-btn.visible {
+            opacity: 1;
         }
 
         .profiles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .profiles-grid.loading {
+            opacity: 0.3;
         }
 
         .profile-card {
@@ -141,10 +177,12 @@
             transition: var(--transition);
             border-left: 5px solid var(--accent);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .profile-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             box-shadow: var(--shadow);
         }
 
@@ -153,6 +191,13 @@
             height: 60px;
             border-radius: 50%;
             margin-bottom: 1rem;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            transition: opacity 0.3s;
+        }
+
+        .profile-card img.loading {
+            opacity: 0;
         }
 
         .profile-card h3 {
@@ -178,8 +223,9 @@
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.5rem;
             margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .pagination button {
@@ -190,11 +236,19 @@
             color: var(--text);
             cursor: pointer;
             transition: var(--transition);
+            min-width: 40px;
+            text-align: center;
         }
 
-        .pagination button:hover {
+        .pagination button:hover:not(:disabled) {
             background: var(--accent);
             color: var(--primary);
+        }
+
+        .pagination button.active {
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: bold;
         }
 
         .pagination button:disabled {
@@ -204,19 +258,20 @@
 
         .active-users {
             position: fixed;
-            right: -300px;
+            right: 0;
             top: 70px;
             width: 300px;
             height: calc(100% - 70px);
             background: var(--gradient-secondary);
             padding: 1.5rem;
-            transition: right 0.3s ease;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
             z-index: 200;
             box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
         }
 
         .active-users.active {
-            right: 0;
+            transform: translateX(0);
         }
 
         .active-users-header {
@@ -230,6 +285,9 @@
         .active-users h3 {
             font-size: 1.2rem;
             font-weight: 600;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .active-users ul {
@@ -249,7 +307,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 0.5rem;
+            object-fit: cover;
         }
 
         .profile-preview a {
@@ -275,7 +333,7 @@
         }
 
         .profile-preview .message-btn:hover {
-            background: var(--warning);
+            background: #ff8f00;
         }
 
         .online-dot {
@@ -290,18 +348,18 @@
             position: fixed;
             bottom: 70px;
             right: 20px;
-            background: var(--secondary);
+            background: var(--gradient-accent);
             border: none;
             padding: 0.8rem;
             border-radius: 50%;
             cursor: pointer;
-            color: var(--text);
+            color: var(--primary);
             z-index: 300;
             transition: var(--transition);
         }
 
         .show-users-btn:hover {
-            background: var(--accent);
+            transform: scale(1.1);
         }
 
         .close-sidebar {
@@ -310,10 +368,11 @@
             color: var(--text);
             font-size: 1.5rem;
             cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 250;
+            transition: var(--transition);
+        }
+
+        .close-sidebar:hover {
+            color: var(--accent);
         }
 
         .error-message {
@@ -323,15 +382,27 @@
             color: #ff4444;
             border-radius: var(--border-radius);
             margin-bottom: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .loading {
+        .error-message.visible {
+            opacity: 1;
+        }
+
+        .loading-spinner {
             text-align: center;
             padding: 2rem;
             color: #d9ccff;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .loading::after {
+        .loading-spinner.visible {
+            opacity: 1;
+        }
+
+        .loading-spinner::after {
             content: '';
             display: inline-block;
             width: 24px;
@@ -355,19 +426,22 @@
             header {
                 flex-direction: column;
                 gap: 1rem;
+                padding: 1rem;
             }
             nav ul {
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: 1rem;
             }
             .profiles-grid {
                 grid-template-columns: 1fr;
             }
             .active-users {
                 width: 100%;
-                right: -100%;
+                top: 0;
+                height: 100%;
             }
-            .search-bar input {
+            .search-bar {
                 width: 100%;
             }
         }
@@ -385,25 +459,23 @@
 <body>
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
-            <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
+            <h3 id="activeUsersTitle">Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
-        <ul id="activeUsersList">
-            <!-- Dynamic active users will be populated here -->
-        </ul>
+        <ul id="activeUsersList"></ul>
     </aside>
 
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
 
     <header>
         <div class="logo">
-            <i class="fas fa-infinity"></i>
+            <i class="fas fa-infinity" aria-hidden="true"></i>
             <h1>Manifest Liberation, Naturally Free</h1>
         </div>
-        <nav>
+        <nav aria-label="Main navigation">
             <ul>
                 <li><a href="../index.html">Home</a></li>
-                <li><a href="profiles.html">Eternal Souls</a></li>
+                <li><a href="profiles.html" aria-current="page">Eternal Souls</a></li>
                 <li><a href="blog.html">Soul Scrolls</a></li>
                 <li><a href="messageboard.html">Echoes Unbound</a></li>
                 <li><a href="news.html">Boundless Chronicles</a></li>
@@ -421,15 +493,12 @@
         </section>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search by username or display name..." aria-label="Search profiles">
+            <button class="clear-btn" id="clearSearch" aria-label="Clear search">×</button>
         </div>
-        <div id="errorMessage" class="error-message" style="display: none;"></div>
-        <div id="loading" class="loading" style="display: none;">Loading profiles...</div>
-        <div class="profiles-grid" id="profilesGrid">
-            <!-- Dynamic profiles will be populated here -->
-        </div>
-        <div class="pagination" id="pagination">
-            <!-- Dynamic pagination buttons will be populated here -->
-        </div>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="loading" class="loading-spinner">Loading profiles...</div>
+        <div class="profiles-grid" id="profilesGrid"></div>
+        <div class="pagination" id="pagination"></div>
     </main>
 
     <footer>
@@ -444,30 +513,27 @@
         const $ = (id) => document.getElementById(id);
         const activeUsers = $('activeUsers');
         const activeUsersList = $('activeUsersList');
+        const activeUsersTitle = $('activeUsersTitle');
         const showUsersBtn = $('showUsersBtn');
         const closeUsersBtn = $('closeUsers');
         const profilesGrid = $('profilesGrid');
         const errorMessage = $('errorMessage');
         const loading = $('loading');
         const searchInput = $('searchInput');
+        const clearSearch = $('clearSearch');
         const pagination = $('pagination');
 
+        // State
         let currentPage = 1;
         let currentQuery = '';
-
-        // Toggle sidebar
-        function toggleSidebar() {
-            activeUsers.classList.toggle('active');
-        }
-
-        showUsersBtn.addEventListener('click', toggleSidebar);
-        closeUsersBtn.addEventListener('click', toggleSidebar);
+        let lastFetchController = null;
+        let usersCache = new Map(); // Cache: key = `page:query`, value = { users, pagination }
 
         // Check token validity
         function checkToken() {
             const token = localStorage.getItem('sessionToken');
             if (!token) {
-                errorMessage.style.display = 'block';
+                errorMessage.classList.add('visible');
                 errorMessage.textContent = 'No session found. Redirecting to login...';
                 setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profiles.html', 2000);
                 return false;
@@ -476,7 +542,7 @@
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 if (payload.exp * 1000 < Date.now()) {
                     localStorage.removeItem('sessionToken');
-                    errorMessage.style.display = 'block';
+                    errorMessage.classList.add('visible');
                     errorMessage.textContent = 'Session expired. Redirecting to login...';
                     setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profiles.html', 2000);
                     return false;
@@ -484,7 +550,7 @@
             } catch (e) {
                 console.error('Invalid token format:', e);
                 localStorage.removeItem('sessionToken');
-                errorMessage.style.display = 'block';
+                errorMessage.classList.add('visible');
                 errorMessage.textContent = 'Invalid session. Redirecting to login...';
                 setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profiles.html', 2000);
                 return false;
@@ -503,7 +569,7 @@
         }
 
         // Fetch with retry and timeout
-        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 30000) {
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 15000) {
             if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}, Headers:`, options.headers);
             for (let i = 0; i < retries; i++) {
                 try {
@@ -514,11 +580,6 @@
                     clearTimeout(timeoutId);
                     if (DEBUG_MODE) {
                         console.log(`Response: ${options.method} ${url}, Status: ${response.status}`);
-                        console.log(`CORS Headers:`, {
-                            'Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
-                            'Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
-                            'Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
-                        });
                     }
                     if (response.ok) {
                         return response;
@@ -538,107 +599,200 @@
             }
         }
 
-        // Fetch users
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            activeUsers.classList.toggle('active');
+        }
+
+        showUsersBtn.addEventListener('click', toggleSidebar);
+        closeUsersBtn.addEventListener('click', toggleSidebar);
+
+        // Render profiles with diffing
+        function renderProfiles(users) {
+            profilesGrid.classList.remove('loading');
+            if (!users || users.length === 0) {
+                profilesGrid.innerHTML = '<p style="text-align: center; color: #d9ccff;">No profiles found.</p>';
+                return;
+            }
+
+            const existingCards = new Map();
+            profilesGrid.querySelectorAll('.profile-card').forEach(card => {
+                existingCards.set(card.dataset.username, card);
+            });
+
+            const fragment = document.createDocumentFragment();
+            users.forEach(user => {
+                const existingCard = existingCards.get(user.username);
+                if (existingCard) {
+                    const statusEl = existingCard.querySelector('.status');
+                    if (statusEl.textContent !== (user.status || 'No status set')) {
+                        statusEl.textContent = user.status || 'No status set';
+                    }
+                    existingCards.delete(user.username);
+                    fragment.appendChild(existingCard);
+                } else {
+                    const card = document.createElement('div');
+                    card.className = 'profile-card';
+                    card.dataset.username = user.username;
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('tabindex', '0');
+                    const truncatedBio = user.bio && user.bio.length > 100 
+                        ? escapeHTML(user.bio.slice(0, 100)) + '...' 
+                        : escapeHTML(user.bio || 'No bio provided');
+                    const joinedDate = new Date(user.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                    card.innerHTML = `
+                        <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" loading="lazy" class="loading">
+                        <h3>${escapeHTML(user.displayName || user.username)}</h3>
+                        <p>${truncatedBio}</p>
+                        <p class="status">${escapeHTML(user.status || 'No status set')}</p>
+                        <p class="joined">Joined ${joinedDate}</p>
+                    `;
+                    card.querySelector('img').addEventListener('load', () => {
+                        card.querySelector('img').classList.remove('loading');
+                    });
+                    card.addEventListener('click', () => {
+                        window.location.href = `profiles/${user.username}.html`;
+                    });
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            window.location.href = `profiles/${user.username}.html`;
+                        }
+                    });
+                    fragment.appendChild(card);
+                }
+            });
+
+            existingCards.forEach(card => card.remove());
+            profilesGrid.innerHTML = '';
+            profilesGrid.appendChild(fragment);
+        }
+
+        // Render pagination with page range
+        function renderPagination(paginationData) {
+            pagination.innerHTML = '';
+            if (!paginationData || paginationData.pages <= 1) return;
+
+            const { page, pages } = paginationData;
+            const maxButtons = 5;
+            let startPage = Math.max(1, page - Math.floor(maxButtons / 2));
+            let endPage = Math.min(pages, startPage + maxButtons - 1);
+            if (endPage - startPage + 1 < maxButtons) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '«';
+            prevBtn.disabled = page === 1;
+            prevBtn.addEventListener('click', () => {
+                if (page > 1) {
+                    currentPage = page - 1;
+                    fetchAndRenderUsers(currentPage, currentQuery);
+                }
+            });
+            pagination.appendChild(prevBtn);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === page ? 'active' : '';
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    fetchAndRenderUsers(currentPage, currentQuery);
+                });
+                pagination.appendChild(btn);
+            }
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '»';
+            nextBtn.disabled = page === pages;
+            nextBtn.addEventListener('click', () => {
+                if (page < pages) {
+                    currentPage = page + 1;
+                    fetchAndRenderUsers(currentPage, currentQuery);
+                }
+            });
+            pagination.appendChild(nextBtn);
+        }
+
+        // Fetch users with caching
         async function fetchUsers(page = 1, query = '') {
             const token = checkToken();
             if (!token) return null;
+
+            const cacheKey = `${page}:${query}`;
+            if (usersCache.has(cacheKey)) {
+                if (DEBUG_MODE) console.log(`Cache hit for ${cacheKey}`);
+                return usersCache.get(cacheKey);
+            }
+
             try {
-                loading.style.display = 'block';
-                profilesGrid.style.display = 'none';
-                pagination.style.display = 'none';
+                if (lastFetchController) {
+                    lastFetchController.abort();
+                }
+                lastFetchController = new AbortController();
+                loading.classList.add('visible');
+                profilesGrid.classList.add('loading');
+                errorMessage.classList.remove('visible');
+
                 const url = new URL(`${API_BASE_URL}/api/users`);
                 url.searchParams.set('page', page);
                 url.searchParams.set('limit', '12');
                 if (query) url.searchParams.set('q', query);
-                
+
                 const response = await fetchWithRetry(url, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    signal: lastFetchController.signal
                 });
                 const data = await response.json();
                 if (DEBUG_MODE) console.log('Users fetched:', data);
-                loading.style.display = 'none';
-                profilesGrid.style.display = 'grid';
-                pagination.style.display = 'flex';
+                
+                usersCache.set(cacheKey, data);
+                if (usersCache.size > 50) {
+                    usersCache.delete(usersCache.keys().next().value);
+                }
+
+                loading.classList.remove('visible');
                 return data;
             } catch (error) {
+                if (error.name === 'AbortError') return null;
                 console.error('Fetch users error:', error);
-                loading.style.display = 'none';
-                errorMessage.style.display = 'block';
+                loading.classList.remove('visible');
+                profilesGrid.classList.remove('loading');
+                errorMessage.classList.add('visible');
                 errorMessage.textContent = error.message.includes('NetworkError') 
                     ? 'Failed to connect to server. Please try again.'
                     : `Error fetching profiles: ${error.message}`;
                 return null;
+            } finally {
+                lastFetchController = null;
             }
-        }
-
-        // Render profiles
-        function renderProfiles(users) {
-            profilesGrid.innerHTML = '';
-            if (!users || users.length === 0) {
-                profilesGrid.innerHTML = '<p style="text-align: center; color: #d9ccff;">No profiles found.</p>';
-                return;
-            }
-            users.forEach(user => {
-                const card = document.createElement('div');
-                card.className = 'profile-card';
-                card.dataset.username = user.username;
-                const truncatedBio = user.bio && user.bio.length > 100 
-                    ? escapeHTML(user.bio.slice(0, 100)) + '...' 
-                    : escapeHTML(user.bio || 'No bio provided');
-                const joinedDate = new Date(user.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'long', day: 'numeric'
-                });
-                card.innerHTML = `
-                    <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='../assets/images/default-avatar.png'">
-                    <h3>${escapeHTML(user.displayName || user.username)}</h3>
-                    <p>${truncatedBio}</p>
-                    <p class="status">${escapeHTML(user.status || 'No status set')}</p>
-                    <p class="joined">Joined ${joinedDate}</p>
-                `;
-                card.addEventListener('click', () => {
-                    window.location.href = `profiles/${user.username}.html`;
-                });
-                profilesGrid.appendChild(card);
-            });
-        }
-
-        // Render pagination
-        function renderPagination(paginationData) {
-            pagination.innerHTML = '';
-            if (!paginationData || paginationData.pages <= 1) return;
-            
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = 'Previous';
-            prevBtn.disabled = paginationData.page === 1;
-            prevBtn.addEventListener('click', () => {
-                if (paginationData.page > 1) {
-                    currentPage = paginationData.page - 1;
-                    fetchAndRenderUsers(currentPage, currentQuery);
-                }
-            });
-            
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = 'Next';
-            nextBtn.disabled = paginationData.page === paginationData.pages;
-            nextBtn.addEventListener('click', () => {
-                if (paginationData.page < paginationData.pages) {
-                    currentPage = paginationData.page + 1;
-                    fetchAndRenderUsers(currentPage, currentQuery);
-                }
-            });
-            
-            pagination.appendChild(prevBtn);
-            pagination.appendChild(nextBtn);
         }
 
         // Populate active users sidebar
         async function populateActiveUsers() {
             const token = checkToken();
             if (!token) return;
+
             try {
                 const response = await fetchWithRetry(`${API_BASE_URL}/api/users?limit=10`, {
                     method: 'GET',
@@ -649,24 +803,30 @@
                 });
                 const { users } = await response.json();
                 activeUsersList.innerHTML = '';
+                activeUsersTitle.textContent = `Eternal Seekers (${users.length})`;
                 if (users.length === 0) {
                     activeUsersList.innerHTML = '<li style="color: #d9ccff;">No active users.</li>';
                     return;
                 }
+                const fragment = document.createDocumentFragment();
                 users.forEach(user => {
                     const li = document.createElement('li');
                     li.className = 'profile-preview';
                     li.innerHTML = `
-                        <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" onerror="this.src='../assets/images/default-avatar.png'">
+                        <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" loading="lazy">
                         <div>
                             <a href="profiles/${user.username}.html">${escapeHTML(user.displayName || user.username)}</a>
                             <span class="online-dot"></span>
                             <p class="status">${escapeHTML(user.status || 'No status set')}</p>
                         </div>
-                        <button class="message-btn" data-username="${user.username}" disabled title="Messaging coming soon">Message</button>
+                        <button class="message-btn" data-username="${user.username}" aria-label="Message ${escapeHTML(user.displayName || user.username)}">Message</button>
                     `;
-                    activeUsersList.appendChild(li);
+                    li.querySelector('.message-btn').addEventListener('click', () => {
+                        window.location.href = `messaging.html?to=${encodeURIComponent(user.username)}`;
+                    });
+                    fragment.appendChild(li);
                 });
+                activeUsersList.appendChild(fragment);
             } catch (error) {
                 console.error('Fetch active users error:', error);
                 activeUsersList.innerHTML = '<li style="color: #d9ccff;">Error loading active users.</li>';
@@ -685,31 +845,28 @@
         // Search handler
         searchInput.addEventListener('input', debounce(() => {
             currentQuery = searchInput.value.trim();
+            clearSearch.classList.toggle('visible', currentQuery.length > 0);
             currentPage = 1;
             fetchAndRenderUsers(currentPage, currentQuery);
         }, 300));
 
-        // Debounce function
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+        // Clear search
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            currentQuery = '';
+            clearSearch.classList.remove('visible');
+            currentPage = 1;
+            fetchAndRenderUsers(currentPage, currentQuery);
+        });
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchAndRenderUsers(currentPage, currentQuery);
             await populateActiveUsers();
-            // Refresh active users every 30s
             setInterval(populateActiveUsers, 30000);
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351eba4bb1f9ae2',t:'MTc0NTQ1OTExOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'935224e5ef20bd52',t:'MTc0NTQ2MTQ2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
