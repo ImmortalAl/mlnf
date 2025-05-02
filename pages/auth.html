@@ -54,7 +54,7 @@
       margin-bottom: 1.5rem;
     }
     label {
-      display block;
+      display: block;
       margin-bottom: 0.5rem;
       color: var(--text);
       font-weight: 600;
@@ -167,7 +167,14 @@
     // Handle mode and redirect from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('mode');
-    const redirect = urlParams.get('redirect') || 'lander.html';
+    let redirect = urlParams.get('redirect') || 'lander.html';
+
+    // Normalize redirect path to ensure it’s relative to the root
+    if (redirect && !redirect.startsWith('/')) {
+      redirect = `/pages/${redirect}`;
+    } else if (redirect === 'profiles.html') {
+      redirect = '/pages/profiles.html'; // Explicitly fix profiles.html redirect
+    }
 
     if (mode === 'signup') {
       isSignup = true;
@@ -188,7 +195,7 @@
       button.textContent = isSignup ? 'Sign Up' : 'Log In';
       toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
       message.textContent = '';
-      window.history.pushState({}, '', `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}&redirect=${redirect}`);
+      window.history.pushState({}, '', `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}&redirect=${encodeURIComponent(redirect)}`);
     });
 
     form.addEventListener('submit', async (e) => {
@@ -259,7 +266,7 @@
         form.reset();
 
         // Redirect based on signup or URL parameter
-        const redirectUrl = isSignup ? '/pages/profile-setup.html' : `/${redirect}`;
+        const redirectUrl = isSignup ? '/pages/profile-setup.html' : redirect;
         console.log('Redirecting to:', redirectUrl);
         setTimeout(() => window.location.href = redirectUrl, 500);
       } catch (error) {

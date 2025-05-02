@@ -277,7 +277,8 @@
             <img src="/assets/images/default-avatar.png" alt="User Avatar" id="userAvatar">
             <span id="userName">Welcome, Guest</span>
         </a>
-        <button class="btn btn-primary" id="logoutBtn" aria-label="Log out">Logout</button>
+        <button class="btn btn-primary" id="logoutBtn" aria-label="Log out" style="display: none;">Logout</button>
+        <a href="/pages/auth.html?mode=login" class="btn btn-primary" id="loginBtn" aria-label="Log in">Login</a>
     </header>
     <main>
         <div class="message" id="message"></div>
@@ -296,7 +297,7 @@
                 <button class="btn btn-primary" id="searchBtn">Search</button>
             </div>
         </section>
-        <section class="thread-composer">
+        <section class="thread-composer" id="threadComposer" style="display: none;">
             <h2>Create New Thread</h2>
             <form id="threadForm">
                 <div class="form-group">
@@ -330,6 +331,10 @@
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const message = document.getElementById('message');
         const threadList = document.getElementById('threadList');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userInfo = document.getElementById('userInfo');
+        const threadComposer = document.getElementById('threadComposer');
         const quill = new Quill('#editor', {
             theme: 'snow',
             modules: {
@@ -342,15 +347,62 @@
             }
         });
 
+        // Check authentication status
+        async function checkAuth() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showGuestUI();
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    throw new Error('Invalid or expired token');
+                }
+                const user = await response.json();
+                showAuthenticatedUI(user);
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error.message);
+                showMessage('Session expired. Please log in again.', 'error');
+                localStorage.removeItem('sessionToken');
+                showGuestUI();
+                return false;
+            }
+        }
+
+        // Show UI for guest users
+        function showGuestUI() {
+            loginBtn.style.display = 'block';
+            logoutBtn.style.display = 'none';
+            userInfo.querySelector('#userName').textContent = 'Welcome, Guest';
+            userInfo.querySelector('#userAvatar').src = '/assets/images/default-avatar.png';
+            threadComposer.style.display = 'none';
+        }
+
+        // Show UI for authenticated users
+        function showAuthenticatedUI(user) {
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+            userInfo.querySelector('#userName').textContent = user.username || 'User';
+            userInfo.querySelector('#userAvatar').src = user.avatar || '/assets/images/default-avatar.png';
+            threadComposer.style.display = 'block';
+        }
+
         // Fetch threads
         async function fetchThreads(filter = '') {
             try {
+                const token = localStorage.getItem('sessionToken');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
                 const response = await fetch(`${API_BASE_URL}/api/threads${filter ? `?category=${filter}` : ''}`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('sessionToken')}` }
+                    headers
                 });
                 if (!response.ok) throw new Error('Failed to fetch threads');
-                const threads = await response.json();
-                renderThreads(threads);
+                const data = await response.json();
+                renderThreads(data.threads);
             } catch (error) {
                 showMessage(error.message, 'error');
             }
@@ -358,6 +410,7 @@
 
         // Render threads
         function renderThreads(threads) {
+            const isAuthenticated = !!localStorage.getItem('sessionToken');
             threadList.innerHTML = threads.map(thread => `
                 <li class="thread" data-id="${thread._id}">
                     <h3>${thread.title}</h3>
@@ -370,8 +423,10 @@
                     </div>
                     <div class="thread-actions">
                         <button onclick="toggleReplies('${thread._id}')">Replies (${thread.replies?.length || 0})</button>
-                        <button onclick="showReplyForm('${thread._id}')">Reply</button>
-                        <button onclick="flagThread('${thread._id}')">Flag</button>
+                        ${isAuthenticated ? `
+                            <button onclick="showReplyForm('${thread._id}')">Reply</button>
+                            <button onclick="flagThread('${thread._id}')">Flag</button>
+                        ` : ''}
                     </div>
                     <ul class="reply-list" id="replies-${thread._id}" style="display: none;"></ul>
                     <form class="reply-form" id="reply-form-${thread._id}" style="display: none;">
@@ -382,7 +437,7 @@
             `).join('');
             threads.forEach(thread => {
                 if (thread.replies?.length) renderReplies(thread._id, thread.replies);
-                initReplyEditor(thread._id);
+                if (isAuthenticated) initReplyEditor(thread._id);
             });
         }
 
@@ -427,6 +482,12 @@
         // Post new thread
         document.getElementById('threadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showMessage('Please log in to post a thread.', 'error');
+                window.location.href = '/pages/auth.html?mode=login';
+                return;
+            }
             const title = document.getElementById('threadTitle').value;
             const category = document.getElementById('threadCategory').value;
             const tags = document.getElementById('threadTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
@@ -436,7 +497,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ title, category, tags, content })
                 });
@@ -452,12 +513,18 @@
 
         // Post reply
         async function postReply(threadId, content) {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showMessage('Please log in to post a reply.', 'error');
+                window.location.href = '/pages/auth.html?mode=login';
+                return;
+            }
             try {
                 const response = await fetch(`${API_BASE_URL}/api/threads/${threadId}/replies`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ content })
                 });
@@ -472,12 +539,14 @@
         // Fetch replies
         async function fetchReplies(threadId) {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/threads/${threadId}/replies`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('sessionToken')}` }
+                const token = localStorage.getItem('sessionToken');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+                const response = await fetch(`${API_BASE_URL}/api/threads/${threadId}`, {
+                    headers
                 });
                 if (!response.ok) throw new Error('Failed to fetch replies');
-                const replies = await response.json();
-                renderReplies(threadId, replies);
+                const thread = await response.json();
+                renderReplies(threadId, thread.replies);
                 document.getElementById(`replies-${threadId}`).style.display = 'block';
             } catch (error) {
                 showMessage(error.message, 'error');
@@ -486,12 +555,18 @@
 
         // Flag thread
         async function flagThread(threadId) {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showMessage('Please log in to flag a thread.', 'error');
+                window.location.href = '/pages/auth.html?mode=login';
+                return;
+            }
             try {
                 const response = await fetch(`${API_BASE_URL}/api/moderation/flags`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ threadId })
                 });
@@ -532,25 +607,16 @@
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', () => {
             localStorage.removeItem('sessionToken');
-            window.location.href = '/pages/auth.html?mode=login';
+            showGuestUI();
+            showMessage('Logged out successfully', 'success');
+            fetchThreads(); // Refresh threads without auth
         });
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
             fetchThreads();
             simulateNotifications();
-            const token = localStorage.getItem('sessionToken');
-            if (token) {
-                fetch(`${API_BASE_URL}/users/me`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                })
-                .then(res => res.json())
-                .then(user => {
-                    document.getElementById('userName').textContent = user.username;
-                    document.getElementById('userAvatar').src = user.avatar || '/assets/images/default-avatar.png';
-                })
-                .catch(() => localStorage.removeItem('sessionToken'));
-            }
         });
     </script>
 </body>
