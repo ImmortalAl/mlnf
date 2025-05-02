@@ -419,7 +419,7 @@
                         Posted by <a href="/pages/profiles.html?username=${thread.author.username}">${thread.author.username}</a> 
                         on ${new Date(thread.createdAt).toLocaleString()} 
                         | Category: ${thread.category} 
-                        | Tags: ${thread.tags.join(', ')}
+                        | Tags: ${(Array.isArray(thread.tags) && thread.tags.length > 0) ? thread.tags.join(', ') : 'None'}
                     </div>
                     <div class="thread-actions">
                         <button onclick="toggleReplies('${thread._id}')">Replies (${thread.replies?.length || 0})</button>
@@ -501,12 +501,16 @@
                     },
                     body: JSON.stringify({ title, category, tags, content })
                 });
-                if (!response.ok) throw new Error('Failed to post thread');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to post thread');
+                }
                 showMessage('Thread posted successfully', 'success');
                 fetchThreads();
                 e.target.reset();
                 quill.root.innerHTML = '';
             } catch (error) {
+                console.error('Error posting thread:', error.message);
                 showMessage(error.message, 'error');
             }
         });
@@ -528,10 +532,14 @@
                     },
                     body: JSON.stringify({ content })
                 });
-                if (!response.ok) throw new Error('Failed to post reply');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to post reply');
+                }
                 showMessage('Reply posted successfully', 'success');
                 fetchReplies(threadId);
             } catch (error) {
+                console.error('Error posting reply:', error.message);
                 showMessage(error.message, 'error');
             }
         }
@@ -544,11 +552,15 @@
                 const response = await fetch(`${API_BASE_URL}/api/threads/${threadId}`, {
                     headers
                 });
-                if (!response.ok) throw new Error('Failed to fetch replies');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch replies');
+                }
                 const thread = await response.json();
                 renderReplies(threadId, thread.replies);
                 document.getElementById(`replies-${threadId}`).style.display = 'block';
             } catch (error) {
+                console.error('Error fetching replies:', error.message);
                 showMessage(error.message, 'error');
             }
         }
@@ -570,9 +582,13 @@
                     },
                     body: JSON.stringify({ threadId })
                 });
-                if (!response.ok) throw new Error('Failed to flag thread');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to flag thread');
+                }
                 showMessage('Thread flagged for community review', 'success');
             } catch (error) {
+                console.error('Error flagging thread:', error.message);
                 showMessage(error.message, 'error');
             }
         }
