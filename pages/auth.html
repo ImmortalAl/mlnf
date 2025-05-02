@@ -167,13 +167,11 @@
     // Handle mode and redirect from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('mode');
-    let redirect = urlParams.get('redirect') || 'lander.html';
+    let redirect = urlParams.get('redirect') || '/lander.html';
 
-    // Normalize redirect path to ensure it’s relative to the root
-    if (redirect && !redirect.startsWith('/')) {
+    // Normalize redirect path, excluding lander.html
+    if (redirect !== '/lander.html' && !redirect.startsWith('/')) {
       redirect = `/pages/${redirect}`;
-    } else if (redirect === 'profiles.html') {
-      redirect = '/pages/profiles.html'; // Explicitly fix profiles.html redirect
     }
 
     if (mode === 'signup') {
