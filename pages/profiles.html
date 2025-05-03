@@ -24,6 +24,8 @@
             --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             --border-radius: 12px;
+            --panel-width: 300px;
+            --header-height: 70px;
         }
 
         * {
@@ -56,6 +58,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         header {
@@ -95,12 +98,10 @@
             will-change: color;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            -webkit-transform-style: preserve-3d;
-            transform-style: preserve-3d;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+        }
+
+        nav {
+            margin-left: auto;
         }
 
         nav ul {
@@ -119,6 +120,12 @@
 
         nav a:hover {
             color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
         }
 
         main {
@@ -1046,56 +1053,86 @@
             dateRange: 'all'
         };
 
-        // Utility to select elements
-        const $ = (id) => document.getElementById(id);
-        const activeUsers = $('activeUsers');
-        const activeUsersList = $('activeUsersList');
-        const activeUsersTitle = $('activeUsersTitle');
-        const showUsersBtn = $('showUsersBtn');
-        const closeUsersBtn = $('closeUsers');
-        const profilesGrid = $('profilesGrid');
-        const errorMessage = $('errorMessage');
-        const loading = $('loading');
-        const searchInput = $('searchInput');
-        const clearSearch = $('clearSearch');
-        const pagination = $('pagination');
-        const sortFilterPanel = $('sortFilterPanel');
-        const sortBy = $('sortBy');
-        const statusFilter = $('statusFilter');
-        const dateRange = $('dateRange');
-        const closePanel = document.querySelector('.close-panel');
+        // DOM Elements
+        const elements = {
+            activeUsers: document.getElementById('activeUsers'),
+            activeUsersList: document.getElementById('activeUsersList'),
+            activeUsersTitle: document.getElementById('activeUsersTitle'),
+            showUsersBtn: document.getElementById('showUsersBtn'),
+            closeUsersBtn: document.getElementById('closeUsers'),
+            profilesGrid: document.getElementById('profilesGrid'),
+            errorMessage: document.getElementById('errorMessage'),
+            loading: document.getElementById('loading'),
+            searchInput: document.getElementById('searchInput'),
+            clearSearch: document.getElementById('clearSearch'),
+            pagination: document.getElementById('pagination'),
+            sortFilterPanel: document.getElementById('sortFilterPanel'),
+            sortBy: document.getElementById('sortBy'),
+            statusFilter: document.getElementById('statusFilter'),
+            dateRange: document.getElementById('dateRange')
+        };
 
-        // State
-        let lastFetchController = null;
-        let usersCache = new Map(); // Cache: key = `page:query`, value = { users, pagination }
+        // Event Listeners
+        elements.showUsersBtn.addEventListener('click', () => {
+            elements.activeUsers.classList.toggle('active');
+        });
+        elements.closeUsersBtn.addEventListener('click', () => {
+            elements.activeUsers.classList.toggle('active');
+        });
+
+        // Initialize event listeners for sort and filter
+        [elements.sortBy, elements.statusFilter, elements.dateRange].forEach(select => {
+            select.addEventListener('change', () => {
+                sortOptions[select.id] = select.value;
+                fetchAndRenderUsers(currentPage, currentQuery);
+            });
+        });
+
+        // Initialize search
+        elements.searchInput.addEventListener('input', debounce(() => {
+            currentQuery = elements.searchInput.value.trim();
+            elements.clearSearch.classList.toggle('visible', currentQuery.length > 0);
+            fetchAndRenderUsers(1, currentQuery);
+        }, 300));
+
+        // Clear search
+        elements.clearSearch.addEventListener('click', () => {
+            elements.searchInput.value = '';
+            elements.clearSearch.classList.remove('visible');
+            currentQuery = '';
+            fetchAndRenderUsers(1, '');
+        });
+
+        // Initialize pagination
+        elements.pagination.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.classList.contains('page-link')) {
+                const page = parseInt(target.dataset.page);
+                if (!isNaN(page)) {
+                    fetchAndRenderUsers(page, currentQuery);
+                }
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            checkToken();
+            fetchAndRenderUsers();
+        });
 
         // Check token validity
-        function checkToken() {
-            const token = localStorage.getItem('sessionToken');
-            if (!token) {
-                errorMessage.classList.add('visible');
-                errorMessage.textContent = 'No session found. Redirecting to login...';
-                setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=pages/profiles.html', 2000);
-                return false;
-            }
+        async function checkToken() {
             try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                if (payload.exp * 1000 < Date.now()) {
-                    localStorage.removeItem('sessionToken');
-                    errorMessage.classList.add('visible');
-                    errorMessage.textContent = 'Session expired. Redirecting to login...';
-                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=pages/profiles.html', 2000);
-                    return false;
+                const response = await fetch(`${API_BASE_URL}/auth/check`, {
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    window.location.href = '../login.html';
                 }
-            } catch (e) {
-                console.error('Invalid token format:', e);
-                localStorage.removeItem('sessionToken');
-                errorMessage.classList.add('visible');
-                errorMessage.textContent = 'Invalid session. Redirecting to login...';
-                setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=pages/profiles.html', 2000);
-                return false;
+            } catch (error) {
+                if (DEBUG_MODE) console.error('Token check failed:', error);
+                window.location.href = '../login.html';
             }
-            return token;
         }
 
         // Escape HTML to prevent XSS
@@ -1105,37 +1142,34 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replace(/'/g, '&#039;');
         }
 
         // Fetch with retry and timeout
         async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 15000) {
-            if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}, Headers:`, options.headers);
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), timeout);
-                    options.signal = controller.signal;
-                    const response = await fetch(url, options);
-                    clearTimeout(timeoutId);
-                    if (DEBUG_MODE) {
-                        console.log(`Response: ${options.method} ${url}, Status: ${response.status}`);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const response = await fetch(url, {
+                            ...options,
+                            signal: controller.signal
+                        });
+                        if (response.ok) {
+                            clearTimeout(timeoutId);
+                            return response;
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    } catch (error) {
+                        if (i === retries - 1) throw error;
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                     }
-                    if (response.ok) {
-                        return response;
-                    }
-                    const text = await response.text();
-                    console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
-                    throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
-                } catch (error) {
-                    if (error.name === 'AbortError') {
-                        console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
-                        throw new Error('Request timed out');
-                    }
-                    if (i === retries - 1) throw error;
-                    console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
-                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                 }
+            } catch (error) {
+                if (DEBUG_MODE) console.error('Fetch failed:', error);
+                throw error;
             }
         }
 
@@ -1154,146 +1188,102 @@
 
         // Toggle sidebar
         function toggleSidebar() {
-            activeUsers.classList.toggle('active');
+            elements.activeUsers.classList.toggle('active');
+            document.body.classList.toggle('sidebar-open');
         }
 
-        showUsersBtn.addEventListener('click', toggleSidebar);
-        closeUsersBtn.addEventListener('click', toggleSidebar);
-
         // Render profiles with diffing
-        function renderProfiles(users) {
-            profilesGrid.classList.remove('loading');
-            if (!users || users.length === 0) {
-                profilesGrid.innerHTML = '<p style="text-align: center; color: #d9ccff;">No profiles found.</p>';
-                return;
-            }
+        async function renderProfiles(users) {
+            if (!users) return;
 
-            const existingCards = new Map();
-            profilesGrid.querySelectorAll('.profile-card').forEach(card => {
-                existingCards.set(card.dataset.username, card);
-            });
-
-            const fragment = document.createDocumentFragment();
-            users.forEach(user => {
-                const existingCard = existingCards.get(user.username);
-                if (existingCard) {
-                    const statusEl = existingCard.querySelector('.status');
-                    if (statusEl.textContent !== (user.status || 'No status set')) {
-                        statusEl.textContent = user.status || 'No status set';
-                    }
-                    existingCards.delete(user.username);
-                    fragment.appendChild(existingCard);
-                } else {
-                    const card = document.createElement('div');
-                    card.className = 'profile-card';
-                    card.dataset.username = user.username;
-                    card.setAttribute('role', 'button');
-                    card.setAttribute('tabindex', '0');
-                    const truncatedBio = user.bio && user.bio.length > 100 
-                        ? escapeHTML(user.bio.slice(0, 100)) + '...' 
-                        : escapeHTML(user.bio || 'No bio provided');
-                    const joinedDate = new Date(user.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'long', day: 'numeric'
-                    });
-                    card.innerHTML = `
-                        <img src="${user.avatar || '../assets/images/default-avatar.png'}" alt="${escapeHTML(user.displayName || user.username)}'s avatar" loading="lazy" class="loading">
+            const newHTML = users.map(user => `
+                <div class="profile-card" data-id="${user._id}">
+                    <img src="${escapeHTML(user.avatar || 'https://via.placeholder.com/150')}" alt="${escapeHTML(user.displayName || user.username)}">
+                    <div class="profile-info">
                         <h3>${escapeHTML(user.displayName || user.username)}</h3>
-                        <p>${truncatedBio}</p>
-                        <p class="status">${escapeHTML(user.status || 'No status set')}</p>
-                        <p class="joined">Joined ${joinedDate}</p>
-                    `;
-                    card.querySelector('img').addEventListener('load', () => {
-                        card.querySelector('img').classList.remove('loading');
-                    });
-                    card.addEventListener('click', () => {
-                        window.location.href = `profiles/${user.username}.html`;
-                    });
-                    card.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            window.location.href = `profiles/${user.username}.html`;
-                        }
-                    });
-                    fragment.appendChild(card);
+                        <p>${escapeHTML(user.bio || 'No bio available')}</p>
+                        <div class="status">
+                            <span class="online-dot ${user.status === 'online' ? 'online' : ''}"></span>
+                            <span>${user.status || 'Unknown'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Diffing implementation
+            const oldCards = Array.from(elements.profilesGrid.children);
+            const newCards = newHTML.split('</div>');
+
+            oldCards.forEach(oldCard => {
+                const id = oldCard.getAttribute('data-id');
+                const index = users.findIndex(user => user._id === id);
+                if (index === -1) {
+                    oldCard.remove();
+                } else {
+                    const newCard = newCards[index];
+                    if (newCard && oldCard.outerHTML !== newCard) {
+                        oldCard.outerHTML = newCard;
+                    }
                 }
             });
 
-            existingCards.forEach(card => card.remove());
-            profilesGrid.innerHTML = '';
-            profilesGrid.appendChild(fragment);
+            // Add new cards
+            const remainingCards = newCards.filter((_, i) => users[i] && !oldCards.some(card => card.getAttribute('data-id') === users[i]._id));
+            remainingCards.forEach(card => {
+                if (card) {
+                    elements.profilesGrid.insertAdjacentHTML('beforeend', card + '</div>');
+                }
+            });
         }
 
         // Render pagination with page range
         function renderPagination(paginationData) {
-            pagination.innerHTML = '';
-            if (!paginationData || paginationData.pages <= 1) return;
+            if (!paginationData) return;
 
-            const { page, pages } = paginationData;
-            const maxButtons = 5;
-            let startPage = Math.max(1, page - Math.floor(maxButtons / 2));
-            let endPage = Math.min(pages, startPage + maxButtons - 1);
-            if (endPage - startPage + 1 < maxButtons) {
-                startPage = Math.max(1, endPage - maxButtons + 1);
+            const { currentPage, totalPages } = paginationData;
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
             }
 
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = '«';
-            prevBtn.disabled = page === 1;
-            prevBtn.addEventListener('click', () => {
-                if (page > 1) {
-                    currentPage = page - 1;
-                    fetchAndRenderUsers(currentPage, currentQuery);
-                }
-            });
-            pagination.appendChild(prevBtn);
+            const pages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
-            for (let i = startPage; i <= endPage; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = i === page ? 'active' : '';
-                btn.addEventListener('click', () => {
-                    currentPage = i;
-                    fetchAndRenderUsers(currentPage, currentQuery);
-                });
-                pagination.appendChild(btn);
-            }
-
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = '»';
-            nextBtn.disabled = page === pages;
-            nextBtn.addEventListener('click', () => {
-                if (page < pages) {
-                    currentPage = page + 1;
-                    fetchAndRenderUsers(currentPage, currentQuery);
-                }
-            });
-            pagination.appendChild(nextBtn);
+            elements.pagination.innerHTML = `
+                <nav aria-label="Page navigation">
+                    <ul class="pagination-list">
+                        ${currentPage > 1 ? `
+                            <li>
+                                <button class="page-link" data-page="${currentPage - 1}">Previous</button>
+                            </li>
+                        ` : ''}
+                        ${pages.map(page => `
+                            <li>
+                                <button class="page-link ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>
+                            </li>
+                        `).join('')}
+                        ${currentPage < totalPages ? `
+                            <li>
+                                <button class="page-link" data-page="${currentPage + 1}">Next</button>
+                            </li>
+                        ` : ''}
+                    </ul>
+                </nav>
+            `;
         }
 
         // Fetch users with caching
         async function fetchUsers(page = 1, query = '') {
-            const token = checkToken();
-            if (!token) return null;
-
-            const cacheKey = `${page}:${query}`;
-            if (usersCache.has(cacheKey)) {
-                if (DEBUG_MODE) console.log(`Cache hit for ${cacheKey}`);
-                return usersCache.get(cacheKey);
-            }
-
             try {
-                if (lastFetchController) {
-                    lastFetchController.abort();
-                }
-                lastFetchController = new AbortController();
-                loading.classList.add('visible');
-                profilesGrid.classList.add('loading');
-                errorMessage.classList.remove('visible');
-
                 const url = new URL(`${API_BASE_URL}/api/users`);
                 url.searchParams.set('page', page);
                 url.searchParams.set('limit', ITEMS_PER_PAGE);
-                if (query) url.searchParams.set('q', query);
+                url.searchParams.set('query', query);
+                url.searchParams.set('sortBy', sortOptions.sortBy);
+                url.searchParams.set('status', sortOptions.statusFilter);
+                url.searchParams.set('dateRange', sortOptions.dateRange);
                 if (sortOptions.sortBy) url.searchParams.set('sort', sortOptions.sortBy);
                 if (sortOptions.statusFilter) url.searchParams.set('status', sortOptions.statusFilter);
                 if (sortOptions.dateRange) url.searchParams.set('dateRange', sortOptions.dateRange);
