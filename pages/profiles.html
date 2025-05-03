@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,7 +30,22 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%);
+            background-size: 400% 100%;
+            animation: skeletonShimmer 1.5s infinite;
+        }
+
+        @keyframes skeletonShimmer {
+            0% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
         }
 
         body {
@@ -72,7 +87,20 @@
             font-size: 1.8rem;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            color: transparent;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         nav ul {
@@ -110,7 +138,20 @@
             font-size: 2.5rem;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            color: transparent;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         .search-bar {
@@ -164,6 +205,7 @@
             gap: 2rem;
             opacity: 1;
             transition: opacity 0.3s ease;
+            padding: 1rem;
         }
 
         .profiles-grid.loading {
@@ -173,17 +215,118 @@
         .profile-card {
             background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
             border-radius: var(--border-radius);
-            padding: 2rem;
+            padding: 1.5rem;
             transition: var(--transition);
             border-left: 5px solid var(--accent);
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            will-change: transform, box-shadow, border-left-color;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            border-left-color: #ff8f00;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 94, 120, 0.1), rgba(255, 143, 0, 0.1));
+            transition: opacity 0.3s;
+            will-change: opacity;
+        }
+
+        .profile-card:hover::before {
+            opacity: 0;
+        }
+
+        .profile-card img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            will-change: transform, border-color;
+        }
+
+        .profile-card:hover img {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            border-left-color: #ff8f00;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 94, 120, 0.1), rgba(255, 143, 0, 0.1));
+            transition: opacity 0.3s;
+        }
+
+        .profile-card:hover::before {
+            opacity: 0;
+        }
+
+        .profile-card img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-card:hover img {
+            transform: scale(1.1);
+            border-color: var(--accent);
         }
 
         .profile-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow);
+            border-left-color: #ff8f00;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 94, 120, 0.1), rgba(255, 143, 0, 0.1));
+            transition: opacity 0.3s;
+        }
+
+        .profile-card:hover::before {
+            opacity: 0;
         }
 
         .profile-card img {
@@ -193,7 +336,50 @@
             margin-bottom: 1rem;
             object-fit: cover;
             background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-card:hover img {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-left-color: #ff8f00;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 94, 120, 0.1), rgba(255, 143, 0, 0.1));
             transition: opacity 0.3s;
+        }
+
+        .profile-card:hover::before {
+            opacity: 0;
+        }
+
+        .profile-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-card:hover img {
+            transform: scale(1.1);
+            border-color: var(--accent);
         }
 
         .profile-card img.loading {
@@ -201,13 +387,124 @@
         }
 
         .profile-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            .sort-filter-panel h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            color: transparent;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .profile-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            color: transparent;
+            line-height: 1.2;
+            transition: all 0.3s ease;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }    line-height: 1.2;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover h3 {
             color: var(--accent);
         }
 
         .profile-card p {
             color: #d9ccff;
             margin: 0.5rem 0;
+            line-height: 1.4;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
+
+        .profile-card:hover p {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .profile-card .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--success);
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, rgba(92, 184, 92, 0.1), rgba(92, 184, 92, 0.2));
+            will-change: background;
+        }
+
+        .profile-card:hover .status {
+            background: linear-gradient(45deg, rgba(92, 184, 92, 0.2), rgba(92, 184, 92, 0.3));
+        }
+
+        .profile-card .status i {
+            font-size: 0.8rem;
+        }
+
+        .profile-card .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            margin-left: 0.5rem;
+            box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .profile-card:hover .online-dot {
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(92, 184, 92, 0.7);
+        }
+
+        .profile-card .joined {
+            font-size: 0.8rem;
+            color: #a8a8ff;
+            margin-top: auto;
+            text-align: right;
+            opacity: 0.8;
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
+
+        .profile-card:hover .joined {
+            opacity: 1;
+            color: var(--accent);
         }
 
         .profile-card .status {
@@ -457,6 +754,76 @@
     </style>
 </head>
 <body>
+    <!-- Sorting and Filtering Panel -->
+    <div class="sort-filter-panel" id="sortFilterPanel">
+        <div class="panel-header">
+            <h3>Sort & Filter</h3>
+            <button class="close-panel" aria-label="Close panel">&times;</button>
+        </div>
+        <div class="filter-group">
+            <label for="sortBy">Sort By:</label>
+            <select id="sortBy">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="nameAsc">Name (A-Z)</option>
+                <option value="nameDesc">Name (Z-A)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="statusFilter">Status:</label>
+            <select id="statusFilter">
+                <option value="all">All Statuses</option>
+                <option value="online">Online Only</option>
+                <option value="active">Active Users</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="dateRange">Joined:</label>
+            <select id="dateRange">
+                <option value="all">All Time</option>
+                <option value="week">Last 7 Days</option>
+                <option value="month">Last 30 Days</option>
+                <option value="year">Last Year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <!-- Sorting and Filtering Panel -->
+    <div class="sort-filter-panel" id="sortFilterPanel">
+        <div class="panel-header">
+            <h3>Sort & Filter</h3>
+            <button class="close-panel" aria-label="Close panel">&times;</button>
+        </div>
+        <div class="filter-group">
+            <label for="sortBy">Sort By:</label>
+            <select id="sortBy">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="nameAsc">Name (A-Z)</option>
+                <option value="nameDesc">Name (Z-A)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="statusFilter">Status:</label>
+            <select id="statusFilter">
+                <option value="all">All Statuses</option>
+                <option value="online">Online Only</option>
+                <option value="active">Active Users</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="dateRange">Joined:</label>
+            <select id="dateRange">
+                <option value="all">All Time</option>
+                <option value="week">Last 7 Days</option>
+                <option value="month">Last 30 Days</option>
+                <option value="year">Last Year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3 id="activeUsersTitle">Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
@@ -508,6 +875,14 @@
     <script>
         const API_BASE_URL = 'https://mlnf-auth.onrender.com';
         const DEBUG_MODE = true;
+        const ITEMS_PER_PAGE = 12;
+        let currentPage = 1;
+        let currentQuery = '';
+        let sortOptions = {
+            sortBy: 'newest',
+            statusFilter: 'all',
+            dateRange: 'all'
+        };
 
         // Utility to select elements
         const $ = (id) => document.getElementById(id);
@@ -522,10 +897,13 @@
         const searchInput = $('searchInput');
         const clearSearch = $('clearSearch');
         const pagination = $('pagination');
+        const sortFilterPanel = $('sortFilterPanel');
+        const sortBy = $('sortBy');
+        const statusFilter = $('statusFilter');
+        const dateRange = $('dateRange');
+        const closePanel = document.querySelector('.close-panel');
 
         // State
-        let currentPage = 1;
-        annonc query = '';
         let lastFetchController = null;
         let usersCache = new Map(); // Cache: key = `page:query`, value = { users, pagination }
 
@@ -692,7 +1070,7 @@
             const maxButtons = 5;
             let startPage = Math.max(1, page - Math.floor(maxButtons / 2));
             let endPage = Math.min(pages, startPage + maxButtons - 1);
-            if ( ENDPage - startPage + 1 < maxButtons) {
+            if (endPage - startPage + 1 < maxButtons) {
                 startPage = Math.max(1, endPage - maxButtons + 1);
             }
 
@@ -752,8 +1130,11 @@
 
                 const url = new URL(`${API_BASE_URL}/api/users`);
                 url.searchParams.set('page', page);
-                url.searchParams.set('limit', '12');
+                url.searchParams.set('limit', ITEMS_PER_PAGE);
                 if (query) url.searchParams.set('q', query);
+                if (sortOptions.sortBy) url.searchParams.set('sort', sortOptions.sortBy);
+                if (sortOptions.statusFilter) url.searchParams.set('status', sortOptions.statusFilter);
+                if (sortOptions.dateRange) url.searchParams.set('dateRange', sortOptions.dateRange);
 
                 const response = await fetchWithRetry(url, {
                     method: 'GET',
