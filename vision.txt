@@ -7,7 +7,7 @@ stacked logo that adapts for mobile,
 light theme toggle,
 user accounts,
 profile pages,
-global sidebar for active users and peer-to-peer messaging,
+global sidebar for active users and peer-to-peer messaging modal,
 blogging,
 message board,
 news stories,
@@ -45,6 +45,7 @@ Mobile Responsiveness: Ensure all new features work seamlessly on mobile devices
 The directory structure on the local machine is like this. The back-end root, "mlnf-auth", is a sibling to the front-end root, "MLNF".
 Here is the front-end directory structure:
 ¦   index.html
+¦   lander.html
 ¦   scripts.js
 ¦   styles.css
 +---assets

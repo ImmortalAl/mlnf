@@ -86,12 +86,12 @@
         .logo h1 {
             font-size: 1.8rem;
             background: var(--gradient-accent);
+            background-clip: text;
             -webkit-background-clip: text;
             -moz-background-clip: text;
-            background-clip: text;
+            color: transparent;
             -webkit-text-fill-color: transparent;
             -moz-text-fill-color: transparent;
-            color: transparent;
             will-change: color;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -553,18 +553,126 @@
             cursor: not-allowed;
         }
 
+        .sort-filter-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100vh;
+            background: var(--gradient-secondary);
+            padding: 2rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-left: 3px solid var(--accent);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sort-filter-panel.active {
+            transform: translateX(0);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .close-panel {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .close-panel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            color: transparent;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        .filter-group select option {
+            background: var(--primary);
+            color: var(--text);
+        }
+
         .active-users {
             position: fixed;
             right: 0;
             top: 70px;
             width: 300px;
-            height: calc(100% - 70px);
+            height: calc(100vh - 70px);
             background: var(--gradient-secondary);
             padding: 1.5rem;
             transform: translateX(100%);
             transition: transform 0.3s ease;
-            z-index: 200;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            backdrop-filter: blur(10px);
+            border-left: 3px solid var(--accent);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
         }
 
         .active-users.active {
@@ -576,28 +684,148 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .active-users h3 {
+        .active-users-header h3 {
             font-size: 1.2rem;
             font-weight: 600;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .active-users ul {
-            list-style: none;
-            max-height: calc(100% - 100px);
-            overflow-y: auto;
-        }
-
-        .active-users li {
+            color: var(--text);
             display: flex;
             align-items: center;
-            padding: 0.8rem 0;
             gap: 0.5rem;
+        }
+
+        .active-users-header .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            margin-left: 0.5rem;
+            box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .close-sidebar:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        #activeUsersList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            max-height: calc(100vh - 150px);
+            padding: 0.5rem;
+        }
+
+        #activeUsersList::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #activeUsersList::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        #activeUsersList::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        #activeUsersList::-webkit-scrollbar-thumb:hover {
+            background: #ff8f00;
+        }
+
+        #activeUsersList li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #activeUsersList li:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+            border-color: var(--accent);
+        }
+
+        #activeUsersList img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        #activeUsersList img:hover {
+            border-color: var(--accent);
+        }
+
+        #activeUsersList span {
+            color: var(--text);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #activeUsersList span .online-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 3px rgba(92, 184, 92, 0.5);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .show-users-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 950;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .show-users-btn:hover {
+            transform: scale(1.1);
+            background: #ff8f00;
         }
 
         .profile-preview img {
@@ -639,37 +867,6 @@
             background: var(--success);
             border-radius: 50%;
             margin-left: 0.5rem;
-        }
-
-        .show-users-btn {
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            background: var(--gradient-accent);
-            border: none;
-            padding: 0.8rem;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--primary);
-            z-index: 300;
-            transition: var(--transition);
-        }
-
-        .show-users-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-sidebar:hover {
-            color: var(--accent);
         }
 
         .error-message {
@@ -754,41 +951,6 @@
     </style>
 </head>
 <body>
-    <!-- Sorting and Filtering Panel -->
-    <div class="sort-filter-panel" id="sortFilterPanel">
-        <div class="panel-header">
-            <h3>Sort & Filter</h3>
-            <button class="close-panel" aria-label="Close panel">&times;</button>
-        </div>
-        <div class="filter-group">
-            <label for="sortBy">Sort By:</label>
-            <select id="sortBy">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="nameAsc">Name (A-Z)</option>
-                <option value="nameDesc">Name (Z-A)</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="statusFilter">Status:</label>
-            <select id="statusFilter">
-                <option value="all">All Statuses</option>
-                <option value="online">Online Only</option>
-                <option value="active">Active Users</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="dateRange">Joined:</label>
-            <select id="dateRange">
-                <option value="all">All Time</option>
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-                <option value="year">Last Year</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Main Content -->
     <!-- Sorting and Filtering Panel -->
     <div class="sort-filter-panel" id="sortFilterPanel">
         <div class="panel-header">
