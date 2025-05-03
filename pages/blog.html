@@ -95,6 +95,48 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .blog-form {
+            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            border-left: 5px solid var(--accent);
+        }
+        .blog-form input, .blog-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .blog-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .blog-form button {
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient-accent);
+            border: none;
+            border-radius: 8px;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .blog-form button:hover {
+            box-shadow: var(--shadow);
+        }
+        .blog-form .error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
         .blog-list {
             display: flex;
             flex-direction: column;
@@ -237,7 +279,7 @@
                 flex-direction: column;
                 gap: 1rem;
             }
-            .blog-post {
+            .blog-post, .blog-form {
                 padding: 1.5rem;
             }
             .active-users {
@@ -282,6 +324,12 @@
             <h2>Soul Scrolls</h2>
             <p>Timeless reflections from liberated spirits</p>
         </section>
+        <div class="blog-form" id="blogForm" style="display: none;">
+            <input type="text" id="blogTitle" placeholder="Scroll Title" maxlength="100">
+            <textarea id="blogContent" placeholder="Write your timeless reflection..." rows="5"></textarea>
+            <button onclick="createBlog()">Share Scroll</button>
+            <p id="blogFormError" class="error" style="display: none;"></p>
+        </div>
         <div class="blog-list" id="blogList">
             <div class="blog-post">
                 <p>Loading blog posts...</p>
@@ -341,7 +389,8 @@
                     headers: { 'Content-Type': 'application/json' }
                 });
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: Failed to fetch blog posts`);
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch blog posts`);
                 }
                 const posts = await response.json();
                 blogList.innerHTML = posts.length === 0 ? '<div class="blog-post"><p>No blog posts yet.</p></div>' : '';
@@ -349,29 +398,75 @@
                     const postElement = document.createElement('div');
                     postElement.className = 'blog-post';
                     postElement.id = post._id;
-                    postElement.innerHTML = `
+                    postElement.innerHTML = DOMPurify.sanitize(`
                         <h3>${post.title}</h3>
-                        <div class="content">${DOMPurify.sanitize(post.content)}</div>
+                        <div class="content">${post.content}</div>
                         <p class="author">— ${post.author.displayName || post.author.username}</p>
                         <p class="date">${new Date(post.createdAt).toLocaleDateString()}</p>
-                    `;
+                    `);
                     blogList.appendChild(postElement);
                 });
             } catch (error) {
                 console.error('Error fetching blog posts:', error);
-                blogList.innerHTML = '<div class="blog-post"><p>Error loading blog posts</p></div>';
+                blogList.innerHTML = `<div class="blog-post"><p>Error loading blog posts: ${error.message}</p></div>`;
+            }
+        }
+
+        // Create blog post
+        async function createBlog() {
+            const titleInput = document.getElementById('blogTitle');
+            const contentInput = document.getElementById('blogContent');
+            const errorElement = document.getElementById('blogFormError');
+            const token = localStorage.getItem('sessionToken');
+
+            errorElement.style.display = 'none';
+            if (!isTokenValid(token)) {
+                errorElement.textContent = 'Please log in to share a scroll';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            if (!title || !content) {
+                errorElement.textContent = 'Title and content are required';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blogs`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}: Failed to post scroll`);
+                }
+                titleInput.value = '';
+                contentInput.value = '';
+                fetchBlogPosts();
+            } catch (error) {
+                console.error('Error creating blog:', error);
+                errorElement.textContent = `Failed to post scroll: ${error.message}`;
+                errorElement.style.display = 'block';
             }
         }
 
         // Fetch online users
         async function fetchOnlineUsers() {
             const token = localStorage.getItem('sessionToken');
+            const userList = document.getElementById('onlineUsersList');
             if (!token || !isTokenValid(token)) {
-                document.getElementById('onlineUsersList').innerHTML = '<li>Please log in to view online users</li>';
+                userList.innerHTML = '<li>Please log in to view online users</li>';
                 return;
             }
             try {
-                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                const response = await fetch(`${API_BASE_URL}/api/users/online`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -379,22 +474,29 @@
                     }
                 });
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: Failed to fetch online users`);
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch online users`);
                 }
                 const users = await response.json();
-                const userList = document.getElementById('onlineUsersList');
-                userList.innerHTML = users.length === 0 ? '<li>No users online</li>' : '';
+                userList.innerHTML = '';
+                if (!Array.isArray(users)) {
+                    throw new Error('Invalid response format: Expected an array of users');
+                }
+                if (users.length === 0) {
+                    userList.innerHTML = '<li>No users online</li>';
+                    return;
+                }
                 users.forEach(user => {
                     const li = document.createElement('li');
                     li.className = 'profile-preview';
-                    li.innerHTML = `
+                    li.innerHTML = DOMPurify.sanitize(`
                         <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.displayName || user.username}'s avatar">
                         <div>
                             <a href="/pages/profiles.html#${user._id}">${user.displayName || user.username}</a>
                             <span class="online-dot"></span>
                             ${user.status ? `<p class="status">${user.status}</p>` : ''}
                         </div>
-                    `;
+                    `);
                     li.querySelector('img').onerror = () => {
                         li.querySelector('img').src = 'https://i.pravatar.cc/40';
                     };
@@ -402,18 +504,21 @@
                 });
             } catch (error) {
                 console.error('Error fetching online users:', error);
-                document.getElementById('onlineUsersList').innerHTML = '<li>Error loading online users</li>';
+                userList.innerHTML = DOMPurify.sanitize(`<li>Error loading online users: ${error.message}</li>`);
             }
         }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('sessionToken');
+            if (isTokenValid(token)) {
+                document.getElementById('blogForm').style.display = 'block';
+            }
             fetchBlogPosts();
             fetchOnlineUsers();
             onlineUsersInterval = setInterval(fetchOnlineUsers, 30000);
             window.addEventListener('beforeunload', () => clearInterval(onlineUsersInterval));
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9351373d9d915084',t:'MTc0NTQ1MTcyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
