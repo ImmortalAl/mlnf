@@ -1,0 +1,14 @@
+name = "mlnf"
+compatibility_date = "2025-05-03"
+
+[build]
+command = ""
+env = "production"
+
+[build.upload]
+format = "service-worker"
+main = "index.html"
+
+[site]
+bucket = "dist"
+entry-point = "index.html"

@@ -1,0 +1,12 @@
+{
+  "name": "mlnf",
+  "version": "1.0.0",
+  "description": "Manifest Liberation, Naturally Free - An eternal sanctuary for liberated spirits",
+  "scripts": {
+    "build": "echo 'No build needed for static site'",
+    "deploy": "wrangler pages deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
