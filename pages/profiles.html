@@ -1116,22 +1116,22 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
-            checkToken();
             fetchAndRenderUsers();
         });
 
-        // Check token validity
+        // Check token validity (used for private features)
         async function checkToken() {
             try {
                 const response = await fetch(`${API_BASE_URL}/auth/check`, {
                     credentials: 'include'
                 });
                 if (!response.ok) {
-                    window.location.href = '../pages/auth.html';
+                    return false;
                 }
+                return true;
             } catch (error) {
                 if (DEBUG_MODE) console.error('Token check failed:', error);
-                window.location.href = '../pages/auth.html';
+                return false;
             }
         }
 
@@ -1277,28 +1277,16 @@
         // Fetch users with caching
         async function fetchUsers(page = 1, query = '') {
             try {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) {
-                    window.location.href = '../pages/auth.html';
-                    return;
-                }
-
                 const response = await fetchWithRetry(
                     `${API_BASE_URL}/api/users?page=${page}&limit=${ITEMS_PER_PAGE}&search=${encodeURIComponent(query)}`,
                     {
                         headers: {
-                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         }
                     }
                 );
                 
                 if (!response.ok) {
-                    if (response.status === 401) {
-                        localStorage.removeItem('sessionToken');
-                        window.location.href = '../pages/auth.html';
-                        return;
-                    }
                     throw new Error('Failed to fetch users');
                 }
 
@@ -1315,28 +1303,16 @@
         // Populate active users sidebar
         async function populateActiveUsers() {
             try {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) {
-                    window.location.href = '../pages/auth.html';
-                    return;
-                }
-
                 const response = await fetchWithRetry(
                     `${API_BASE_URL}/api/users/online`,
                     {
                         headers: {
-                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         }
                     }
                 );
 
                 if (!response.ok) {
-                    if (response.status === 401) {
-                        localStorage.removeItem('sessionToken');
-                        window.location.href = '../pages/auth.html';
-                        return;
-                    }
                     throw new Error('Failed to fetch online users');
                 }
 
