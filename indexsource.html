@@ -1,0 +1,1620 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A timeless sanctuary for liberated spirits to manifest truth and freedom.">
+    <meta name="theme-color" content="#0d0d1a">
+    <meta property="og:title" content="Manifest Liberation, Naturally Free">
+    <meta property="og:description" content="An immortal sanctuary for uncensored thought and eternal truth">
+    <meta property="og:image" content="https://mlnf.net/social-cover.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Manifest Liberation, Naturally Free</title>
+    <link rel="preconnect" href="https://mlnf-auth.onrender.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --danger: #ff4444;
+            --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            --border-radius: 10px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-theme {
+            --primary: #ffffff;
+            --secondary: #f0f0f5;
+            --text: #1a1a33;
+            --accent: #d62d4d;
+            --highlight: #3a3a5c;
+            --success: #2e7d32;
+            --warning: #ff8f00;
+            --danger: #c62828;
+            background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.85)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80&duotone=FFFFFF,CCCCFF') center/cover fixed;
+        }
+
+        body.light-theme .feature-card,
+        body.light-theme .debate-arena,
+        body.light-theme .mindmap-section .mindmap-preview,
+        body.light-theme header,
+        body.light-theme footer,
+        body.light-theme .active-users,
+        body.light-theme .auth-modal {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
+            border-color: rgba(214, 45, 77, 0.25);
+        }
+
+        body.light-theme .btn-outline,
+        body.light-theme nav a {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        body.light-theme .btn-outline:hover,
+        body.light-theme nav a:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        body.light-theme .highlight-item,
+        body.light-theme .debate-position,
+        body.light-theme .profile-preview {
+            background: rgba(214, 45, 77, 0.06);
+            border-left-color: var(--accent);
+        }
+
+        body.light-theme .mindmap-node {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        body.light-theme .mindmap-line {
+            background: rgba(214, 45, 77, 0.35);
+        }
+
+        .modal-loading {
+            text-align: center;
+            padding: 1rem;
+            color: var(--highlight);
+        }
+
+        .modal-error {
+            color: var(--danger);
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 4px solid var(--accent);
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+            min-width: 140px;
+            animation: pulseBtn 2s infinite ease-in-out;
+        }
+
+        .feature-card .btn-primary {
+            margin-left: auto;
+            margin-top: 1rem;
+        }
+
+        .highlight-grid .btn-primary,
+        .debate-arena .btn-primary {
+            margin-left: auto;
+            margin-top: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.05) rotate(2deg);
+            box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+        }
+
+        @keyframes pulseBtn {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); }
+        }
+
+        #freeSoulBtn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        #freeSoulBtn[data-state="unlocked"] {
+            border-color: var(--success);
+            background: rgba(92, 184, 92, 0.1);
+        }
+
+        .soul-status {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--gradient-accent);
+            transition: width 2s ease;
+            z-index: -1;
+        }
+
+        #freeSoulBtn.loading .soul-status {
+            width: 100%;
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-stack { display: flex; flex-direction: column; }
+        .short-title { display: none; }
+
+        nav ul {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+            background: rgba(255, 94, 120, 0.2);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after { width: 100%; }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .hero {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.8));
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 25px rgba(255, 94, 120, 0.8);
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: eternalGlow 3s ease-in-out infinite alternate;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            font-weight: 400;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+            position: relative;
+        }
+
+        body.light-theme .hero p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .hero p:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-accent);
+            transition: var(--transition);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            50% { opacity: 0.8; }
+            80% { opacity: 0; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        .censorship-warning {
+            background: rgba(255, 68, 68, 0.1);
+            padding: 1.2rem;
+            text-align: center;
+            margin: 2.5rem 0;
+            border-left: 5px solid var(--danger);
+            border-radius: var(--border-radius);
+        }
+
+        .censorship-warning p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+        }
+
+        body.light-theme .censorship-warning p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 300;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            width: 120px;
+            height: 3px;
+            background: var(--gradient-accent);
+            transform: translateX(-50%);
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+        }
+
+        body.light-theme .section-title p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .features,
+        .highlights,
+        .mindmap-section {
+            padding: 4.5rem 2rem;
+            background: linear-gradient(to bottom, rgba(13, 13, 26, 0.45), rgba(26, 26, 51, 0.25));
+            z-index: 1;
+        }
+
+        .features-grid,
+        .highlight-grid,
+        .debate-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1440px;
+            margin: 2.5rem auto;
+        }
+
+        .feature-card {
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(255, 94, 120, 0.25);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            box-shadow: none;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: var(--accent);
+            box-shadow: none;
+        }
+
+        .feature-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .feature-card i {
+            font-size: 2.8rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.6rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+        }
+
+        body.light-theme .feature-card p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .highlight-item,
+        .debate-position {
+            background: rgba(255, 94, 120, 0.08);
+            padding: 1.8rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .highlight-item:hover,
+        .debate-position:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .highlight-item p,
+        .debate-position p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+        }
+
+        body.light-theme .highlight-item p,
+        body.light-theme .debate-position p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .debate-arena {
+            padding: 4rem 2rem;
+            background: var(--gradient-secondary);
+            border: 1px solid rgba(255, 94, 120, 0.35);
+            border-radius: var(--border-radius);
+            margin: 2.5rem auto;
+            max-width: 1440px;
+        }
+
+        .debate-arena p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+        }
+
+        body.light-theme .debate-arena p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .mindmap-preview {
+            height: 500px;
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            position: relative;
+            margin: 2.5rem auto;
+            border: 1px solid rgba(255, 94, 120, 0.35);
+            max-width: 1440px;
+        }
+
+        .mindmap-node {
+            position: absolute;
+            background: var(--accent);
+            color: var(--text);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            animation: floatEternal 4.5s ease-in-out infinite;
+        }
+
+        .mindmap-node:hover {
+            transform: scale(1.12);
+            animation-play-state: paused;
+            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+        }
+
+        .main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .node-truth { top: 25%; left: 25%; }
+        .node-freedom { top: 25%; left: 75%; }
+        .node-eternity { top: 75%; left: 25%; }
+        .node-unity { top: 75%; left: 75%; }
+
+        .mindmap-line {
+            position: absolute;
+            background: var(--accent);
+            height: 3px;
+            width: 141px;
+            top: 50%;
+            left: 50%;
+        }
+
+        .line-1 { transform: rotate(135deg); }
+        .line-2 { transform: rotate(45deg); }
+        .line-3 { transform: rotate(225deg); }
+        .line-4 { transform: rotate(315deg); }
+
+        .active-users {
+            position: fixed;
+            right: -320px;
+            top: var(--header-height);
+            width: 320px;
+            height: calc(100vh - var(--header-height));
+            background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+            padding: 1.5rem;
+            transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            z-index: 2147483647;
+            box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5);
+            border-left: 3px solid var(--accent);
+            overflow-y: auto;
+            border-radius: 0 0 0 var(--border-radius);
+        }
+
+        .active-users.active {
+            right: 0;
+        }
+
+        .active-users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .active-users-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-sidebar:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .profile-preview {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 94, 120, 0.08);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 94, 120, 0.25);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .profile-preview:hover {
+            background: rgba(255, 94, 120, 0.18);
+            transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-preview img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            border: 2px solid var(--accent);
+            transition: var(--transition);
+        }
+
+        .profile-preview img:hover {
+            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+        }
+
+        .profile-preview .user-info {
+            flex: 1;
+        }
+
+        .profile-preview .username-link {
+            color: var(--text);
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .profile-preview .username-link:hover {
+            color: var(--accent);
+        }
+
+        .profile-preview .status {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+        }
+
+        .profile-preview .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .show-users-btn,
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 1px solid var(--accent);
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text);
+            z-index: 250;
+            transition: var(--transition);
+        }
+
+        .show-users-btn:hover,
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .show-users-btn {
+            bottom: 70px;
+        }
+
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            border-top: 3px solid var(--accent);
+            padding: 3rem 2rem;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+        }
+
+        body.light-theme footer p {
+            text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+        }
+
+        .social-links {
+            margin: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .social-links a {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 26, 0.9);
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-modal {
+            background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            margin: 10% auto;
+            box-shadow: var(--shadow), 0 0 30px rgba(255, 94, 120, 0.3);
+            border: 2px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+            animation: modalFadeIn 0.5s ease-out;
+        }
+
+        .auth-modal::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 94, 120, 0.2), transparent 70%);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .auth-modal h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        .auth-modal input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .auth-modal input:focus {
+            outline: none;
+            border-color: var(--warning);
+            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        .auth-modal .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .auth-modal button {
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .auth-modal button[type="submit"] {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+        }
+
+        .auth-modal button[type="button"] {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .auth-modal button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .message-history {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 94, 120, 0.05);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 94, 120, 0.25);
+        }
+
+        .message-bubble {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message-bubble.sent {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message-bubble.received {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .message-bubble small {
+            display: block;
+            color: var(--highlight);
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .soul-particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: soulFloat ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes soulFloat {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes eternalGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes floatEternal {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+            header {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            nav#mainNav {
+                flex: 1 1 100%;
+                order: 3;
+            }
+            nav ul {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 1rem; flex-wrap: nowrap; }
+            .title-stack { display: none; }
+            .short-title { display: block; }
+            .mobile-menu-btn { display: block; }
+            nav#mainNav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--secondary);
+                padding: 1rem;
+            }
+            nav#mainNav.active { display: block; }
+            nav ul { flex-direction: column; gap: 1.2rem; }
+            .auth-buttons { display: none; }
+            .hero { min-height: 70vh; padding: 2rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1rem; }
+            .hero-buttons { flex-direction: column; gap: 1rem; }
+            .auth-modal { width: 90%; margin: 20% auto; }
+            .active-users { width: 100%; right: -100%; }
+            .active-users.active { right: 0; }
+            .feature-card { flex-direction: column; }
+            .feature-card .btn-primary { margin-left: 0; align-self: flex-end; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div>
+    </aside>
+
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+
+    <div class="modal" id="messageModal">
+        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
+            <div id="messageHistory" class="message-history"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <i class="fas fa-infinity" aria-hidden="true"></i>
+            <h1 class="eternal">
+                <span class="title-stack">
+                    <span>Manifest Liberation</span>
+                    <span>Naturally Free</span>
+                </span>
+                <span class="short-title">MLNF</span>
+            </h1>
+        </div>
+        <nav id="mainNav" aria-label="Main navigation">
+            <ul>
+                <li><a href="pages/profiles.html"><i class="fas fa-user-secret"></i> Eternal Souls</a></li>
+                <li><a href="pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
+                <li><a href="pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+                <li><a href="pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+                <li><a href="pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+                <li><a href="pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+                <li><a href="pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="pages/auth.html" class="btn btn-primary" id="authButton">Join Eternity</a>
+            <button class="btn btn-outline" id="freeSoulBtn" data-state="locked">
+                <i class="fas fa-lock"></i>
+                <span class="btn-text">Free Your Soul</span>
+                <div class="soul-status" aria-hidden="true"></div>
+            </button>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="mainHeading">
+            <div class="hero-content">
+                <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
+                <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
+                <div class="hero-buttons">
+                    <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
+                    <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="censorship-warning" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control.</p>
+        </div>
+
+        <section class="features" id="features" aria-labelledby="featuresHeading">
+            <div class="section-title">
+                <h2 id="featuresHeading">Our Timeless Arsenal</h2>
+                <p>Instruments of Liberation for Souls Unbound</p>
+            </div>
+            <div class="features-grid">
+                <article class="feature-card" data-feature="souls">
+                    <div class="feature-content">
+                        <i class="fas fa-user-secret"></i>
+                        <h3>Eternal Souls</h3>
+                        <p>Whisper truths through timeless channels, forever free. Connect with kindred spirits in unshackled unity.</p>
+                    </div>
+                    <a href="pages/profiles.html" class="btn btn-primary">Find Souls</a>
+                </article>
+                <article class="feature-card" data-feature="scrolls">
+                    <div class="feature-content">
+                        <i class="fas fa-scroll"></i>
+                        <h3>Soul Scrolls</h3>
+                        <p>Inscribe your essence for eternity, defying decay. Share and explore thoughts that echo beyond time.</p>
+                    </div>
+                    <a href="pages/blog.html" class="btn btn-primary">Write Now</a>
+                </article>
+                <article class="feature-card" data-feature="echoes">
+                    <div class="feature-content">
+                        <i class="fas fa-comments"></i>
+                        <h3>Echoes Unbound</h3>
+                        <p>Weave your voice into our eternal tapestry. Post and discuss freely in a realm without chains.</p>
+                    </div>
+                    <a href="pages/messageboard.html" class="btn btn-primary">Start Thread</a>
+                </article>
+                <article class="feature-card" data-feature="chronicles">
+                    <div class="feature-content">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>Boundless Chronicles</h3>
+                        <p>Immortalize truths beyond transient lies. Submit stories that endure in our collective memory.</p>
+                    </div>
+                    <a href="pages/news.html" class="btn btn-primary">Explore News</a>
+                </article>
+                <article class="feature-card" data-feature="debate">
+                    <div class="feature-content">
+                        <i class="fas fa-gavel"></i>
+                        <h3>Clash of Immortals</h3>
+                        <p>Engage in discourse unbound by mortal limits. Let truth reign in our timeless arena.</p>
+                    </div>
+                    <a href="pages/debate.html" class="btn btn-primary">Enter Arena</a>
+                </article>
+                <article class="feature-card" data-feature="nexus">
+                    <div class="feature-content">
+                        <i class="fas fa-project-diagram"></i>
+                        <h3>Infinite Nexus</h3>
+                        <p>Link your spirit to our living web, spanning beyond time. Contribute to the eternal mindmap.</p>
+                    </div>
+                    <a href="pages/mindmap.html" class="btn btn-primary">Join the Map</a>
+                </article>
+                <article class="feature-card" data-feature="vault">
+                    <div class="feature-content">
+                        <i class="fas fa-vault"></i>
+                        <h3>Timeless Vault</h3>
+                        <p>Safeguard visions in an archive immune to erasure. Upload and preserve the infinite.</p>
+                    </div>
+                    <a href="pages/archive.html" class="btn btn-primary">Access Vault</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="highlights" id="profiles" aria-labelledby="profilesHeading">
+            <div class="section-title">
+                <h2 id="profilesHeading">Eternal Souls</h2>
+                <p>Connect with the Unbound</p>
+            </div>
+            <div class="highlight-grid">
+                <div class="highlight-item">
+                    <h4>ImmortalAl</h4>
+                    <p>Founder of MLNF, seeker of unshackled truth.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>FreeSoul</h4>
+                    <p>Advocate for timeless liberty and defiance.</p>
+                </div>
+                <a href="pages/profiles.html" class="btn btn-primary">Meet More Souls</a>
+            </div>
+        </section>
+
+        <section class="highlights" id="blog" aria-labelledby="blogHeading">
+            <div class="section-title">
+                <h2 id="blogHeading">Soul Scrolls</h2>
+                <p>Top Reflections from Liberated Spirits</p>
+            </div>
+            <div class="highlight-grid">
+                <div class="highlight-item">
+                    <h4>Eternity Over Ephemera</h4>
+                    <p>Why transcending time is the ultimate rebellion against control.</p>
+                    <p class="author">— FreeSoul</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>The Chains We Don't See</h4>
+                    <p>A personal journey through a censored world.</p>
+                    <p class="author">— EternalVoice</p>
+                </div>
+                <a href="pages/blog.html" class="btn btn-primary">Explore Blogs</a>
+            </div>
+        </section>
+
+        <section class="highlights" id="messageboard" aria-labelledby="messageboardHeading">
+            <div class="section-title">
+                <h2 id="messageboardHeading">Echoes Unbound</h2>
+                <p>Hot Threads from the Eternal Tapestry</p>
+            </div>
+            <div class="highlight-grid">
+                <div class="highlight-item">
+                    <h4>Thread: Is Privacy Dead?</h4>
+                    <p>"In 2025, every click is watched—how do we fight back?"</p>
+                    <p class="author">— ImmortalAl (12 replies)</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>Thread: The Power of Collective Truth</h4>
+                    <p>"Can we crowdsource our way to freedom?"</p>
+                    <p class="author">— TruthSeeker (8 replies)</p>
+                </div>
+                <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
+            </div>
+        </section>
+
+        <section class="highlights" id="news" aria-labelledby="newsHeading">
+            <div class="section-title">
+                <h2 id="newsHeading">Boundless Chronicles</h2>
+                <p>Featured Stories from the Eternal Chronicles</p>
+            </div>
+            <div class="highlight-grid">
+                <div class="highlight-item">
+                    <h4>Unveiled: The Hidden War on Free Thought</h4>
+                    <p>A deep dive into the censorship mechanisms of 2025.</p>
+                    <p class="author">— ImmortalAl</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>April 2, 2025: A New Dawn for Truth</h4>
+                    <p>Breaking news on the resistance against digital tyranny.</p>
+                    <p class="author">— TruthSeeker</p>
+                </div>
+                <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
+            </div>
+        </section>
+
+        <section class="debate-arena" id="debate" aria-labelledby="debateHeading">
+            <div class="section-title">
+                <h2 id="debateHeading">Clash of Immortals</h2>
+                <p>Where Eternal Minds Forge Truth</p>
+            </div>
+            <h3 class="debate-topic">Resolved: Freedom is an Eternal Right</h3>
+            <p>Join the timeless struggle as liberated souls contest existence.</p>
+            <div class="debate-preview">
+                <div class="debate-position">
+                    <h4>Affirmative</h4>
+                    <p><strong>"Freedom transcends time;</strong> it's woven into existence." — ImmortalAl</p>
+                    <div class="debate-actions">
+                        <button class="btn btn-primary">Vote Yes</button>
+                        <span class="vote-count">12 Votes</span>
+                    </div>
+                </div>
+                <div class="debate-position">
+                    <h4>Negative</h4>
+                    <p><strong>"Freedom is a fleeting illusion,</strong> bound by power." — EternalVoice</p>
+                    <div class="debate-actions">
+                        <button class="btn btn-outline">Vote No</button>
+                        <span class="vote-count">8 Votes</span>
+                    </div>
+                </div>
+            </div>
+            <a href="pages/debate.html" class="btn btn-primary">Join the Discourse</a>
+        </section>
+
+        <section class="mindmap-section" id="mindmap" aria-labelledby="mindmapHeading">
+            <div class="section-title">
+                <h2 id="mindmapHeading">Infinite Nexus</h2>
+                <p>Our Living Web Binds the Unbound</p>
+            </div>
+            <div class="mindmap-preview" id="mindmapPreview">
+                <div class="mindmap-node main">Liberation</div>
+                <div class="mindmap-node node-truth">Truth</div>
+                <div class="mindmap-node node-freedom">Freedom</div>
+                <div class="mindmap-node node-eternity">Eternity</div>
+                <div class="mindmap-node node-unity">Unity</div>
+                <div class="mindmap-line line-1"></div>
+                <div class="mindmap-line line-2"></div>
+                <div class="mindmap-line line-3"></div>
+                <div class="mindmap-line line-4"></div>
+            </div>
+            <a href="pages/mindmap.html" class="btn btn-primary">Contribute to the Nexus</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>Manifest Liberation, Naturally Free © 2025. An eternal sanctuary for unbound spirits.</p>
+        <div class="social-links">
+            <a href="https://x.com/mlnf" aria-label="Follow MLNF on X"><i class="fab fa-x"></i></a>
+            <a href="#" aria-label="Join MLNF on Discord"><i class="fab fa-discord"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Backend API URL
+        const API_URL = 'https://mlnf-auth.onrender.com/api';
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            themeToggle.innerHTML = document.body.classList.contains('light-theme')
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        });
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mainNav.classList.contains('active')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Particles animation
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = `${Math.random() * 8 + 4}px`;
+            particle.style.height = particle.style.width;
+            particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, 0.7)`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 10000);
+        }
+        setInterval(createParticle, 500);
+
+        // Soul liberation button
+        const freeSoulBtn = document.getElementById('freeSoulBtn');
+        freeSoulBtn.addEventListener('click', () => {
+            if (freeSoulBtn.dataset.state === 'locked') {
+                freeSoulBtn.classList.add('loading');
+                freeSoulBtn.disabled = true;
+                setTimeout(() => {
+                    freeSoulBtn.classList.remove('loading');
+                    freeSoulBtn.dataset.state = 'unlocked';
+                    freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+                    freeSoulBtn.disabled = false;
+                    for (let i = 0; i < 10; i++) {
+                        setTimeout(() => {
+                            const particle = document.createElement('div');
+                            particle.className = 'soul-particle';
+                            particle.style.left = `${freeSoulBtn.offsetLeft + Math.random() * freeSoulBtn.offsetWidth}px`;
+                            particle.style.top = `${freeSoulBtn.offsetTop + Math.random() * freeSoulBtn.offsetHeight}px`;
+                            particle.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                            document.body.appendChild(particle);
+                            setTimeout(() => particle.remove(), 3000);
+                        }, i * 100);
+                    }
+                }, 2000);
+            }
+        });
+
+        // Sidebar toggle
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const activeUsers = document.getElementById('activeUsers');
+        const closeUsers = document.getElementById('closeUsers');
+        showUsersBtn.addEventListener('click', () => {
+            activeUsers.classList.toggle('active');
+            if (activeUsers.classList.contains('active')) {
+                fetchOnlineUsers();
+            }
+        });
+        closeUsers.addEventListener('click', () => {
+            activeUsers.classList.remove('active');
+        });
+
+        // Fetch online users with retry
+        async function fetchOnlineUsers(retryCount = 3, delay = 1000) {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers... <span class="spinner"></span></p>';
+
+            const token = localStorage.getItem('sessionToken');
+            console.log('Fetching online users with token:', token ? token.substring(0, 10) + '...' : 'No token');
+
+            if (!token) {
+                userList.innerHTML = '<p class="modal-error">Please login to view seekers. Redirecting...</p>';
+                setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
+                return;
+            }
+
+            let users = [];
+            for (let attempt = 1; attempt <= retryCount; attempt++) {
+                try {
+                    console.log(`Attempt ${attempt} to fetch online users from ${API_URL}/users`);
+                    const response = await fetch(`${API_URL}/users`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    console.log('Fetch users response:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        headers: Object.fromEntries(response.headers.entries())
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            userList.innerHTML = '<p class="modal-error">Session expired. Redirecting to login...</p>';
+                            localStorage.removeItem('sessionToken');
+                            setTimeout(() => window.location.href = 'pages/auth.html?mode=login', 2000);
+                            return;
+                        }
+                        throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+                    }
+
+                    users = await response.json();
+                    console.log('Fetched users:', users);
+                    break; // Success, exit retry loop
+                } catch (error) {
+                    console.error(`Fetch users attempt ${attempt} failed:`, error.message, error.stack);
+                    if (attempt === retryCount) {
+                        userList.innerHTML = `<p class="modal-error">Failed to summon seekers: ${error.message}. Falling back to current user...</p>`;
+                        // Fallback to current user
+                        const currentUser = await fetchCurrentUser();
+                        if (currentUser && currentUser.online) {
+                            users = [currentUser];
+                        } else {
+                            userList.innerHTML = '<p class="modal-error">No eternal seekers online. Please try again later.</p>';
+                            return;
+                        }
+                    } else {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+            }
+
+            if (users.length === 0) {
+                userList.innerHTML = '<p class="modal-error">No eternal seekers online</p>';
+                return;
+            }
+
+            userList.innerHTML = users.map(user => `
+                <div class="profile-preview" data-username="${user.username}" role="listitem" aria-label="User ${user.username}">
+                    <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.username}'s avatar">
+                    <div class="user-info">
+                        <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
+                        <span class="online-dot" aria-hidden="true"></span>
+                        <p class="status">${user.status || 'No status set'}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers for messaging
+            document.querySelectorAll('.profile-preview').forEach(preview => {
+                preview.addEventListener('click', () => {
+                    const username = preview.dataset.username;
+                    openMessageModal(username);
+                });
+            });
+        }
+
+        // Fetch current user data
+        async function fetchCurrentUser() {
+            const token = localStorage.getItem('sessionToken');
+            console.log('Fetching current user with token:', token ? token.substring(0, 10) + '...' : 'No token');
+            if (!token) {
+                console.warn('No session token found for current user');
+                return null;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('Fetch current user response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        console.warn('Invalid or expired token. Clearing session.');
+                        localStorage.removeItem('sessionToken');
+                    }
+                    throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+                }
+                const user = await response.json();
+                console.log('Current user fetched:', user.username);
+                return user;
+            } catch (error) {
+                console.error('Fetch current user error:', error.message, error.stack);
+                return null;
+            }
+        }
+
+        // Messaging modal
+        const messageModal = document.getElementById('messageModal');
+        const recipientName = document.getElementById('recipientName');
+        const messageHistory = document.getElementById('messageHistory');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const closeMessageModal = document.getElementById('closeMessageModal');
+
+        function openMessageModal(username) {
+            recipientName.textContent = username;
+            messageHistory.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
+            messageModal.style.display = 'block';
+            loadMessages(username);
+        }
+
+        async function loadMessages(recipient) {
+            // Placeholder for message fetching logic
+            messageHistory.innerHTML = `
+                <div class="message-bubble received">
+                    Greetings, eternal seeker! <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+                <div class="message-bubble sent">
+                    Hail, fellow spirit! <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+            `;
+        }
+
+        sendMessageBtn.addEventListener('click', async () => {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            messageHistory.innerHTML += `
+                <div class="message-bubble sent">
+                    ${message} <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+            `;
+            messageInput.value = '';
+            messageHistory.scrollTop = messageHistory.scrollHeight;
+
+            // Placeholder for sending message to backend
+            try {
+                const token = localStorage.getItem('sessionToken');
+                // await fetch(`${API_URL}/messages`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     },
+                //     body: JSON.stringify({ recipient: recipientName.textContent, message })
+                // });
+            } catch (error) {
+                console.error('Send message error:', error);
+                messageHistory.innerHTML += '<p class="modal-error">Failed to send whisper</p>';
+            }
+        });
+
+        closeMessageModal.addEventListener('click', () => {
+            messageModal.style.display = 'none';
+            messageInput.value = '';
+            messageHistory.innerHTML = '';
+        });
+
+        // Token validation
+        async function checkToken() {
+            const token = localStorage.getItem('sessionToken');
+            console.log('Checking token:', token ? token.substring(0, 10) + '...' : 'No token');
+            if (!token) {
+                console.warn('No session token found');
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('Token check response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
+                if (!response.ok) {
+                    console.warn('Token validation failed with status:', response.status);
+                    localStorage.removeItem('sessionToken');
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Token check error:', error.message, error.stack);
+                localStorage.removeItem('sessionToken');
+                return false;
+            }
+        }
+
+        // Update auth button
+        async function updateAuthButton() {
+            const authButton = document.getElementById('authButton');
+            const isAuthenticated = await checkToken();
+            console.log('Authentication status:', isAuthenticated);
+            if (isAuthenticated) {
+                authButton.textContent = 'Eternal Hearth';
+                authButton.href = 'lander.html';
+                authButton.classList.add('btn-primary');
+                authButton.classList.remove('btn-outline');
+            } else {
+                authButton.textContent = 'Join Eternity';
+                authButton.href = 'pages/auth.html';
+                authButton.classList.add('btn-primary');
+                authButton.classList.remove('btn-outline');
+            }
+        }
+
+        // Initialize
+        async function init() {
+            console.log('Initializing MLNF');
+            await updateAuthButton();
+            const isAuthenticated = await checkToken();
+            if (isAuthenticated) {
+                freeSoulBtn.dataset.state = 'unlocked';
+                freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+                // Check current user's online status and refresh sidebar if open
+                const currentUser = await fetchCurrentUser();
+                if (currentUser && currentUser.online && activeUsers.classList.contains('active')) {
+                    fetchOnlineUsers();
+                }
+            }
+        }
+        init();
+    </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ Key features:
 responsive design,
 stacked logo that adapts for mobile,
 light theme toggle,
+authentication form,
 user accounts,
 profile pages,
 global sidebar for active users and peer-to-peer messaging modal,
@@ -63,10 +64,3 @@ Here is the front-end directory structure:
         news.html
         profile-setup.html
         profiles.html
-
-Tone and Style: 
-Please return answers clear, detailed and specific, making sure to include things I might forget. This is my first time making a full-stack website. Sometimes I will provide you HTML files with internal css and scripts for convenience when feeding information and receiving completed code. I will generally prefer the completed file in its entirety so that I don't have to worry about code made irrelevent by the changes, and you will be better at detecting that than I am.
-
-Current State:
-The site is live. The back-end configuration has been set up.
-The subpages have not been developed. 
