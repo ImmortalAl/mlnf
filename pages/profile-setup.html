@@ -236,9 +236,6 @@
             const API_BASE_URL = 'https://mlnf-auth.onrender.com';
             const DEBUG_MODE = true;
 
-            // Initialize the page
-            initializePage();
-
             // Check token validity
             function checkToken() {
                 const token = localStorage.getItem('sessionToken');
@@ -311,6 +308,8 @@
                     // Show loading state
                     elements.message.className = '';
                     elements.message.textContent = 'Loading your profile...';
+                    
+                    console.log('Fetching user data with token:', token ? 'Valid token present' : 'No token');
                     
                     const response = await fetchWithRetry(`${API_BASE_URL}/api/users/me`, {
                         method: 'GET',
@@ -453,7 +452,7 @@
                     
                     console.log('Request body:', JSON.stringify(requestBody, null, 2));
                     
-                    const response = await fetchWithRetry(`${API_BASE_URL}/api/profile`, {
+                    const response = await fetchWithRetry(`${API_BASE_URL}/api/users/profile`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -535,18 +534,33 @@
                 }
             });
 
-            // Initialize the page when DOM is loaded
-            document.addEventListener('DOMContentLoaded', () => {
-                // Add a small delay to ensure all elements are loaded
-                setTimeout(initializePage, 100);
-            });
+            // Single initialization point with clear console logging
+            function init() {
+                console.log('Profile setup page initialization starting');
+                console.log('Elements loaded:', Object.keys(elements).map(key => `${key}: ${!!elements[key]}`).join(', '));
+                
+                // Check if all elements are present
+                const missingElements = Object.entries(elements)
+                    .filter(([key, element]) => !element)
+                    .map(([key]) => key);
+                
+                if (missingElements.length > 0) {
+                    console.error('Missing elements:', missingElements.join(', '));
+                    return false;
+                }
+                
+                // Initialize the page
+                initializePage();
+                return true;
+            }
             
-            // Also try to initialize immediately in case DOM is already loaded
+            // Wait for DOM to be fully loaded
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initializePage);
+                console.log('Document still loading, waiting for DOMContentLoaded');
+                document.addEventListener('DOMContentLoaded', init);
             } else {
-                // DOM already loaded, initialize immediately
-                setTimeout(initializePage, 100);
+                console.log('Document already loaded, initializing immediately');
+                init();
             }
         });
     </script>
