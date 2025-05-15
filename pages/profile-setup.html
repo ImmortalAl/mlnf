@@ -360,11 +360,20 @@
             });
 
             // Handle form submission
-            elements.saveProfile.addEventListener('click', async () => {
+            elements.saveProfile.addEventListener('click', async (e) => {
+                console.log('Save button clicked');
+                e.preventDefault(); // Prevent default form submission
+                
                 const token = checkToken();
+                console.log('Token check result:', token ? 'Valid token' : 'No valid token');
+                
                 if (!token) {
                     elements.message.className = 'error-message';
                     elements.message.textContent = 'Please log in to save your profile';
+                    console.log('User not logged in, redirecting to login');
+                    setTimeout(() => {
+                        window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
+                    }, 1500);
                     return;
                 }
 
@@ -419,72 +428,110 @@
 
                 // Disable save button and show loading state
                 elements.saveProfile.disabled = true;
-                const originalButtonText = elements.saveProfile.textContent;
+                const originalButtonText = elements.saveProfile.innerHTML;
                 elements.saveProfile.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
                 elements.message.className = 'success-message';
                 elements.message.textContent = 'Saving profile...';
+                
+                console.log('Form data prepared:', {
+                    username,
+                    displayName: displayName || 'Not provided',
+                    avatar: avatar ? 'Avatar URL provided' : 'No avatar',
+                    status: status || 'No status',
+                    bio: bio || 'No bio'
+                });
 
                 try {
+                    console.log('Sending request to:', `${API_BASE_URL}/api/profile`);
+                    const requestBody = {
+                        username,
+                        displayName,
+                        avatar,
+                        status,
+                        bio
+                    };
+                    
+                    console.log('Request body:', JSON.stringify(requestBody, null, 2));
+                    
                     const response = await fetchWithRetry(`${API_BASE_URL}/api/profile`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            username,
-                            displayName,
-                            avatar,
-                            status,
-                            bio
-                        })
+                        body: JSON.stringify(requestBody)
                     });
                     
-                    const data = await response.json();
-                    
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Failed to save profile');
-                    }
-
-                    elements.message.className = 'success-message';
-                    elements.message.textContent = '✅ Profile saved successfully!';
-                    
-                    // Store the updated user data in localStorage
-                    if (data.user) {
-                        localStorage.setItem('user', JSON.stringify(data.user));
-                    }
-                    
-                    // Redirect after a short delay
-                    setTimeout(() => {
-                        window.location.href = '../lander.html';
-                    }, 1500);
-                    
-                } catch (error) {
-                    console.error('Error saving profile:', error);
-                    elements.message.className = 'error-message';
-                    
-                    // Provide more specific error messages
-                    let errorMessage = 'Failed to save profile. Please try again.';
-                    if (error.message.includes('network')) {
-                        errorMessage = 'Network error. Please check your connection and try again.';
-                    } else if (error.message.includes('token') || error.message.includes('401')) {
-                        errorMessage = 'Session expired. Please log in again.';
-                        localStorage.removeItem('sessionToken');
+                    let data;
+                    try {
+                        const responseText = await response.text();
+                        console.log('Raw response:', responseText);
+                        
+                        // Try to parse as JSON, but handle non-JSON responses
+                        try {
+                            data = responseText ? JSON.parse(responseText) : {};
+                            console.log('Parsed response data:', data);
+                        } catch (parseError) {
+                            console.error('Failed to parse response as JSON:', parseError);
+                            throw new Error('Received invalid response from server');
+                        }
+                        
+                        if (!response.ok) {
+                            console.error('Server responded with error status:', response.status);
+                            throw new Error(data.error || `Server error: ${response.status} ${response.statusText}`);
+                        }
+                        
+                        elements.message.className = 'success-message';
+                        elements.message.textContent = '✅ Profile saved successfully!';
+                        
+                        // Store the updated user data in localStorage
+                        if (data.user) {
+                            localStorage.setItem('user', JSON.stringify(data.user));
+                        }
+                        
+                        // Redirect after a short delay
                         setTimeout(() => {
-                            window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
-                        }, 2000);
-                    } else {
-                        errorMessage = error.message || errorMessage;
+                            window.location.href = '../lander.html';
+                        }, 1500);
+                    } catch (error) {
+                        console.error('Error saving profile:', {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        });
+                        
+                        elements.message.className = 'error-message';
+                        
+                        // Provide more specific error messages
+                        let errorMessage = 'Failed to save profile. Please try again.';
+                        console.log('Error type:', error.constructor.name);
+                        if (error.message.includes('network')) {
+                            errorMessage = 'Network error. Please check your connection and try again.';
+                        } else if (error.message.includes('token') || error.message.includes('401')) {
+                            errorMessage = 'Session expired. Please log in again.';
+                            localStorage.removeItem('sessionToken');
+                            setTimeout(() => {
+                                window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
+                            }, 2000);
+                        } else {
+                            errorMessage = error.message || errorMessage;
+                        }
+                        
+                        elements.message.textContent = errorMessage;
+                        
+                        // Re-enable the save button after a delay
+                        setTimeout(() => {
+                            elements.saveProfile.disabled = false;
+                            elements.saveProfile.innerHTML = originalButtonText;
+                            elements.message.textContent = '';
+                        }, 3000);
                     }
-                    
-                    elements.message.textContent = errorMessage;
-                    
-                    // Re-enable the save button after a delay
-                    setTimeout(() => {
-                        elements.saveProfile.disabled = false;
-                        elements.saveProfile.innerHTML = originalButtonText;
-                        elements.message.textContent = '';
-                    }, 3000);
+                } catch (error) {
+                    console.error('Unexpected error in form submission:', error);
+                    elements.message.className = 'error-message';
+                    elements.message.textContent = 'An unexpected error occurred. Please try again.';
+                    elements.saveProfile.disabled = false;
+                    elements.saveProfile.innerHTML = originalButtonText;
                 }
             });
 
