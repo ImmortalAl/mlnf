@@ -70,6 +70,7 @@
             text-align: center;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
@@ -234,6 +235,9 @@
 
             const API_BASE_URL = 'https://mlnf-auth.onrender.com';
             const DEBUG_MODE = true;
+
+            // Initialize the page
+            initializePage();
 
             // Check token validity
             function checkToken() {
@@ -434,19 +438,17 @@
                 } catch (error) {
                     console.error('Error saving profile:', error);
                     elements.message.className = 'error-message';
-                    elements.message.textContent = error.message;
+                    elements.message.textContent = error.message || 'Failed to save profile. Please try again.';
                     setTimeout(() => {
                         elements.message.textContent = '';
                     }, 5000);
-                        ? 'Server configuration error. Please contact support.'
-                        : `Error: ${error.message}`;
                     elements.saveProfile.disabled = false;
                     elements.saveProfile.textContent = 'Ascend to Eternity';
                 }
             });
 
-            // Initialize the page
-            initializePage();
+            // Initialize the page when DOM is loaded
+            document.addEventListener('DOMContentLoaded', initializePage);
         });
     </script>
 </body>
