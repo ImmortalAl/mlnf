@@ -308,6 +308,10 @@
             // Fetch user data to pre-fill form
             async function fetchUserData(token) {
                 try {
+                    // Show loading state
+                    elements.message.className = '';
+                    elements.message.textContent = 'Loading your profile...';
+                    
                     const response = await fetchWithRetry(`${API_BASE_URL}/api/users/me`, {
                         method: 'GET',
                         headers: {
@@ -315,6 +319,7 @@
                             'Content-Type': 'application/json'
                         }
                     });
+                    
                     const text = await response.text();
                     let user;
                     try {
@@ -323,13 +328,19 @@
                         console.error(`Invalid JSON from /api/users/me: ${text.slice(0, 200)}`);
                         throw new Error('Invalid JSON response from server');
                     }
+                    
                     if (DEBUG_MODE) console.log('Fetched user:', user);
+                    
+                    // Update form fields with user data
                     elements.username.value = user.username || '';
                     elements.displayName.value = user.displayName || '';
                     elements.avatar.value = user.avatar || '';
                     elements.avatarPreview.src = user.avatar || '../assets/images/default-avatar.png';
                     elements.status.value = user.status || '';
                     elements.bio.value = user.bio || '';
+                    
+                    // Clear loading message
+                    elements.message.textContent = '';
                 } catch (error) {
                     console.error('Fetch user data error:', error);
                     elements.message.className = 'error-message';
@@ -406,6 +417,10 @@
                     }
                 }
 
+                // Disable save button and show loading state
+                elements.saveProfile.disabled = true;
+                const originalButtonText = elements.saveProfile.textContent;
+                elements.saveProfile.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
                 elements.message.className = 'success-message';
                 elements.message.textContent = 'Saving profile...';
 
@@ -424,6 +439,7 @@
                             bio
                         })
                     });
+                    
                     const data = await response.json();
                     
                     if (!response.ok) {
@@ -431,24 +447,60 @@
                     }
 
                     elements.message.className = 'success-message';
-                    elements.message.textContent = 'Profile saved successfully!';
+                    elements.message.textContent = '✅ Profile saved successfully!';
+                    
+                    // Store the updated user data in localStorage
+                    if (data.user) {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                    }
+                    
+                    // Redirect after a short delay
                     setTimeout(() => {
-                        window.location.href = '/lander.html';
-                    }, 2000);
+                        window.location.href = '../lander.html';
+                    }, 1500);
+                    
                 } catch (error) {
                     console.error('Error saving profile:', error);
                     elements.message.className = 'error-message';
-                    elements.message.textContent = error.message || 'Failed to save profile. Please try again.';
+                    
+                    // Provide more specific error messages
+                    let errorMessage = 'Failed to save profile. Please try again.';
+                    if (error.message.includes('network')) {
+                        errorMessage = 'Network error. Please check your connection and try again.';
+                    } else if (error.message.includes('token') || error.message.includes('401')) {
+                        errorMessage = 'Session expired. Please log in again.';
+                        localStorage.removeItem('sessionToken');
+                        setTimeout(() => {
+                            window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
+                        }, 2000);
+                    } else {
+                        errorMessage = error.message || errorMessage;
+                    }
+                    
+                    elements.message.textContent = errorMessage;
+                    
+                    // Re-enable the save button after a delay
                     setTimeout(() => {
+                        elements.saveProfile.disabled = false;
+                        elements.saveProfile.innerHTML = originalButtonText;
                         elements.message.textContent = '';
-                    }, 5000);
-                    elements.saveProfile.disabled = false;
-                    elements.saveProfile.textContent = 'Ascend to Eternity';
+                    }, 3000);
                 }
             });
 
             // Initialize the page when DOM is loaded
-            document.addEventListener('DOMContentLoaded', initializePage);
+            document.addEventListener('DOMContentLoaded', () => {
+                // Add a small delay to ensure all elements are loaded
+                setTimeout(initializePage, 100);
+            });
+            
+            // Also try to initialize immediately in case DOM is already loaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializePage);
+            } else {
+                // DOM already loaded, initialize immediately
+                setTimeout(initializePage, 100);
+            }
         });
     </script>
 </body>
