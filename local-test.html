@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow: auto; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Local API Test</h1>
+    
+    <div>
+        <h2>1. Check Local Storage</h2>
+        <button id="check-storage">Check Local Storage</button>
+        <pre id="storage-result">Click the button to check local storage</pre>
+    </div>
+    
+    <div>
+        <h2>2. Test API Connection</h2>
+        <button id="test-api">Test API Connection</button>
+        <pre id="api-result">Click the button to test API connection</pre>
+    </div>
+    
+    <div>
+        <h2>3. View Page Source</h2>
+        <p>This page is being served from: <span id="page-location"></span></p>
+    </div>
+
+    <script>
+        // Show the current page location
+        document.getElementById('page-location').textContent = window.location.href;
+        
+        // Check local storage
+        document.getElementById('check-storage').addEventListener('click', () => {
+            const result = document.getElementById('storage-result');
+            try {
+                const token = localStorage.getItem('sessionToken');
+                if (token) {
+                    result.innerHTML = `<span class="success">Token found in local storage</span>\n\n`;
+                    try {
+                        const payload = JSON.parse(atob(token.split('.')[1]));
+                        result.textContent += 'Token payload:\n' + JSON.stringify(payload, null, 2);
+                    } catch (e) {
+                        result.textContent += 'Could not parse token: ' + e.message;
+                    }
+                } else {
+                    result.innerHTML = '<span class="error">No token found in local storage</span>';
+                }
+            } catch (e) {
+                result.innerHTML = `<span class="error">Error accessing local storage: ${e.message}</span>`;
+            }
+        });
+        
+        // Test API connection
+        document.getElementById('test-api').addEventListener('click', async () => {
+            const result = document.getElementById('api-result');
+            result.textContent = 'Testing connection to API...';
+            
+            try {
+                const response = await fetch('https://mlnf-auth.onrender.com/api/health');
+                if (response.ok) {
+                    const data = await response.text();
+                    result.innerHTML = `<span class="success">API is reachable!</span>\n\nStatus: ${response.status} ${response.statusText}\n\nResponse: ${data}`;
+                } else {
+                    result.innerHTML = `<span class="error">API returned error status</span>\n\nStatus: ${response.status} ${response.statusText}`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">Error connecting to API</span>\n\n${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

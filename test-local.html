@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MLNF Local Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .test-link {
+            display: block;
+            padding: 15px;
+            margin: 15px 0;
+            background: #f4f4f4;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+        .test-link:hover {
+            background: #e4e4e4;
+            transform: translateX(5px);
+        }
+        .info {
+            background: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>MLNF Local Test Environment</h1>
+    
+    <div class="info">
+        <p>This is a local test environment for MLNF. Use the links below to test different pages.</p>
+    </div>
+    
+    <div class="warning">
+        <p><strong>Important:</strong> Make sure you're logged in before testing the profile setup page.</p>
+    </div>
+    
+    <h2>Test Pages</h2>
+    <a href="local-test.html" class="test-link">1. Local API Test</a>
+    <p>Test basic API connectivity and local storage.</p>
+    
+    <a href="pages/api-test.html" class="test-link">2. API Test Tool</a>
+    <p>Comprehensive tool to test API endpoints and authentication.</p>
+    
+    <a href="pages/profile-setup.html" class="test-link">3. Profile Setup Page</a>
+    <p>Test the profile setup functionality.</p>
+    
+    <h2>How to Test</h2>
+    <ol>
+        <li>Open the browser's developer tools (F12 or right-click → Inspect)</li>
+        <li>Go to the Console tab</li>
+        <li>Click on the test links above</li>
+        <li>Check for any errors in the console</li>
+    </ol>
+    
+    <h2>Running a Local Server</h2>
+    <p>To test these files locally, you can use Python's built-in HTTP server:</p>
+    <pre><code># Python 3
+python -m http.server 8000</code></pre>
+    
+    <p>Or use the provided PowerShell script:</p>
+    <pre><code># In PowerShell
+.\start-server.ps1</code></pre>
+    
+    <p>Then open <a href="http://localhost:8000/test-local.html" target="_blank">http://localhost:8000/test-local.html</a> in your browser.</p>
+</body>
+</html>
