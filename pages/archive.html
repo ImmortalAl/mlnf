@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Open discussions for unbound spirits in an eternal sanctuary.">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Echoes Unbound - Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        main {
+            padding: 3rem 2rem;
+            flex: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .threads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .thread {
+            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            transition: var(--transition);
+            border-left: 5px solid var(--accent);
+        }
+
+        .thread:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+        }
+
+        .thread h3 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .thread p {
+            color: #d9ccff;
+            margin-bottom: 0.5rem;
+        }
+
+        .thread .meta {
+            font-size: 0.9rem;
+            color: var(--success);
+            font-style: italic;
+        }
+
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--accent);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-infinity"></i>
+            <h1>Manifest Liberation, Naturally Free</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="profiles.html">Eternal Souls</a></li>
+                <li><a href="blog.html">Soul Scrolls</a></li>
+                <li><a href="messageboard.html">Echoes Unbound</a></li>
+                <li><a href="news.html">Boundless Chronicles</a></li>
+                <li><a href="debate.html">Clash of Immortals</a></li>
+                <li><a href="mindmap.html">Infinite Nexus</a></li>
+                <li><a href="archive.html">Timeless Vault</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section-title">
+            <h2>Echoes Unbound</h2>
+            <p>Weave your thoughts into the eternal tapestry of free discussion</p>
+        </section>
+
+        <div class="threads-list">
+            <div class="thread">
+                <h3>Is Privacy Dead?</h3>
+                <p>"In 2025, every click is watched—how do we fight back?"</p>
+                <p class="meta">— ImmortalAl (12 replies)</p>
+            </div>
+            <div class="thread">
+                <h3>The Power of Collective Truth</h3>
+                <p>"Can we crowdsource our way to freedom?"</p>
+                <p class="meta">— TruthSeeker (8 replies)</p>
+            </div>
+            <div class="thread">
+                <h3>Echoes of Resistance</h3>
+                <p>"How do we keep our voices alive against silencing?"</p>
+                <p class="meta">— FreeSoul (5 replies)</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
+    </footer>
+</body>
+</html>

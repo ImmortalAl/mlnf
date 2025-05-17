@@ -1,0 +1,33 @@
+{
+  "name": "mlnf",
+  "version": "1.0.0",
+  "description": "A timeless sanctuary for liberated spirits to manifest truth and freedom.",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "postcss css/main.css -o dist/styles.css",
+    "build:js": "rollup -c",
+    "build": "npm run build:css && npm run build:js",
+    "watch:css": "postcss css/main.css -w -o dist/styles.css",
+    "watch:js": "rollup -c -w",
+    "watch": "concurrently \"npm run watch:css\" \"npm run watch:js\"",
+    "start": "npm run watch",
+    "deploy": "wrangler pages deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.15",
+    "concurrently": "^8.2.1",
+    "postcss": "^8.4.29",
+    "postcss-cli": "^10.1.0",
+    "rollup": "^3.21.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tailwindcss": "^3.3.3"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0"
+  }
+}

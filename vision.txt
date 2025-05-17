@@ -1,0 +1,66 @@
+﻿Project Overview:
+You are holding my hand through the development of a website called "Manifest Liberation, Naturally Free" (MLNF), an immortal-themed website to serve as a refuge for free-thinkers to crowdsource truth and knowledge that is concealed by the conventional world of tyrannical censorship, to engage in discourse, to build a timeless community and to transcend conventional boundaries.
+
+Key features:
+responsive design,
+stacked logo that adapts for mobile,
+light theme toggle,
+authentication form,
+user accounts,
+profile pages,
+global sidebar for active users and peer-to-peer messaging modal,
+blogging,
+message board,
+news stories,
+mindmap to crowdsource knowledge,
+debate arena where users can confront contentious topics,
+media archive to submit videos that are otherwise concealed on censorful platforms.
+
+Technical Details:
+
+Frontend: HTML, CSS, JavaScript, folder locally named mlnf.
+
+Hosted at https://dashing-belekoy-7a0095.netlify.app/.
+
+The repo is version-controlled with Git, and deployments are handled via GitHub Pages hosted at https://immortalal.github.io/mlnf and accessible via mlnf.net (proxied through Cloudflare).
+
+The front-end repository is ImmortalAl/mlnf, and the main branch contains the latest code. The file structure includes: 
+
+index.html (root page)  
+styles.css (global styles)
+scripts.js (global scripts)
+pages/ folder with subpages like archive.html, messageboard.html, etc.
+
+Backend: Locally, the back-end root directory is called mlnf-auth. It is a sibling to the front end root directory. The back-end repository is ImmortalAl/mlnf-auth. 
+
+Mlnf-auth.onrender.com is used. 
+
+Database: MongoDB Atlas, for storing user data and community content
+
+Security: Ensure secure handling of user data and authentication tokens.  
+
+Design Consistency: Maintain the immortal, ethereal design across new features.
+
+Mobile Responsiveness: Ensure all new features work seamlessly on mobile devices.
+
+The directory structure on the local machine is like this. The back-end root, "mlnf-auth", is a sibling to the front-end root, "MLNF".
+Here is the front-end directory structure:
+¦   index.html
+¦   lander.html
+¦   scripts.js
+¦   styles.css
++---assets
+¦   +---images
+¦   +---uploads
++---pages
+        archive.html
+        auth.html
+        blog.html
+        debate.html
+        manifesto.html
+        messageboard.html
+        messaging.html
+        mindmap.html
+        news.html
+        profile-setup.html
+        profiles.html

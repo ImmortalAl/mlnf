@@ -1,0 +1,42 @@
+:root {
+    /* Base Colors */
+    --primary: #0d0d1a;
+    --secondary: #1a1a33;
+    --accent: #ff5e78;
+    --text: #f0e6ff;
+    --highlight: #2a4066;
+    --success: #5cb85c;
+    --warning: #ffca28;
+    --danger: #ff4444;
+
+    /* Gradients */
+    --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+    --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+
+    /* UI Elements */
+    --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    --border-radius: 10px;
+    --header-height: 70px;
+
+    /* Light Theme Colors */
+    --light-primary: #ffffff;
+    --light-secondary: #f0f0f5;
+    --light-text: #1a1a33;
+    --light-accent: #d62d4d;
+    --light-highlight: #3a3a5c;
+    --light-success: #2e7d32;
+    --light-warning: #ff8f00;
+    --light-danger: #c62828;
+}
+
+body.light-theme {
+    --primary: var(--light-primary);
+    --secondary: var(--light-secondary);
+    --text: var(--light-text);
+    --accent: var(--light-accent);
+    --highlight: var(--light-highlight);
+    --success: var(--light-success);
+    --warning: var(--light-warning);
+    --danger: var(--light-danger);
+}

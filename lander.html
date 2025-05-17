@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
+    <link rel="canonical" href="https://mlnf.net">
+    <title>MLNF Headquarters</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            --border-radius: 10px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+        .logo h1 {
+            font-weight: 300;
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        nav ul {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        nav a:hover {
+            color: var(--accent);
+            background: rgba(255, 94, 120, 0.2);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+        .user-info:hover {
+            background: rgba(255, 94, 120, 0.2);
+            transform: scale(1.05);
+        }
+        .user-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+        }
+        .user-info span {
+            font-weight: 600;
+        }
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+        }
+        .btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+        }
+        main {
+            padding: 2rem;
+            flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        section {
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 94, 120, 0.25);
+        }
+        h2 {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.6rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        #editor {
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        ul {
+            list-style: none;
+        }
+        ul li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        ul li a {
+            color: var(--text);
+            text-decoration: none;
+        }
+        ul li a:hover {
+            color: var(--accent);
+        }
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .activity-card {
+            background: rgba(255, 94, 120, 0.08);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+        }
+        .message {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+        }
+        .message.error {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+        .message.success {
+            background: rgba(68, 255, 68, 0.2);
+            color: #44ff44;
+        }
+        .active-users {
+            position: fixed;
+            right: -300px;
+            top: 0;
+            height: 100%;
+            width: 300px;
+            background: var(--gradient-secondary);
+            padding: 1rem;
+            transition: right 0.3s ease;
+            z-index: 1001;
+            border-left: 3px solid var(--accent);
+            overflow-y: auto;
+        }
+        .active-users.active {
+            right: 0;
+        }
+        .active-users h3 {
+            font-family: 'Lato', sans-serif;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        .active-users ul {
+            list-style: none;
+        }
+        .active-users li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        .active-users img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+        }
+        .active-users .status {
+            font-size: 0.8rem;
+            color: #d9ccff;
+        }
+        .show-users-btn {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            background: var(--gradient-accent);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            cursor: pointer;
+            z-index: 1002;
+            transform: translateY(-50%);
+        }
+        .hamburger {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 2rem;
+            cursor: pointer;
+            display: none;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+        .hamburger:hover {
+            transform: scale(1.1);
+        }
+        .sidebar-nav {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: var(--secondary);
+            transition: left 0.3s ease;
+            z-index: 2000;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-nav.active {
+            left: 0;
+        }
+        .sidebar-nav .close-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 1.8rem;
+            cursor: pointer;
+            align-self: flex-end;
+            margin-bottom: 1rem;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+        .sidebar-nav li {
+            margin: 0.8rem 0;
+        }
+        .sidebar-nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+        .sidebar-nav a:hover {
+            background: rgba(255, 94, 120, 0.2);
+            color: var(--accent);
+        }
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        body.menu-open {
+            overflow: hidden;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+            .main-nav {
+                display: none;
+            }
+            .user-info, #logoutBtn {
+                display: none;
+            }
+            .active-users {
+                width: 100%;
+                right: -100%;
+            }
+            .active-users.active {
+                right: 0;
+            }
+        }
+        @media (min-width: 769px) {
+            .sidebar-nav {
+                display: none;
+            }
+            .active-users {
+                right: -300px;
+            }
+            .active-users.active {
+                right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="hamburger" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo">
+            <i class="fas fa-infinity" aria-hidden="true"></i>
+            <h1>MLNF Headquarters</h1>
+        </div>
+        <nav class="main-nav" aria-label="Main navigation">
+            <ul>
+                <li><a href="pages/profiles.html"><i class="fas fa-user-secret"></i> Eternal Souls</a></li>
+                <li><a href="pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
+                <li><a href="pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+                <li><a href="pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+                <li><a href="pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+                <li><a href="pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+                <li><a href="pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
+            </ul>
+        </nav>
+        <a href="pages/profile-setup.html" class="user-info" id="userInfo" aria-label="User profile">
+            <img src="/assets/images/default-avatar.png" alt="User Avatar" id="userAvatar">
+            <span id="userName">Welcome, Guest</span>
+        </a>
+        <button class="btn btn-primary" id="logoutBtn" aria-label="Log out">Logout</button>
+    </header>
+    <div class="nav-overlay"></div>
+    <nav class="sidebar-nav" aria-label="Mobile navigation">
+        <button class="close-btn" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul>
+            <li><a href="pages/profiles.html"><i class="fas fa-user-secret"></i> Eternal Souls</a></li>
+            <li><a href="pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
+            <li><a href="pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+            <li><a href="pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+            <li><a href="pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+            <li><a href="pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+            <li><a href="pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="message" id="message"></div>
+        <section class="notifications">
+            <h2>Notifications</h2>
+            <ul id="notificationList">
+                <li>Notifications not yet implemented</li>
+            </ul>
+        </section>
+        <section class="blog-composer">
+            <h2>Compose New Scroll</h2>
+            <div class="form-group">
+                <label for="blog-title">Scroll Title</label>
+                <input type="text" id="blog-title" name="blog-title" required maxlength="100">
+            </div>
+            <div id="editor"></div>
+            <button class="btn btn-primary" id="publishBtn" aria-label="Publish blog post">Publish</button>
+        </section>
+        <section class="my-blogs">
+            <h2>My Scrolls</h2>
+            <ul id="myBlogsList">
+                <li>Fetching your blog posts...</li>
+            </ul>
+        </section>
+        <section class="site-activity">
+            <h2>Site Activity</h2>
+            <div class="activity-grid" id="activityGrid">
+                <div class="activity-card"><p>Activity feed not yet implemented</p></div>
+            </div>
+        </section>
+    </main>
+    <aside class="active-users" id="activeUsers">
+        <button class="btn btn-primary" id="closeUsersBtn" aria-label="Close active users sidebar">Close</button>
+        <h3>Eternal Seekers</h3>
+        <button class="btn btn-primary" id="refreshUsersBtn" aria-label="Refresh online users">Refresh Users</button>
+        <ul id="onlineUsersList">
+            <li>Click "Refresh Users" to load online users</li>
+        </ul>
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Toggle active users sidebar"><i class="fas fa-users"></i></button>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        // Embedded jwt-decode
+        function jwt_decode(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                throw new Error('Invalid JWT token');
+            }
+        }
+
+        const $ = id => document.getElementById(id);
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const message = $('message');
+        const DEBUG_MODE = true;
+
+        // Initialize Quill editor
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'image'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+                ]
+            }
+        });
+
+        // Check token validity
+        function isTokenValid(token) {
+            if (!token) {
+                console.warn('No token found in localStorage');
+                return false;
+            }
+            try {
+                const decoded = jwt_decode(token);
+                const now = Math.floor(Date.now() / 1000);
+                if (!decoded.exp || !decoded.id) {
+                    console.error('Token missing required claims:', decoded);
+                    return false;
+                }
+                return decoded.exp > now;
+            } catch (error) {
+                console.error('Token decode error:', error.message);
+                return false;
+            }
+        }
+
+        // Fetch with retry and timeout
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 15000) {
+            if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}`);
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
+                    options.signal = controller.signal;
+                    const response = await fetch(url, options);
+                    clearTimeout(timeoutId);
+                    if (response.ok) {
+                        if (DEBUG_MODE) console.log(`Success: ${options.method} ${url}, Status: ${response.status}`);
+                        return response;
+                    }
+                    const text = await response.text();
+                    console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
+                    throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
+                        throw new Error('Request timed out');
+                    }
+                    if (i === retries - 1) throw error;
+                    console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                }
+            }
+        }
+
+        // Fetch user data
+        async function fetchUserData() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token || !isTokenValid(token)) {
+                message.className = 'message error';
+                message.textContent = 'Session expired or invalid. Redirecting to login...';
+                localStorage.removeItem('sessionToken');
+                setTimeout(() => window.location.href = '/pages/auth.html?mode=login&redirect=lander.html', 3000);
+                return null;
+            }
+            try {
+                const response = await fetchWithRetry(`${API_BASE_URL}/api/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const text = await response.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error(`Invalid JSON from /api/users/me: ${text.slice(0, 200)}`);
+                    throw new Error('Invalid JSON response from server');
+                }
+            } catch (error) {
+                console.error('Fetch user error:', error.message);
+                message.className = 'message error';
+                message.textContent = `Error: ${error.message}`;
+                return null;
+            }
+        }
+
+        // Update user info
+        function updateUserInfo(user) {
+            if (user) {
+                const displayName = user.displayName || user.username || 'Guest';
+                $('userName').textContent = `Welcome, ${displayName}`;
+                $('userAvatar').src = user.avatar || 'https://i.pravatar.cc/40';
+                $('userAvatar').onerror = () => {
+                    $('userAvatar').src = 'https://i.pravatar.cc/40';
+                };
+            } else {
+                $('userName').textContent = 'Welcome, Guest';
+                $('userAvatar').src = 'https://i.pravatar.cc/40';
+            }
+        }
+
+        // Fetch user's blog posts
+        async function fetchMyBlogs() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token || !isTokenValid(token)) {
+                $('myBlogsList').innerHTML = '<li>Please log in to view your blogs</li>';
+                return;
+            }
+            try {
+                const response = await fetchWithRetry(`${API_BASE_URL}/api/blogs/my`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const text = await response.text();
+                let blogs;
+                try {
+                    blogs = JSON.parse(text);
+                } catch (e) {
+                    console.error(`Invalid JSON from /api/blogs/my: ${text.slice(0, 200)}`);
+                    throw new Error('Invalid JSON response from server');
+                }
+                const blogList = $('myBlogsList');
+                blogList.innerHTML = blogs.length === 0 ? '<li>No blog posts yet</li>' : '';
+                blogs.forEach(blog => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="/pages/blog.html#${blog._id}">${blog.title}</a> - ${new Date(blog.createdAt).toLocaleDateString()}`;
+                    blogList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching blogs:', error);
+                $('myBlogsList').innerHTML = '<li>Error loading blogs</li>';
+            }
+        }
+
+        // Fetch online users
+        async function fetchOnlineUsers() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token || !isTokenValid(token)) {
+                $('onlineUsersList').innerHTML = '<li>Please log in to view online users</li>';
+                return;
+            }
+            try {
+                const response = await fetchWithRetry(`${API_BASE_URL}/api/users?limit=10`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text || 'Failed to fetch users'}`);
+                }
+                const data = await response.json();
+                if (DEBUG_MODE) console.log('Online users response:', data);
+                
+                const users = Array.isArray(data.users) ? data.users : (Array.isArray(data) ? data : []);
+                const userList = $('onlineUsersList');
+                userList.innerHTML = users.length === 0 ? '<li>No users online</li>' : '';
+                
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <img src="${user.avatar || 'https://i.pravatar.cc/40'}" alt="${user.displayName || user.username}'s avatar">
+                        <a href="/pages/profiles.html#${user._id}">${user.displayName || user.username}</a>
+                        ${user.status ? `<span class="status">${user.status}</span>` : ''}
+                    `;
+                    li.querySelector('img').onerror = () => {
+                        li.querySelector('img').src = 'https://i.pravatar.cc/40';
+                    };
+                    userList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching online users:', error);
+                $('onlineUsersList').innerHTML = `<li>Error loading online users: ${error.message}</li>`;
+            }
+        }
+
+        // Publish blog post
+        async function publishBlog() {
+            const title = $('blog-title').value.trim();
+            const content = DOMPurify.sanitize(quill.root.innerHTML.trim());
+            const token = localStorage.getItem('sessionToken');
+
+            if (!title || !content || content === '<p><br></p>') {
+                message.className = 'message error';
+                message.textContent = 'Please provide a title and content for your blog post';
+                return;
+            }
+
+            if (!token || !isTokenValid(token)) {
+                message.className = 'message error';
+                message.textContent = 'You must be logged in to publish a blog post';
+                setTimeout(() => window.location.href = '/pages/auth.html?mode=login&redirect=lander.html', 3000);
+                return;
+            }
+
+            if (DEBUG_MODE) console.log('Starting blog publish sequence');
+            try {
+                if (DEBUG_MODE) console.log('Sending POST /api/blogs');
+                const response = await fetchWithRetry(`${API_BASE_URL}/api/blogs`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+                const text = await response.text();
+                if (DEBUG_MODE) console.log(`Raw response from POST /api/blogs: ${text.slice(0, 200)}`);
+                try {
+                    const data = JSON.parse(text);
+                    if (!response.ok) {
+                        throw new Error(data.error || `HTTP ${response.status}: Failed to publish blog post`);
+                    }
+                    message.className = 'message success';
+                    message.textContent = 'Blog post published successfully!';
+                    $('blog-title').value = '';
+                    quill.root.innerHTML = '';
+                    if (DEBUG_MODE) console.log('Blog post published, skipping fetchMyBlogs for testing');
+                    setTimeout(() => message.textContent = '', 3000);
+                } catch (e) {
+                    console.error(`Invalid JSON from POST /api/blogs: ${text.slice(0, 200)}`);
+                    throw new Error('Invalid JSON response from server');
+                }
+            } catch (error) {
+                console.error('Error publishing blog:', error);
+                message.className = 'message error';
+                message.textContent = `Error: ${error.message}`;
+                setTimeout(() => message.textContent = '', 5000);
+            }
+        }
+
+        // Logout
+        async function logout() {
+            const token = localStorage.getItem('sessionToken');
+            if (token && isTokenValid(token)) {
+                try {
+                    await fetchWithRetry(`${API_BASE_URL}/api/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                } catch (error) {
+                    console.error('Logout API error:', error);
+                }
+            }
+            localStorage.removeItem('sessionToken');
+            message.className = 'message success';
+            message.textContent = 'Logged out successfully';
+            setTimeout(() => window.location.href = '/index.html', 1000);
+        }
+
+        // Sidebar navigation toggle
+        const hamburger = document.querySelector('.hamburger');
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        const navOverlay = document.querySelector('.nav-overlay');
+        const closeBtn = document.querySelector('.close-btn');
+
+        function toggleMenu() {
+            sidebarNav.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+
+        hamburger.addEventListener('click', toggleMenu);
+        closeBtn.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+
+        // Active users sidebar toggle
+        const showUsersBtn = document.getElementById('showUsersBtn');
+        const activeUsers = document.getElementById('activeUsers');
+        const closeUsersBtn = document.getElementById('closeUsersBtn');
+
+        function toggleActiveUsers() {
+            activeUsers.classList.toggle('active');
+        }
+
+        showUsersBtn.addEventListener('click', toggleActiveUsers);
+        closeUsersBtn.addEventListener('click', toggleActiveUsers);
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await fetchUserData();
+            updateUserInfo(user);
+            await fetchMyBlogs();
+        });
+
+        // Attach event listeners
+        document.getElementById('publishBtn').addEventListener('click', publishBlog);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        document.getElementById('refreshUsersBtn').addEventListener('click', fetchOnlineUsers);
+    </script>
+</body>
+</html>

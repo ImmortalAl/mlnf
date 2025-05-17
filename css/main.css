@@ -1,0 +1,47 @@
+/* Import modular CSS files */
+@import 'variables.css';
+@import 'utilities.css';
+
+/* Components */
+@import 'components/header.css';
+@import 'components/cards.css';
+@import 'components/navigation.css';
+@import 'components/forms.css';
+@import 'components/modals.css';
+
+/* Sections */
+@import 'sections/hero.css';
+@import 'sections/features.css';
+@import 'sections/highlights.css';
+@import 'sections/debate.css';
+@import 'sections/mindmap.css';
+
+/* Layout */
+body {
+    background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+    color: var(--text);
+}
+
+body.light-theme {
+    background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.85)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80&duotone=FFFFFF,CCCCFF') center/cover fixed;
+}
+
+/* Main Layout */
+main {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+/* Animations */
+@keyframes pulseBtn {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); }
+}
+
+/* Print Styles */
+@media print {
+    .no-print { display: none !important; }
+    body { background: none !important; }
+    .btn { display: none !important; }
+}

@@ -1,0 +1,639 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoes Unbound - MLNF Message Board</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            --border-radius: 10px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+        .logo h1 {
+            font-weight: 300;
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        nav ul {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        nav a:hover {
+            color: var(--accent);
+            background: rgba(255, 94, 120, 0.2);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+        .user-info:hover {
+            background: rgba(255, 94, 120, 0.2);
+            transform: scale(1.05);
+        }
+        .user-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+        }
+        .user-info span {
+            font-weight: 600;
+        }
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+        }
+        .btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
+        }
+        main {
+            padding: 2rem;
+            flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        section {
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 94, 120, 0.25);
+        }
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        .thread-list, .reply-list {
+            list-style: none;
+        }
+        .thread, .reply {
+            background: rgba(255, 94, 120, 0.08);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+        }
+        .thread:hover, .reply:hover {
+            background: rgba(255, 94, 120, 0.18);
+            transform: scale(1.02);
+        }
+        .thread h3, .reply h4 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .thread p, .reply p {
+            margin-bottom: 1rem;
+        }
+        .thread .meta, .reply .meta {
+            font-size: 0.8rem;
+            color: var(--highlight);
+        }
+        .reply {
+            margin-left: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        #editor {
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+        }
+        .message {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+        }
+        .message.error {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+        .message.success {
+            background: rgba(68, 255, 68, 0.2);
+            color: #44ff44;
+        }
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .search-bar input {
+            flex: 1;
+        }
+        .thread-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--gradient-secondary);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--accent);
+            z-index: 2000;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            header { flex-wrap: wrap; }
+            nav ul { flex-direction: column; }
+            .search-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-infinity" aria-hidden="true"></i>
+            <h1>MLNF Headquarters</h1>
+        </div>
+        <nav aria-label="Main navigation">
+            <ul>
+                <li><a href="/pages/profiles.html"><i class="fas fa-user-secret"></i> Eternal Souls</a></li>
+                <li><a href="/pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
+                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+                <li><a href="/pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+                <li><a href="/pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+                <li><a href="/pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
+            </ul>
+        </nav>
+        <a href="/pages/profile-setup.html" class="user-info" id="userInfo" aria-label="User profile">
+            <img src="/assets/images/default-avatar.png" alt="User Avatar" id="userAvatar">
+            <span id="userName">Welcome, Guest</span>
+        </a>
+        <button class="btn btn-primary" id="logoutBtn" aria-label="Log out" style="display: none;">Logout</button>
+        <a href="/pages/auth.html?mode=login" class="btn btn-primary" id="loginBtn" aria-label="Log in">Login</a>
+    </header>
+    <main>
+        <div class="message" id="message"></div>
+        <section class="search">
+            <h2>Search Echoes</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Seek eternal truths...">
+                <select id="searchFilter">
+                    <option value="all">All</option>
+                    <option value="Ideas">Ideas</option>
+                    <option value="Debates">Debates</option>
+                    <option value="Trades">Trades</option>
+                    <option value="Events">Events</option>
+                    <option value="Governance">Governance</option>
+                </select>
+                <button class="btn btn-primary" id="searchBtn">Search</button>
+            </div>
+        </section>
+        <section class="thread-composer" id="threadComposer" style="display: none;">
+            <h2>Create New Thread</h2>
+            <form id="threadForm">
+                <div class="form-group">
+                    <label for="threadTitle">Title</label>
+                    <input type="text" id="threadTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="threadCategory">Category</label>
+                    <select id="threadCategory" name="category" required>
+                        <option value="Ideas">Ideas</option>
+                        <option value="Debates">Debates</option>
+                        <option value="Trades">Trades</option>
+                        <option value="Events">Events</option>
+                        <option value="Governance">Governance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="threadTags">Tags (comma-separated)</label>
+                    <input type="text" id="threadTags" name="tags">
+                </div>
+                <div id="editor"></div>
+                <button type="submit" class="btn btn-primary">Post Thread</button>
+            </form>
+        </section>
+        <section class="threads">
+            <h2>Threads</h2>
+            <ul id="threadList" class="thread-list"></ul>
+        </section>
+    </main>
+    <script>
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const message = document.getElementById('message');
+        const threadList = document.getElementById('threadList');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userInfo = document.getElementById('userInfo');
+        const threadComposer = document.getElementById('threadComposer');
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'image'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+                ]
+            }
+        });
+
+        // Check authentication status
+        async function checkAuth() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showGuestUI();
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    throw new Error('Invalid or expired token');
+                }
+                const user = await response.json();
+                showAuthenticatedUI(user);
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error.message);
+                showMessage('Session expired. Please log in again.', 'error');
+                localStorage.removeItem('sessionToken');
+                showGuestUI();
+                return false;
+            }
+        }
+
+        // Show UI for guest users
+        function showGuestUI() {
+            loginBtn.style.display = 'block';
+            logoutBtn.style.display = 'none';
+            userInfo.querySelector('#userName').textContent = 'Welcome, Guest';
+            userInfo.querySelector('#userAvatar').src = '/assets/images/default-avatar.png';
+            threadComposer.style.display = 'none';
+        }
+
+        // Show UI for authenticated users
+        function showAuthenticatedUI(user) {
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+            userInfo.querySelector('#userName').textContent = user.username || 'User';
+            userInfo.querySelector('#userAvatar').src = user.avatar || '/assets/images/default-avatar.png';
+            threadComposer.style.display = 'block';
+        }
+
+        // Fetch threads
+        async function fetchThreads(filter = '') {
+            try {
+                const token = localStorage.getItem('sessionToken');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+                const response = await fetch(`${API_BASE_URL}/api/threads${filter ? `?category=${filter}` : ''}`, {
+                    headers
+                });
+                if (!response.ok) throw new Error('Failed to fetch threads');
+                const data = await response.json();
+                renderThreads(data.threads);
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        // Render threads
+        function renderThreads(threads) {
+            const isAuthenticated = !!localStorage.getItem('sessionToken');
+            threadList.innerHTML = threads.map(thread => `
+                <li class="thread" data-id="${thread._id}">
+                    <h3>${thread.title}</h3>
+                    <p>${thread.content}</p>
+                    <div class="meta">
+                        Posted by <a href="/pages/profiles.html?username=${thread.author.username}">${thread.author.username}</a> 
+                        on ${new Date(thread.createdAt).toLocaleString()} 
+                        | Category: ${thread.category} 
+                        | Tags: ${(Array.isArray(thread.tags) && thread.tags.length > 0) ? thread.tags.join(', ') : 'None'}
+                    </div>
+                    <div class="thread-actions">
+                        <button onclick="toggleReplies('${thread._id}')">Replies (${thread.replies?.length || 0})</button>
+                        ${isAuthenticated ? `
+                            <button onclick="showReplyForm('${thread._id}')">Reply</button>
+                            <button onclick="flagThread('${thread._id}')">Flag</button>
+                        ` : ''}
+                    </div>
+                    <ul class="reply-list" id="replies-${thread._id}" style="display: none;"></ul>
+                    <form class="reply-form" id="reply-form-${thread._id}" style="display: none;">
+                        <div id="reply-editor-${thread._id}" class="reply-editor"></div>
+                        <button type="submit" class="btn btn-primary">Post Reply</button>
+                    </form>
+                </li>
+            `).join('');
+            threads.forEach(thread => {
+                if (thread.replies?.length) renderReplies(thread._id, thread.replies);
+                if (isAuthenticated) initReplyEditor(thread._id);
+            });
+        }
+
+        // Render replies
+        function renderReplies(threadId, replies) {
+            const replyList = document.getElementById(`replies-${threadId}`);
+            replyList.innerHTML = replies.map(reply => `
+                <li class="reply">
+                    <p>${reply.content}</p>
+                    <div class="meta">By ${reply.author.username} on ${new Date(reply.createdAt).toLocaleString()}</div>
+                </li>
+            `).join('');
+        }
+
+        // Toggle replies
+        function toggleReplies(threadId) {
+            const replyList = document.getElementById(`replies-${threadId}`);
+            replyList.style.display = replyList.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Show reply form
+        function showReplyForm(threadId) {
+            const replyForm = document.getElementById(`reply-form-${threadId}`);
+            replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Initialize reply editor
+        function initReplyEditor(threadId) {
+            const editor = new Quill(`#reply-editor-${threadId}`, {
+                theme: 'snow',
+                modules: { toolbar: [['bold', 'italic', 'underline'], ['link']] }
+            });
+            const form = document.getElementById(`reply-form-${threadId}`);
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const content = DOMPurify.sanitize(editor.root.innerHTML);
+                await postReply(threadId, content);
+                form.style.display = 'none';
+            });
+        }
+
+        // Post new thread
+        document.getElementById('threadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showMessage('Please log in to post a thread.', 'error');
+                window.location.href = '/pages/auth.html?mode=login';
+                return;
+            }
+            const title = document.getElementById('threadTitle').value;
+            const category = document.getElementById('threadCategory').value;
+            const tags = document.getElementById('threadTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const content = DOMPurify.sanitize(quill.root.innerHTML);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/threads`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title, category, tags, content })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to post thread');
+                }
+                showMessage('Thread posted successfully', 'success');
+                fetchThreads();
+                e.target.reset();
+                quill.root.innerHTML = '';
+            } catch (error) {
+                console.error('Error posting thread:', error.message);
+                showMessage(error.message, 'error');
+            }
+        });
+
+        // Post reply
+        async function postReply(threadId, content) {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showMessage('Please log in to post a reply.', 'error');
+                window.location.href = '/pages/auth.html?mode=login';
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/threads/${threadId}/replies`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to post reply');
+                }
+                showMessage('Reply posted successfully', 'success');
+                fetchReplies(threadId);
+            } catch (error) {
+                console.error('Error posting reply:', error.message);
+                showMessage(error.message, 'error');
+            }
+        }
+
+        // Fetch replies
+        async function fetchReplies(threadId) {
+            try {
+                const token = localStorage.getItem('sessionToken');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+                const response = await fetch(`${API_BASE_URL}/api/threads/${threadId}`, {
+                    headers
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch replies');
+                }
+                const thread = await response.json();
+                renderReplies(threadId, thread.replies);
+                document.getElementById(`replies-${threadId}`).style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching replies:', error.message);
+                showMessage(error.message, 'error');
+            }
+        }
+
+        // Flag thread
+        async function flagThread(threadId) {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                showMessage('Please log in to flag a thread.', 'error');
+                window.location.href = '/pages/auth.html?mode=login';
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/moderation/flags`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ threadId })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to flag thread');
+                }
+                showMessage('Thread flagged for community review', 'success');
+            } catch (error) {
+                console.error('Error flagging thread:', error.message);
+                showMessage(error.message, 'error');
+            }
+        }
+
+        // Search threads
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const query = document.getElementById('searchInput').value.trim();
+            const filter = document.getElementById('searchFilter').value;
+            let url = query ? `?q=${encodeURIComponent(query)}` : '';
+            if (filter !== 'all') url += `${url ? '&' : '?'}category=${filter}`;
+            fetchThreads(url);
+        });
+
+        // Show message
+        function showMessage(text, type) {
+            message.className = `message ${type}`;
+            message.textContent = text;
+            setTimeout(() => message.textContent = '', 3000);
+        }
+
+        // Simulated real-time notifications (WebSocket placeholder)
+        function simulateNotifications() {
+            setInterval(() => {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = 'New reply in "Is Privacy Dead?"';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 5000);
+            }, 15000);
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('sessionToken');
+            showGuestUI();
+            showMessage('Logged out successfully', 'success');
+            fetchThreads(); // Refresh threads without auth
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            fetchThreads();
+            simulateNotifications();
+        });
+    </script>
+</body>
+</html>

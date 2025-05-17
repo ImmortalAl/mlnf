@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth - Manifest Liberation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary: #0d0d1a;
+      --secondary: #1a1a33;
+      --accent: #ff5e78;
+      --text: #f0e6ff;
+      --gradient-accent: linear-gradient(45deg, var(--accent), #ffca28);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      --border-radius: 12px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)),
+                  url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid rgba(255, 94, 120, 0.4);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 300;
+      font-size: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--accent);
+      border-radius: var(--border-radius);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    input:focus {
+      outline: none;
+      border-color: #ffca28;
+      box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: var(--border-radius);
+      background: var(--gradient-accent);
+      color: var(--primary);
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .toggle {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .toggle a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .toggle a:hover {
+      color: #ffca28;
+    }
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+    }
+    .message.success {
+      background: rgba(92, 184, 92, 0.2);
+      color: #5cb85c;
+    }
+    .message.error {
+      background: rgba(255, 68, 68, 0.2);
+      color: #ff4444;
+    }
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+        margin: 1rem;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="form-title">Sign Up</h1>
+    <form id="auth-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" title="Username can only contain letters, numbers, and underscores">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="6" title="Password must be at least 6 characters">
+      </div>
+      <button type="submit" id="submit-btn">Sign Up</button>
+    </form>
+    <div class="toggle">
+      Already have an account? <a href="#" id="toggle-link">Log In</a>
+    </div>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const form = $('auth-form');
+    const title = $('form-title');
+    const button = $('submit-btn');
+    const toggleLink = $('toggle-link');
+    const message = $('message');
+    let isSignup = true;
+
+    const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+
+    // Handle mode and redirect from URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    let redirect = urlParams.get('redirect') || '/lander.html';
+
+    // Normalize redirect path, excluding lander.html
+    if (redirect !== '/lander.html' && !redirect.startsWith('/')) {
+      redirect = `/pages/${redirect}`;
+    }
+
+    if (mode === 'signup') {
+      isSignup = true;
+      title.textContent = 'Sign Up';
+      button.textContent = 'Sign Up';
+      toggleLink.textContent = 'Log In';
+    } else if (mode === 'login') {
+      isSignup = false;
+      title.textContent = 'Log In';
+      button.textContent = 'Log In';
+      toggleLink.textContent = 'Sign Up';
+    }
+
+    toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      isSignup = !isSignup;
+      title.textContent = isSignup ? 'Sign Up' : 'Log In';
+      button.textContent = isSignup ? 'Sign Up' : 'Log In';
+      toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
+      message.textContent = '';
+      window.history.pushState({}, '', `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}&redirect=${encodeURIComponent(redirect)}`);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = $('username').value.trim();
+      const password = $('password').value.trim();
+      const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
+
+      // Client-side validation
+      if (username.length < 3 || username.length > 20) {
+        message.className = 'message error';
+        message.textContent = 'Username must be 3-20 characters';
+        return;
+      }
+      if (!/^[A-Za-z0-9_]+$/.test(username)) {
+        message.className = 'message error';
+        message.textContent = 'Username can only contain letters, numbers, and underscores';
+        return;
+      }
+      if (password.length < 6) {
+        message.className = 'message error';
+        message.textContent = 'Password must be at least 6 characters';
+        return;
+      }
+
+      // Show loading state
+      button.disabled = true;
+      button.textContent = isSignup ? 'Signing Up...' : 'Logging In...';
+      message.textContent = '';
+
+      try {
+        console.log('Sending auth request:', { endpoint, username });
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        console.log('Auth response status:', response.status);
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Auth response error:', text);
+          let errorData;
+          try {
+            errorData = JSON.parse(text);
+          } catch {
+            if (text.includes('CORS') || response.status === 0) {
+              throw new Error('CORS error: Unable to connect to server. Please try again later.');
+            }
+            throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
+          }
+          throw new Error(errorData.error || 'Something went wrong');
+        }
+
+        const data = await response.json();
+        if (!data.token) {
+          throw new Error('No token received from server');
+        }
+        console.log('Token received:', data.token.substring(0, 10) + '...');
+        localStorage.setItem('sessionToken', data.token);
+        const storedToken = localStorage.getItem('sessionToken');
+        console.log('Token stored in localStorage:', storedToken ? storedToken.substring(0, 10) + '...' : 'Failed to store token');
+        if (!storedToken) {
+          throw new Error('Failed to store session token');
+        }
+        message.className = 'message success';
+        message.textContent = isSignup ? 'Registration successful!' : 'Login successful!';
+        form.reset();
+
+        // Redirect based on signup or URL parameter
+        const redirectUrl = isSignup ? '/pages/profile-setup.html' : redirect;
+        console.log('Redirecting to:', redirectUrl);
+        setTimeout(() => window.location.href = redirectUrl, 500);
+      } catch (error) {
+        console.error('Auth error:', error.message, error.stack);
+        message.className = 'message error';
+        message.textContent = error.message || 'Network error - please try again';
+      } finally {
+        button.disabled = false;
+        button.textContent = isSignup ? 'Sign Up' : 'Log In';
+      }
+    });
+  </script>
+</body>
+</html>

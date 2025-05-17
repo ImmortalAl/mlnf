@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Tool</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MLNF API Diagnostic Tool</h1>
+    
+    <div class="test-section">
+        <h2>Authentication Status</h2>
+        <div id="auth-status">Checking...</div>
+        <button id="check-auth">Check Authentication</button>
+        <button id="logout">Logout</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Token Information</h2>
+        <div id="token-info">No token found</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>User Profile Test</h2>
+        <button id="get-profile">Get My Profile</button>
+        <pre id="profile-result">Click "Get My Profile" to test</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Update Profile Test</h2>
+        <input type="text" id="test-username" placeholder="Test username">
+        <button id="update-profile">Update Profile</button>
+        <pre id="update-result">Click "Update Profile" to test</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>CORS Test</h2>
+        <button id="test-cors">Test CORS</button>
+        <pre id="cors-result">Click "Test CORS" to test</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>API Endpoints</h2>
+        <pre id="api-info">
+API Base URL: https://mlnf-auth.onrender.com
+Endpoints:
+- GET /api/users/me - Get current user
+- PATCH /api/users/profile - Update profile
+- PATCH /api/profile - Alternative profile endpoint
+        </pre>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        
+        // DOM Elements
+        const elements = {
+            authStatus: document.getElementById('auth-status'),
+            tokenInfo: document.getElementById('token-info'),
+            profileResult: document.getElementById('profile-result'),
+            updateResult: document.getElementById('update-result'),
+            corsResult: document.getElementById('cors-result'),
+            testUsername: document.getElementById('test-username')
+        };
+        
+        // Event Listeners
+        document.getElementById('check-auth').addEventListener('click', checkAuthentication);
+        document.getElementById('logout').addEventListener('click', logout);
+        document.getElementById('get-profile').addEventListener('click', getProfile);
+        document.getElementById('update-profile').addEventListener('click', updateProfile);
+        document.getElementById('test-cors').addEventListener('click', testCORS);
+        
+        // Initialize
+        checkAuthentication();
+        displayTokenInfo();
+        
+        // Functions
+        function checkAuthentication() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                elements.authStatus.innerHTML = '<span class="error">Not authenticated. Please log in first.</span>';
+                return false;
+            }
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const expiration = new Date(payload.exp * 1000);
+                const now = new Date();
+                
+                if (expiration < now) {
+                    elements.authStatus.innerHTML = '<span class="error">Token expired on ' + expiration.toLocaleString() + '</span>';
+                    return false;
+                } else {
+                    elements.authStatus.innerHTML = '<span class="success">Authenticated as ' + payload.username + 
+                        '<br>Token expires: ' + expiration.toLocaleString() + '</span>';
+                    return token;
+                }
+            } catch (e) {
+                console.error('Token parsing error:', e);
+                elements.authStatus.innerHTML = '<span class="error">Invalid token format</span>';
+                return false;
+            }
+        }
+        
+        function displayTokenInfo() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                elements.tokenInfo.textContent = 'No token found';
+                return;
+            }
+            
+            try {
+                const parts = token.split('.');
+                const header = JSON.parse(atob(parts[0]));
+                const payload = JSON.parse(atob(parts[1]));
+                
+                elements.tokenInfo.innerHTML = '<strong>Header:</strong><pre>' + JSON.stringify(header, null, 2) + 
+                    '</pre><strong>Payload:</strong><pre>' + JSON.stringify(payload, null, 2) + '</pre>';
+            } catch (e) {
+                elements.tokenInfo.textContent = 'Error parsing token: ' + e.message;
+            }
+        }
+        
+        async function getProfile() {
+            elements.profileResult.textContent = 'Loading...';
+            const token = checkAuthentication();
+            if (!token) {
+                elements.profileResult.textContent = 'Authentication required';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                try {
+                    const data = JSON.parse(responseText);
+                    elements.profileResult.textContent = JSON.stringify(data, null, 2);
+                    
+                    // Pre-fill the test username field
+                    if (data.username) {
+                        elements.testUsername.value = data.username;
+                    }
+                } catch (e) {
+                    elements.profileResult.textContent = 'Error parsing JSON response: ' + e.message + '\n\nRaw response:\n' + responseText;
+                }
+            } catch (error) {
+                elements.profileResult.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function updateProfile() {
+            elements.updateResult.textContent = 'Testing...';
+            const token = checkAuthentication();
+            if (!token) {
+                elements.updateResult.textContent = 'Authentication required';
+                return;
+            }
+            
+            const testUsername = elements.testUsername.value.trim();
+            if (!testUsername) {
+                elements.updateResult.textContent = 'Please enter a test username';
+                return;
+            }
+            
+            // Test both endpoints
+            const endpoints = [
+                '/api/users/profile',
+                '/api/profile'
+            ];
+            
+            let results = '';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    results += `Testing endpoint: ${endpoint}\n`;
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: testUsername,
+                            // Include minimal required fields
+                            displayName: '',
+                            avatar: '',
+                            status: '',
+                            bio: ''
+                        })
+                    });
+                    
+                    const responseText = await response.text();
+                    results += `Status: ${response.status} ${response.statusText}\n`;
+                    
+                    try {
+                        const data = JSON.parse(responseText);
+                        results += `Response: ${JSON.stringify(data, null, 2)}\n\n`;
+                    } catch (e) {
+                        results += `Raw response: ${responseText}\n\n`;
+                    }
+                } catch (error) {
+                    results += `Error: ${error.message}\n\n`;
+                }
+            }
+            
+            elements.updateResult.textContent = results;
+        }
+        
+        async function testCORS() {
+            elements.corsResult.textContent = 'Testing CORS...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type, Authorization'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                elements.corsResult.textContent = 'Status: ' + response.status + ' ' + response.statusText + '\n\n' +
+                    'CORS Headers:\n' + JSON.stringify(corsHeaders, null, 2);
+            } catch (error) {
+                elements.corsResult.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('user');
+            elements.authStatus.innerHTML = '<span class="error">Logged out</span>';
+            elements.tokenInfo.textContent = 'No token found';
+            setTimeout(() => {
+                window.location.href = 'auth.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
