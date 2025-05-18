@@ -252,8 +252,11 @@ header {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.short-title {
+    display: none;
 }
 
 nav ul {
