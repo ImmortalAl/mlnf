@@ -3,29 +3,32 @@ const API_URL = 'https://mlnf-auth.onrender.com/api';
 
 // Theme toggle
 const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-    themeToggle.innerHTML = document.body.classList.contains('light-theme')
-        ? '<i class="fas fa-sun"></i>'
-        : '<i class="fas fa-moon"></i>';
-    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-});
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        localStorage.setItem('darkTheme', isDark ? 'true' : 'false');
+    });
+}
 
-// Load saved theme
-if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light-theme');
-    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+// Check if dark theme is enabled in localStorage
+if (localStorage.getItem('darkTheme') === 'true') {
+    document.body.classList.add('dark-theme');
+    if (themeToggle) {
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
 }
 
 // Mobile menu toggle
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const mainNav = document.getElementById('mainNav');
-mobileMenuBtn.addEventListener('click', () => {
-    mainNav.classList.toggle('active');
-    mobileMenuBtn.innerHTML = mainNav.classList.contains('active')
-        ? '<i class="fas fa-times"></i>'
-        : '<i class="fas fa-bars"></i>';
-});
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mainNav.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+    });
+}
 
 // Particles animation
 function createParticle() {
@@ -41,45 +44,23 @@ function createParticle() {
 }
 setInterval(createParticle, 500);
 
-// Soul liberation button
-const freeSoulBtn = document.getElementById('freeSoulBtn');
-freeSoulBtn.addEventListener('click', () => {
-    if (freeSoulBtn.dataset.state === 'locked') {
-        freeSoulBtn.classList.add('loading');
-        freeSoulBtn.disabled = true;
-        setTimeout(() => {
-            freeSoulBtn.classList.remove('loading');
-            freeSoulBtn.dataset.state = 'unlocked';
-            freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
-            freeSoulBtn.disabled = false;
-            for (let i = 0; i < 10; i++) {
-                setTimeout(() => {
-                    const particle = document.createElement('div');
-                    particle.className = 'soul-particle';
-                    particle.style.left = `${freeSoulBtn.offsetLeft + Math.random() * freeSoulBtn.offsetWidth}px`;
-                    particle.style.top = `${freeSoulBtn.offsetTop + Math.random() * freeSoulBtn.offsetHeight}px`;
-                    particle.style.animationDuration = `${Math.random() * 2 + 1}s`;
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 3000);
-                }, i * 100);
-            }
-        }, 2000);
-    }
-});
-
 // Sidebar toggle
 const showUsersBtn = document.getElementById('showUsersBtn');
 const activeUsers = document.getElementById('activeUsers');
 const closeUsers = document.getElementById('closeUsers');
-showUsersBtn.addEventListener('click', () => {
-    activeUsers.classList.toggle('active');
-    if (activeUsers.classList.contains('active')) {
+
+if (showUsersBtn) {
+    showUsersBtn.addEventListener('click', () => {
+        activeUsers.classList.toggle('active');
         fetchOnlineUsers();
-    }
-});
-closeUsers.addEventListener('click', () => {
-    activeUsers.classList.remove('active');
-});
+    });
+}
+
+if (closeUsers) {
+    closeUsers.addEventListener('click', () => {
+        activeUsers.classList.remove('active');
+    });
+}
 
 // Fetch online users with retry
 async function fetchOnlineUsers(retryCount = 3, delay = 1000) {
@@ -339,7 +320,7 @@ async function updateAuthUI(isAuthenticated) {
         const freeSoulBtn = document.getElementById('freeSoulBtn');
         if (freeSoulBtn) {
             freeSoulBtn.dataset.state = 'unlocked';
-            freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+            freeSoulBtn.innerHTML = '<i class="fas fa-door-open"></i><span class="btn-text">Return to Mortality</span><div class="soul-status" aria-hidden="true"></div>';
         }
     } else {
         // User is logged out - show signup button, hide user menu
@@ -367,12 +348,18 @@ async function init() {
     const isAuthenticated = await checkToken();
     updateAuthUI(isAuthenticated);
     
-    // Set up logout button
-    const logoutButton = document.getElementById('logoutButton');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', (e) => {
+    // Set up Free Soul button as login/logout toggle
+    const freeSoulBtn = document.getElementById('freeSoulBtn');
+    if (freeSoulBtn) {
+        freeSoulBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            logout();
+            if (freeSoulBtn.dataset.state === 'locked') {
+                // Not logged in - redirect to login page
+                window.location.href = 'pages/auth.html?mode=login';
+            } else {
+                // Logged in - log out
+                logout();
+            }
         });
     }
     
