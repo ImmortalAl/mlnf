@@ -360,24 +360,34 @@ async function init() {
     // Set up Free Soul button as login/logout toggle
     const freeSoulBtn = document.getElementById('freeSoulBtn');
     if (freeSoulBtn) {
-        console.log('Setting up Free Soul button, current state:', freeSoulBtn.dataset.state);
-        // Remove any existing event listeners (to prevent duplicates)
-        freeSoulBtn.replaceWith(freeSoulBtn.cloneNode(true));
+        console.log('Setting up Free Your Soul button, current state:', freeSoulBtn.dataset.state);
         
-        // Get the fresh reference after replacing
-        const freshBtn = document.getElementById('freeSoulBtn');
-        freshBtn.addEventListener('click', (e) => {
+        // Ensure the button has the correct initial state
+        if (isAuthenticated) {
+            freeSoulBtn.dataset.state = 'unlocked';
+        } else {
+            freeSoulBtn.dataset.state = 'locked';
+        }
+        
+        // Remove existing listeners by cloning
+        const newBtn = freeSoulBtn.cloneNode(true);
+        freeSoulBtn.parentNode.replaceChild(newBtn, freeSoulBtn);
+        
+        // Add event listener to the new button
+        newBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Free Soul button clicked, state:', freshBtn.dataset.state);
+            console.log('Free Soul button clicked, state:', newBtn.dataset.state);
             
-            if (freshBtn.dataset.state === 'locked') {
+            if (newBtn.dataset.state === 'locked') {
                 // Not logged in - redirect to login page
                 console.log('Redirecting to login page');
                 window.location.href = 'pages/auth.html?mode=login';
             } else {
                 // Logged in - log out
                 console.log('Logging out user');
-                logout();
+                localStorage.removeItem('sessionToken');
+                updateAuthUI(false);
+                alert('You have been logged out.');
             }
         });
     }
