@@ -270,11 +270,11 @@
       message.textContent = '';
 
       try {
-        console.log('Sending auth request:', { endpoint, username });
+        console.log('Sending auth request:', { endpoint, username, password });
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify(isSignup ? { username, password } : { username, password })
         });
 
         console.log('Auth response status:', response.status);
