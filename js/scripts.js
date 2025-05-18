@@ -358,7 +358,7 @@ async function init() {
     updateAuthUI(isAuthenticated);
     
     // Set up Free Soul button as login/logout toggle
-    const freeSoulBtn = document.getElementById('freeSoulBtn');
+    let freeSoulBtn = document.getElementById('freeSoulBtn');
     if (freeSoulBtn) {
         console.log('Setting up Free Your Soul button, current state:', freeSoulBtn.dataset.state);
         
@@ -374,13 +374,14 @@ async function init() {
         // Remove any existing listeners by replacing the element with a clone
         const clonedBtn = freeSoulBtn.cloneNode(true);
         freeSoulBtn.parentNode.replaceChild(clonedBtn, freeSoulBtn);
+        freeSoulBtn = clonedBtn; // Update the reference to the new cloned button
         
         // Add event listener to the new button
-        clonedBtn.addEventListener('click', (e) => {
+        freeSoulBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Free Soul button clicked, state:', clonedBtn.dataset.state);
+            console.log('Free Soul button clicked, state:', freeSoulBtn.dataset.state);
             
-            if (clonedBtn.dataset.state === 'locked') {
+            if (freeSoulBtn.dataset.state === 'locked') {
                 // Not logged in - redirect to login page
                 console.log('Redirecting to login page');
                 window.location.href = 'pages/auth.html?mode=login';
