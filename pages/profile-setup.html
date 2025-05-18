@@ -236,6 +236,8 @@
             const API_BASE_URL = 'https://mlnf-auth.onrender.com';
             const DEBUG_MODE = true;
 
+            console.log('API Base URL:', API_BASE_URL);
+
             // Check token validity
             function checkToken() {
                 const token = localStorage.getItem('sessionToken');
@@ -262,8 +264,11 @@
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), timeout);
                         options.signal = controller.signal;
+                        
+                        console.log(`Attempt ${i+1} of ${retries} to ${options.method} ${url}`);
                         const response = await fetch(url, options);
                         clearTimeout(timeoutId);
+                        
                         if (DEBUG_MODE) {
                             console.log(`Response: ${options.method} ${url}, Status: ${response.status}`);
                             console.log(`CORS Headers:`, {
@@ -272,18 +277,49 @@
                                 'Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
                             });
                         }
+                        
                         if (response.ok) {
                             return response;
                         }
+                        
                         const text = await response.text();
                         console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
+                        
+                        // Handle specific HTTP error codes
+                        if (response.status === 401) {
+                            console.error('Authentication error, clearing token');
+                            localStorage.removeItem('sessionToken');
+                            throw new Error('Authentication failed. Please log in again.');
+                        } else if (response.status === 429) {
+                            // Rate limiting - wait longer before retry
+                            await new Promise(resolve => setTimeout(resolve, delay * 3));
+                            continue;
+                        }
+                        
                         throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
                     } catch (error) {
                         if (error.name === 'AbortError') {
                             console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
+                            if (i < retries - 1) {
+                                console.log(`Will retry after timeout (attempt ${i+1}/${retries})`);
+                                await new Promise(resolve => setTimeout(resolve, delay));
+                                continue;
+                            }
                             throw new Error('Request timed out. Please check your network connection.');
                         }
+                        
+                        if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
+                            console.error(`Network error for ${options.method} ${url}: ${error.message}`);
+                            if (i < retries - 1) {
+                                const waitTime = delay * Math.pow(2, i);
+                                console.log(`Network error, retrying in ${waitTime}ms (attempt ${i+1}/${retries})`);
+                                await new Promise(resolve => setTimeout(resolve, waitTime));
+                                continue;
+                            }
+                        }
+                        
                         if (i === retries - 1) throw error;
+                        
                         console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
                         await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                     }
@@ -311,7 +347,7 @@
                     
                     console.log('Fetching user data with token:', token ? 'Valid token present' : 'No token');
                     
-                    const response = await fetchWithRetry(`${API_BASE_URL}/api/users/me`, {
+                    const response = await fetchWithRetry(`${API_BASE_URL}/users/me`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -324,7 +360,7 @@
                     try {
                         user = JSON.parse(text);
                     } catch (e) {
-                        console.error(`Invalid JSON from /api/users/me: ${text.slice(0, 200)}`);
+                        console.error(`Invalid JSON from /users/me: ${text.slice(0, 200)}`);
                         throw new Error('Invalid JSON response from server');
                     }
                     
@@ -342,8 +378,18 @@
                     elements.message.textContent = '';
                 } catch (error) {
                     console.error('Fetch user data error:', error);
+                    
+                    // More specific error messages based on the error type
                     elements.message.className = 'error-message';
-                    elements.message.textContent = `Error fetching profile: ${error.message}. Please try again or contact support.`;
+                    
+                    if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
+                        elements.message.textContent = 'Network connection error. Please check your internet connection.';
+                    } else if (error.name === 'AbortError') {
+                        elements.message.textContent = 'Request timed out. Please check your network connection.';
+                    } else {
+                        elements.message.textContent = `Error fetching profile: ${error.message}. Please try again or contact support.`;
+                    }
+                    
                     localStorage.removeItem('sessionToken');
                     setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 3000);
                 }
@@ -441,7 +487,8 @@
                 });
 
                 try {
-                    console.log('Sending request to:', `${API_BASE_URL}/api/profile`);
+                    // Correct endpoint URL to match backend route
+                    console.log('Sending request to:', `${API_BASE_URL}/users/me`);
                     const requestBody = {
                         username,
                         displayName,
@@ -452,7 +499,7 @@
                     
                     console.log('Request body:', JSON.stringify(requestBody, null, 2));
                     
-                    const response = await fetchWithRetry(`${API_BASE_URL}/api/users/profile`, {
+                    const response = await fetchWithRetry(`${API_BASE_URL}/users/me`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -484,8 +531,8 @@
                         elements.message.textContent = '✅ Profile saved successfully!';
                         
                         // Store the updated user data in localStorage
-                        if (data.user) {
-                            localStorage.setItem('user', JSON.stringify(data.user));
+                        if (data) {
+                            localStorage.setItem('user', JSON.stringify(data));
                         }
                         
                         // Redirect after a short delay
@@ -504,7 +551,7 @@
                         // Provide more specific error messages
                         let errorMessage = 'Failed to save profile. Please try again.';
                         console.log('Error type:', error.constructor.name);
-                        if (error.message.includes('network')) {
+                        if (error.message.includes('network') || error.message.includes('NetworkError')) {
                             errorMessage = 'Network error. Please check your connection and try again.';
                         } else if (error.message.includes('token') || error.message.includes('401')) {
                             errorMessage = 'Session expired. Please log in again.';
@@ -522,13 +569,23 @@
                         setTimeout(() => {
                             elements.saveProfile.disabled = false;
                             elements.saveProfile.innerHTML = originalButtonText;
-                            elements.message.textContent = '';
                         }, 3000);
                     }
                 } catch (error) {
                     console.error('Unexpected error in form submission:', error);
                     elements.message.className = 'error-message';
-                    elements.message.textContent = 'An unexpected error occurred. Please try again.';
+                    
+                    // Better error handling for network errors
+                    let errorMessage = 'An unexpected error occurred. Please try again.';
+                    if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
+                        errorMessage = 'Network connection error. Please check your internet connection and try again.';
+                    } else if (error.name === 'AbortError') {
+                        errorMessage = 'Request timed out. Please check your network connection.';
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+                    
+                    elements.message.textContent = errorMessage;
                     elements.saveProfile.disabled = false;
                     elements.saveProfile.innerHTML = originalButtonText;
                 }
