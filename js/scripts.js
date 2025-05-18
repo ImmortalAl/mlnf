@@ -348,6 +348,83 @@ async function updateAuthUI(isAuthenticated) {
     }
 }
 
+// --- Soul Button and Modal Logic ---
+function setSoulButtonState(state) {
+  const btn = document.getElementById('soulButton');
+  btn.classList.remove('locked', 'unlocked', 'loading');
+  btn.classList.add(state);
+  btn.setAttribute('aria-pressed', state === 'unlocked' ? 'true' : 'false');
+  const icon = btn.querySelector('.icon');
+  if (state === 'locked') {
+    icon.textContent = '👻';
+    btn.querySelector('.label').textContent = 'Enter';
+  } else if (state === 'unlocked') {
+    icon.textContent = '🚪';
+    btn.querySelector('.label').textContent = 'Return to Mortality';
+  } else if (state === 'loading') {
+    icon.textContent = '';
+    btn.querySelector('.label').textContent = 'Checking...';
+  }
+}
+
+function openSoulModal() {
+  document.getElementById('soulModal').style.display = 'flex';
+  document.getElementById('soulModal').focus();
+}
+function closeSoulModal() {
+  document.getElementById('soulModal').style.display = 'none';
+  document.getElementById('modalFeedback').textContent = '';
+}
+
+document.getElementById('soulButton').addEventListener('click', function() {
+  if (this.classList.contains('locked')) {
+    openSoulModal();
+  } else if (this.classList.contains('unlocked')) {
+    setSoulButtonState('loading');
+    setTimeout(() => {
+      localStorage.removeItem('sessionToken');
+      window.location.reload();
+    }, 800);
+  }
+});
+
+document.querySelector('.close-modal').addEventListener('click', closeSoulModal);
+document.getElementById('soulModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSoulModal();
+});
+
+document.getElementById('soulLoginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  setSoulButtonState('loading');
+  document.getElementById('modalFeedback').textContent = '';
+  const username = this.username.value.trim();
+  const password = this.password.value;
+  // Replace with your real API call:
+  try {
+    // Simulate API call
+    await new Promise(res => setTimeout(res, 1200));
+    // TODO: Replace with real authentication logic!
+    if (username === 'immortal' && password === 'eternal') {
+      localStorage.setItem('sessionToken', 'demo-token');
+      closeSoulModal();
+      setSoulButtonState('unlocked');
+      setTimeout(() => window.location.reload(), 800);
+    } else {
+      throw new Error('Invalid credentials');
+    }
+  } catch (err) {
+    setSoulButtonState('locked');
+    document.getElementById('modalFeedback').textContent = err.message;
+  }
+});
+
+setSoulButtonState('loading');
+setTimeout(() => {
+  // Replace with your real token check:
+  const token = localStorage.getItem('sessionToken');
+  setSoulButtonState(token ? 'unlocked' : 'locked');
+}, 800);
+
 // Initialize
 async function init() {
     console.log('Initializing MLNF');

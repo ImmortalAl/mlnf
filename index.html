@@ -68,21 +68,10 @@
             </ul>
         </nav>
         <div class="auth-buttons">
-            <a href="pages/auth.html?mode=signup" class="btn btn-primary" id="signupButton">Begin Your Eternity</a>
-            <div class="user-menu" id="userMenu" style="display: none;">
-                <button class="btn btn-primary" id="userMenuButton">
-                    <i class="fas fa-user-circle"></i>
-                    <span id="usernameDisplay">Immortal</span>
-                </button>
-                <div class="dropdown-menu" id="userDropdown">
-                    <a href="lander.html"><i class="fas fa-home"></i> Eternal Hearth</a>
-                    <a href="pages/profiles.html"><i class="fas fa-id-card"></i> My Soul</a>
-                </div>
-            </div>
-            <button class="btn btn-outline" id="freeSoulBtn" data-state="locked">
-                <i class="fas fa-lock"></i>
-                <span class="btn-text">Free Your Soul</span>
-                <div class="soul-status" aria-hidden="true"></div>
+            <button id="soulButton" class="soul-btn locked" aria-pressed="false">
+              <span class="icon" aria-hidden="true">👻</span>
+              <span class="label">Enter</span>
+              <span class="loader" aria-hidden="true"></span>
             </button>
         </div>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
@@ -306,5 +295,25 @@
 
     <script src="js/scripts.js?v=1.0"></script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ad58560885c013',t:'MTc0NjQxNzc3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+    <!-- Soul Modal -->
+    <div id="soulModal" class="soul-modal" aria-modal="true" role="dialog" tabindex="-1" style="display:none;">
+      <div class="modal-content">
+        <button class="close-modal" aria-label="Close">&times;</button>
+        <h2>Enter the Sanctuary</h2>
+        <form id="soulLoginForm" autocomplete="on">
+          <label>
+            <span>Username</span>
+            <input type="text" name="username" required autocomplete="username" />
+          </label>
+          <label>
+            <span>Password</span>
+            <input type="password" name="password" required autocomplete="current-password" />
+          </label>
+          <button type="submit" class="modal-btn">Transcend</button>
+        </form>
+        <div class="modal-feedback" id="modalFeedback"></div>
+      </div>
+    </div>
 </body>
 </html>
