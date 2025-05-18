@@ -258,6 +258,7 @@ async function checkToken() {
     }
 
     try {
+        console.log('Validating token with backend...');
         const response = await fetch(`${API_URL}/users/me`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -274,6 +275,7 @@ async function checkToken() {
             localStorage.removeItem('sessionToken');
             return false;
         }
+        console.log('Token is valid, user is authenticated');
         return true;
     } catch (error) {
         console.error('Token check error:', error.message, error.stack);
@@ -300,6 +302,7 @@ async function updateAuthUI(isAuthenticated) {
     
     if (isAuthenticated) {
         // User is logged in - show user menu, update hero buttons
+        console.log('Updating UI for authenticated user');
         if (signupButton) signupButton.style.display = 'none';
         if (userMenu) userMenu.style.display = 'inline-block';
         
@@ -319,11 +322,14 @@ async function updateAuthUI(isAuthenticated) {
         // Update soul freed button
         const freeSoulBtn = document.getElementById('freeSoulBtn');
         if (freeSoulBtn) {
+            console.log('Setting button to unlocked state');
             freeSoulBtn.dataset.state = 'unlocked';
             freeSoulBtn.innerHTML = '<i class="fas fa-door-open"></i><span class="btn-text">Return to Mortality</span><div class="soul-status" aria-hidden="true"></div>';
+            console.log('Button state after update:', freeSoulBtn.dataset.state);
         }
     } else {
         // User is logged out - show signup button, hide user menu
+        console.log('Updating UI for unauthenticated user');
         if (signupButton) signupButton.style.display = 'inline-block';
         if (userMenu) userMenu.style.display = 'none';
         
@@ -336,8 +342,10 @@ async function updateAuthUI(isAuthenticated) {
         // Reset soul freed button
         const freeSoulBtn = document.getElementById('freeSoulBtn');
         if (freeSoulBtn) {
+            console.log('Setting button to locked state');
             freeSoulBtn.dataset.state = 'locked';
             freeSoulBtn.innerHTML = '<i class="fas fa-lock"></i><span class="btn-text">Free Your Soul</span><div class="soul-status" aria-hidden="true"></div>';
+            console.log('Button state after update:', freeSoulBtn.dataset.state);
         }
     }
 }
@@ -346,18 +354,29 @@ async function updateAuthUI(isAuthenticated) {
 async function init() {
     console.log('Initializing MLNF');
     const isAuthenticated = await checkToken();
+    console.log('Authentication check result:', isAuthenticated);
     updateAuthUI(isAuthenticated);
     
     // Set up Free Soul button as login/logout toggle
     const freeSoulBtn = document.getElementById('freeSoulBtn');
     if (freeSoulBtn) {
-        freeSoulBtn.addEventListener('click', (e) => {
+        console.log('Setting up Free Soul button, current state:', freeSoulBtn.dataset.state);
+        // Remove any existing event listeners (to prevent duplicates)
+        freeSoulBtn.replaceWith(freeSoulBtn.cloneNode(true));
+        
+        // Get the fresh reference after replacing
+        const freshBtn = document.getElementById('freeSoulBtn');
+        freshBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (freeSoulBtn.dataset.state === 'locked') {
+            console.log('Free Soul button clicked, state:', freshBtn.dataset.state);
+            
+            if (freshBtn.dataset.state === 'locked') {
                 // Not logged in - redirect to login page
+                console.log('Redirecting to login page');
                 window.location.href = 'pages/auth.html?mode=login';
             } else {
                 // Logged in - log out
+                console.log('Logging out user');
                 logout();
             }
         });
