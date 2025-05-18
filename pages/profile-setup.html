@@ -387,7 +387,7 @@
                     } else if (error.name === 'AbortError') {
                         elements.message.textContent = 'Request timed out. Please check your network connection.';
                     } else {
-                        elements.message.textContent = `Error fetching profile: ${error.message}. Please try again or contact support.`;
+                    elements.message.textContent = `Error fetching profile: ${error.message}. Please try again or contact support.`;
                     }
                     
                     localStorage.removeItem('sessionToken');

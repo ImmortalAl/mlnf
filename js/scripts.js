@@ -4,7 +4,7 @@ const API_URL = 'https://mlnf-auth.onrender.com/api';
 // Theme toggle
 const themeToggle = document.getElementById('themeToggle');
 if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
+themeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
         themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
@@ -16,7 +16,7 @@ if (themeToggle) {
 if (localStorage.getItem('darkTheme') === 'true') {
     document.body.classList.add('dark-theme');
     if (themeToggle) {
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
     }
 }
 
@@ -24,10 +24,10 @@ if (localStorage.getItem('darkTheme') === 'true') {
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const mainNav = document.getElementById('mainNav');
 if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-        mainNav.classList.toggle('active');
+mobileMenuBtn.addEventListener('click', () => {
+    mainNav.classList.toggle('active');
         mobileMenuBtn.classList.toggle('active');
-    });
+});
 }
 
 // Particles animation
@@ -50,16 +50,16 @@ const activeUsers = document.getElementById('activeUsers');
 const closeUsers = document.getElementById('closeUsers');
 
 if (showUsersBtn) {
-    showUsersBtn.addEventListener('click', () => {
-        activeUsers.classList.toggle('active');
+showUsersBtn.addEventListener('click', () => {
+    activeUsers.classList.toggle('active');
         fetchOnlineUsers();
     });
-}
+    }
 
 if (closeUsers) {
-    closeUsers.addEventListener('click', () => {
-        activeUsers.classList.remove('active');
-    });
+closeUsers.addEventListener('click', () => {
+    activeUsers.classList.remove('active');
+});
 }
 
 // Fetch online users with retry
@@ -322,10 +322,9 @@ async function updateAuthUI(isAuthenticated) {
         // Update soul freed button
         const freeSoulBtn = document.getElementById('freeSoulBtn');
         if (freeSoulBtn) {
-            console.log('Setting button to unlocked state');
+            console.log('Updating Free Soul button state');
             freeSoulBtn.dataset.state = 'unlocked';
             freeSoulBtn.innerHTML = '<i class="fas fa-door-open"></i><span class="btn-text">Return to Mortality</span><div class="soul-status" aria-hidden="true"></div>';
-            console.log('Button state after update:', freeSoulBtn.dataset.state);
         }
     } else {
         // User is logged out - show signup button, hide user menu
@@ -342,10 +341,9 @@ async function updateAuthUI(isAuthenticated) {
         // Reset soul freed button
         const freeSoulBtn = document.getElementById('freeSoulBtn');
         if (freeSoulBtn) {
-            console.log('Setting button to locked state');
+            console.log('Updating Free Soul button state');
             freeSoulBtn.dataset.state = 'locked';
             freeSoulBtn.innerHTML = '<i class="fas fa-lock"></i><span class="btn-text">Free Your Soul</span><div class="soul-status" aria-hidden="true"></div>';
-            console.log('Button state after update:', freeSoulBtn.dataset.state);
         }
     }
 }
@@ -357,43 +355,26 @@ async function init() {
     console.log('Authentication check result:', isAuthenticated);
     updateAuthUI(isAuthenticated);
     
-    // Set up Free Soul button as login/logout toggle
-    let freeSoulBtn = document.getElementById('freeSoulBtn');
-    if (freeSoulBtn) {
-        console.log('Setting up Free Your Soul button, current state:', freeSoulBtn.dataset.state);
-        
-        // Ensure the button has the correct initial state
-        if (isAuthenticated) {
-            freeSoulBtn.dataset.state = 'unlocked';
-            freeSoulBtn.innerHTML = '<i class="fas fa-door-open"></i><span class="btn-text">Return to Mortality</span><div class="soul-status" aria-hidden="true"></div>';
+    // Free Your Soul button handler
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('freeSoulBtn');
+        if (btn) {
+            btn.onclick = function() {
+                console.log('Button clicked! State:', btn.dataset.state);
+                alert('Button clicked! State: ' + btn.dataset.state);
+                if (btn.dataset.state === 'locked') {
+                    console.log('Redirecting to login...');
+                    window.location.href = 'pages/auth.html?mode=login';
+                } else {
+                    console.log('Logging out...');
+                    localStorage.removeItem('sessionToken');
+                    window.location.reload();
+                }
+            };
         } else {
-            freeSoulBtn.dataset.state = 'locked';
-            freeSoulBtn.innerHTML = '<i class="fas fa-lock"></i><span class="btn-text">Free Your Soul</span><div class="soul-status" aria-hidden="true"></div>';
+            alert('Button not found!');
         }
-        
-        // Remove any existing listeners by replacing the element with a clone
-        const clonedBtn = freeSoulBtn.cloneNode(true);
-        freeSoulBtn.parentNode.replaceChild(clonedBtn, freeSoulBtn);
-        freeSoulBtn = clonedBtn; // Update the reference to the new cloned button
-        
-        // Add event listener to the new button
-        freeSoulBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Free Soul button clicked, state:', freeSoulBtn.dataset.state);
-            
-            if (freeSoulBtn.dataset.state === 'locked') {
-                // Not logged in - redirect to login page
-                console.log('Redirecting to login page');
-                window.location.href = 'pages/auth.html?mode=login';
-            } else {
-                // Logged in - log out
-                console.log('Logging out user');
-                localStorage.removeItem('sessionToken');
-                updateAuthUI(false);
-                alert('You have returned to mortality.');
-            }
-        });
-    }
+    });
     
     // Toggle user dropdown on mobile
     const userMenuButton = document.getElementById('userMenuButton');
@@ -404,9 +385,9 @@ async function init() {
         });
     }
     
-    // Check current user's online status and refresh sidebar if open
+        // Check current user's online status and refresh sidebar if open
     if (isAuthenticated && activeUsers.classList.contains('active')) {
-        fetchOnlineUsers();
+            fetchOnlineUsers();
     }
 }
 init();
