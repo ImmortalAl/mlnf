@@ -68,7 +68,18 @@
             </ul>
         </nav>
         <div class="auth-buttons">
-            <a href="pages/auth.html" class="btn btn-primary" id="authButton">Join Eternity</a>
+            <a href="pages/auth.html?mode=signup" class="btn btn-primary" id="signupButton">Begin Your Eternity</a>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <button class="btn btn-primary" id="userMenuButton">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="usernameDisplay">Immortal</span>
+                </button>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="lander.html"><i class="fas fa-home"></i> Eternal Hearth</a>
+                    <a href="pages/profiles.html"><i class="fas fa-id-card"></i> My Soul</a>
+                    <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+                </div>
+            </div>
             <button class="btn btn-outline" id="freeSoulBtn" data-state="locked">
                 <i class="fas fa-lock"></i>
                 <span class="btn-text">Free Your Soul</span>
@@ -84,8 +95,8 @@
                 <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
                 <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
                 <div class="hero-buttons">
-                    <a href="pages/auth.html?mode=signup" class="btn btn-primary">Embrace Immortality</a>
-                    <a href="pages/auth.html?mode=login" class="btn btn-outline">Seek Liberation</a>
+                    <a href="pages/auth.html?mode=signup" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
+                    <a href="pages/auth.html?mode=login" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
                 </div>
             </div>
         </section>

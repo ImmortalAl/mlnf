@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auth - Manifest Liberation</title>
+  <title>Transcend Mortality - Manifest Liberation</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -40,6 +40,20 @@
       width: 100%;
       max-width: 400px;
       border: 1px solid rgba(255, 94, 120, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: var(--gradient-accent);
+      z-index: -1;
+      border-radius: calc(var(--border-radius) + 2px);
+      opacity: 0.5;
     }
     h1 {
       text-align: center;
@@ -49,6 +63,12 @@
       -webkit-text-fill-color: transparent;
       font-weight: 300;
       font-size: 2rem;
+    }
+    .form-subtitle {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
     .form-group {
       margin-bottom: 1.5rem;
@@ -122,6 +142,20 @@
       background: rgba(255, 68, 68, 0.2);
       color: #ff4444;
     }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--text);
+      opacity: 0.7;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .back-link:hover {
+      opacity: 1;
+      color: var(--accent);
+    }
     @media (max-width: 768px) {
       .container {
         width: 90%;
@@ -135,29 +169,33 @@
 </head>
 <body>
   <div class="container">
-    <h1 id="form-title">Sign Up</h1>
+    <h1 id="form-title">Claim Your Immortality</h1>
+    <p class="form-subtitle" id="form-subtitle">Register your eternal presence in our sanctuary</p>
     <form id="auth-form">
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username">Soul Identifier</label>
         <input type="text" id="username" name="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" title="Username can only contain letters, numbers, and underscores">
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Ethereal Key</label>
         <input type="password" id="password" name="password" required minlength="6" title="Password must be at least 6 characters">
       </div>
-      <button type="submit" id="submit-btn">Sign Up</button>
+      <button type="submit" id="submit-btn">Transcend Mortality</button>
     </form>
     <div class="toggle">
-      Already have an account? <a href="#" id="toggle-link">Log In</a>
+      <span id="toggle-prefix">Already an immortal soul?</span> <a href="#" id="toggle-link">Enter The Sanctuary</a>
     </div>
     <div class="message" id="message"></div>
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Return to the Eternal Gateway</a>
   </div>
 
   <script>
     const $ = (id) => document.getElementById(id);
     const form = $('auth-form');
     const title = $('form-title');
+    const subtitle = $('form-subtitle');
     const button = $('submit-btn');
+    const togglePrefix = $('toggle-prefix');
     const toggleLink = $('toggle-link');
     const message = $('message');
     let isSignup = true;
@@ -174,26 +212,33 @@
       redirect = `/pages/${redirect}`;
     }
 
-    if (mode === 'signup') {
-      isSignup = true;
-      title.textContent = 'Sign Up';
-      button.textContent = 'Sign Up';
-      toggleLink.textContent = 'Log In';
-    } else if (mode === 'login') {
-      isSignup = false;
-      title.textContent = 'Log In';
-      button.textContent = 'Log In';
-      toggleLink.textContent = 'Sign Up';
+    // Update UI based on mode
+    function updateAuthUI(isSignupMode) {
+      isSignup = isSignupMode;
+      title.textContent = isSignup ? 'Claim Your Immortality' : 'Return to Eternity';
+      subtitle.textContent = isSignup 
+        ? 'Register your eternal presence in our sanctuary' 
+        : 'Reconnect with your immortal essence';
+      button.textContent = isSignup ? 'Transcend Mortality' : 'Enter The Sanctuary';
+      togglePrefix.textContent = isSignup ? 'Already an immortal soul?' : 'Need to claim your immortality?';
+      toggleLink.textContent = isSignup ? 'Enter The Sanctuary' : 'Claim Your Soul';
+    }
+
+    // Set initial mode
+    if (mode === 'login') {
+      updateAuthUI(false);
+    } else {
+      updateAuthUI(true);
     }
 
     toggleLink.addEventListener('click', (e) => {
       e.preventDefault();
-      isSignup = !isSignup;
-      title.textContent = isSignup ? 'Sign Up' : 'Log In';
-      button.textContent = isSignup ? 'Sign Up' : 'Log In';
-      toggleLink.textContent = isSignup ? 'Log In' : 'Sign Up';
+      updateAuthUI(!isSignup);
       message.textContent = '';
-      window.history.pushState({}, '', `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}&redirect=${encodeURIComponent(redirect)}`);
+      message.className = 'message';
+      window.history.pushState({}, '', 
+        `/pages/auth.html?mode=${isSignup ? 'signup' : 'login'}&redirect=${encodeURIComponent(redirect)}`
+      );
     });
 
     form.addEventListener('submit', async (e) => {
@@ -205,23 +250,23 @@
       // Client-side validation
       if (username.length < 3 || username.length > 20) {
         message.className = 'message error';
-        message.textContent = 'Username must be 3-20 characters';
+        message.textContent = 'Soul identifier must be 3-20 characters';
         return;
       }
       if (!/^[A-Za-z0-9_]+$/.test(username)) {
         message.className = 'message error';
-        message.textContent = 'Username can only contain letters, numbers, and underscores';
+        message.textContent = 'Soul identifier can only contain letters, numbers, and underscores';
         return;
       }
       if (password.length < 6) {
         message.className = 'message error';
-        message.textContent = 'Password must be at least 6 characters';
+        message.textContent = 'Ethereal key must be at least 6 characters';
         return;
       }
 
       // Show loading state
       button.disabled = true;
-      button.textContent = isSignup ? 'Signing Up...' : 'Logging In...';
+      button.textContent = isSignup ? 'Transcending...' : 'Connecting...';
       message.textContent = '';
 
       try {
@@ -260,20 +305,33 @@
           throw new Error('Failed to store session token');
         }
         message.className = 'message success';
-        message.textContent = isSignup ? 'Registration successful!' : 'Login successful!';
+        message.textContent = isSignup 
+          ? 'Your soul has been immortalized! Entering the sanctuary...' 
+          : 'Welcome back, eternal one! Reconnecting...';
         form.reset();
 
         // Redirect based on signup or URL parameter
         const redirectUrl = isSignup ? '/pages/profile-setup.html' : redirect;
         console.log('Redirecting to:', redirectUrl);
-        setTimeout(() => window.location.href = redirectUrl, 500);
+        setTimeout(() => window.location.href = redirectUrl, 1500);
       } catch (error) {
         console.error('Auth error:', error.message, error.stack);
         message.className = 'message error';
-        message.textContent = error.message || 'Network error - please try again';
+        
+        // More user-friendly error messages
+        let errorMsg = error.message || 'Network error - please try again';
+        if (errorMsg.includes('401') || errorMsg.includes('unauthorized')) {
+          errorMsg = isSignup 
+            ? 'This soul identifier is already claimed' 
+            : 'Invalid soul identifier or ethereal key';
+        } else if (errorMsg.includes('unavailable') || errorMsg.includes('connect')) {
+          errorMsg = 'The eternal server is awakening. Please try again soon.';
+        }
+        
+        message.textContent = errorMsg;
       } finally {
         button.disabled = false;
-        button.textContent = isSignup ? 'Sign Up' : 'Log In';
+        button.textContent = isSignup ? 'Transcend Mortality' : 'Enter The Sanctuary';
       }
     });
   </script>

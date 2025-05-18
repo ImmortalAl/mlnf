@@ -301,37 +301,93 @@ async function checkToken() {
     }
 }
 
-// Update auth button
-async function updateAuthButton() {
-    const authButton = document.getElementById('authButton');
-    const isAuthenticated = await checkToken();
-    console.log('Authentication status:', isAuthenticated);
+// Logout function
+function logout() {
+    localStorage.removeItem('sessionToken');
+    console.log('User logged out');
+    updateAuthUI(false);
+    window.location.href = 'index.html';
+}
+
+// Update auth UI elements
+async function updateAuthUI(isAuthenticated) {
+    console.log('Updating auth UI, authenticated:', isAuthenticated);
+    const signupButton = document.getElementById('signupButton');
+    const userMenu = document.getElementById('userMenu');
+    const heroSignupButton = document.getElementById('heroSignupButton');
+    const heroLoginButton = document.getElementById('heroLoginButton');
+    
     if (isAuthenticated) {
-        authButton.textContent = 'Eternal Hearth';
-        authButton.href = 'lander.html';
-        authButton.classList.add('btn-primary');
-        authButton.classList.remove('btn-outline');
+        // User is logged in - show user menu, update hero buttons
+        if (signupButton) signupButton.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'inline-block';
+        
+        // Update hero buttons if they exist
+        if (heroSignupButton) heroSignupButton.textContent = 'Return to Hearth';
+        if (heroSignupButton) heroSignupButton.href = 'lander.html';
+        if (heroLoginButton) heroLoginButton.textContent = 'Explore Realms';
+        if (heroLoginButton) heroLoginButton.href = 'pages/profiles.html';
+        
+        // Get and display username
+        const user = await fetchCurrentUser();
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        if (user && usernameDisplay) {
+            usernameDisplay.textContent = user.username || 'Immortal';
+        }
+        
+        // Update soul freed button
+        const freeSoulBtn = document.getElementById('freeSoulBtn');
+        if (freeSoulBtn) {
+            freeSoulBtn.dataset.state = 'unlocked';
+            freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
+        }
     } else {
-        authButton.textContent = 'Join Eternity';
-        authButton.href = 'pages/auth.html';
-        authButton.classList.add('btn-primary');
-        authButton.classList.remove('btn-outline');
+        // User is logged out - show signup button, hide user menu
+        if (signupButton) signupButton.style.display = 'inline-block';
+        if (userMenu) userMenu.style.display = 'none';
+        
+        // Reset hero buttons if they exist
+        if (heroSignupButton) heroSignupButton.textContent = 'Embrace Immortality';
+        if (heroSignupButton) heroSignupButton.href = 'pages/auth.html?mode=signup';
+        if (heroLoginButton) heroLoginButton.textContent = 'Enter The Sanctuary';
+        if (heroLoginButton) heroLoginButton.href = 'pages/auth.html?mode=login';
+        
+        // Reset soul freed button
+        const freeSoulBtn = document.getElementById('freeSoulBtn');
+        if (freeSoulBtn) {
+            freeSoulBtn.dataset.state = 'locked';
+            freeSoulBtn.innerHTML = '<i class="fas fa-lock"></i><span class="btn-text">Free Your Soul</span><div class="soul-status" aria-hidden="true"></div>';
+        }
     }
 }
 
 // Initialize
 async function init() {
     console.log('Initializing MLNF');
-    await updateAuthButton();
     const isAuthenticated = await checkToken();
-    if (isAuthenticated) {
-        freeSoulBtn.dataset.state = 'unlocked';
-        freeSoulBtn.innerHTML = '<i class="fas fa-lock-open"></i><span class="btn-text">Soul Freed</span><div class="soul-status" aria-hidden="true"></div>';
-        // Check current user's online status and refresh sidebar if open
-        const currentUser = await fetchCurrentUser();
-        if (currentUser && currentUser.online && activeUsers.classList.contains('active')) {
-            fetchOnlineUsers();
-        }
+    updateAuthUI(isAuthenticated);
+    
+    // Set up logout button
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+    
+    // Toggle user dropdown on mobile
+    const userMenuButton = document.getElementById('userMenuButton');
+    const userDropdown = document.getElementById('userDropdown');
+    if (userMenuButton && userDropdown) {
+        userMenuButton.addEventListener('click', () => {
+            userDropdown.classList.toggle('active');
+        });
+    }
+    
+    // Check current user's online status and refresh sidebar if open
+    if (isAuthenticated && activeUsers.classList.contains('active')) {
+        fetchOnlineUsers();
     }
 }
 init();
