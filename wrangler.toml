@@ -2,7 +2,7 @@ name = "mlnf"
 compatibility_date = "2025-05-03"
 
 [build]
-command = ""
+command = "npm install && npm run build"
 env = "production"
 
 [build.upload]
@@ -10,5 +10,5 @@ format = "service-worker"
 main = "index.html"
 
 [site]
-bucket = "dist"
+bucket = "."
 entry-point = "index.html"
