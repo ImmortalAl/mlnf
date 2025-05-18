@@ -1,66 +1,135 @@
-﻿Project Overview:
-You are holding my hand through the development of a website called "Manifest Liberation, Naturally Free" (MLNF), an immortal-themed website to serve as a refuge for free-thinkers to crowdsource truth and knowledge that is concealed by the conventional world of tyrannical censorship, to engage in discourse, to build a timeless community and to transcend conventional boundaries.
+﻿# Manifest Liberation, Naturally Free (MLNF)
 
-Key features:
-responsive design,
-stacked logo that adapts for mobile,
-light theme toggle,
-authentication form,
-user accounts,
-profile pages,
-global sidebar for active users and peer-to-peer messaging modal,
-blogging,
-message board,
-news stories,
-mindmap to crowdsource knowledge,
-debate arena where users can confront contentious topics,
-media archive to submit videos that are otherwise concealed on censorful platforms.
+## Project Vision
+A digital sanctuary for free-thinkers to:
+- Crowdsource truth and knowledge typically concealed by conventional censorship
+- Engage in meaningful discourse without fear of censorship
+- Build a timeless community of like-minded individuals
+- Transcend conventional boundaries of thought and expression
 
-Technical Details:
+## Core Features & Development Status
 
-Frontend: HTML, CSS, JavaScript, folder locally named mlnf.
+### Phase 1 - Foundation (Current)
+✅ Basic Authentication
+  - User signup/login
+  - JWT-based sessions (30-day duration)
+  - Profile management
+✅ Responsive Design Base
+  - Mobile-first approach
+  - Stacked logo adaptation
+✅ Basic UI Components
+  - Light/Dark theme toggle
+  - Global navigation
 
-Hosted at https://dashing-belekoy-7a0095.netlify.app/.
+### Phase 2 - Community Features (Next)
+🔄 Message Board
+  - Thread creation/management
+  - Nested comments
+  - Rich text editing
+  - Content moderation tools
+🔄 User Profiles
+  - Customizable profiles
+  - Activity history
+  - User roles (regular, moderator, admin)
+🔄 Real-time Features
+  - Online user sidebar
+  - Direct messaging system
+  - Notification system
 
-The repo is version-controlled with Git, and deployments are handled via GitHub Pages hosted at https://immortalal.github.io/mlnf and accessible via mlnf.net (proxied through Cloudflare).
+### Phase 3 - Knowledge Base
+📋 Mindmap System
+  - Collaborative knowledge mapping
+  - Version control for edits
+  - Citation system
+📋 Debate Arena
+  - Structured debate format
+  - Argument tracking
+  - Voting system
+📋 News Aggregation
+  - User-submitted stories
+  - Source credibility tracking
+  - Community fact-checking
 
-The front-end repository is ImmortalAl/mlnf, and the main branch contains the latest code. The file structure includes: 
+### Phase 4 - Media & Content
+📋 Media Archive
+  - Video/audio uploads
+  - Content categorization
+  - Backup system
+📋 Blogging Platform
+  - Rich text editor
+  - Media embedding
+  - Comment system
 
-index.html (root page)  
-styles.css (global styles)
-scripts.js (global scripts)
-pages/ folder with subpages like archive.html, messageboard.html, etc.
+## Technical Architecture
 
-Backend: Locally, the back-end root directory is called mlnf-auth. It is a sibling to the front end root directory. The back-end repository is ImmortalAl/mlnf-auth. 
+### Frontend (MLNF/)
+- Framework: Vanilla JS (considering future framework adoption)
+- Hosting: GitHub Pages via mlnf.net (Cloudflare proxy)
+- Repository: github.com/ImmortalAl/mlnf
 
-Mlnf-auth.onrender.com is used. 
+### Backend (mlnf-auth/)
+- Framework: Express.js
+- Database: MongoDB Atlas
+- Hosting: render.com
+- Repository: github.com/ImmortalAl/mlnf-auth
 
-Database: MongoDB Atlas, for storing user data and community content
+### Security Measures
+- JWT-based authentication
+- Rate limiting
+- Input validation
+- XSS protection
+- CORS configuration
 
-Security: Ensure secure handling of user data and authentication tokens.  
+## Development Notes
 
-Design Consistency: Maintain the immortal, ethereal design across new features.
+### Current Focus
+- Implementing message board functionality
+- Enhancing user profiles
+- Setting up real-time features
 
-Mobile Responsiveness: Ensure all new features work seamlessly on mobile devices.
+### Known Issues
+- Case-sensitive file paths causing import issues
+- Need for comprehensive error handling
+- Backend route organization needs improvement
 
-The directory structure on the local machine is like this. The back-end root, "mlnf-auth", is a sibling to the front-end root, "MLNF".
-Here is the front-end directory structure:
-¦   index.html
-¦   lander.html
-¦   scripts.js
-¦   styles.css
-+---assets
-¦   +---images
-¦   +---uploads
-+---pages
-        archive.html
-        auth.html
-        blog.html
-        debate.html
-        manifesto.html
-        messageboard.html
-        messaging.html
-        mindmap.html
-        news.html
-        profile-setup.html
-        profiles.html
+### Future Considerations
+- Potential migration to a frontend framework
+- Scaling strategy for media storage
+- Community moderation tools
+- Content backup systems
+
+## Directory Structure
+Frontend (MLNF/):
+```
+├── assets/
+│   ├── images/
+│   └── uploads/
+├── css/
+├── js/
+├── pages/
+└── components/
+```
+
+Backend (mlnf-auth/):
+```
+├── routes/
+├── models/
+├── middleware/
+├── config/
+└── uploads/
+```
+
+## Development Guidelines
+1. Mobile-first responsive design
+2. Consistent error handling
+3. Comprehensive logging
+4. Security-first approach
+5. Performance optimization
+6. Clear documentation
+
+## Next Steps
+1. Implement message board core functionality
+2. Set up real-time user presence
+3. Develop direct messaging system
+4. Create moderation tools
+5. Enhance profile customization
