@@ -365,20 +365,22 @@ async function init() {
         // Ensure the button has the correct initial state
         if (isAuthenticated) {
             freeSoulBtn.dataset.state = 'unlocked';
+            freeSoulBtn.innerHTML = '<i class="fas fa-door-open"></i><span class="btn-text">Return to Mortality</span><div class="soul-status" aria-hidden="true"></div>';
         } else {
             freeSoulBtn.dataset.state = 'locked';
+            freeSoulBtn.innerHTML = '<i class="fas fa-lock"></i><span class="btn-text">Free Your Soul</span><div class="soul-status" aria-hidden="true"></div>';
         }
         
-        // Remove existing listeners by cloning
-        const newBtn = freeSoulBtn.cloneNode(true);
-        freeSoulBtn.parentNode.replaceChild(newBtn, freeSoulBtn);
+        // Remove any existing listeners by replacing the element with a clone
+        const clonedBtn = freeSoulBtn.cloneNode(true);
+        freeSoulBtn.parentNode.replaceChild(clonedBtn, freeSoulBtn);
         
         // Add event listener to the new button
-        newBtn.addEventListener('click', (e) => {
+        clonedBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Free Soul button clicked, state:', newBtn.dataset.state);
+            console.log('Free Soul button clicked, state:', clonedBtn.dataset.state);
             
-            if (newBtn.dataset.state === 'locked') {
+            if (clonedBtn.dataset.state === 'locked') {
                 // Not logged in - redirect to login page
                 console.log('Redirecting to login page');
                 window.location.href = 'pages/auth.html?mode=login';
@@ -387,7 +389,7 @@ async function init() {
                 console.log('Logging out user');
                 localStorage.removeItem('sessionToken');
                 updateAuthUI(false);
-                alert('You have been logged out.');
+                alert('You have returned to mortality.');
             }
         });
     }
