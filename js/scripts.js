@@ -357,23 +357,23 @@ async function init() {
     
     // Free Your Soul button handler
     document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.getElementById('freeSoulBtn');
-        if (btn) {
-            btn.onclick = function() {
-                console.log('Button clicked! State:', btn.dataset.state);
-                alert('Button clicked! State: ' + btn.dataset.state);
+        document.addEventListener('click', function(e) {
+            // Support clicks on the button or its children (icon/span)
+            let btn = e.target;
+            // Traverse up to the button if a child element was clicked
+            while (btn && btn.id !== 'freeSoulBtn' && btn !== document.body) {
+                btn = btn.parentElement;
+            }
+            if (btn && btn.id === 'freeSoulBtn') {
+                console.log('Delegated click! State:', btn.dataset.state);
                 if (btn.dataset.state === 'locked') {
-                    console.log('Redirecting to login...');
                     window.location.href = 'pages/auth.html?mode=login';
                 } else {
-                    console.log('Logging out...');
                     localStorage.removeItem('sessionToken');
                     window.location.reload();
                 }
-            };
-        } else {
-            alert('Button not found!');
-        }
+            }
+        });
     });
     
     // Toggle user dropdown on mobile
