@@ -612,14 +612,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set initial modal state but do not show it.
     if (soulModal) setSoulModalView('login');
 
-    // Defer full auth flow for now
-    console.log('[Debug Step] Deferring checkToken and full updateAuthUI for this test. Calling updateAuthUI(false) for initial hero button setup.');
-    if (typeof updateAuthUI === 'function') {
-         updateAuthUI(false); 
-    } else {
-        console.error('[Debug Step] updateAuthUI function not defined for initial UI setup.');
-    }
-
     // ADDED SIDEBAR EVENT LISTENERS (MOVED HERE FOR CORRECT SCOPE)
     if (showUsersBtn && activeUsers) {
         showUsersBtn.addEventListener('click', async () => {
