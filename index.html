@@ -74,6 +74,18 @@
               <span class="loader" aria-hidden="true"></span>
             </button>
         </div>
+        <div class="user-menu" id="userMenu" style="display: none;">
+            <button id="userMenuButton" class="soul-btn unlocked">
+                <span class="icon" aria-hidden="true"><i class="fas fa-user-circle"></i></span>
+                <span id="usernameDisplay" class="label">Immortal</span>
+                <i class="fas fa-caret-down" style="margin-left: 5px;"></i>
+            </button>
+            <div class="dropdown-menu" id="userDropdown">
+                <a href="lander.html"><i class="fas fa-home"></i> Eternal Hearth</a>
+                <a href="pages/profiles.html"><i class="fas fa-user"></i> My Soul</a>
+                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+            </div>
+        </div>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
     </header>
 
@@ -300,19 +312,26 @@
     <div id="soulModal" class="soul-modal" aria-modal="true" role="dialog" tabindex="-1" style="display:none;">
       <div class="modal-content">
         <button class="close-modal" aria-label="Close">&times;</button>
-        <h2>Enter the Sanctuary</h2>
+        <h2 id="soulModalTitle">Enter the Sanctuary</h2>
         <form id="soulLoginForm" autocomplete="on">
           <label>
-            <span>Username</span>
+            <span>Soul Identifier (Username)</span>
             <input type="text" name="username" required autocomplete="username" />
           </label>
           <label>
-            <span>Password</span>
+            <span>Ethereal Key (Password)</span>
             <input type="password" name="password" required autocomplete="current-password" />
           </label>
-          <button type="submit" class="modal-btn">Transcend</button>
+          <label id="confirmPasswordField" style="display: none;">
+            <span>Confirm Ethereal Key</span>
+            <input type="password" name="confirmPassword" autocomplete="new-password" />
+          </label>
+          <button type="submit" class="modal-btn" id="soulModalSubmit">Transcend</button>
         </form>
         <div class="modal-feedback" id="modalFeedback"></div>
+        <p class="modal-toggle-view" id="modalToggleView">
+          New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>
+        </p>
       </div>
     </div>
 </body>

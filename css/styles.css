@@ -391,7 +391,7 @@ body.light-theme .hero p {
     position: absolute;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 1;
+    z-index: 5;
     animation: floatUp linear infinite;
 }
 

@@ -1,189 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button Test Page</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        h1 {
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-        .button-container {
-            margin: 20px 0;
-            padding: 20px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 5px;
-            border: none;
-        }
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid #6c757d;
-            color: #6c757d;
-        }
-        .debug-log {
-            background-color: #272822;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            height: 200px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-        .actions {
-            margin-top: 20px;
-        }
-        .soul-status {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #6c757d;
-            margin-left: 5px;
-        }
-    </style>
+  <title>Button Debug Test</title>
 </head>
 <body>
-    <h1>Button Functionality Test</h1>
-    
-    <div class="button-container">
-        <h2>Free Your Soul Button Test</h2>
-        <p>This page tests the functionality of the "Free Your Soul" button isolated from other elements.</p>
-        
-        <button class="btn btn-outline" id="freeSoulBtn" data-state="locked">
-            <i class="fas fa-lock"></i>
-            <span class="btn-text">Free Your Soul</span>
-            <div class="soul-status" aria-hidden="true"></div>
-        </button>
-        
-        <div class="actions">
-            <button onclick="clearStorage()">Clear localStorage</button>
-            <button onclick="checkToken()">Check Token</button>
-            <button onclick="toggleState()">Toggle Button State</button>
-        </div>
-    </div>
-    
-    <h3>Debug Log</h3>
-    <div class="debug-log" id="log"></div>
-    
-    <script>
-        const API_URL = 'https://mlnf-auth.onrender.com/api';
-        const log = document.getElementById('log');
-        const freeSoulBtn = document.getElementById('freeSoulBtn');
-        
-        // Log function
-        function logMessage(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            log.innerHTML += `<div>[${timestamp}] ${message}</div>`;
-            log.scrollTop = log.scrollHeight;
+  <button id="freeSoulBtn" data-state="locked">Free Your Soul</button>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('freeSoulBtn');
+      btn.onclick = function() {
+        alert('Button clicked! State: ' + btn.dataset.state);
+        if (btn.dataset.state === 'locked') {
+          window.location.href = 'pages/auth.html?mode=login';
+        } else {
+          localStorage.removeItem('sessionToken');
+          window.location.reload();
         }
-        
-        // Check token
-        async function checkToken() {
-            const token = localStorage.getItem('sessionToken');
-            logMessage(`Token check: ${token ? 'Token exists' : 'No token found'}`);
-            
-            if (!token) {
-                return false;
-            }
-            
-            try {
-                logMessage('Validating token with backend...');
-                const response = await fetch(`${API_URL}/users/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                logMessage(`Response status: ${response.status}`);
-                
-                if (!response.ok) {
-                    logMessage('Token invalid, removing from storage');
-                    localStorage.removeItem('sessionToken');
-                    updateButton(false);
-                    return false;
-                }
-                
-                const userData = await response.json();
-                logMessage(`Valid token for user: ${userData.username}`);
-                updateButton(true);
-                return true;
-            } catch (error) {
-                logMessage(`Error validating token: ${error.message}`);
-                localStorage.removeItem('sessionToken');
-                updateButton(false);
-                return false;
-            }
-        }
-        
-        // Update button state
-        function updateButton(isAuthenticated) {
-            if (isAuthenticated) {
-                logMessage('Setting button to unlocked state');
-                freeSoulBtn.dataset.state = 'unlocked';
-                freeSoulBtn.innerHTML = '<i class="fas fa-door-open"></i><span class="btn-text">Return to Mortality</span><div class="soul-status" aria-hidden="true"></div>';
-            } else {
-                logMessage('Setting button to locked state');
-                freeSoulBtn.dataset.state = 'locked';
-                freeSoulBtn.innerHTML = '<i class="fas fa-lock"></i><span class="btn-text">Free Your Soul</span><div class="soul-status" aria-hidden="true"></div>';
-            }
-        }
-        
-        // Toggle button state manually (for testing)
-        function toggleState() {
-            const currentState = freeSoulBtn.dataset.state;
-            updateButton(currentState === 'locked');
-        }
-        
-        // Clear localStorage
-        function clearStorage() {
-            localStorage.removeItem('sessionToken');
-            logMessage('Cleared localStorage');
-            updateButton(false);
-        }
-        
-        // Button click handler
-        freeSoulBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const state = this.dataset.state;
-            logMessage(`Button clicked, current state: ${state}`);
-            
-            if (state === 'locked') {
-                logMessage('Redirecting to login page');
-                window.location.href = 'pages/auth.html?mode=login';
-            } else {
-                logMessage('Logging out user');
-                localStorage.removeItem('sessionToken');
-                updateButton(false);
-                logMessage('User logged out');
-            }
-        });
-        
-        // Initialize
-        window.addEventListener('DOMContentLoaded', async () => {
-            logMessage('Page loaded, checking authentication status');
-            await checkToken();
-        });
-    </script>
+      };
+    });
+  </script>
 </body>
-</html> 
+</html>
