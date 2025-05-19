@@ -232,10 +232,12 @@ async function updateAuthUI(isAuthenticated) {
     console.log('[Reintegration Stage X] Updating auth UI, authenticated:', isAuthenticated);
     const authButtonsDiv = document.querySelector('.auth-buttons'); 
     const soulButtonHeader = document.getElementById('soulButton'); 
+    const headerRegisterButton = document.getElementById('headerRegisterButton');
     const userMenu = document.getElementById('userMenu');
     const heroSignupButton = document.getElementById('heroSignupButton');
     const heroLoginButton = document.getElementById('heroLoginButton');
     const usernameDisplay = document.getElementById('usernameDisplay');
+    const registerLink = document.getElementById('registerLink');
 
     if (isAuthenticated) {
         if (authButtonsDiv) authButtonsDiv.style.display = 'none';
@@ -267,6 +269,9 @@ async function updateAuthUI(isAuthenticated) {
             const labelElement = soulButtonHeader.querySelector('.label');
             if (iconElement) iconElement.innerHTML = '👻'; 
             if (labelElement) labelElement.textContent = 'Enter The Sanctuary';
+        }
+        if (headerRegisterButton) {
+            headerRegisterButton.style.display = 'inline-flex';
         }
         if (heroSignupButton) {
             heroSignupButton.textContent = 'Embrace Immortality';
@@ -312,7 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mainNav = document.getElementById('mainNav');
     const headerSoulButton = document.getElementById('soulButton'); 
+    const headerRegisterButton = document.getElementById('headerRegisterButton');
     console.log('[Debug Step] headerSoulButton assigned:', headerSoulButton);
+    console.log('[Debug Step] headerRegisterButton assigned:', headerRegisterButton);
     const userMenu = document.getElementById('userMenu');
     const userMenuButton = document.getElementById('userMenuButton');
     const userDropdown = document.getElementById('userDropdown');
@@ -365,6 +372,23 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('[Debug Step] Listener for header soulButton ATTACHED.');
     } else {
         console.error('[Debug Step] Header soulButton (id: soulButton) not found!');
+    }
+
+    // 3b. Attach Header headerRegisterButton Listener
+    if (headerRegisterButton) {
+        headerRegisterButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('[Debug Step] Header headerRegisterButton clicked.');
+            if (!localStorage.getItem('sessionToken')) { 
+                 openSoulModal('register');
+            } else {
+                console.log('[Debug Step] Header headerRegisterButton clicked while logged in, redirecting to profile.');
+                window.location.href = 'pages/profiles.html';
+            }
+        });
+        console.log('[Debug Step] Listener for header headerRegisterButton ATTACHED.');
+    } else {
+        console.error('[Debug Step] Header headerRegisterButton (id: headerRegisterButton) not found!');
     }
 
     // 4. Theme Toggle Logic
@@ -425,6 +449,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Expose openSoulModal for console testing
     window.openSoulModal = openSoulModal;
     console.log('[Debug Step] DOMContentLoaded finished. window.openSoulModal available.');
+
+    // RE-ACTIVATING PARTICLE CREATION - NOW WITH CONTINUOUS GENERATION
+    // Initial burst of particles
+    for(let i=0; i<10; i++) createParticle(); 
+    // Continuously create new particles
+    setInterval(createParticle, 500); // Create a new particle every 500ms
+    console.log('[Debug Step] Continuous particle creation initiated after DOMContentLoaded.');
 });
 
 // Soul Modal Form Submission Logic - REMAINS COMMENTED OUT FOR NOW
