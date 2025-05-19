@@ -426,7 +426,7 @@ async function updateAuthUI(isAuthenticated) {
         }
         if (heroLoginButton) {
             heroLoginButton.textContent = 'My Soul';
-            heroLoginButton.href = 'pages/profiles.html';
+            heroLoginButton.href = 'pages/profile-setup.html';
             heroLoginButton.onclick = null; 
         }
         if (activeUsers && activeUsers.classList.contains('active')) {
