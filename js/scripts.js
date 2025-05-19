@@ -611,14 +611,97 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[MSG MODAL DEBUG] Input:', messageInput);
     }
 
-});
+    // Soul Modal Form Submission Logic - NOW ACTIVATED
+    if (soulLoginForm && soulModal) { 
+        soulLoginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!modalFeedback) {
+                console.error('modalFeedback element not found for displaying messages.');
+                return;
+            }
+            modalFeedback.textContent = ''; // Clear previous feedback
 
-// Soul Modal Form Submission Logic - REMAINS COMMENTED OUT FOR NOW
-/*
-if (soulLoginForm && soulModal) { 
-    soulLoginForm.addEventListener('submit', async function(e) { ... }); 
-}
-*/
+            const username = soulLoginForm.username.value.trim();
+            const password = soulLoginForm.password.value;
+            const mode = soulModal.dataset.mode || 'login'; // 'login' or 'register'
+
+            if (!username || !password) {
+                modalFeedback.textContent = 'Soul Identifier and Ethereal Key are required.';
+                return;
+            }
+
+            let url = '';
+            let payload = { username, password };
+
+            if (mode === 'register') {
+                const confirmPassword = soulLoginForm.confirmPassword.value;
+                if (password !== confirmPassword) {
+                    modalFeedback.textContent = 'Ethereal Keys do not align.';
+                    return;
+                }
+                url = `${API_URL}/auth/register`;
+            } else {
+                url = `${API_URL}/auth/login`;
+            }
+
+            soulModalSubmit.disabled = true;
+            soulModalSubmit.textContent = mode === 'register' ? 'Forging...' : 'Transcending...';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    modalFeedback.textContent = data.message || `Error: ${response.status} - ${response.statusText}`;
+                    throw new Error(data.message || `HTTP error ${response.status}`);
+                }
+
+                if (mode === 'login') {
+                    if (data.token) {
+                        localStorage.setItem('sessionToken', data.token);
+                        modalFeedback.textContent = 'Sanctuary access granted. The gateway opens...';
+                        await updateAuthUI(true);
+                        setTimeout(() => {
+                            closeSoulModal();
+                             // Optionally, refresh online users if sidebar was open or redirect
+                            if (activeUsers && activeUsers.classList.contains('active')) {
+                                fetchOnlineUsers();
+                            }
+                        }, 1500); 
+                    } else {
+                        modalFeedback.textContent = 'Token not received. Entry denied.';
+                    }
+                } else { // Register
+                    modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
+                    // Optionally switch to login view or auto-login
+                    setTimeout(() => {
+                        setSoulModalView('login'); // Switch to login view
+                    }, 2000);
+                }
+
+            } catch (error) {
+                console.error(`[Auth Form Error - ${mode}]:`, error);
+                if (!modalFeedback.textContent) { // Avoid overwriting specific backend error
+                    modalFeedback.textContent = 'An unexpected disturbance occurred. Try again.';
+                }
+            } finally {
+                soulModalSubmit.disabled = false;
+                soulModalSubmit.textContent = mode === 'register' ? 'Begin Your Eternity' : 'Transcend';
+            }
+        }); 
+        console.log('[Reintegration] Soul Modal form submission listener ATTACHED.');
+    } else {
+        console.error('[Reintegration] Could not attach soul modal form listener. soulLoginForm or soulModal not found.');
+    }
+
+});
 
 // Sidebar, Message Modal, User Menu, Logout Link listeners.
 // showUsersBtn and closeUsers listeners were moved into DOMContentLoaded and activated.
