@@ -518,6 +518,26 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Debug Step] Header soulButton (id: soulButton) not found!');
     }
 
+    // USER MENU BUTTON LISTENER (for when user is logged IN)
+    if (userMenuButton && userDropdown) {
+        userMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent click from bubbling up if not needed
+            console.log('[Debug Step] userMenuButton clicked.');
+            userDropdown.classList.toggle('active');
+        });
+        console.log('[Debug Step] Listener for userMenuButton ATTACHED.');
+
+        // Optional: Close dropdown if clicking outside of it
+        document.addEventListener('click', (e) => {
+            if (userMenu && !userMenu.contains(e.target) && userDropdown.classList.contains('active')) {
+                console.log('[Debug Step] Clicked outside user menu, closing dropdown.');
+                userDropdown.classList.remove('active');
+            }
+        });
+    } else {
+        console.error('[Debug Step] userMenuButton or userDropdown not found! Cannot attach listener.');
+    }
+
     // 3b. Attach Header headerRegisterButton Listener
     if (headerRegisterButton) {
         headerRegisterButton.addEventListener('click', (e) => {
@@ -742,6 +762,28 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Reintegration] Could not attach soul modal form listener. soulLoginForm or soulModal not found.');
     }
 
+    // Initial auth state check and UI update - MOVED INSIDE DOMContentLoaded
+    (async () => {
+        try {
+            console.log('[Reintegration] Performing initial authentication check (from within DOMContentLoaded)...');
+            const isAuthenticated = await checkToken();
+            console.log('[Reintegration] Initial isAuthenticated status:', isAuthenticated);
+            // Pass the already queried DOM elements if they are needed and might not be found by getElementById within updateAuthUI immediately
+            await updateAuthUI(isAuthenticated); // updateAuthUI should reliably find elements now
+            
+            if (soulModal && !isAuthenticated) {
+                setSoulModalView('login'); 
+            }
+            console.log('[Reintegration] Initial UI update complete (from within DOMContentLoaded).');
+        } catch (error) {
+            console.error("[Reintegration] Error during initial checkToken/updateAuthUI (from DOMContentLoaded):", error);
+            await updateAuthUI(false); 
+            if (soulModal) {
+                setSoulModalView('login');
+            }
+        }
+    })();
+
 });
 
 // Sidebar, Message Modal, User Menu, Logout Link listeners.
@@ -754,30 +796,7 @@ if (userMenuButton && userDropdown) { ... }
 if (logoutLink) { ... }
 */
 
-// Initial auth state check and UI update - RE-ENABLING NOW
-(async () => {
-    try {
-        console.log('[Reintegration] Performing initial authentication check...');
-        const isAuthenticated = await checkToken();
-        console.log('[Reintegration] Initial isAuthenticated status:', isAuthenticated);
-        await updateAuthUI(isAuthenticated);
-        // Set initial modal view only if modal exists and user is NOT authenticated,
-        // to avoid showing it if they are already logged in.
-        if (soulModal && !isAuthenticated) {
-            setSoulModalView('login'); 
-        }
-        console.log('[Reintegration] Initial UI update complete.');
-    } catch (error) {
-        console.error("[Reintegration] Error during initial checkToken/updateAuthUI:", error);
-        // Fallback to logged-out UI in case of error during initial check
-        await updateAuthUI(false); 
-        if (soulModal) {
-            setSoulModalView('login');
-        }
-    }
-})();
-
 // Particles - REMAINS COMMENTED OUT FOR NOW
 // for(let i=0; i<15; i++) createParticle(); 
 
-// console.log('[Reintegration Stage X] End of DOMContentLoaded setup.'); // This log line is now part of the active DOMContentLoaded
+// console.log('[Reintegration Stage X] End of DOMContentLoaded setup.');
