@@ -320,10 +320,35 @@ async function checkToken() {
 }
 
 // Logout function (Restored)
-function logout() {
+async function logout() {
+    const token = localStorage.getItem('sessionToken');
+    console.log('[Reintegration Stage X] User logout initiated.');
+
+    if (token) {
+        try {
+            const response = await fetch(`${API_URL}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const result = await response.json();
+                console.log('[Reintegration Stage X] Backend logout successful:', result.message);
+            } else {
+                const errorResult = await response.text();
+                console.warn(`[Reintegration Stage X] Backend logout failed. Status: ${response.status}, Message: ${errorResult}`);
+            }
+        } catch (error) {
+            console.error('[Reintegration Stage X] Error during backend logout API call:', error);
+        }
+    }
+
     localStorage.removeItem('sessionToken');
-    console.log('[Reintegration Stage X] User logged out');
-    updateAuthUI(false); // Assumes updateAuthUI is defined
+    console.log('[Reintegration Stage X] Session token removed from client.');
+    
+    updateAuthUI(false); 
     if (activeUsers && activeUsers.classList.contains('active')) {
         activeUsers.classList.remove('active');
         const userList = document.getElementById('userList');
