@@ -12,6 +12,46 @@ const switchToLoginLinkHTML = 'Already an Immortal? <a href="#" id="switchToLogi
 // Backend API URL (Restored)
 const API_URL = 'https://mlnf-auth.onrender.com/api';
 
+// Mocking infrastructure for local testing
+window.MOCK_LOGGED_IN_STATE = false;
+
+function enableMockLogin() {
+    window.MOCK_LOGGED_IN_STATE = true;
+    console.log('%cMock login ENABLED. Call updateAuthUIAndFetchUsers() to refresh UI.', 'color: green; font-weight: bold; font-size: 1.2em;');
+    // Attempt to refresh UI if possible
+    if (typeof updateAuthUIAndFetchUsers === 'function') {
+        updateAuthUIAndFetchUsers();
+    }
+}
+
+function disableMockLogin() {
+    window.MOCK_LOGGED_IN_STATE = false;
+    console.log('%cMock login DISABLED. Real authentication will be used. Call updateAuthUIAndFetchUsers() to refresh UI.', 'color: red; font-weight: bold; font-size: 1.2em;');
+    // Attempt to refresh UI if possible
+    if (typeof updateAuthUIAndFetchUsers === 'function') {
+        updateAuthUIAndFetchUsers();
+    }
+}
+
+// Helper to refresh UI after toggling mock state
+async function updateAuthUIAndFetchUsers() {
+    if (typeof checkToken !== 'function' || typeof updateAuthUI !== 'function') {
+        console.error('Required functions (checkToken, updateAuthUI) not available to refresh UI.');
+        return;
+    }
+    const isAuthenticated = await checkToken();
+    updateAuthUI(isAuthenticated);
+    // If the active users sidebar is open, also refresh its content
+    const activeUsersPanel = document.getElementById('activeUsers');
+    if (activeUsersPanel && activeUsersPanel.classList.contains('active') && typeof fetchOnlineUsers === 'function') {
+        fetchOnlineUsers();
+    }
+}
+
+window.enableMockLogin = enableMockLogin;
+window.disableMockLogin = disableMockLogin;
+window.updateAuthUIAndFetchUsers = updateAuthUIAndFetchUsers; // Expose for convenience
+
 // --- Reintegrated Soul Modal: Core Logic Functions ---
 function setSoulModalView(mode) {
     console.log('[Reintegration] setSoulModalView called with mode:', mode);
@@ -85,6 +125,10 @@ function createParticle() {
 
 // Fetch current user data (Restored)
 async function fetchCurrentUser() {
+    if (window.MOCK_LOGGED_IN_STATE === true) {
+        console.warn('[MOCK] fetchCurrentUser: Returning MOCKED user.');
+        return { username: 'MockUser', displayName: 'Mock Immortal', email: 'mock@mlnf.net', avatar: 'https://i.pravatar.cc/40?u=mockuser' };
+    }
     const token = localStorage.getItem('sessionToken');
     // console.log('[Reintegration] Fetching current user with token:', token ? token.substring(0, 10) + '...' : 'No token');
     if (!token) {
@@ -122,6 +166,42 @@ async function fetchOnlineUsers(retryCount = 3, delay = 1000) {
         console.error('[Reintegration] userList element not found for fetchOnlineUsers.');
         return;
     }
+
+    if (window.MOCK_LOGGED_IN_STATE === true) {
+        console.warn('[MOCK] fetchOnlineUsers: Populating with MOCKED user list.');
+        const mockUsers = [
+            { username: 'AliceMock', displayName: 'Alice (Mock)', status: 'Online & Mocked', avatar: 'https://i.pravatar.cc/40?u=alicemock' },
+            { username: 'BobMock', displayName: 'Bob (Mock)', status: 'Mocking the System', avatar: 'https://i.pravatar.cc/40?u=bobmock' },
+            { username: 'CharlieMock', displayName: 'Charlie (Mock)', status: 'Virtually Present', avatar: 'https://i.pravatar.cc/40?u=charliemock' }
+        ];
+        userList.innerHTML = mockUsers.map(user => `
+            <div class="profile-preview" data-username="${user.username}" role="listitem">
+                <img src="${user.avatar}" alt="${user.username}'s avatar">
+                <div class="user-info">
+                    <a href="#" onclick="event.preventDefault(); console.log('[MOCK] Clicked profile link for ${user.username}');" class="username-link">${user.displayName || user.username}</a>
+                    <span class="online-dot"></span>
+                    <p class="status">${user.status || 'Awaiting revelation...'}</p>
+                </div>
+            </div>`).join('');
+        
+        document.querySelectorAll('.profile-preview').forEach(preview => {
+            preview.addEventListener('click', (e) => {
+                // Prevent click on the link itself from triggering this if it's also a profile-preview
+                if (e.target.closest('a.username-link')) {
+                    return;
+                }
+                const username = preview.dataset.username;
+                console.log(`[MOCK DEBUG] Profile preview clicked for ${username}. MOCK_LOGGED_IN_STATE: ${window.MOCK_LOGGED_IN_STATE}`);
+                if (typeof openMessageModal === 'function') {
+                    openMessageModal(username);
+                } else {
+                    console.error('[MOCK] openMessageModal function not found.');
+                }
+            });
+        });
+        return; // End execution for mocked state
+    }
+
     userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers... <span class="spinner"></span></p>';
     const token = localStorage.getItem('sessionToken');
 
@@ -173,7 +253,24 @@ async function fetchOnlineUsers(retryCount = 3, delay = 1000) {
 }
 
 // Messaging modal functions (Restored)
-function openMessageModal(username) {
+async function openMessageModal(username) {
+    console.log(`[MOCK DEBUG] openMessageModal called for ${username}. MOCK_LOGGED_IN_STATE before checkToken: ${window.MOCK_LOGGED_IN_STATE}`);
+    const isAuthenticated = await checkToken();
+    console.log(`[MOCK DEBUG] openMessageModal: isAuthenticated result from checkToken: ${isAuthenticated}`);
+
+    if (!isAuthenticated) {
+        console.warn('[MOCK DEBUG] openMessageModal: User NOT authenticated according to checkToken. Opening Soul Modal for login.');
+        if (typeof openSoulModal === 'function') {
+            openSoulModal('login');
+        } else {
+            console.error('openSoulModal function is not defined. Cannot redirect to login.');
+        }
+        return;
+    } else {
+        console.log('[MOCK DEBUG] openMessageModal: User IS authenticated. Proceeding to open message modal.');
+    }
+
+    // Proceed with opening the message modal if authenticated
     if (!messageModal || !recipientName || !messageHistory) {
         console.error('[Reintegration] Message modal elements not found for openMessageModal.');
         return;
@@ -199,7 +296,12 @@ async function loadMessages(recipient) {
 
 // Token validation (Restored)
 async function checkToken() {
-    console.log('[Reintegration Stage X] checkToken initiated.');
+    console.log(`[MOCK DEBUG] checkToken started. Current MOCK_LOGGED_IN_STATE: ${window.MOCK_LOGGED_IN_STATE}`);
+    if (window.MOCK_LOGGED_IN_STATE === true) {
+        console.warn('[MOCK DEBUG] checkToken: Mocking as TRUE. Returning true.');
+        return true;
+    }
+    console.log('[Reintegration Stage X] checkToken initiated for real token check.');
     const token = localStorage.getItem('sessionToken');
     if (!token) {
         console.warn('[Reintegration Stage X] checkToken: No session token found');
@@ -429,14 +531,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ADDED SIDEBAR EVENT LISTENERS (MOVED HERE FOR CORRECT SCOPE)
     if (showUsersBtn && activeUsers) {
-        showUsersBtn.addEventListener('click', () => {
+        showUsersBtn.addEventListener('click', async () => {
             console.log('[Reintegration Stage Y] Show Users button clicked.');
-            if (localStorage.getItem('sessionToken')) {
+            const isAuthenticated = await checkToken();
+            if (isAuthenticated) {
                 activeUsers.classList.add('active');
-                fetchOnlineUsers(); // Fetch users when sidebar opens
+                fetchOnlineUsers();
             } else {
-                openSoulModal('login'); // Prompt login if not authenticated
-                if(document.getElementById('userList')) document.getElementById('userList').innerHTML = '<p class="modal-error">Please log in to view active users.</p>';
+                console.log('[Show Users DEBUG] User not authenticated via checkToken, opening soul modal.');
+                openSoulModal('login');
+                const userList = document.getElementById('userList');
+                if(userList) userList.innerHTML = '<p class="modal-error">Please log in to view active users.</p>';
             }
         });
     }
@@ -456,6 +561,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Continuously create new particles
     setInterval(createParticle, 500); // Create a new particle every 500ms
     console.log('[Debug Step] Continuous particle creation initiated after DOMContentLoaded.');
+
+    // MESSAGE MODAL CLOSE LISTENERS
+    console.log('[MSG MODAL DEBUG] Attempting to attach close listeners.');
+    console.log('[MSG MODAL DEBUG] closeMessageModalBtn:', closeMessageModalBtn);
+    console.log('[MSG MODAL DEBUG] messageModal:', messageModal);
+    if (closeMessageModalBtn && messageModal) {
+        closeMessageModalBtn.addEventListener('click', () => {
+            console.log(`[MSG MODAL DEBUG] 'Close Nexus' button CLICKED.`);
+            messageModal.style.display = 'none';
+            console.log('[Messaging] Message modal closed via Close Nexus button.');
+        });
+        console.log('[Debug Step] Listener for message modal Close button ATTACHED.');
+    } else {
+        console.error('[MSG MODAL DEBUG] Could not attach listener to Close Nexus button.');
+        console.error('[MSG MODAL DEBUG] Button:', closeMessageModalBtn);
+        console.error('[MSG MODAL DEBUG] Modal:', messageModal);
+    }
+
+    if (messageModal) {
+        messageModal.addEventListener('click', (event) => {
+            console.log('[MSG MODAL DEBUG] Backdrop area CLICKED.');
+            console.log('[MSG MODAL DEBUG] event.target:', event.target);
+            console.log('[MSG MODAL DEBUG] expected_messageModal_backdrop:', messageModal);
+            if (event.target === messageModal) { // Click was directly on the backdrop
+                messageModal.style.display = 'none';
+                console.log('[Messaging] Message modal closed via backdrop click.');
+            } else {
+                console.log('[MSG MODAL DEBUG] Click was inside modal content, not on backdrop.');
+            }
+        });
+        console.log('[Debug Step] Listener for message modal outside click ATTACHED.');
+    } else {
+        console.error('[MSG MODAL DEBUG] Could not attach backdrop click listener. messageModal missing.');
+    }
+
+    // SEND MESSAGE BUTTON LISTENER (Uses sendMessageBtn declared earlier in DOMContentLoaded)
+    console.log('[MSG MODAL DEBUG] sendMessageBtn element check:', sendMessageBtn);
+    if (sendMessageBtn && messageInput) {
+        sendMessageBtn.addEventListener('click', () => {
+            console.log(`[MSG MODAL DEBUG] 'Send Whisper' button CLICKED. Value: ${messageInput.value}`);
+            if(messageInput) messageInput.value = ''; 
+        });
+        console.log('[Debug Step] Listener for sendMessageBtn ATTACHED.');
+    } else {
+        console.error('[MSG MODAL DEBUG] Could not attach listener to Send Whisper button.');
+        console.error('[MSG MODAL DEBUG] Button:', sendMessageBtn);
+        console.error('[MSG MODAL DEBUG] Input:', messageInput);
+    }
+
 });
 
 // Soul Modal Form Submission Logic - REMAINS COMMENTED OUT FOR NOW
