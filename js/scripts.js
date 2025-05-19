@@ -161,96 +161,96 @@ async function fetchCurrentUser() {
 }
 
 // Fetch online users with retry (Restored)
-async function fetchOnlineUsers(retryCount = 3, delay = 1000) {
-    const userList = document.getElementById('userList');
-    if (!userList) {
-        console.error('[Reintegration] userList element not found for fetchOnlineUsers.');
-        return;
-    }
-
-    if (window.MOCK_LOGGED_IN_STATE === true) {
-        console.warn('[MOCK] fetchOnlineUsers: Populating with MOCKED user list.');
-        const mockUsers = [
-            { username: 'AliceMock', displayName: 'Alice (Mock)', status: 'Online & Mocked', avatar: 'https://i.pravatar.cc/40?u=alicemock' },
-            { username: 'BobMock', displayName: 'Bob (Mock)', status: 'Mocking the System', avatar: 'https://i.pravatar.cc/40?u=bobmock' },
-            { username: 'CharlieMock', displayName: 'Charlie (Mock)', status: 'Virtually Present', avatar: 'https://i.pravatar.cc/40?u=charliemock' }
-        ];
-        userList.innerHTML = mockUsers.map(user => `
-            <div class="profile-preview" data-username="${user.username}" role="listitem">
-                <img src="${user.avatar}" alt="${user.username}'s avatar">
-                <div class="user-info">
-                    <a href="#" onclick="event.preventDefault(); console.log('[MOCK] Clicked profile link for ${user.username}');" class="username-link">${user.displayName || user.username}</a>
-                    <span class="online-dot"></span>
-                    <p class="status">${user.status || 'Awaiting revelation...'}</p>
-                </div>
-            </div>`).join('');
-        
-        document.querySelectorAll('.profile-preview').forEach(preview => {
-            preview.addEventListener('click', (e) => {
-                // Prevent click on the link itself from triggering this if it's also a profile-preview
-                if (e.target.closest('a.username-link')) {
-                    return;
-                }
-                const username = preview.dataset.username;
-                console.log(`[MOCK DEBUG] Profile preview clicked for ${username}. MOCK_LOGGED_IN_STATE: ${window.MOCK_LOGGED_IN_STATE}`);
-                if (typeof openMessageModal === 'function') {
-                    openMessageModal(username);
-                } else {
-                    console.error('[MOCK] openMessageModal function not found.');
-                }
-            });
-        });
-        return; // End execution for mocked state
-    }
-
-    userList.innerHTML = '<p class="modal-loading">Summoning eternal seekers... <span class="spinner"></span></p>';
-    const token = localStorage.getItem('sessionToken');
+async function fetchOnlineUsers() {
+    console.log('[Reintegration] Attempting to fetch online users.');
+    const apiBaseUrl = localStorage.getItem('apiBaseUrl') || 'https://mlnf.reintegrate.ai';
+    const token = localStorage.getItem('token');
 
     if (!token) {
-        userList.innerHTML = '<p class="modal-error">Sanctuary access required. Please enter.</p>';
+        console.warn('[Reintegration] No token found, cannot fetch users.');
+        updateSeekersList([]); // Show empty or logged-out state
         return;
     }
-    // ... (rest of fetchOnlineUsers logic, simplified for brevity if it was long, ensure it uses userList.innerHTML)
-    // For now, placeholder if no actual API call is made in the original commented code:
+
     try {
-        const response = await fetch(`${API_URL}/users`, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                userList.innerHTML = '<p class="modal-error">Session ended. Please re-enter.</p>';
-                localStorage.removeItem('sessionToken');
-                // updateAuthUI(false); // updateAuthUI will be restored later
-            } else {
-                userList.innerHTML = `<p class="modal-error">Error summoning seekers: ${response.statusText}</p>`;
+        const response = await fetch(`${apiBaseUrl}/api/users`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
-            return;
-        }
-        const users = await response.json();
-        if (users.length === 0) {
-            userList.innerHTML = '<p class="modal-error">No eternal seekers currently manifest.</p>';
-            return;
-        }
-        userList.innerHTML = users.map(user => `
-            <div class="profile-preview" data-username="${user.username}" role="listitem">
-                <img src="${user.avatar || 'https://i.pravatar.cc/40?u='+user.username}" alt="${user.username}'s avatar">
-                <div class="user-info">
-                    <a href="pages/profiles.html?username=${user.username}" class="username-link">${user.displayName || user.username}</a>
-                    <span class="online-dot"></span>
-                    <p class="status">${user.status || 'Awaiting revelation...'}</p>
-                </div>
-            </div>`).join('');
-        
-        document.querySelectorAll('.profile-preview').forEach(preview => {
-            preview.addEventListener('click', () => {
-                const username = preview.dataset.username;
-                if (typeof openMessageModal === 'function') openMessageModal(username); // Check if defined
-            });
         });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('[Reintegration] Fetch online users API error:', response.status, errorText);
+            updateSeekersList({ error: `Could not summon seekers: ${response.status} ${errorText || 'Unknown error'}` });
+            return;
+        }
+
+        const responseData = await response.json();
+        console.log('[Reintegration] Successfully fetched raw user data:', responseData);
+
+        const usersArray = responseData.users;
+
+        if (!usersArray || !Array.isArray(usersArray)) {
+            console.error('[Reintegration] Fetched data.users is not an array or is missing:', usersArray);
+            updateSeekersList({ error: "Could not summon seekers: Invalid data format from server." });
+            return;
+        }
+        
+        console.log('[Reintegration] Parsed users array:', usersArray);
+        updateSeekersList(usersArray);
+
     } catch (error) {
         console.error('[Reintegration] Fetch online users API error:', error);
-        userList.innerHTML = `<p class="modal-error">Could not summon seekers: Network issue or API down.</p>`;
+        updateSeekersList({ error: "Could not summon seekers: Network issue or API down." });
     }
+}
+
+function updateSeekersList(users) {
+    const seekersList = document.getElementById('seekersList');
+    const seekersLoading = document.getElementById('seekersLoading');
+    const seekersError = document.getElementById('seekersError');
+
+    if (!seekersList || !seekersLoading || !seekersError) {
+        console.error('[Reintegration] Seekers list UI elements not found.');
+        return;
+    }
+
+    seekersLoading.style.display = 'none';
+    seekersError.textContent = ''; // Clear previous errors
+
+    if (users.error) {
+        seekersError.textContent = users.error;
+        seekersList.innerHTML = ''; // Clear list on error
+        console.log('[Reintegration] Displaying error:', users.error)
+        return;
+    }
+
+    if (!Array.isArray(users)) {
+        console.error('[Reintegration] updateSeekersList received non-array users (and not an error object):', users);
+        seekersError.textContent = 'Unexpected data received for user list.';
+        seekersList.innerHTML = '';
+        return;
+    }
+    
+    console.log('[Reintegration] Updating seekers list with users:', users);
+
+    if (users.length === 0) {
+        seekersList.innerHTML = '<li class="list-group-item text-muted">No souls are currently adrift...</li>';
+        return;
+    }
+
+    seekersList.innerHTML = users.map(user => `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <img src="${user.avatar_url || 'assets/images/default-avatar.png'}" alt="${user.username}" class="seeker-avatar mr-2">
+                <span class="seeker-name">${user.username}</span>
+            </div>
+            <span class="badge badge-primary badge-pill">${user.realm || 'Unknown Realm'}</span>
+        </li>
+    `).join('');
 }
 
 // Messaging modal functions (Restored)
