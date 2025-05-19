@@ -312,14 +312,15 @@ async function checkToken() {
         console.log('[Reintegration Stage X] checkToken: Token is valid, user authenticated.');
         return true;
     }
+    // Correctly scoped fallback for invalid token / user fetch failure
     console.warn('[Reintegration Stage X] checkToken: Token validation failed or user not fetched. Clearing session.');
-            localStorage.removeItem('sessionToken');
-            return false;
-        }
+    localStorage.removeItem('sessionToken');
+    return false;
+}
 
 // Logout function (Restored)
 function logout() {
-        localStorage.removeItem('sessionToken');
+    localStorage.removeItem('sessionToken');
     console.log('[Reintegration Stage X] User logged out');
     updateAuthUI(false); // Assumes updateAuthUI is defined
     if (activeUsers && activeUsers.classList.contains('active')) {
