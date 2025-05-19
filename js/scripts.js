@@ -369,54 +369,28 @@ async function updateAuthUI(isAuthenticated) {
     const registerLink = document.getElementById('registerLink');
 
     if (isAuthenticated) {
-        console.log('[AuthUI] User IS authenticated. Updating UI for logged-in state.');
         if (authButtonsDiv) authButtonsDiv.style.display = 'none';
-        if (userMenu) {
-            userMenu.style.display = 'inline-block'; 
-            console.log('[AuthUI] userMenu display set to inline-block.');
-        } else {
-            console.warn('[AuthUI] userMenu element NOT found.');
-        }
+        if (userMenu) userMenu.style.display = 'inline-block'; 
         
-        const userMenuAvatar = document.getElementById('userMenuAvatar');
-        console.log('[AuthUI] userMenuAvatar element:', userMenuAvatar);
+        const userMenuAvatar = document.getElementById('userMenuAvatar'); // Get it AFTER userMenu is displayed
 
         const user = await fetchCurrentUser(); 
-        console.log('[AuthUI] fetchCurrentUser result:', user);
-
         if (user) {
-            console.log('[AuthUI] User object fetched:', JSON.stringify(user));
-            if (usernameDisplay) {
-                usernameDisplay.textContent = user.username || 'Immortal';
-                console.log('[AuthUI] usernameDisplay updated to:', usernameDisplay.textContent);
-            } else {
-                console.warn('[AuthUI] usernameDisplay element NOT found.');
-            }
-
+            if (usernameDisplay) usernameDisplay.textContent = user.username || 'Immortal';
             if (userMenuAvatar) { 
-                const avatarUrlToSet = user.avatar || 'assets/default.jpg';
-                console.log(`[AuthUI] Attempting to set avatar. User avatar: ${user.avatar}, Fallback: assets/default.jpg. Effective URL: ${avatarUrlToSet}`);
+                const avatarUrlToSet = user.avatar || 'assets/images/default.jpg';
+                console.log(`[AuthUI] Attempting to set avatar. User avatar: ${user.avatar}, Fallback: assets/images/default.jpg. Effective URL: ${avatarUrlToSet}`);
                 userMenuAvatar.src = avatarUrlToSet; 
                 userMenuAvatar.alt = user.username ? `${user.username}'s avatar` : 'User Avatar';
                 userMenuAvatar.style.display = 'inline'; 
-                console.log('[AuthUI] userMenuAvatar src set to:', userMenuAvatar.src, 'alt to:', userMenuAvatar.alt);
-            } else {
-                console.warn('[AuthUI] userMenuAvatar element NOT found when trying to set user-specific avatar.');
             }
         } else { // User fetch failed or no user data, but still authenticated (e.g. token valid but /me fails)
-            console.warn('[AuthUI] fetchCurrentUser returned null/false, but isAuthenticated is true. Using default display.');
-            if (usernameDisplay) {
-                usernameDisplay.textContent = 'Immortal'; 
-                console.log('[AuthUI] usernameDisplay set to default "Immortal".');
-            }
+            if (usernameDisplay) usernameDisplay.textContent = 'Immortal'; 
             if (userMenuAvatar) {
                 console.log('[AuthUI] Attempting to set default avatar because user object is null.');
-                userMenuAvatar.src = 'assets/default.jpg';
+                userMenuAvatar.src = 'assets/images/default.jpg';
                 userMenuAvatar.alt = 'User Avatar';
                 userMenuAvatar.style.display = 'inline';
-                console.log('[AuthUI] userMenuAvatar src set to default:', userMenuAvatar.src);
-            } else {
-                console.warn('[AuthUI] userMenuAvatar element NOT found when trying to set default avatar.');
             }
         }
         if (heroSignupButton) {
@@ -426,7 +400,7 @@ async function updateAuthUI(isAuthenticated) {
         }
         if (heroLoginButton) {
             heroLoginButton.textContent = 'My Soul';
-            heroLoginButton.href = 'pages/profile-setup.html';
+            heroLoginButton.href = 'pages/profiles.html';
             heroLoginButton.onclick = null; 
         }
         if (activeUsers && activeUsers.classList.contains('active')) {
@@ -495,7 +469,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userMenuButton = document.getElementById('userMenuButton');
     const userDropdown = document.getElementById('userDropdown');
     const logoutLink = document.getElementById('logoutLink');
-    console.log('[DEBUG] logoutLink element found by getElementById:', logoutLink); // LOG THE ELEMENT ITSELF
 
     // 2. Attach Core Modal Event Listeners
     if (soulModal) {
@@ -548,26 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Debug Step] Header soulButton (id: soulButton) not found!');
     }
 
-    // USER MENU BUTTON LISTENER (for when user is logged IN)
-    if (userMenuButton && userDropdown) {
-        userMenuButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent click from bubbling up if not needed
-            console.log('[Debug Step] userMenuButton clicked.');
-            userDropdown.classList.toggle('active');
-        });
-        console.log('[Debug Step] Listener for userMenuButton ATTACHED.');
-
-        // Optional: Close dropdown if clicking outside of it
-        document.addEventListener('click', (e) => {
-            if (userMenu && !userMenu.contains(e.target) && userDropdown.classList.contains('active')) {
-                console.log('[Debug Step] Clicked outside user menu, closing dropdown.');
-                userDropdown.classList.remove('active');
-            }
-        });
-    } else {
-        console.error('[Debug Step] userMenuButton or userDropdown not found! Cannot attach listener.');
-    }
-
     // 3b. Attach Header headerRegisterButton Listener
     if (headerRegisterButton) {
         headerRegisterButton.addEventListener('click', (e) => {
@@ -583,22 +536,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('[Debug Step] Listener for header headerRegisterButton ATTACHED.');
     } else {
         console.error('[Debug Step] Header headerRegisterButton (id: headerRegisterButton) not found!');
-    }
-
-    // LOGOUT LINK LISTENER
-    if (logoutLink) {
-        logoutLink.addEventListener('click', async (e) => {
-            console.log('[EXTREME DEBUG] Logout link CLICKED - TOP OF LISTENER'); // VERY FIRST LOG
-            e.preventDefault(); 
-            console.log('[Debug Step] Logout link clicked (after preventDefault).');
-            await logout(); 
-            if (userDropdown && userDropdown.classList.contains('active')) {
-                userDropdown.classList.remove('active');
-            }
-        });
-        console.log('[Debug Step] Listener for logoutLink ATTACHED.');
-    } else {
-        console.error('[Debug Step] logoutLink not found! Cannot attach listener.');
     }
 
     // 4. Theme Toggle Logic
@@ -628,6 +565,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Set initial modal state but do not show it.
     if (soulModal) setSoulModalView('login');
+
+    // Defer full auth flow for now
+    console.log('[Debug Step] Deferring checkToken and full updateAuthUI for this test. Calling updateAuthUI(false) for initial hero button setup.');
+    if (typeof updateAuthUI === 'function') {
+         updateAuthUI(false); 
+    } else {
+        console.error('[Debug Step] updateAuthUI function not defined for initial UI setup.');
+    }
 
     // ADDED SIDEBAR EVENT LISTENERS (MOVED HERE FOR CORRECT SCOPE)
     if (showUsersBtn && activeUsers) {
@@ -800,28 +745,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Reintegration] Could not attach soul modal form listener. soulLoginForm or soulModal not found.');
     }
 
-    // Initial auth state check and UI update - MOVED INSIDE DOMContentLoaded
-    (async () => {
-        try {
-            console.log('[Reintegration] Performing initial authentication check (from within DOMContentLoaded)...');
-            const isAuthenticated = await checkToken();
-            console.log('[Reintegration] Initial isAuthenticated status:', isAuthenticated);
-            // Pass the already queried DOM elements if they are needed and might not be found by getElementById within updateAuthUI immediately
-            await updateAuthUI(isAuthenticated); // updateAuthUI should reliably find elements now
-            
-            if (soulModal && !isAuthenticated) {
-                setSoulModalView('login'); 
-            }
-            console.log('[Reintegration] Initial UI update complete (from within DOMContentLoaded).');
-        } catch (error) {
-            console.error("[Reintegration] Error during initial checkToken/updateAuthUI (from DOMContentLoaded):", error);
-            await updateAuthUI(false); 
-            if (soulModal) {
-                setSoulModalView('login');
-            }
-        }
-    })();
-
 });
 
 // Sidebar, Message Modal, User Menu, Logout Link listeners.
@@ -834,7 +757,30 @@ if (userMenuButton && userDropdown) { ... }
 if (logoutLink) { ... }
 */
 
+// Initial auth state check and UI update - RE-ENABLING NOW
+(async () => {
+    try {
+        console.log('[Reintegration] Performing initial authentication check...');
+        const isAuthenticated = await checkToken();
+        console.log('[Reintegration] Initial isAuthenticated status:', isAuthenticated);
+        await updateAuthUI(isAuthenticated);
+        // Set initial modal view only if modal exists and user is NOT authenticated,
+        // to avoid showing it if they are already logged in.
+        if (soulModal && !isAuthenticated) {
+            setSoulModalView('login'); 
+        }
+        console.log('[Reintegration] Initial UI update complete.');
+    } catch (error) {
+        console.error("[Reintegration] Error during initial checkToken/updateAuthUI:", error);
+        // Fallback to logged-out UI in case of error during initial check
+        await updateAuthUI(false); 
+        if (soulModal) {
+            setSoulModalView('login');
+        }
+    }
+})();
+
 // Particles - REMAINS COMMENTED OUT FOR NOW
 // for(let i=0; i<15; i++) createParticle(); 
 
-// console.log('[Reintegration Stage X] End of DOMContentLoaded setup.');
+// console.log('[Reintegration Stage X] End of DOMContentLoaded setup.'); // This log line is now part of the active DOMContentLoaded
