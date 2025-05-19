@@ -366,16 +366,22 @@ async function updateAuthUI(isAuthenticated) {
     const heroSignupButton = document.getElementById('heroSignupButton');
     const heroLoginButton = document.getElementById('heroLoginButton');
     const usernameDisplay = document.getElementById('usernameDisplay');
+    const userMenuAvatar = document.getElementById('userMenuAvatar');
     const registerLink = document.getElementById('registerLink');
 
     if (isAuthenticated) {
         if (authButtonsDiv) authButtonsDiv.style.display = 'none';
         if (userMenu) userMenu.style.display = 'inline-block'; 
         const user = await fetchCurrentUser(); 
-        if (user && usernameDisplay) {
-            usernameDisplay.textContent = user.username || 'Immortal';
-        } else if (usernameDisplay) {
-            usernameDisplay.textContent = 'Immortal'; 
+        if (user) {
+            if (usernameDisplay) usernameDisplay.textContent = user.username || 'Immortal';
+            if (userMenuAvatar) {
+                userMenuAvatar.src = user.avatar || 'assets/images/default-avatar.png';
+                userMenuAvatar.style.display = 'inline';
+            }
+        } else {
+            if (usernameDisplay) usernameDisplay.textContent = 'Immortal'; 
+            if (userMenuAvatar) userMenuAvatar.style.display = 'inline';
         }
         if (heroSignupButton) {
             heroSignupButton.textContent = 'Eternal Hearth';
@@ -741,16 +747,28 @@ if (userMenuButton && userDropdown) { ... }
 if (logoutLink) { ... }
 */
 
-// Initial auth state check and UI update - REMAINS COMMENTED OUT FOR NOW
-/*
-checkToken().then(isAuthenticated => {
-    updateAuthUI(isAuthenticated);
-    if (soulModal) setSoulModalView('login'); 
-}).catch(error => {
-    console.error("[Reintegration Stage X] Error during initial checkToken/updateAuthUI:", error);
-    updateAuthUI(false); 
-});
-*/
+// Initial auth state check and UI update - RE-ENABLING NOW
+(async () => {
+    try {
+        console.log('[Reintegration] Performing initial authentication check...');
+        const isAuthenticated = await checkToken();
+        console.log('[Reintegration] Initial isAuthenticated status:', isAuthenticated);
+        await updateAuthUI(isAuthenticated);
+        // Set initial modal view only if modal exists and user is NOT authenticated,
+        // to avoid showing it if they are already logged in.
+        if (soulModal && !isAuthenticated) {
+            setSoulModalView('login'); 
+        }
+        console.log('[Reintegration] Initial UI update complete.');
+    } catch (error) {
+        console.error("[Reintegration] Error during initial checkToken/updateAuthUI:", error);
+        // Fallback to logged-out UI in case of error during initial check
+        await updateAuthUI(false); 
+        if (soulModal) {
+            setSoulModalView('login');
+        }
+    }
+})();
 
 // Particles - REMAINS COMMENTED OUT FOR NOW
 // for(let i=0; i<15; i++) createParticle(); 
