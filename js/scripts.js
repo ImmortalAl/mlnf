@@ -394,8 +394,8 @@ async function updateAuthUI(isAuthenticated) {
             }
 
             if (userMenuAvatar) { 
-                const avatarUrlToSet = user.avatar || 'assets/images/default-avatar.png';
-                console.log(`[AuthUI] Attempting to set avatar. User avatar: ${user.avatar}, Fallback: assets/images/default-avatar.png. Effective URL: ${avatarUrlToSet}`);
+                const avatarUrlToSet = user.avatar || 'assets/default.jpg';
+                console.log(`[AuthUI] Attempting to set avatar. User avatar: ${user.avatar}, Fallback: assets/default.jpg. Effective URL: ${avatarUrlToSet}`);
                 userMenuAvatar.src = avatarUrlToSet; 
                 userMenuAvatar.alt = user.username ? `${user.username}'s avatar` : 'User Avatar';
                 userMenuAvatar.style.display = 'inline'; 
@@ -411,7 +411,7 @@ async function updateAuthUI(isAuthenticated) {
             }
             if (userMenuAvatar) {
                 console.log('[AuthUI] Attempting to set default avatar because user object is null.');
-                userMenuAvatar.src = 'assets/images/default-avatar.png';
+                userMenuAvatar.src = 'assets/default.jpg';
                 userMenuAvatar.alt = 'User Avatar';
                 userMenuAvatar.style.display = 'inline';
                 console.log('[AuthUI] userMenuAvatar src set to default:', userMenuAvatar.src);
