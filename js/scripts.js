@@ -464,12 +464,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Attach Header soulButton Listener
     if (headerSoulButton) {
-        headerSoulButton.addEventListener('click', () => {
+        headerSoulButton.addEventListener('click', async () => {
             console.log('[Debug Step] Header soulButton clicked.');
-            if (!localStorage.getItem('sessionToken')) { 
+            const isAuthenticated = await checkToken();
+            if (!isAuthenticated) { 
+                 console.log('[Debug Step] soulButton: User NOT authenticated by checkToken. Opening login modal.');
                  openSoulModal('login');
             } else {
-                console.log('[Debug Step] Header soulButton clicked while (simulated) logged in.');
+                console.log('[Debug Step] soulButton: User IS authenticated by checkToken. Toggling dropdown.');
                 if(userDropdown) userDropdown.classList.toggle('active'); 
             }
         });
