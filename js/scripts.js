@@ -584,6 +584,23 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Debug Step] Header headerRegisterButton (id: headerRegisterButton) not found!');
     }
 
+    // LOGOUT LINK LISTENER
+    if (logoutLink) {
+        logoutLink.addEventListener('click', async (e) => {
+            e.preventDefault(); // Prevent navigation
+            console.log('[Debug Step] Logout link clicked.');
+            await logout(); // Call the async logout function
+            // The user dropdown should ideally close as part of updateAuthUI(false)
+            // but we can also explicitly close it here if needed.
+            if (userDropdown && userDropdown.classList.contains('active')) {
+                userDropdown.classList.remove('active');
+            }
+        });
+        console.log('[Debug Step] Listener for logoutLink ATTACHED.');
+    } else {
+        console.error('[Debug Step] logoutLink not found! Cannot attach listener.');
+    }
+
     // 4. Theme Toggle Logic
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
