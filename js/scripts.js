@@ -369,25 +369,54 @@ async function updateAuthUI(isAuthenticated) {
     const registerLink = document.getElementById('registerLink');
 
     if (isAuthenticated) {
+        console.log('[AuthUI] User IS authenticated. Updating UI for logged-in state.');
         if (authButtonsDiv) authButtonsDiv.style.display = 'none';
-        if (userMenu) userMenu.style.display = 'inline-block'; 
+        if (userMenu) {
+            userMenu.style.display = 'inline-block'; 
+            console.log('[AuthUI] userMenu display set to inline-block.');
+        } else {
+            console.warn('[AuthUI] userMenu element NOT found.');
+        }
         
-        const userMenuAvatar = document.getElementById('userMenuAvatar'); // Get it AFTER userMenu is displayed
+        const userMenuAvatar = document.getElementById('userMenuAvatar');
+        console.log('[AuthUI] userMenuAvatar element:', userMenuAvatar);
 
         const user = await fetchCurrentUser(); 
+        console.log('[AuthUI] fetchCurrentUser result:', user);
+
         if (user) {
-            if (usernameDisplay) usernameDisplay.textContent = user.username || 'Immortal';
+            console.log('[AuthUI] User object fetched:', JSON.stringify(user));
+            if (usernameDisplay) {
+                usernameDisplay.textContent = user.username || 'Immortal';
+                console.log('[AuthUI] usernameDisplay updated to:', usernameDisplay.textContent);
+            } else {
+                console.warn('[AuthUI] usernameDisplay element NOT found.');
+            }
+
             if (userMenuAvatar) { 
-                userMenuAvatar.src = user.avatar || 'assets/images/default-avatar.png'; 
-                userMenuAvatar.alt = user.username ? `${user.username}'s avatar` : 'User Avatar'; // Set dynamic alt text
+                const avatarUrlToSet = user.avatar || 'assets/images/default-avatar.png';
+                console.log(`[AuthUI] Attempting to set avatar. User avatar: ${user.avatar}, Fallback: assets/images/default-avatar.png. Effective URL: ${avatarUrlToSet}`);
+                userMenuAvatar.src = avatarUrlToSet; 
+                userMenuAvatar.alt = user.username ? `${user.username}'s avatar` : 'User Avatar';
                 userMenuAvatar.style.display = 'inline'; 
+                console.log('[AuthUI] userMenuAvatar src set to:', userMenuAvatar.src, 'alt to:', userMenuAvatar.alt);
+            } else {
+                console.warn('[AuthUI] userMenuAvatar element NOT found when trying to set user-specific avatar.');
             }
         } else { // User fetch failed or no user data, but still authenticated (e.g. token valid but /me fails)
-            if (usernameDisplay) usernameDisplay.textContent = 'Immortal'; 
+            console.warn('[AuthUI] fetchCurrentUser returned null/false, but isAuthenticated is true. Using default display.');
+            if (usernameDisplay) {
+                usernameDisplay.textContent = 'Immortal'; 
+                console.log('[AuthUI] usernameDisplay set to default "Immortal".');
+            }
             if (userMenuAvatar) {
+                console.log('[AuthUI] Attempting to set default avatar because user object is null.');
                 userMenuAvatar.src = 'assets/images/default-avatar.png';
                 userMenuAvatar.alt = 'User Avatar';
                 userMenuAvatar.style.display = 'inline';
+                console.log('[AuthUI] userMenuAvatar src set to default:', userMenuAvatar.src);
+            } else {
+                console.warn('[AuthUI] userMenuAvatar element NOT found when trying to set default avatar.');
             }
         }
         if (heroSignupButton) {
