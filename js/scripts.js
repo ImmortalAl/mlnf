@@ -366,22 +366,29 @@ async function updateAuthUI(isAuthenticated) {
     const heroSignupButton = document.getElementById('heroSignupButton');
     const heroLoginButton = document.getElementById('heroLoginButton');
     const usernameDisplay = document.getElementById('usernameDisplay');
-    const userMenuAvatar = document.getElementById('userMenuAvatar');
     const registerLink = document.getElementById('registerLink');
 
     if (isAuthenticated) {
         if (authButtonsDiv) authButtonsDiv.style.display = 'none';
         if (userMenu) userMenu.style.display = 'inline-block'; 
+        
+        const userMenuAvatar = document.getElementById('userMenuAvatar'); // Get it AFTER userMenu is displayed
+
         const user = await fetchCurrentUser(); 
         if (user) {
             if (usernameDisplay) usernameDisplay.textContent = user.username || 'Immortal';
+            if (userMenuAvatar) { 
+                userMenuAvatar.src = user.avatar || 'assets/images/default-avatar.png'; 
+                userMenuAvatar.alt = user.username ? `${user.username}'s avatar` : 'User Avatar'; // Set dynamic alt text
+                userMenuAvatar.style.display = 'inline'; 
+            }
+        } else { // User fetch failed or no user data, but still authenticated (e.g. token valid but /me fails)
+            if (usernameDisplay) usernameDisplay.textContent = 'Immortal'; 
             if (userMenuAvatar) {
-                userMenuAvatar.src = user.avatar || 'assets/images/default-avatar.png';
+                userMenuAvatar.src = 'assets/images/default-avatar.png';
+                userMenuAvatar.alt = 'User Avatar';
                 userMenuAvatar.style.display = 'inline';
             }
-        } else {
-            if (usernameDisplay) usernameDisplay.textContent = 'Immortal'; 
-            if (userMenuAvatar) userMenuAvatar.style.display = 'inline';
         }
         if (heroSignupButton) {
             heroSignupButton.textContent = 'Eternal Hearth';
