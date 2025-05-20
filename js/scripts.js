@@ -745,6 +745,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Reintegration] Could not attach soul modal form listener. soulLoginForm or soulModal not found.');
     }
 
+    // Attach logout event listener
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+        console.log('[Debug Step] Listener for logoutLink (Transcend Session) ATTACHED.');
+    } else {
+        console.error('[Debug Step] logoutLink (id: logoutLink) not found!');
+    }
+
 });
 
 // Sidebar, Message Modal, User Menu, Logout Link listeners.
