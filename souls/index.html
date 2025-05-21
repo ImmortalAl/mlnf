@@ -260,14 +260,21 @@
         .profile-card-avatar {
             width: 60px;
             height: 60px;
+            min-width: 60px;
+            min-height: 60px;
             border-radius: 50%;
             border: 2px solid var(--accent);
             object-fit: cover;
-            transition: border-color 0.3s ease, transform 0.3s ease;
+            transition: border-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
             transform: translateZ(0);
-            will-change: transform, border-color;
+            will-change: transform, border-color, opacity;
             background-color: var(--secondary);
             display: block;
+            opacity: 0.7;
+        }
+
+        .profile-card-avatar.loaded {
+            opacity: 1;
         }
 
         .profile-card:hover .profile-card-avatar {
@@ -921,14 +928,12 @@
             // Ensure we have default values for everything
             const name = profile.displayName || profile.username || 'Anonymous Soul';
             const username = profile.username ? `@${profile.username}` : '@anonymous';
-            let avatar = profile.avatar || DEFAULT_AVATAR; // Use let to allow modification
+            let avatar = profile.avatar || DEFAULT_AVATAR; 
             const bio = profile.bio || 'This soul has not shared their story yet.';
             
-            // Default stats
             const posts = profile.stats?.posts || 0;
             const connections = profile.stats?.connections || 0;
             
-            // Default level based on join date or random
             let level = "Soul Seeker";
             if (profile.level) {
                 level = profile.level;
@@ -942,12 +947,10 @@
                 else if (daysSinceJoin > 7) level = "Illuminated";
             }
             
-            // Create the profile card HTML with optimized HTML structure
-            // Image pre-loading is good, but also set a background or fixed dimensions in CSS
             const cardHTML = `
                 <a href="/souls/${profile.username || 'anonymous'}" class="profile-card" data-username="${profile.username || 'anonymous'}">
                     <div class="profile-card-header">
-                        <img src="${DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar" onerror="this.src='${DEFAULT_AVATAR}'; this.classList.remove('lazy-avatar');">
+                        <img src="${DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar">
                         <div class="profile-card-info">
                             <h3>${name}</h3>
                             <p class="username">${username}</p>
@@ -981,33 +984,32 @@
             
             try {
                 const fragment = document.createDocumentFragment();
-                const tempContainer = document.createElement('div');
-                tempContainer.innerHTML = profiles.map(createProfileCard).join('');
+                profiles.forEach(profile => {
+                    const cardHTML = createProfileCard(profile);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = cardHTML.trim();
+                    fragment.appendChild(tempDiv.firstChild);
+                });
                 
-                while (tempContainer.firstChild) {
-                    fragment.appendChild(tempContainer.firstChild);
-                }
-                
-                profilesGrid.innerHTML = '';
+                profilesGrid.innerHTML = ''; // Clear existing
                 profilesGrid.appendChild(fragment);
                 
-                // After rendering, load lazy images
                 const lazyAvatars = profilesGrid.querySelectorAll('.lazy-avatar');
                 lazyAvatars.forEach(img => {
-                    img.onload = () => {
-                        img.classList.remove('lazy-avatar'); // Optional: remove class if you have specific lazy styles
-                    };
-                    img.onerror = () => { // Ensure onerror is also set here if it wasn't caught by the inline one
-                        img.src = DEFAULT_AVATAR;
+                    const actualSrc = img.dataset.src;
+                    const tempImage = new Image();
+                    tempImage.onload = () => {
+                        img.src = actualSrc;
+                        img.classList.add('loaded'); 
                         img.classList.remove('lazy-avatar');
                     };
-                    img.src = img.dataset.src;
+                    tempImage.onerror = () => {
+                        img.src = DEFAULT_AVATAR; // Fallback
+                        img.classList.add('loaded'); // Still mark as 'loaded' to remove initial opacity
+                        img.classList.remove('lazy-avatar');
+                    };
+                    tempImage.src = actualSrc; // Start loading in background
                 });
-
-                profilesGrid.style.opacity = '0.99'; // Minor repaint trick
-                setTimeout(() => {
-                    profilesGrid.style.opacity = '1';
-                }, 10);
 
             } catch (error) {
                 console.error('Error rendering profiles:', error);
@@ -1286,31 +1288,39 @@
             const sidebarUsername = document.getElementById('sidebarUsername');
             const sidebarStatus = document.getElementById('sidebarStatus');
             
-            // Ensure openSidebarBtn exists before adding event listener
-            if (openSidebarBtn) {
+            // Simplified Sidebar Logic:
+            // Ensure elements exist before adding listeners.
+            if (openSidebarBtn && userSidebar && sidebarOverlay) {
                 openSidebarBtn.addEventListener('click', () => {
+                    console.log("Open sidebar button clicked");
                     userSidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
-                    document.body.style.overflow = 'hidden'; // Prevent background scroll
+                    document.body.style.overflow = 'hidden';
                 });
+            } else {
+                console.error("Sidebar toggle button, sidebar, or overlay not found for open action.");
             }
             
-            // Ensure closeSidebarBtn exists
-            if (closeSidebarBtn) {
+            if (closeSidebarBtn && userSidebar && sidebarOverlay) {
                 closeSidebarBtn.addEventListener('click', () => {
+                    console.log("Close sidebar button clicked");
                     userSidebar.classList.remove('active');
                     sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = ''; // Restore scroll
+                    document.body.style.overflow = '';
                 });
+            } else {
+                console.error("Sidebar close button, sidebar, or overlay not found for close action.");
             }
             
-            // Ensure sidebarOverlay exists
-            if (sidebarOverlay) {
+            if (sidebarOverlay && userSidebar) { // Overlay also closes the sidebar
                 sidebarOverlay.addEventListener('click', () => {
+                    console.log("Sidebar overlay clicked");
                     userSidebar.classList.remove('active');
                     sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = ''; // Restore scroll
+                    document.body.style.overflow = '';
                 });
+            } else {
+                console.error("Sidebar overlay or sidebar not found for overlay click action.");
             }
             
             // Logout functionality
