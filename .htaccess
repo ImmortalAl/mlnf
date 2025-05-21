@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Handle /profile (personal profile)
+RewriteRule ^profile/?$ pages/profile/index.html [L]
+
+# Handle /souls (community directory)
+RewriteRule ^souls/?$ pages/souls/index.html [L]
+
+# Handle /souls/username (individual profiles)
+RewriteRule ^souls/([^/]+)/?$ pages/souls/profile.html?username=$1 [L,QSA]
+
+# Redirect old URLs to new format
+RewriteCond %{QUERY_STRING} username=([^&]+)
+RewriteRule ^pages/souls/profile\.html$ /souls/%1? [R=301,L] 

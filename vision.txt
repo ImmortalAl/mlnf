@@ -7,6 +7,12 @@ A digital sanctuary for free-thinkers to:
 - Build a timeless community of like-minded individuals
 - Transcend conventional boundaries of thought and expression
 
+## Core Philosophy
+- Immortality
+- truth
+- freedom
+- Direct Democracy
+
 ## Core Features & Development Status
 
 ### Phase 1 - Foundation (Current)
@@ -27,10 +33,15 @@ A digital sanctuary for free-thinkers to:
   - Nested comments
   - Rich text editing
   - Content moderation tools
+  - Direct Democracy voting
 🔄 User Profiles
   - Customizable profiles
   - Activity history
   - User roles (regular, moderator, admin)
+  - Profile privacy settings
+  - Soul Journal (private/public thought sharing)
+    -historical statuses
+  - Status indicators with visibility options
 🔄 Real-time Features
   - Online user sidebar
   - Direct messaging system
@@ -49,6 +60,17 @@ A digital sanctuary for free-thinkers to:
   - User-submitted stories
   - Source credibility tracking
   - Community fact-checking
+📋 Eternal Truth Verification
+  - Claim identification system
+  - Living evidence repository
+  - Real-time consensus tracking
+  - Evidence threading
+  - Historical trend visualization
+📋 Knowledge Bookmarks
+  - Personal collections
+  - Content tagging
+  - Search functionality
+  - Curated reading lists
 
 ### Phase 4 - Media & Content
 📋 Media Archive
@@ -80,12 +102,40 @@ A digital sanctuary for free-thinkers to:
 - XSS protection
 - CORS configuration
 
+## User Experience Design
+
+### User Flow & Navigation
+- Lander.html serves as "base camp"/dashboard for logged-in users
+- Welcome message modal for new users explaining site philosophy
+- Clear separation between personal profile ("My Soul") and community directory ("Eternal Souls")
+- Structured dropdown menu with logical grouping of features
+
+### URL Structure
+- /profile - Personal profile and dashboard
+- /profile/edit - Profile customization
+- /souls - Community directory (replacing profiles.html)
+- /souls/username - Individual user profiles
+
+### Profile Architecture
+- Privacy tiers for profile visibility and discoverability
+- Automatic online detection with privacy toggle
+- Custom status messages
+- Personal analytics visible only to profile owner
+- Option to make profiles invitation-only
+- Contact permission settings
+
+### Community Features
+- Thought Messengers
+  - Thread-based communication
+  - Option to publish valuable exchanges
+
 ## Development Notes
 
 ### Current Focus
 - Implementing message board functionality
 - Enhancing user profiles
 - Setting up real-time features
+- Developing Soul Journal functionality
 
 ### Known Issues
 - Case-sensitive file paths causing import issues
@@ -97,8 +147,25 @@ A digital sanctuary for free-thinkers to:
 - Scaling strategy for media storage
 - Community moderation tools
 - Content backup systems
+- Philosophical Compass for visualizing user stance on key concepts
+- Advanced settings page with comprehensive controls:
+  - Account settings
+  - Privacy controls
+  - Notification preferences
+  - Appearance customization
+  - Content filters
+  - Security options
+  - Data management
+- Soul Connections (future)
+  - Non-reciprocal following system
+  - Mental proximity visualizations
+  - Trust networks
+  - Collaborative potential matching
+- Soul Resonance (future)
+  - Algorithmic intellectual compatibility matching
+  - Based on content interactions not popularity
 
-## Directory Structure
+## Directory Structure (frontend and backend are siblings nested within C:\Users\coold\Documents\Sites\MLNF\)
 Frontend (MLNF/):
 ```
 ├── assets/
@@ -126,10 +193,15 @@ Backend (mlnf-auth/):
 4. Security-first approach
 5. Performance optimization
 6. Clear documentation
+7. Focus on quality of exchange over quantity
 
 ## Next Steps
-1. Implement message board core functionality
-2. Set up real-time user presence
-3. Develop direct messaging system
-4. Create moderation tools
-5. Enhance profile customization
+1. Implement welcome message modal for new users
+  -Communicate site philosophy to new users (to-do)
+2. Develop Soul Journal basic functionality
+3. Set up proper URL structure and navigation flow
+4. Implement profile privacy settings
+5. Create dedicated settings section 
+6. Develop messaging system enhancements
+7. Begin Eternal Truth Verification system foundation
+8. Update community directory (Eternal Souls)

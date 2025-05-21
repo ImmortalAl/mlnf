@@ -1201,7 +1201,7 @@
             if (!users) return;
 
             const newHTML = users.map(user => `
-                <div class="profile-card" data-id="${user._id}">
+                <div class="profile-card" data-id="${user._id}" onclick="window.location.href='/souls/${user.username}'">
                     <img src="${escapeHTML(user.avatar || 'https://via.placeholder.com/150')}" alt="${escapeHTML(user.displayName || user.username)}">
                     <div class="profile-info">
                         <h3>${escapeHTML(user.displayName || user.username)}</h3>

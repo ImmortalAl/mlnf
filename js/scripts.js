@@ -400,7 +400,7 @@ async function updateAuthUI(isAuthenticated) {
         }
         if (heroLoginButton) {
             heroLoginButton.textContent = 'My Soul';
-            heroLoginButton.href = 'pages/profile';
+            heroLoginButton.href = '/profile';
             heroLoginButton.onclick = null; 
         }
         if (activeUsers && activeUsers.classList.contains('active')) {
@@ -687,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  openSoulModal('register');
             } else {
                 console.log('[Debug Step] Header headerRegisterButton clicked while logged in, redirecting to profile.');
-                window.location.href = 'pages/profile';
+                window.location.href = '/profile';
             }
         });
         console.log('[Debug Step] Listener for header headerRegisterButton ATTACHED.');

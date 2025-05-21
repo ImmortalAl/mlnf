@@ -434,16 +434,27 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async () => {
-            const username = window.location.pathname.split('/').pop().replace('.html', '');
+            // Try to get username from URL path first (new format: /souls/username/)
+            let username = window.location.pathname.split('/').pop();
+            
+            // If not found in path, try query parameter (old format: ?username=username)
+            if (!username || username === 'profile.html') {
+                const urlParams = new URLSearchParams(window.location.search);
+                username = urlParams.get('username');
+            }
+            
             if (!username) {
                 errorMessage.style.display = 'block';
                 errorMessage.textContent = 'No username specified. Redirecting...';
-                setTimeout(() => window.location.href = '../profiles.html', 2000);
+                setTimeout(() => window.location.href = '/souls', 2000);
                 return;
             }
+            
             const user = await fetchUser(username);
             if (user) {
                 renderProfile(user);
+                // Update document title with username
+                document.title = `${user.displayName || user.username}'s Soul - MLNF`;
             }
         });
     </script>
