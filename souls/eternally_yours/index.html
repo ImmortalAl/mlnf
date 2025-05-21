@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Eternal profile of a liberated spirit at Manifest Liberation, Naturally Free.">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Eternal Seeker - Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --warning: #ffca28;
+            --danger: #ff4444;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        main {
+            padding: 3rem 2rem;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .profile-container {
+            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--accent);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            transition: var(--transition);
+        }
+
+        .profile-header img:hover {
+            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+        }
+
+        .profile-header h1 {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .profile-info p {
+            margin: 0.5rem 0;
+        }
+
+        .profile-info .status {
+            font-style: italic;
+            color: var(--success);
+        }
+
+        .profile-info .bio {
+            margin: 1rem 0;
+            color: #d9ccff;
+        }
+
+        .profile-info .joined {
+            font-size: 0.9rem;
+            color: #a8a8cc;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-header img {
+                width: 80px;
+                height: 80px;
+            }
+            .profile-actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-infinity"></i>
+            <h1>MLNF</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a></li>
+                <li><a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a></li>
+                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Message Board</a></li>
+                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> News</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="profile-container">
+            <div class="profile-header">
+                <img src="/assets/images/default-avatar.png" alt="Eternal Seeker's Avatar">
+                <div>
+                    <h1>Eternal Seeker</h1>
+                    <p>@eternally_yours</p>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <p class="status">Exploring the infinity of consciousness</p>
+                <p class="bio">Wandering through the infinite realms of consciousness, seeking truth and connection.</p>
+                <p class="joined">Joined The Eternity: August 8, 2022</p>
+                
+                <div class="stats">
+                    <p><i class="fas fa-feather-alt"></i> Posts: 42</p>
+                    <p><i class="fas fa-users"></i> Connections: 108</p>
+                    <p><i class="fas fa-star"></i> Soul Level: Enlightened</p>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <button class="btn btn-primary">Connect</button>
+                <button class="btn btn-outline">Send Message</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+        <p>Embrace your infinite potential and connect across eternity.</p>
+    </footer>
+
+    <script>
+        // Add any profile-specific functionality here
+        document.addEventListener('DOMContentLoaded', () => {
+            const connectBtn = document.querySelector('.btn-primary');
+            const messageBtn = document.querySelector('.btn-outline');
+            
+            connectBtn.addEventListener('click', () => {
+                // TODO: Implement connection functionality
+                alert('Connection request sent to Eternal Seeker');
+            });
+            
+            messageBtn.addEventListener('click', () => {
+                // TODO: Implement messaging functionality
+                alert('Message feature coming soon!');
+            });
+        });
+    </script>
+</body>
+</html> 

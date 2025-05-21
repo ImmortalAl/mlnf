@@ -3,10 +3,491 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0;url=/pages/souls/index.html">
-    <title>Redirecting...</title>
+    <meta name="description" content="Connect with liberated spirits in an eternal sanctuary at Manifest Liberation, Naturally Free.">
+    <meta name="theme-color" content="#0d0d1a">
+    <meta property="og:title" content="Eternal Souls - Manifest Liberation, Naturally Free">
+    <meta property="og:description" content="Discover profiles of free-thinkers united in a timeless community.">
+    <meta property="og:url" content="https://mlnf.net/souls">
+    <meta property="og:type" content="website">
+    <title>Eternal Souls - Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --gradient-accent: linear-gradient(45deg, var(--accent), #ff8f00);
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+            --panel-width: 300px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%);
+            background-size: 400% 100%;
+            animation: skeletonShimmer 1.5s infinite;
+        }
+
+        @keyframes skeletonShimmer {
+            0% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        nav {
+            margin-left: auto;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+        }
+
+        main {
+            padding: 3rem 2rem;
+            flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -moz-text-fill-color: transparent;
+            color: transparent;
+            will-change: color;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            width: min(100%, 400px);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-bar input {
+            padding: 0.8rem 2.5rem 0.8rem 0.8rem;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
+        }
+
+        .search-bar .clear-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .search-bar .clear-btn.visible {
+            opacity: 1;
+        }
+
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+
+        .profiles-grid.loading {
+            opacity: 0.3;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+            border-left: 5px solid var(--accent);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            will-change: transform, box-shadow, border-left-color;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            border-left-color: #ff8f00;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .profile-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .profile-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-card-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .profile-card:hover .profile-card-avatar {
+            border-color: #ff8f00;
+            transform: scale(1.05);
+        }
+
+        .profile-card-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+            color: var(--accent);
+        }
+
+        .profile-card-info .username {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-card-bio {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            opacity: 0.9;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 94, 120, 0.2);
+        }
+
+        .profile-card-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .stat-item i {
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        .profile-card-level {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 94, 120, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--accent);
+            margin-top: 2rem;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .profiles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to Eternal Souls directory... <a href="/pages/souls/index.html">Click here if you are not redirected automatically</a>.</p>
+    <header>
+        <div class="logo">
+            <i class="fas fa-infinity"></i>
+            <h1>MLNF</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a></li>
+                <li><a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a></li>
+                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Message Board</a></li>
+                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> News</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="section-title">
+            <h2>Eternal Souls</h2>
+            <p>Connect with liberated spirits in our eternal sanctuary</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search souls by name or interests...">
+            <button class="clear-btn" id="clearSearch"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="profiles-grid" id="profilesGrid">
+            <!-- Profile cards will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+        <p>Embrace your infinite potential and connect across eternity.</p>
+    </footer>
+
+    <script>
+        // Sample profile data - In production, this would come from a backend API
+        const profiles = [
+            {
+                id: 1,
+                name: "Eternal Seeker",
+                username: "@eternally_yours",
+                avatar: "/assets/images/default-avatar.png",
+                bio: "Wandering through the infinite realms of consciousness, seeking truth and connection.",
+                posts: 42,
+                connections: 108,
+                level: "Enlightened"
+            },
+            {
+                id: 2,
+                name: "Cosmic Wanderer",
+                username: "@stardust_soul",
+                avatar: "/assets/images/default-avatar.png",
+                bio: "Dancing with the stars, embracing the eternal flow of universal energy.",
+                posts: 73,
+                connections: 156,
+                level: "Ascended"
+            },
+            {
+                id: 3,
+                name: "Light Bearer",
+                username: "@inner_flame",
+                avatar: "/assets/images/default-avatar.png",
+                bio: "Illuminating the path for fellow souls, sharing wisdom across dimensions.",
+                posts: 91,
+                connections: 247,
+                level: "Illuminated"
+            }
+        ];
+
+        function createProfileCard(profile) {
+            return `
+                <a href="/souls/${profile.username.substring(1)}" class="profile-card">
+                    <div class="profile-card-header">
+                        <img src="${profile.avatar}" alt="${profile.name}" class="profile-card-avatar">
+                        <div class="profile-card-info">
+                            <h3>${profile.name}</h3>
+                            <p class="username">${profile.username}</p>
+                        </div>
+                    </div>
+                    <p class="profile-card-bio">${profile.bio}</p>
+                    <div class="profile-card-footer">
+                        <div class="profile-card-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-feather-alt"></i>
+                                <span>${profile.posts}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-users"></i>
+                                <span>${profile.connections}</span>
+                            </div>
+                        </div>
+                        <div class="profile-card-level">${profile.level}</div>
+                    </div>
+                </a>
+            `;
+        }
+
+        function renderProfiles(profilesToRender) {
+            const grid = document.getElementById('profilesGrid');
+            grid.innerHTML = profilesToRender.map(createProfileCard).join('');
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            clearSearch.classList.toggle('visible', searchTerm.length > 0);
+            
+            const filteredProfiles = profiles.filter(profile => 
+                profile.name.toLowerCase().includes(searchTerm) || 
+                profile.username.toLowerCase().includes(searchTerm) ||
+                profile.bio.toLowerCase().includes(searchTerm)
+            );
+            
+            renderProfiles(filteredProfiles);
+        });
+
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearch.classList.remove('visible');
+            renderProfiles(profiles);
+        });
+
+        // Initial render
+        renderProfiles(profiles);
+    </script>
 </body>
 </html> 
