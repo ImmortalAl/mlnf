@@ -1328,6 +1328,7 @@
             const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
             
             function handleLogout() {
+                console.log("[Souls Page] Logout initiated");
                 localStorage.removeItem('sessionToken');
                 localStorage.removeItem('user');
                 window.location.href = '/lander.html';
@@ -1402,71 +1403,104 @@
         
         // Update user information from localStorage or API
         function updateUserInfo() {
+            console.log("[Souls Page] updateUserInfo called");
             // Elements to update
             const userMenuAvatar = document.getElementById('userMenuAvatar');
             const userMenuName = document.getElementById('userMenuName');
             const sidebarAvatar = document.getElementById('sidebarAvatar');
             const sidebarUsername = document.getElementById('sidebarUsername');
             const sidebarStatus = document.getElementById('sidebarStatus');
-            
+            const openSidebarBtn = document.getElementById('openSidebar'); // Get the button
+            const userDropdown = document.getElementById('userDropdown'); // Get the dropdown itself
+
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
             const cachedUser = localStorage.getItem('user');
-            
+
+            console.log("[Souls Page] Token:", token ? 'Exists' : 'Not Found');
+            console.log("[Souls Page] Cached User String:", cachedUser);
+
             if (token && cachedUser) {
                 try {
                     const userData = JSON.parse(cachedUser);
+                    console.log("[Souls Page] Successfully parsed userData:", userData);
                     
-                    // Update user menu
-                    userMenuAvatar.src = userData.avatar || '/assets/images/default-avatar.png';
-                    userMenuAvatar.onerror = () => userMenuAvatar.src = '/assets/images/default-avatar.png';
-                    userMenuName.textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    // Update user menu button content (avatar and name)
+                    if (userMenuAvatar) userMenuAvatar.src = userData.avatar || DEFAULT_AVATAR;
+                    if (userMenuAvatar) userMenuAvatar.onerror = () => userMenuAvatar.src = DEFAULT_AVATAR;
+                    if (userMenuName) userMenuName.textContent = userData.displayName || userData.username || 'Soul Seeker';
                     
-                    // Update sidebar
-                    sidebarAvatar.src = userData.avatar || '/assets/images/default-avatar.png';
-                    sidebarAvatar.onerror = () => sidebarAvatar.src = '/assets/images/default-avatar.png';
-                    sidebarUsername.textContent = userData.displayName || userData.username || 'Soul Seeker';
-                    sidebarStatus.textContent = userData.status || 'Exploring the eternal realm...';
+                    // Populate the actual dropdown menu for logged-in user
+                    if (userDropdown) {
+                        userDropdown.innerHTML = `
+                            <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
+                            <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
+                            <div class="divider"></div>
+                            <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+                            ${(window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') ? '<a href="/souls" id="dropdownSoulsLink"><i class="fas fa-users"></i> Eternal Souls</a>' : ''}
+                            <div class="divider"></div>
+                            <a href="#" id="logoutBtnInsideDropdown"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+                        `;
+                        // Re-attach logout listener for this new button
+                        const logoutBtnInDropdown = document.getElementById('logoutBtnInsideDropdown');
+                        if (logoutBtnInDropdown) {
+                            logoutBtnInDropdown.addEventListener('click', handleLogout); // handleLogout should be defined in this scope or globally
+                        }
+                        // Re-apply logic to hide souls link if on souls page (if it was added)
+                        if (window.location.pathname === '/souls' || window.location.pathname === '/souls/') {
+                            const dropdownSoulsLink = document.getElementById('dropdownSoulsLink');
+                            if (dropdownSoulsLink) dropdownSoulsLink.style.display = 'none';
+                        }
+                    }
+
+                    // Update sidebar content
+                    if (sidebarAvatar) sidebarAvatar.src = userData.avatar || DEFAULT_AVATAR;
+                    if (sidebarAvatar) sidebarAvatar.onerror = () => sidebarAvatar.src = DEFAULT_AVATAR;
+                    if (sidebarUsername) sidebarUsername.textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    if (sidebarStatus) sidebarStatus.textContent = userData.status || 'Exploring the eternal realm...';
                     
-                    document.querySelectorAll('.user-menu, .open-sidebar-btn').forEach(el => {
-                        el.style.display = 'flex';
-                    });
+                    // Ensure user-specific buttons/menus are visible
+                    document.querySelectorAll('.user-menu').forEach(el => el.style.display = 'flex');
+                    if (openSidebarBtn) openSidebarBtn.style.display = 'flex'; // Explicitly show sidebar button
+
+                    console.log("[Souls Page] UI updated for logged-in user.");
                     
                 } catch (error) {
-                    console.error('Error parsing user data:', error);
-                    setGuestUI();
+                    console.error('[Souls Page] Error parsing user data or updating UI for logged-in user:', error);
+                    setGuestUI(); // Fallback to guest UI on error
                 }
             } else {
+                console.log("[Souls Page] No token or cachedUser found. Setting guest UI.");
                 setGuestUI();
             }
         }
         
         // Set UI for guest users
         function setGuestUI() {
+            console.log("[Souls Page] setGuestUI called");
             const userMenuAvatar = document.getElementById('userMenuAvatar');
             const userMenuName = document.getElementById('userMenuName');
-            
-            userMenuAvatar.src = '/assets/images/default-avatar.png';
-            userMenuName.textContent = 'Guest';
-            
-            // Show login options in dropdown
             const userDropdown = document.getElementById('userDropdown');
-            let dropdownHTML = `
-                <a href="/pages/auth.html?mode=login"><i class="fas fa-sign-in-alt"></i> Login</a>
-                <a href="/pages/auth.html?mode=register"><i class="fas fa-user-plus"></i> Register</a>
-                <div class="divider"></div>
-                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>`;
-
-            // Conditionally add Eternal Souls link
-            if (window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') {
-                dropdownHTML += `<a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>`;
-            }
+            const openSidebarBtn = document.getElementById('openSidebar');
             
-            userDropdown.innerHTML = dropdownHTML;
+            if (userMenuAvatar) userMenuAvatar.src = DEFAULT_AVATAR;
+            if (userMenuName) userMenuName.textContent = 'Guest';
+            
+            // Populate dropdown for guest
+            if (userDropdown) {
+                userDropdown.innerHTML = `
+                    <a href="/pages/auth.html?mode=login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="/pages/auth.html?mode=register"><i class="fas fa-user-plus"></i> Register</a>
+                    <div class="divider"></div>
+                    <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+                    ${(window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') ? '<a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>' : ''}
+                `;
+            }
 
-            // Hide user-specific elements like sidebar toggle if it relies on user data
-             const openSidebarBtn = document.getElementById('openSidebar');
-             if(openSidebarBtn) openSidebarBtn.style.display = 'none';
+            // Hide user-specific elements
+            if (openSidebarBtn) openSidebarBtn.style.display = 'none';
+            // The main .user-menu button itself (holding avatar/name) might still be flex, but its content and dropdown reflect guest state.
+            console.log("[Souls Page] Guest UI set.");
         }
     </script>
 </body>
