@@ -640,45 +640,196 @@
             document.getElementById('directoryStatus').className = 
                 `setting-status ${directorySetting === 'unlisted' ? 'status-disabled' : 'status-enabled'}`;
             
-            // TODO: Save to database or localStorage
+            // Save privacy settings to localStorage
+            const privacySettings = {
+                visibility: visibilitySetting,
+                messaging: messagingSetting,
+                directory: directorySetting
+            };
+            localStorage.setItem('mlnf_privacy_settings', JSON.stringify(privacySettings));
             
             // Close modal
             privacyModal.style.display = 'none';
         });
         
-        // Load profile data - simulated for now
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                // Hide loading, show profile
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('profileCard').style.display = 'block';
-                
-                // Simulate profile data
-                document.getElementById('profileDisplayName').textContent = 'Eternal Seeker';
-                document.getElementById('profileUsername').textContent = '@eternally_yours';
-                document.getElementById('profileStatus').textContent = 'Exploring the infinity of consciousness';
-                document.getElementById('profileBio').textContent = 'A soul wandering through the eternal realms, seeking liberation and manifesting freedom in all dimensions. I am here to connect with like-minded entities and share the journey through the infinite void of possibilities.';
-                document.getElementById('postsCount').textContent = '42';
-                document.getElementById('commentsCount').textContent = '108';
-                document.getElementById('connectionCount').textContent = '333';
-                document.getElementById('joinedDate').textContent = 'August 8, 2022';
-                document.getElementById('userLevel').textContent = 'Enlightened Seeker';
-                document.getElementById('userCommunity').textContent = 'Cosmic Wanderers';
-                document.getElementById('usernameDisplay').textContent = 'Eternal Seeker';
-                
-                // Check for actual user data in localStorage or session
-                const storedUsername = localStorage.getItem('mlnf_username');
-                if (storedUsername) {
-                    fetchUserProfile(storedUsername);
+        // API constants
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
+        const DEFAULT_AVATAR = '/assets/images/default-avatar.png';
+        
+        // Function to check if user is authenticated
+        function checkAuthentication() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                displayError('You need to be logged in to view your profile.', true);
+                return null;
+            }
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.exp * 1000 < Date.now()) {
+                    localStorage.removeItem('sessionToken');
+                    displayError('Your session has expired. Please log in again.', true);
+                    return null;
                 }
-            }, 1500); // Simulate loading time
+                return token;
+            } catch (e) {
+                console.error('Invalid token format:', e);
+                localStorage.removeItem('sessionToken');
+                displayError('Authentication error. Please log in again.', true);
+                return null;
+            }
+        }
+        
+        // Function to display errors
+        function displayError(message, isRedirect = false) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            document.getElementById('loading').style.display = 'none';
+            
+            if (isRedirect) {
+                setTimeout(() => {
+                    window.location.href = '/pages/auth.html?mode=login&redirect=/profile/';
+                }, 3000);
+            }
+        }
+        
+        // Load profile data from API or localStorage
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Show loading state
+                document.getElementById('loading').style.display = 'flex';
+                document.getElementById('profileCard').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+                
+                // Check authentication
+                const token = checkAuthentication();
+                if (!token) return; // Error is already displayed by checkAuthentication
+                
+                // Try to get user from localStorage first
+                let userData = null;
+                const cachedUser = localStorage.getItem('user');
+                
+                if (cachedUser) {
+                    try {
+                        userData = JSON.parse(cachedUser);
+                        console.log('Using cached user data:', userData);
+                    } catch (e) {
+                        console.error('Failed to parse cached user data:', e);
+                    }
+                }
+                
+                // If no cached data, fetch from API
+                if (!userData) {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/users/me`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        userData = data;
+                        
+                        // Cache the user data
+                        localStorage.setItem('user', JSON.stringify(userData));
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
+                        displayError('Failed to load your profile. Please try again later.');
+                        return;
+                    }
+                }
+                
+                // Display the user data
+                if (userData) {
+                    // Set avatar
+                    const avatarElement = document.getElementById('profileAvatar');
+                    avatarElement.src = userData.avatar || DEFAULT_AVATAR;
+                    avatarElement.onerror = () => {
+                        avatarElement.src = DEFAULT_AVATAR;
+                    };
+                    
+                    // Set display name and username
+                    document.getElementById('profileDisplayName').textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    document.getElementById('profileUsername').textContent = userData.username ? `@${userData.username}` : '@anonymous';
+                    document.getElementById('usernameDisplay').textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    
+                    // Set status and bio
+                    document.getElementById('profileStatus').textContent = userData.status || 'Exploring the eternal realm...';
+                    document.getElementById('profileBio').textContent = userData.bio || 'This soul has not shared their story yet.';
+                    
+                    // Set user stats (using placeholder data for now)
+                    document.getElementById('postsCount').textContent = userData.stats?.posts || '0';
+                    document.getElementById('commentsCount').textContent = userData.stats?.comments || '0';
+                    document.getElementById('connectionCount').textContent = userData.stats?.connections || '0';
+                    
+                    // Set join date
+                    const joinDate = userData.createdAt 
+                        ? new Date(userData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+                        : 'Recently joined';
+                    document.getElementById('joinedDate').textContent = joinDate;
+                    
+                    // Set user level and community (placeholder for now)
+                    document.getElementById('userLevel').textContent = userData.level || 'Soul Seeker';
+                    document.getElementById('userCommunity').textContent = userData.community || 'Universal Wanderers';
+                    
+                    // Load privacy settings
+                    loadPrivacySettings();
+                    
+                    // Hide loading, show profile
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('profileCard').style.display = 'block';
+                } else {
+                    displayError('Failed to load profile data. Please try again later.');
+                }
+            } catch (error) {
+                console.error('Unexpected error loading profile:', error);
+                displayError('An unexpected error occurred. Please try again later.');
+            }
         });
         
-        // Fetch actual user profile - To be implemented with real backend
-        function fetchUserProfile(username) {
-            // This would be a real fetch in production
-            console.log(`Fetching profile for ${username}`);
-            // For now, we're using the simulated data above
+        // Load privacy settings from localStorage
+        function loadPrivacySettings() {
+            try {
+                const savedSettings = localStorage.getItem('mlnf_privacy_settings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    
+                    // Update display
+                    if (settings.visibility) {
+                        document.getElementById('profileVisibility').textContent = 
+                            settings.visibility.charAt(0).toUpperCase() + settings.visibility.slice(1);
+                        document.getElementById('profileVisibility').className = 
+                            `setting-status ${settings.visibility === 'private' ? 'status-disabled' : 'status-enabled'}`;
+                        document.getElementById('privacyVisibilitySetting').value = settings.visibility;
+                    }
+                    
+                    if (settings.messaging) {
+                        document.getElementById('messagingStatus').textContent = 
+                            settings.messaging.charAt(0).toUpperCase() + settings.messaging.slice(1);
+                        document.getElementById('messagingStatus').className = 
+                            `setting-status ${settings.messaging === 'disabled' ? 'status-disabled' : 'status-enabled'}`;
+                        document.getElementById('privacyMessagingSetting').value = settings.messaging;
+                    }
+                    
+                    if (settings.directory) {
+                        document.getElementById('directoryStatus').textContent = 
+                            settings.directory === 'listed' ? 'Listed' : 'Unlisted';
+                        document.getElementById('directoryStatus').className = 
+                            `setting-status ${settings.directory === 'unlisted' ? 'status-disabled' : 'status-enabled'}`;
+                        document.getElementById('privacyDirectorySetting').value = settings.directory;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading privacy settings:', error);
+            }
         }
         
         // Logout functionality
@@ -686,8 +837,8 @@
             e.preventDefault();
             
             // Clear storage
-            localStorage.removeItem('mlnf_token');
-            localStorage.removeItem('mlnf_username');
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('user');
             
             // Redirect to login
             window.location.href = '/lander.html';
