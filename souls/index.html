@@ -473,16 +473,6 @@
             `;
         }
 
-        // Function to render profiles to the grid
-        function renderProfiles(profiles) {
-            if (!profiles || profiles.length === 0) {
-                profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
-                return;
-            }
-            
-            profilesGrid.innerHTML = profiles.map(createProfileCard).join('');
-        }
-        
         // Function to fetch profiles from API
         async function fetchProfiles() {
             try {
@@ -522,7 +512,34 @@
                         throw new Error(`Failed to fetch profiles: ${response.status}`);
                     }
                     
-                    profiles = await response.json();
+                    const responseData = await response.json();
+                    
+                    // Ensure profiles is an array
+                    if (Array.isArray(responseData)) {
+                        profiles = responseData;
+                    } else if (responseData && typeof responseData === 'object') {
+                        // Handle case where API returns an object with users property or other structure
+                        if (Array.isArray(responseData.users)) {
+                            profiles = responseData.users;
+                        } else if (responseData.data && Array.isArray(responseData.data)) {
+                            profiles = responseData.data;
+                        } else {
+                            // If we can't find an array, try to convert object to array
+                            const possibleProfiles = Object.values(responseData).filter(item => 
+                                item && typeof item === 'object' && (item.username || item.displayName)
+                            );
+                            
+                            if (possibleProfiles.length > 0) {
+                                profiles = possibleProfiles;
+                            } else {
+                                console.error('API response format not recognized:', responseData);
+                                throw new Error('Unexpected API response format');
+                            }
+                        }
+                    } else {
+                        console.error('Invalid API response:', responseData);
+                        throw new Error('Invalid API response');
+                    }
                     
                     // Cache the profiles
                     localStorage.setItem('mlnf_profiles', JSON.stringify(profiles));
@@ -530,7 +547,7 @@
                 }
                 
                 // Fall back to the sample default profiles if API fails and no cache
-                if (!profiles || profiles.length === 0) {
+                if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
                     console.log('Using default sample profiles');
                     profiles = [
                         {
@@ -563,6 +580,9 @@
                     ];
                 }
                 
+                // Set allProfiles for search functionality
+                allProfiles = Array.isArray(profiles) ? profiles : [];
+                
                 renderProfiles(profiles);
                 
             } catch (error) {
@@ -570,7 +590,7 @@
                 displayError('Failed to manifest eternal souls. Please try again later.');
                 
                 // Use default profiles as fallback
-                renderProfiles([
+                const defaultProfiles = [
                     {
                         id: 1,
                         displayName: "Eternal Seeker",
@@ -598,9 +618,27 @@
                         stats: { posts: 91, connections: 247 },
                         level: "Illuminated"
                     }
-                ]);
+                ];
+                
+                allProfiles = defaultProfiles;
+                renderProfiles(defaultProfiles);
             } finally {
                 loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // Function to render profiles to the grid
+        function renderProfiles(profiles) {
+            if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
+                profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
+                return;
+            }
+            
+            try {
+                profilesGrid.innerHTML = profiles.map(createProfileCard).join('');
+            } catch (error) {
+                console.error('Error rendering profiles:', error);
+                profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
             }
         }
 
