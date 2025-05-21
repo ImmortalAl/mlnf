@@ -98,94 +98,74 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 2rem;
+            width: 100%;
         }
 
-        @media (max-width: 900px) {
-            main {
-                grid-template-columns: 1fr;
+        .profile-card {
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(255, 94, 120, 0.25);
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
             }
         }
 
-        .profile-sidebar {
-            background: var(--gradient-secondary);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 94, 120, 0.25);
-            height: fit-content;
-            position: sticky;
-            top: calc(var(--header-height) + 2rem);
-        }
-
         .profile-avatar {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            border: 3px solid var(--accent);
-            margin: 0 auto 1.5rem;
-            display: block;
+            border: 4px solid var(--accent);
             object-fit: cover;
             transition: var(--transition);
         }
 
         .profile-avatar:hover {
-            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+            box-shadow: 0 0 20px rgba(255, 94, 120, 0.5);
             transform: scale(1.05);
         }
 
-        .profile-name {
-            text-align: center;
-            font-size: 1.5rem;
+        .profile-title h1 {
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
             color: var(--accent);
         }
 
-        .profile-username {
-            text-align: center;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+        .profile-title .username {
+            font-size: 1.1rem;
             opacity: 0.8;
+            margin-bottom: 1rem;
         }
 
         .profile-status {
-            text-align: center;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 94, 120, 0.1);
+            border-radius: 20px;
             font-style: italic;
-            margin-bottom: 1.5rem;
-            padding: 0.6rem;
-            background: rgba(255, 94, 120, 0.08);
-            border-radius: var(--border-radius);
-            border-left: 3px solid var(--accent);
         }
 
-        .profile-stats {
+        .profile-actions {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            background: rgba(255, 94, 120, 0.08);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .profile-bio {
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .btn {
@@ -196,9 +176,6 @@
             transition: var(--transition);
             text-decoration: none;
             text-align: center;
-            display: block;
-            width: 100%;
-            margin-bottom: 0.8rem;
         }
 
         .btn-primary {
@@ -218,272 +195,115 @@
             box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
         }
 
-        .profile-content {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .content-section {
-            background: var(--gradient-secondary);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 94, 120, 0.25);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid rgba(255, 94, 120, 0.2);
+        .profile-section {
+            margin-bottom: 2rem;
         }
 
         .section-title {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
         }
 
-        /* Soul Journal Specific Styles */
-        .journal-entries {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 1.5rem;
+        .profile-bio {
+            line-height: 1.8;
+            margin-bottom: 2rem;
         }
 
-        .journal-entry {
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
             background: rgba(255, 94, 120, 0.08);
-            border-radius: var(--border-radius);
             padding: 1.5rem;
-            border-left: 3px solid var(--accent);
+            border-radius: var(--border-radius);
+            text-align: center;
             transition: var(--transition);
-            position: relative;
         }
 
-        .journal-entry:hover {
-            transform: translateY(-3px);
+        .stat-card:hover {
+            transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
         }
 
-        .entry-timestamp {
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-details {
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.1);
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            width: 40px;
+            text-align: center;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .detail-label {
             font-size: 0.8rem;
             opacity: 0.7;
+            margin-bottom: 0.3rem;
         }
 
-        .entry-content {
+        .privacy-settings {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 94, 120, 0.2);
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             margin-bottom: 1rem;
-            line-height: 1.6;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.1);
         }
 
-        .entry-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
+        .setting-status {
+            margin-left: auto;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
         }
 
-        .entry-visibility {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text);
-            opacity: 0.7;
+        .status-enabled {
+            background: rgba(92, 184, 92, 0.2);
+            color: var(--success);
         }
 
-        .entry-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .entry-actions button {
-            background: transparent;
-            border: none;
-            color: var(--text);
-            opacity: 0.7;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .entry-actions button:hover {
-            color: var(--accent);
-            opacity: 1;
-        }
-
-        .journal-form {
-            margin-top: 1.5rem;
-            background: rgba(255, 94, 120, 0.05);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-        }
-
-        .journal-form textarea {
-            width: 100%;
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 94, 120, 0.25);
-            color: var(--text);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            resize: vertical;
-            min-height: 100px;
-            transition: var(--transition);
-        }
-
-        .journal-form textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 10px rgba(255, 94, 120, 0.3);
-        }
-
-        .form-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .visibility-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: var(--text);
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--accent);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(20px);
-        }
-
-        .submit-button {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
-            margin-bottom: 1.5rem;
-        }
-
-        .tab {
-            padding: 0.8rem 1.5rem;
-            background: transparent;
-            border: none;
-            color: var(--text);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            opacity: 0.7;
-            position: relative;
-        }
-
-        .tab.active {
-            color: var(--accent);
-            opacity: 1;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--gradient-accent);
-            border-radius: 3px 3px 0 0;
-        }
-
-        .tab:hover {
-            opacity: 1;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            opacity: 0.7;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
-            opacity: 0.5;
-        }
-
-        .empty-state p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
+        .status-disabled {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--danger);
         }
 
         .loading {
@@ -514,36 +334,12 @@
             text-align: center;
         }
 
-        /* Light theme support */
-        body.light-theme {
-            --primary: #ffffff;
-            --secondary: #f0f0f5;
-            --text: #1a1a33;
-            --accent: #d62d4d;
-            --highlight: #262640;
-            background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.85)), url('/assets/images/bg.jpg') center/cover fixed;
-        }
-
-        body.light-theme .profile-sidebar,
-        body.light-theme .content-section {
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
-            border-color: rgba(214, 45, 77, 0.25);
-        }
-
-        body.light-theme .journal-entry,
-        body.light-theme .profile-status,
-        body.light-theme .profile-stats {
-            background: rgba(214, 45, 77, 0.06);
-            border-left-color: var(--accent);
-        }
-
-        body.light-theme .journal-form {
-            background: rgba(214, 45, 77, 0.03);
-        }
-        
-        body.light-theme .journal-form textarea {
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(214, 45, 77, 0.2);
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--accent);
+            margin-top: 2rem;
         }
 
         /* Privacy Modal Styles */
@@ -590,64 +386,6 @@
             color: var(--accent);
             transform: scale(1.1);
         }
-        
-        .modal-content h2 {
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid rgba(255, 94, 120, 0.2);
-            color: var(--accent);
-        }
-        
-        .settings-section {
-            margin-bottom: 2rem;
-        }
-        
-        .settings-section h3 {
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-            color: var(--text);
-        }
-        
-        .setting-option {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            gap: 1rem;
-        }
-        
-        .setting-details {
-            flex: 1;
-        }
-        
-        .setting-title {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-        
-        .setting-description {
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-        
-        .settings-select {
-            padding: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 94, 120, 0.25);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            min-width: 150px;
-        }
-        
-        /* Light theme support for modal */
-        body.light-theme .modal-content {
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
-        }
-        
-        body.light-theme .settings-select {
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(214, 45, 77, 0.2);
-        }
     </style>
 </head>
 <body>
@@ -679,90 +417,119 @@
     </header>
 
     <main>
-        <aside class="profile-sidebar">
-            <img src="/assets/images/default-avatar.png" alt="Profile Avatar" class="profile-avatar" id="profileAvatar">
-            <h1 class="profile-name" id="profileDisplayName">Loading...</h1>
-            <p class="profile-username" id="profileUsername">@username</p>
-            <p class="profile-status" id="profileStatus">Setting my status...</p>
-            
-            <div class="profile-stats">
-                <div class="stat">
-                    <div class="stat-value" id="postsCount">0</div>
-                    <div class="stat-label">Posts</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="commentsCount">0</div>
-                    <div class="stat-label">Comments</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="connectionCount">0</div>
-                    <div class="stat-label">Connections</div>
-                </div>
-            </div>
-            
-            <div class="profile-bio" id="profileBio">
-                Loading bio...
-            </div>
-            
-            <a href="/pages/profile-setup.html" class="btn btn-primary">Edit Profile</a>
-            <button id="privacySettingsBtn" class="btn btn-outline">Privacy Settings</button>
-        </aside>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Manifesting your eternal soul...</p>
+        </div>
         
-        <div class="profile-content">
-            <section class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Soul Journal</h2>
-                    <div class="tabs">
-                        <button class="tab active" data-tab="private">Private</button>
-                        <button class="tab" data-tab="public">Public</button>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        
+        <div id="profileCard" class="profile-card" style="display: none;">
+            <div class="profile-header">
+                <img src="/assets/images/default-avatar.png" alt="Profile Avatar" class="profile-avatar" id="profileAvatar">
+                <div class="profile-title">
+                    <h1 id="profileDisplayName">Display Name</h1>
+                    <p class="username" id="profileUsername">@username</p>
+                    <div class="profile-status" id="profileStatus">Setting my eternal status...</div>
+                    <div class="profile-actions">
+                        <a href="/pages/profile-setup.html" class="btn btn-primary">Edit Profile</a>
+                        <button id="privacySettingsBtn" class="btn btn-outline">Privacy Settings</button>
                     </div>
                 </div>
-                
-                <div class="tab-content active" id="privateJournal">
-                    <div class="journal-form">
-                        <textarea id="journalEntry" placeholder="What's on your eternal mind?"></textarea>
-                        <div class="form-footer">
-                            <div class="visibility-toggle">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="entryVisibility">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span>Make Public</span>
-                            </div>
-                            <button id="submitJournal" class="submit-button">Immortalize Thought</button>
-                        </div>
-                    </div>
-                    
-                    <div class="journal-entries" id="privateEntries">
-                        <div class="loading" id="journalLoading">
-                            <div class="spinner"></div>
-                            <p>Loading your eternal thoughts...</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="publicJournal">
-                    <div class="journal-entries" id="publicEntries">
-                        <!-- Public entries will be loaded here -->
-                    </div>
-                </div>
-            </section>
+            </div>
             
-            <section class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Recent Activity</h2>
+            <div class="profile-section">
+                <h2 class="section-title">Soul Biography</h2>
+                <div class="profile-bio" id="profileBio">
+                    Loading biographical essence...
                 </div>
-                
-                <div id="activityFeed">
-                    <div class="empty-state">
-                        <i class="fas fa-hourglass-start"></i>
-                        <p>Your eternal journey has just begun.</p>
-                        <a href="/pages/messageboard.html" class="btn btn-primary">Start Engaging</a>
+            </div>
+            
+            <div class="profile-section">
+                <h2 class="section-title">Soul Statistics</h2>
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="postsCount">0</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="commentsCount">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="connectionCount">0</div>
+                        <div class="stat-label">Connections</div>
                     </div>
                 </div>
-            </section>
+            </div>
+            
+            <div class="profile-section">
+                <h2 class="section-title">Eternal Details</h2>
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="detail-value">
+                            <div class="detail-label">Joined The Eternity</div>
+                            <div id="joinedDate">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fas fa-star"></i></div>
+                        <div class="detail-value">
+                            <div class="detail-label">Soul Level</div>
+                            <div id="userLevel">Initiate</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fas fa-users"></i></div>
+                        <div class="detail-value">
+                            <div class="detail-label">Soul Community</div>
+                            <div id="userCommunity">Seekers of Truth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="privacy-settings">
+                <h2 class="section-title">Current Privacy Settings</h2>
+                <div class="setting-item">
+                    <div class="detail-icon"><i class="fas fa-eye"></i></div>
+                    <div class="detail-value">
+                        <div class="detail-label">Profile Visibility</div>
+                        <div>Who can view your profile</div>
+                    </div>
+                    <div class="setting-status status-enabled" id="profileVisibility">Public</div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="detail-icon"><i class="fas fa-comment"></i></div>
+                    <div class="detail-value">
+                        <div class="detail-label">Messaging Permissions</div>
+                        <div>Who can send you direct messages</div>
+                    </div>
+                    <div class="setting-status status-enabled" id="messagingPermissions">All Users</div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="detail-icon"><i class="fas fa-history"></i></div>
+                    <div class="detail-value">
+                        <div class="detail-label">Activity Visibility</div>
+                        <div>Show your recent activities to others</div>
+                    </div>
+                    <div class="setting-status status-enabled" id="activityVisibility">Enabled</div>
+                </div>
+            </div>
+            
+            <div class="profile-actions" style="margin-top: 2rem; text-align: center;">
+                <a href="/lander.html" class="btn btn-primary">Go to Eternal Hearth</a>
+                <a href="/souls" class="btn btn-outline">Browse Other Souls</a>
+            </div>
         </div>
     </main>
+
+    <footer>
+        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
+    </footer>
 
     <!-- Privacy Settings Modal -->
     <div id="privacyModal" class="modal" style="display: none;">
@@ -771,98 +538,21 @@
             <h2>Privacy Settings</h2>
             
             <div class="settings-section">
-                <h3>Profile Visibility</h3>
-                <div class="setting-option">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="profilePublicToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <div class="setting-details">
-                        <span class="setting-title">Public Profile</span>
-                        <p class="setting-description">Allow others to find and view your profile</p>
-                    </div>
-                </div>
-                
-                <div class="setting-option">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="invitationOnlyToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <div class="setting-details">
-                        <span class="setting-title">Invitation Only</span>
-                        <p class="setting-description">Only those with a direct link can view your profile</p>
-                    </div>
+                <p>To modify your privacy settings, please go to the Profile Setup page.</p>
+                <div style="margin-top: 2rem; text-align: center;">
+                    <a href="/pages/profile-setup.html" class="btn btn-primary">Go to Profile Setup</a>
+                    <button id="closePrivacyModal" class="btn btn-outline" style="margin-top: 1rem;">Close</button>
                 </div>
             </div>
-            
-            <div class="settings-section">
-                <h3>Status & Activity</h3>
-                <div class="setting-option">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="onlineStatusToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <div class="setting-details">
-                        <span class="setting-title">Show Online Status</span>
-                        <p class="setting-description">Display when you are active on the platform</p>
-                    </div>
-                </div>
-                
-                <div class="setting-option">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="activityHistoryToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <div class="setting-details">
-                        <span class="setting-title">Activity History</span>
-                        <p class="setting-description">Show your recent posts and comments on your profile</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <h3>Contact Permissions</h3>
-                <div class="setting-option">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="directMessagesToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <div class="setting-details">
-                        <span class="setting-title">Direct Messages</span>
-                        <p class="setting-description">Allow others to send you private messages</p>
-                    </div>
-                </div>
-                
-                <div class="setting-option">
-                    <select id="messagePermission" class="settings-select">
-                        <option value="all">All Users</option>
-                        <option value="connections">Connections Only</option>
-                        <option value="none">Nobody</option>
-                    </select>
-                    <div class="setting-details">
-                        <span class="setting-title">Who Can Message You</span>
-                        <p class="setting-description">Control who can initiate conversations</p>
-                    </div>
-                </div>
-            </div>
-            
-            <button id="savePrivacySettings" class="submit-button">Save Settings</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get elements
-            const privateTab = document.querySelector('.tab[data-tab="private"]');
-            const publicTab = document.querySelector('.tab[data-tab="public"]');
-            const privateJournal = document.getElementById('privateJournal');
-            const publicJournal = document.getElementById('publicJournal');
-            const privateEntries = document.getElementById('privateEntries');
-            const publicEntries = document.getElementById('publicEntries');
-            const journalEntry = document.getElementById('journalEntry');
-            const entryVisibility = document.getElementById('entryVisibility');
-            const submitJournal = document.getElementById('submitJournal');
-            const journalLoading = document.getElementById('journalLoading');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const profileCard = document.getElementById('profileCard');
             
             // Profile elements
             const profileAvatar = document.getElementById('profileAvatar');
@@ -870,27 +560,21 @@
             const profileUsername = document.getElementById('profileUsername');
             const profileStatus = document.getElementById('profileStatus');
             const profileBio = document.getElementById('profileBio');
+            const joinedDate = document.getElementById('joinedDate');
+            const postsCount = document.getElementById('postsCount');
+            const commentsCount = document.getElementById('commentsCount');
+            const connectionCount = document.getElementById('connectionCount');
+            
+            // Privacy settings elements
+            const profileVisibility = document.getElementById('profileVisibility');
+            const messagingPermissions = document.getElementById('messagingPermissions');
+            const activityVisibility = document.getElementById('activityVisibility');
             
             // Privacy Settings Modal
             const privacySettingsBtn = document.getElementById('privacySettingsBtn');
             const privacyModal = document.getElementById('privacyModal');
             const closePrivacyModal = privacyModal.querySelector('.close-modal');
-            const savePrivacySettings = document.getElementById('savePrivacySettings');
-            
-            // Switch between tabs
-            privateTab.addEventListener('click', function() {
-                privateTab.classList.add('active');
-                publicTab.classList.remove('active');
-                privateJournal.classList.add('active');
-                publicJournal.classList.remove('active');
-            });
-            
-            publicTab.addEventListener('click', function() {
-                publicTab.classList.add('active');
-                privateTab.classList.remove('active');
-                publicJournal.classList.add('active');
-                privateJournal.classList.remove('active');
-            });
+            const closePrivacyModalBtn = document.getElementById('closePrivacyModal');
             
             // Get user token
             function getToken() {
@@ -904,7 +588,7 @@
             
             // Redirect if not logged in
             if (!isLoggedIn()) {
-                window.location.href = '/pages/auth.html?redirect=/pages/profile';
+                window.location.href = '/pages/auth.html?redirect=/profile';
                 return;
             }
             
@@ -933,107 +617,88 @@
                     profileStatus.textContent = userData.status || 'No status set';
                     profileBio.textContent = userData.bio || 'No bio yet. Add one by editing your profile.';
                     
+                    // Format and display joined date
+                    const joinedDateObj = new Date(userData.createdAt || Date.now());
+                    const formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                    joinedDate.textContent = joinedDateObj.toLocaleDateString(undefined, formatOptions);
+                    
+                    // Update stats (mock data for now)
+                    postsCount.textContent = userData.postsCount || '0';
+                    commentsCount.textContent = userData.commentsCount || '0';
+                    connectionCount.textContent = userData.connectionCount || '0';
+                    
+                    // Update privacy settings status
+                    updatePrivacySettings(userData);
+                    
                     // Update page title
                     document.title = `${userData.displayName || userData.username}'s Soul - MLNF`;
                     
-                } catch (error) {
-                    console.error('Error loading profile:', error);
-                    profileBio.innerHTML = `<div class="error-message">Error loading profile: ${error.message}</div>`;
-                }
-            }
-            
-            // Load journal entries
-            async function loadJournalEntries() {
-                try {
-                    // This would be a real API call in production
-                    // For now, we'll simulate entries
-                    setTimeout(() => {
-                        // Hide loading spinner
-                        journalLoading.style.display = 'none';
-                        
-                        // Check if there are entries (for demo we'll assume none)
-                        privateEntries.innerHTML = `
-                            <div class="empty-state">
-                                <i class="fas fa-book"></i>
-                                <p>Your private journal awaits your first entry.</p>
-                            </div>
-                        `;
-                        
-                        publicEntries.innerHTML = `
-                            <div class="empty-state">
-                                <i class="fas fa-globe"></i>
-                                <p>Share your thoughts with the world.</p>
-                            </div>
-                        `;
-                        
-                    }, 1500);
+                    // Show profile card and hide loader
+                    loading.style.display = 'none';
+                    profileCard.style.display = 'block';
                     
                 } catch (error) {
-                    console.error('Error loading journal entries:', error);
-                    privateEntries.innerHTML = `<div class="error-message">Error loading entries: ${error.message}</div>`;
+                    console.error('Error loading profile:', error);
+                    loading.style.display = 'none';
+                    errorMessage.textContent = `Error loading profile: ${error.message}`;
+                    errorMessage.style.display = 'block';
                 }
             }
             
-            // Submit journal entry
-            submitJournal.addEventListener('click', function() {
-                const content = journalEntry.value.trim();
-                const isPublic = entryVisibility.checked;
+            // Update privacy settings display
+            function updatePrivacySettings(userData) {
+                // Get privacy settings from user data or localStorage
+                const savedSettings = localStorage.getItem('mlnf_privacy_settings');
+                const settings = savedSettings ? JSON.parse(savedSettings) : {
+                    profilePublic: true,
+                    invitationOnly: false,
+                    showOnlineStatus: true,
+                    showActivityHistory: true,
+                    allowDirectMessages: true,
+                    messagePermission: 'all'
+                };
                 
-                if (!content) {
-                    alert('Please enter a thought to immortalize.');
-                    return;
-                }
-                
-                // Save entry (this would be an API call in production)
-                const entryElement = document.createElement('div');
-                entryElement.className = 'journal-entry';
-                entryElement.innerHTML = `
-                    <div class="entry-header">
-                        <h3>A Moment in Eternity</h3>
-                        <span class="entry-timestamp">${new Date().toLocaleString()}</span>
-                    </div>
-                    <div class="entry-content">${content}</div>
-                    <div class="entry-footer">
-                        <div class="entry-visibility">
-                            <i class="fas fa-${isPublic ? 'globe' : 'lock'}"></i>
-                            <span>${isPublic ? 'Public' : 'Private'}</span>
-                        </div>
-                        <div class="entry-actions">
-                            <button><i class="fas fa-edit"></i> Edit</button>
-                            <button><i class="fas fa-trash"></i> Delete</button>
-                        </div>
-                    </div>
-                `;
-                
-                // Add to correct section
-                if (isPublic) {
-                    // Clear empty state if exists
-                    if (publicEntries.querySelector('.empty-state')) {
-                        publicEntries.innerHTML = '';
-                    }
-                    publicEntries.insertBefore(entryElement, publicEntries.firstChild);
+                // Update UI with settings
+                if (settings.profilePublic) {
+                    profileVisibility.textContent = 'Public';
+                    profileVisibility.className = 'setting-status status-enabled';
                 } else {
-                    // Clear empty state if exists
-                    if (privateEntries.querySelector('.empty-state')) {
-                        privateEntries.innerHTML = '';
-                    }
-                    privateEntries.insertBefore(entryElement, privateEntries.firstChild);
+                    profileVisibility.textContent = settings.invitationOnly ? 'Invitation Only' : 'Private';
+                    profileVisibility.className = 'setting-status status-disabled';
                 }
                 
-                // Clear form
-                journalEntry.value = '';
-                entryVisibility.checked = false;
-            });
+                if (settings.allowDirectMessages) {
+                    messagingPermissions.textContent = settings.messagePermission === 'all' ? 'All Users' : 
+                                                      settings.messagePermission === 'connections' ? 'Connections Only' : 'Nobody';
+                    messagingPermissions.className = 'setting-status status-enabled';
+                } else {
+                    messagingPermissions.textContent = 'Disabled';
+                    messagingPermissions.className = 'setting-status status-disabled';
+                }
+                
+                if (settings.showActivityHistory) {
+                    activityVisibility.textContent = 'Enabled';
+                    activityVisibility.className = 'setting-status status-enabled';
+                } else {
+                    activityVisibility.textContent = 'Disabled';
+                    activityVisibility.className = 'setting-status status-disabled';
+                }
+            }
             
-            // Open Privacy Settings Modal
+            // Privacy Modal Event Listeners
             privacySettingsBtn.addEventListener('click', function() {
                 privacyModal.style.display = 'flex';
             });
             
-            // Close Privacy Settings Modal
             closePrivacyModal.addEventListener('click', function() {
                 privacyModal.style.display = 'none';
             });
+            
+            if (closePrivacyModalBtn) {
+                closePrivacyModalBtn.addEventListener('click', function() {
+                    privacyModal.style.display = 'none';
+                });
+            }
             
             // Close modal when clicking outside
             privacyModal.addEventListener('click', function(event) {
@@ -1042,59 +707,8 @@
                 }
             });
             
-            // Save Privacy Settings
-            savePrivacySettings.addEventListener('click', function() {
-                // Get values from all settings
-                const profilePublic = document.getElementById('profilePublicToggle').checked;
-                const invitationOnly = document.getElementById('invitationOnlyToggle').checked;
-                const showOnlineStatus = document.getElementById('onlineStatusToggle').checked;
-                const showActivityHistory = document.getElementById('activityHistoryToggle').checked;
-                const allowDirectMessages = document.getElementById('directMessagesToggle').checked;
-                const messagePermission = document.getElementById('messagePermission').value;
-                
-                // Create privacy settings object
-                const privacySettings = {
-                    profilePublic,
-                    invitationOnly,
-                    showOnlineStatus,
-                    showActivityHistory,
-                    allowDirectMessages,
-                    messagePermission
-                };
-                
-                // Save settings (this would be an API call in production)
-                localStorage.setItem('mlnf_privacy_settings', JSON.stringify(privacySettings));
-                
-                // Show success message or indicator
-                alert('Privacy settings saved successfully!');
-                
-                // Close modal
-                privacyModal.style.display = 'none';
-            });
-            
-            // Load saved privacy settings if they exist
-            function loadPrivacySettings() {
-                const savedSettings = localStorage.getItem('mlnf_privacy_settings');
-                
-                if (savedSettings) {
-                    const settings = JSON.parse(savedSettings);
-                    
-                    // Apply saved settings to form elements
-                    document.getElementById('profilePublicToggle').checked = settings.profilePublic;
-                    document.getElementById('invitationOnlyToggle').checked = settings.invitationOnly;
-                    document.getElementById('onlineStatusToggle').checked = settings.showOnlineStatus;
-                    document.getElementById('activityHistoryToggle').checked = settings.showActivityHistory;
-                    document.getElementById('directMessagesToggle').checked = settings.allowDirectMessages;
-                    document.getElementById('messagePermission').value = settings.messagePermission;
-                }
-            }
-            
-            // Initialize privacy settings
-            loadPrivacySettings();
-            
-            // Initialize other features
+            // Initialize
             loadUserProfile();
-            loadJournalEntries();
         });
     </script>
 </body>
