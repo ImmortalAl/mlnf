@@ -267,6 +267,7 @@
             transform: translateZ(0);
             will-change: transform, border-color;
             background-color: var(--secondary);
+            display: block;
         }
 
         .profile-card:hover .profile-card-avatar {
@@ -798,7 +799,7 @@
                 <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
                 <div class="divider"></div>
                 <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                <a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>
+                <a href="/souls" id="dropdownSoulsLink"><i class="fas fa-users"></i> Eternal Souls</a>
                 <div class="divider"></div>
                 <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
             </div>
@@ -920,7 +921,7 @@
             // Ensure we have default values for everything
             const name = profile.displayName || profile.username || 'Anonymous Soul';
             const username = profile.username ? `@${profile.username}` : '@anonymous';
-            const avatar = profile.avatar || DEFAULT_AVATAR;
+            let avatar = profile.avatar || DEFAULT_AVATAR; // Use let to allow modification
             const bio = profile.bio || 'This soul has not shared their story yet.';
             
             // Default stats
@@ -941,16 +942,12 @@
                 else if (daysSinceJoin > 7) level = "Illuminated";
             }
             
-            // Pre-load image to prevent flickering
-            const img = new Image();
-            img.src = avatar;
-            img.onerror = () => img.src = DEFAULT_AVATAR;
-            
             // Create the profile card HTML with optimized HTML structure
-            return `
+            // Image pre-loading is good, but also set a background or fixed dimensions in CSS
+            const cardHTML = `
                 <a href="/souls/${profile.username || 'anonymous'}" class="profile-card" data-username="${profile.username || 'anonymous'}">
                     <div class="profile-card-header">
-                        <img src="${avatar}" alt="${name}" class="profile-card-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                        <img src="${DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar" onerror="this.src='${DEFAULT_AVATAR}'; this.classList.remove('lazy-avatar');">
                         <div class="profile-card-info">
                             <h3>${name}</h3>
                             <p class="username">${username}</p>
@@ -972,6 +969,7 @@
                     </div>
                 </a>
             `;
+            return cardHTML;
         }
 
         // Optimized rendering function
@@ -982,27 +980,35 @@
             }
             
             try {
-                // Use DocumentFragment for better performance
                 const fragment = document.createDocumentFragment();
                 const tempContainer = document.createElement('div');
-                
-                // Generate all HTML at once to minimize DOM operations
                 tempContainer.innerHTML = profiles.map(createProfileCard).join('');
                 
-                // Move nodes to fragment
                 while (tempContainer.firstChild) {
                     fragment.appendChild(tempContainer.firstChild);
                 }
                 
-                // Clear and update grid in one operation
                 profilesGrid.innerHTML = '';
                 profilesGrid.appendChild(fragment);
                 
-                // Force a repaint to prevent flickering
-                profilesGrid.style.opacity = '0.99';
+                // After rendering, load lazy images
+                const lazyAvatars = profilesGrid.querySelectorAll('.lazy-avatar');
+                lazyAvatars.forEach(img => {
+                    img.onload = () => {
+                        img.classList.remove('lazy-avatar'); // Optional: remove class if you have specific lazy styles
+                    };
+                    img.onerror = () => { // Ensure onerror is also set here if it wasn't caught by the inline one
+                        img.src = DEFAULT_AVATAR;
+                        img.classList.remove('lazy-avatar');
+                    };
+                    img.src = img.dataset.src;
+                });
+
+                profilesGrid.style.opacity = '0.99'; // Minor repaint trick
                 setTimeout(() => {
                     profilesGrid.style.opacity = '1';
                 }, 10);
+
             } catch (error) {
                 console.error('Error rendering profiles:', error);
                 profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
@@ -1228,6 +1234,29 @@
             
             setupUserUI();
             setupNavigation();
+
+            // Conditionally hide "Eternal Souls" from dropdown if on /souls page
+            if (window.location.pathname === '/souls' || window.location.pathname === '/souls/') {
+                const dropdownSoulsLink = document.getElementById('dropdownSoulsLink');
+                if (dropdownSoulsLink) {
+                    dropdownSoulsLink.style.display = 'none';
+                    // Check if a divider is now redundant (e.g. before logout)
+                    const nextElement = dropdownSoulsLink.nextElementSibling;
+                    if (nextElement && nextElement.classList.contains('divider') && 
+                        (nextElement.nextElementSibling === null || nextElement.nextElementSibling.style.display === 'none')) {
+                         // If the next element is a divider and it's the last visible item or followed by hidden items
+                        nextElement.style.display = 'none';
+                    }
+                     // Check if the previous element is a divider and it's now followed by another divider or end
+                    const prevElement = dropdownSoulsLink.previousElementSibling;
+                    if (prevElement && prevElement.classList.contains('divider')) {
+                        const elementAfterLink = dropdownSoulsLink.nextElementSibling;
+                        if (!elementAfterLink || elementAfterLink.style.display === 'none' || (elementAfterLink.classList.contains('divider'))) {
+                           prevElement.style.display = 'none';
+                        }
+                    }
+                }
+            }
         });
         
         // Setup User Interface - Menus, Sidebar, etc.
@@ -1257,23 +1286,32 @@
             const sidebarUsername = document.getElementById('sidebarUsername');
             const sidebarStatus = document.getElementById('sidebarStatus');
             
-            openSidebarBtn.addEventListener('click', () => {
-                userSidebar.classList.add('active');
-                sidebarOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
+            // Ensure openSidebarBtn exists before adding event listener
+            if (openSidebarBtn) {
+                openSidebarBtn.addEventListener('click', () => {
+                    userSidebar.classList.add('active');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent background scroll
+                });
+            }
             
-            closeSidebarBtn.addEventListener('click', () => {
-                userSidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
+            // Ensure closeSidebarBtn exists
+            if (closeSidebarBtn) {
+                closeSidebarBtn.addEventListener('click', () => {
+                    userSidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = ''; // Restore scroll
+                });
+            }
             
-            sidebarOverlay.addEventListener('click', () => {
-                userSidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
+            // Ensure sidebarOverlay exists
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', () => {
+                    userSidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = ''; // Restore scroll
+                });
+            }
             
             // Logout functionality
             const logoutBtn = document.getElementById('logoutBtn');
@@ -1403,13 +1441,22 @@
             
             // Show login options in dropdown
             const userDropdown = document.getElementById('userDropdown');
-            userDropdown.innerHTML = `
+            let dropdownHTML = `
                 <a href="/pages/auth.html?mode=login"><i class="fas fa-sign-in-alt"></i> Login</a>
                 <a href="/pages/auth.html?mode=register"><i class="fas fa-user-plus"></i> Register</a>
                 <div class="divider"></div>
-                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                <a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>
-            `;
+                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>`;
+
+            // Conditionally add Eternal Souls link
+            if (window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') {
+                dropdownHTML += `<a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>`;
+            }
+            
+            userDropdown.innerHTML = dropdownHTML;
+
+            // Hide user-specific elements like sidebar toggle if it relies on user data
+             const openSidebarBtn = document.getElementById('openSidebar');
+             if(openSidebarBtn) openSidebarBtn.style.display = 'none';
         }
     </script>
 </body>
