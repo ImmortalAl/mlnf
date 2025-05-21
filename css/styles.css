@@ -502,6 +502,10 @@ body.light-theme nav a:hover {
     z-index: -1;
 }
 
+body.light-theme .hero::before {
+    background: linear-gradient(rgba(240, 240, 245, 0.85), rgba(220, 220, 235, 0.9));
+}
+
 .hero-content {
     max-width: 900px;
     position: relative;
@@ -521,6 +525,14 @@ body.light-theme nav a:hover {
     animation: eternalGlow 3s ease-in-out infinite alternate;
 }
 
+body.light-theme .hero h1 {
+    text-shadow: 0 0 15px rgba(214, 45, 77, 0.5);
+    background: linear-gradient(45deg, #d62d4d, #e06000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .hero p {
     font-size: 1.1rem;
     line-height: 1.7;
@@ -532,7 +544,9 @@ body.light-theme nav a:hover {
 }
 
 body.light-theme .hero p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+    text-shadow: none;
+    color: #262640;
+    font-weight: 500;
 }
 
 .hero p:hover::after {
@@ -605,6 +619,14 @@ body.light-theme .censorship-warning p {
     -webkit-text-fill-color: transparent;
 }
 
+body.light-theme .section-title h2 {
+    background: linear-gradient(45deg, #d62d4d, #e06000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(214, 45, 77, 0.3);
+}
+
 .section-title::after {
     content: '';
     position: absolute;
@@ -624,7 +646,9 @@ body.light-theme .censorship-warning p {
 }
 
 body.light-theme .section-title p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+    text-shadow: none;
+    color: #262640;
+    font-weight: 500;
 }
 
 .features,
@@ -633,6 +657,12 @@ body.light-theme .section-title p {
     padding: 4.5rem 2rem;
     background: linear-gradient(to bottom, rgba(13, 13, 26, 0.45), rgba(26, 26, 51, 0.25));
     z-index: 1;
+}
+
+body.light-theme .features,
+body.light-theme .highlights,
+body.light-theme .mindmap-section {
+    background: linear-gradient(to bottom, rgba(240, 240, 245, 0.7), rgba(230, 230, 240, 0.5));
 }
 
 .features-grid,

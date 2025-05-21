@@ -400,7 +400,7 @@ async function updateAuthUI(isAuthenticated) {
         }
         if (heroLoginButton) {
             heroLoginButton.textContent = 'My Soul';
-            heroLoginButton.href = 'pages/profiles.html';
+            heroLoginButton.href = 'pages/profile';
             heroLoginButton.onclick = null; 
         }
         if (activeUsers && activeUsers.classList.contains('active')) {
@@ -430,6 +430,163 @@ async function updateAuthUI(isAuthenticated) {
         }
     }
     console.log('[Reintegration Stage X] updateAuthUI finished.');
+}
+
+// Welcome Modal for new users
+function showWelcomeModal() {
+    // Check if user has seen the welcome message
+    const hasSeenWelcome = localStorage.getItem('mlnf_has_seen_welcome');
+    
+    // If user is logged in and hasn't seen the welcome message
+    if (isLoggedIn() && !hasSeenWelcome) {
+        const welcomeModal = document.createElement('div');
+        welcomeModal.id = 'welcomeModal';
+        welcomeModal.className = 'modal';
+        welcomeModal.style.display = 'flex';
+        
+        welcomeModal.innerHTML = `
+            <div class="modal-content welcome-modal-content">
+                <button class="close-modal">&times;</button>
+                <h2 class="welcome-title">Welcome to Manifest Liberation</h2>
+                
+                <div class="welcome-body">
+                    <p class="welcome-intro">You've just joined a sanctuary for free thinkers where:</p>
+                    
+                    <div class="welcome-principles">
+                        <div class="principle">
+                            <i class="fas fa-infinity"></i>
+                            <h3>Immortality</h3>
+                            <p>Ideas endure eternally, preserved beyond the limitations of time</p>
+                        </div>
+                        
+                        <div class="principle">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Truth</h3>
+                            <p>Knowledge unfettered by conventional censorship or control</p>
+                        </div>
+                        
+                        <div class="principle">
+                            <i class="fas fa-dove"></i>
+                            <h3>Freedom</h3>
+                            <p>Express your authentic self without fear of judgment</p>
+                        </div>
+                        
+                        <div class="principle">
+                            <i class="fas fa-users"></i>
+                            <h3>Direct Democracy</h3>
+                            <p>Community-driven verification where all voices matter equally</p>
+                        </div>
+                    </div>
+                    
+                    <div class="welcome-actions">
+                        <button id="welcomeGetStarted" class="btn btn-primary">Get Started</button>
+                        <div class="welcome-checkbox">
+                            <input type="checkbox" id="dontShowAgain">
+                            <label for="dontShowAgain">Don't show again</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(welcomeModal);
+        
+        // Style for the welcome modal
+        const style = document.createElement('style');
+        style.textContent = `
+            .welcome-modal-content {
+                max-width: 700px;
+                padding: 2rem;
+                background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+                border: 2px solid var(--accent);
+                border-radius: var(--border-radius);
+                color: var(--text);
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+            
+            .welcome-intro {
+                text-align: center;
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .welcome-principles {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .principle {
+                text-align: center;
+                padding: 1.5rem;
+                background: rgba(255, 94, 120, 0.08);
+                border-radius: var(--border-radius);
+                transition: var(--transition);
+            }
+            
+            .principle:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 15px rgba(255, 94, 120, 0.2);
+            }
+            
+            .principle i {
+                font-size: 2rem;
+                color: var(--accent);
+                margin-bottom: 0.75rem;
+            }
+            
+            .principle h3 {
+                margin-bottom: 0.75rem;
+                font-size: 1.2rem;
+            }
+            
+            .welcome-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .welcome-checkbox {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            @media (max-width: 768px) {
+                .welcome-principles {
+                    grid-template-columns: 1fr;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+        
+        // Close modal and set flag when user clicks "Get Started"
+        document.getElementById('welcomeGetStarted').addEventListener('click', () => {
+            if (document.getElementById('dontShowAgain').checked) {
+                localStorage.setItem('mlnf_has_seen_welcome', 'true');
+            }
+            welcomeModal.style.display = 'none';
+            document.body.removeChild(welcomeModal);
+        });
+        
+        // Close modal when user clicks X button
+        welcomeModal.querySelector('.close-modal').addEventListener('click', () => {
+            if (document.getElementById('dontShowAgain').checked) {
+                localStorage.setItem('mlnf_has_seen_welcome', 'true');
+            }
+            welcomeModal.style.display = 'none';
+            document.body.removeChild(welcomeModal);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -530,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  openSoulModal('register');
             } else {
                 console.log('[Debug Step] Header headerRegisterButton clicked while logged in, redirecting to profile.');
-                window.location.href = 'pages/profiles.html';
+                window.location.href = 'pages/profile';
             }
         });
         console.log('[Debug Step] Listener for header headerRegisterButton ATTACHED.');
@@ -756,6 +913,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[Debug Step] logoutLink (id: logoutLink) not found!');
     }
 
+    // Check if user is logged in and show welcome modal if needed
+    if (isLoggedIn()) {
+        showWelcomeModal();
+    }
 });
 
 // Sidebar, Message Modal, User Menu, Logout Link listeners.

@@ -19,12 +19,12 @@
     --border-radius: 10px;
     --header-height: 70px;
 
-    /* Light Theme Colors */
+    /* Light Theme Colors - Updated for better visibility */
     --light-primary: #ffffff;
     --light-secondary: #f0f0f5;
     --light-text: #1a1a33;
     --light-accent: #d62d4d;
-    --light-highlight: #3a3a5c;
+    --light-highlight: #262640; /* Darkened for better contrast */
     --light-success: #2e7d32;
     --light-warning: #ff8f00;
     --light-danger: #c62828;
