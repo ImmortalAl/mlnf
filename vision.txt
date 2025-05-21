@@ -143,6 +143,7 @@ A digital sanctuary for free-thinkers to:
 - Backend route organization needs improvement
 
 ### Future Considerations
+- Robust Administrative Control Center
 - Chatroom
 - Potential migration to a frontend framework
 - Scaling strategy for media storage

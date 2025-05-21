@@ -213,6 +213,7 @@
             opacity: 1;
             transition: opacity 0.3s ease;
             padding: 1rem;
+            min-height: 200px;
         }
 
         .profiles-grid.loading {
@@ -223,7 +224,7 @@
             background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
             border-radius: var(--border-radius);
             padding: 1.5rem;
-            transition: var(--transition);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-left-color 0.3s ease;
             border-left: 5px solid var(--accent);
             cursor: pointer;
             position: relative;
@@ -236,7 +237,8 @@
             height: 100%;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
-            will-change: transform, box-shadow, border-left-color;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
         }
 
         .profile-card:hover {
@@ -246,19 +248,7 @@
         }
 
         .profile-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s;
-        }
-
-        .profile-card:hover::before {
-            transform: translateX(100%);
+            content: none;
         }
 
         .profile-card-header {
@@ -273,7 +263,10 @@
             border-radius: 50%;
             border: 2px solid var(--accent);
             object-fit: cover;
-            transition: var(--transition);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            transform: translateZ(0);
+            will-change: transform, border-color;
+            background-color: var(--secondary);
         }
 
         .profile-card:hover .profile-card-avatar {
@@ -355,6 +348,421 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin: 2rem auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 51, 0.7);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        /* User Sidebar Styles */
+        .user-sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: var(--gradient-secondary);
+            border-left: 3px solid var(--accent);
+            z-index: 2000;
+            padding: 2rem 1rem;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .user-sidebar.active {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-sidebar:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+        
+        .user-avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            object-fit: cover;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        
+        .sidebar-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+        }
+        
+        .sidebar-username {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-status {
+            font-style: italic;
+            opacity: 0.8;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent);
+        }
+        
+        .sidebar-menu a:hover {
+            background: rgba(255, 94, 120, 0.1);
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 94, 120, 0.2);
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .open-sidebar-btn {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .open-sidebar-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* User Menu Styles */
+        .user-menu {
+            position: relative;
+            z-index: 100;
+            margin-left: auto;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 94, 120, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .user-menu-btn:hover {
+            background: rgba(255, 94, 120, 0.2);
+        }
+        
+        .user-menu-btn img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent);
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 200px;
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--accent);
+            padding: 0.5rem 0;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .user-dropdown a i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent);
+        }
+        
+        .user-dropdown a:hover {
+            background: rgba(255, 94, 120, 0.1);
+        }
+        
+        .user-dropdown .divider {
+            height: 1px;
+            background: rgba(255, 94, 120, 0.2);
+            margin: 0.5rem 0;
+        }
+        
+        /* Updated Navigation */
+        nav {
+            margin-left: auto;
+        }
+        
+        nav ul {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        @media (max-width: 920px) {
+            nav {
+                display: none;
+            }
+            
+            .mobile-nav-toggle {
+                display: block;
+            }
+        }
+        
+        /* Mobile Nav Toggle */
+        .mobile-nav-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            z-index: 100;
+            margin-left: 1rem;
+        }
+        
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--gradient-secondary);
+            z-index: 2000;
+            padding: 2rem 1rem;
+            transition: left 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+        }
+        
+        .mobile-nav.active {
+            left: 0;
+        }
+        
+        .mobile-nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .mobile-nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .mobile-nav-list a:hover {
+            background: rgba(255, 94, 120, 0.1);
+        }
+        
+        .mobile-nav-list a i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent);
+        }
+        
+        .mobile-nav-list .divider {
+            height: 1px;
+            background: rgba(255, 94, 120, 0.2);
+            margin: 0.5rem 0;
+        }
+        
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* CSS for positioning the floating buttons */
+        .floating-buttons {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+        
+        .top-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+        
+        .top-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        .top-button:hover {
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 <body>
@@ -363,16 +771,97 @@
             <i class="fas fa-infinity"></i>
             <h1>MLNF</h1>
         </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle">
+            <i class="fas fa-bars"></i>
+        </button>
         <nav>
             <ul>
                 <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a></li>
                 <li><a href="/souls" class="active"><i class="fas fa-users"></i> Eternal Souls</a></li>
+                <li><a href="/pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
                 <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
                 <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+                <li><a href="/pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+                <li><a href="/pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+                <li><a href="/pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
             </ul>
         </nav>
+        <div class="user-menu" id="userMenu">
+            <button class="user-menu-btn" id="userMenuBtn">
+                <img src="/assets/images/default-avatar.png" alt="User Avatar" id="userMenuAvatar">
+                <span id="userMenuName">Guest</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown" id="userDropdown">
+                <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
+                <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
+                <div class="divider"></div>
+                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+                <a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>
+                <div class="divider"></div>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+            </div>
+        </div>
     </header>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="sidebar-header">
+            <h2>Eternal Navigation</h2>
+            <button class="close-sidebar" id="closeMobileNav">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-nav-list">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+            <a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>
+            <a href="/pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a>
+            <a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a>
+            <a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a>
+            <a href="/pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a>
+            <a href="/pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a>
+            <a href="/pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a>
+            <div class="divider"></div>
+            <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
+            <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
+            <div class="divider"></div>
+            <a href="/pages/auth.html"><i class="fas fa-sign-in-alt"></i> Login / Register</a>
+            <a href="#" id="mobileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+        </div>
+    </nav>
+
+    <!-- User Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="user-sidebar" id="userSidebar">
+        <div class="sidebar-header">
+            <h2>Eternal Profile</h2>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="user-avatar-container">
+            <img src="/assets/images/default-avatar.png" alt="User Avatar" class="sidebar-avatar" id="sidebarAvatar">
+            <h3 class="sidebar-username" id="sidebarUsername">Anonymous Soul</h3>
+            <p class="sidebar-status" id="sidebarStatus">Exploring the eternal realms...</p>
+        </div>
+        <div class="sidebar-menu">
+            <a href="/profile"><i class="fas fa-user"></i> View My Soul</a>
+            <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
+            <a href="/souls"><i class="fas fa-users"></i> Explore Souls</a>
+            <a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Eternal Messages</a>
+            <a href="/pages/blog.html"><i class="fas fa-scroll"></i> My Scrolls</a>
+        </div>
+        <div class="sidebar-footer">
+            <p>&copy; 2023 Manifest Liberation, Naturally Free</p>
+            <p>Embracing Infinite Potential</p>
+        </div>
+    </div>
+    <button class="open-sidebar-btn" id="openSidebar">
+        <i class="fas fa-user"></i>
+    </button>
 
     <main>
         <div class="section-title">
@@ -397,6 +886,13 @@
         </div>
     </main>
 
+    <!-- Floating Buttons -->
+    <div class="floating-buttons">
+        <button class="top-button" id="topButton">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
         <p>Embrace your infinite potential and connect across eternity.</p>
@@ -419,7 +915,7 @@
             loadingIndicator.style.display = 'none';
         }
         
-        // Function to create profile cards
+        // Improved Function to create profile cards with image pre-loading
         function createProfileCard(profile) {
             // Ensure we have default values for everything
             const name = profile.displayName || profile.username || 'Anonymous Soul';
@@ -445,9 +941,14 @@
                 else if (daysSinceJoin > 7) level = "Illuminated";
             }
             
-            // Create the profile card HTML
+            // Pre-load image to prevent flickering
+            const img = new Image();
+            img.src = avatar;
+            img.onerror = () => img.src = DEFAULT_AVATAR;
+            
+            // Create the profile card HTML with optimized HTML structure
             return `
-                <a href="/souls/${profile.username || 'anonymous'}" class="profile-card">
+                <a href="/souls/${profile.username || 'anonymous'}" class="profile-card" data-username="${profile.username || 'anonymous'}">
                     <div class="profile-card-header">
                         <img src="${avatar}" alt="${name}" class="profile-card-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
                         <div class="profile-card-info">
@@ -473,12 +974,48 @@
             `;
         }
 
-        // Function to fetch profiles from API
+        // Optimized rendering function
+        function renderProfiles(profiles) {
+            if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
+                profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
+                return;
+            }
+            
+            try {
+                // Use DocumentFragment for better performance
+                const fragment = document.createDocumentFragment();
+                const tempContainer = document.createElement('div');
+                
+                // Generate all HTML at once to minimize DOM operations
+                tempContainer.innerHTML = profiles.map(createProfileCard).join('');
+                
+                // Move nodes to fragment
+                while (tempContainer.firstChild) {
+                    fragment.appendChild(tempContainer.firstChild);
+                }
+                
+                // Clear and update grid in one operation
+                profilesGrid.innerHTML = '';
+                profilesGrid.appendChild(fragment);
+                
+                // Force a repaint to prevent flickering
+                profilesGrid.style.opacity = '0.99';
+                setTimeout(() => {
+                    profilesGrid.style.opacity = '1';
+                }, 10);
+            } catch (error) {
+                console.error('Error rendering profiles:', error);
+                profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
+            }
+        }
+        
+        // Optimized fetch function with better caching
         async function fetchProfiles() {
             try {
+                // Show loading state
+                profilesGrid.style.opacity = '0.7';
                 loadingIndicator.style.display = 'flex';
                 errorMessage.style.display = 'none';
-                profilesGrid.innerHTML = '';
                 
                 // Try to get cached profiles first
                 const cachedProfiles = localStorage.getItem('mlnf_profiles');
@@ -488,6 +1025,12 @@
                     try {
                         profiles = JSON.parse(cachedProfiles);
                         console.log('Using cached profiles:', profiles);
+                        
+                        // Render cached profiles immediately while fetching fresh data
+                        if (Array.isArray(profiles) && profiles.length > 0) {
+                            renderProfiles(profiles);
+                            loadingIndicator.style.display = 'none';
+                        }
                     } catch (e) {
                         console.error('Failed to parse cached profiles:', e);
                     }
@@ -544,6 +1087,11 @@
                     // Cache the profiles
                     localStorage.setItem('mlnf_profiles', JSON.stringify(profiles));
                     localStorage.setItem('mlnf_profiles_timestamp', Date.now().toString());
+                    
+                    // Only render if we didn't already render the cached profiles
+                    if (!cachedProfiles || !Array.isArray(JSON.parse(cachedProfiles)) || JSON.parse(cachedProfiles).length === 0) {
+                        renderProfiles(profiles);
+                    }
                 }
                 
                 // Fall back to the sample default profiles if API fails and no cache
@@ -578,12 +1126,12 @@
                             level: "Illuminated"
                         }
                     ];
+                    
+                    renderProfiles(profiles);
                 }
                 
                 // Set allProfiles for search functionality
                 allProfiles = Array.isArray(profiles) ? profiles : [];
-                
-                renderProfiles(profiles);
                 
             } catch (error) {
                 console.error('Error fetching profiles:', error);
@@ -624,21 +1172,7 @@
                 renderProfiles(defaultProfiles);
             } finally {
                 loadingIndicator.style.display = 'none';
-            }
-        }
-
-        // Function to render profiles to the grid
-        function renderProfiles(profiles) {
-            if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
-                profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
-                return;
-            }
-            
-            try {
-                profilesGrid.innerHTML = profiles.map(createProfileCard).join('');
-            } catch (error) {
-                console.error('Error rendering profiles:', error);
-                profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
+                profilesGrid.style.opacity = '1';
             }
         }
 
@@ -691,78 +1225,192 @@
             } catch (error) {
                 console.error('Error parsing cached profiles:', error);
             }
+            
+            setupUserUI();
+            setupNavigation();
         });
+        
+        // Setup User Interface - Menus, Sidebar, etc.
+        function setupUserUI() {
+            // User Menu Functionality
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            const userMenuAvatar = document.getElementById('userMenuAvatar');
+            const userMenuName = document.getElementById('userMenuName');
+            
+            userMenuBtn.addEventListener('click', () => {
+                userDropdown.classList.toggle('active');
+            });
+            
+            document.addEventListener('click', (event) => {
+                if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.remove('active');
+                }
+            });
+            
+            // User Sidebar Functionality
+            const openSidebarBtn = document.getElementById('openSidebar');
+            const closeSidebarBtn = document.getElementById('closeSidebar');
+            const userSidebar = document.getElementById('userSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const sidebarAvatar = document.getElementById('sidebarAvatar');
+            const sidebarUsername = document.getElementById('sidebarUsername');
+            const sidebarStatus = document.getElementById('sidebarStatus');
+            
+            openSidebarBtn.addEventListener('click', () => {
+                userSidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeSidebarBtn.addEventListener('click', () => {
+                userSidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            sidebarOverlay.addEventListener('click', () => {
+                userSidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+            
+            function handleLogout() {
+                localStorage.removeItem('sessionToken');
+                localStorage.removeItem('user');
+                window.location.href = '/lander.html';
+            }
+            
+            logoutBtn.addEventListener('click', handleLogout);
+            mobileLogoutBtn.addEventListener('click', handleLogout);
+            
+            // Top button functionality
+            const topButton = document.getElementById('topButton');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    topButton.classList.add('visible');
+                } else {
+                    topButton.classList.remove('visible');
+                }
+            });
+            
+            topButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Update user info if logged in
+            updateUserInfo();
+        }
+        
+        // Setup Navigation - Mobile Menu, Active Links
+        function setupNavigation() {
+            // Mobile Navigation
+            const mobileNavToggle = document.getElementById('mobileNavToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeMobileNav = document.getElementById('closeMobileNav');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            
+            mobileNavToggle.addEventListener('click', () => {
+                mobileNav.classList.add('active');
+                mobileOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeMobileNav.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            mobileOverlay.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Set active class for current page
+            const currentPath = window.location.pathname;
+            
+            document.querySelectorAll('nav a').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+            
+            document.querySelectorAll('.mobile-nav-list a').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Update user information from localStorage or API
+        function updateUserInfo() {
+            // Elements to update
+            const userMenuAvatar = document.getElementById('userMenuAvatar');
+            const userMenuName = document.getElementById('userMenuName');
+            const sidebarAvatar = document.getElementById('sidebarAvatar');
+            const sidebarUsername = document.getElementById('sidebarUsername');
+            const sidebarStatus = document.getElementById('sidebarStatus');
+            
+            // Check if user is logged in
+            const token = localStorage.getItem('sessionToken');
+            const cachedUser = localStorage.getItem('user');
+            
+            if (token && cachedUser) {
+                try {
+                    const userData = JSON.parse(cachedUser);
+                    
+                    // Update user menu
+                    userMenuAvatar.src = userData.avatar || '/assets/images/default-avatar.png';
+                    userMenuAvatar.onerror = () => userMenuAvatar.src = '/assets/images/default-avatar.png';
+                    userMenuName.textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    
+                    // Update sidebar
+                    sidebarAvatar.src = userData.avatar || '/assets/images/default-avatar.png';
+                    sidebarAvatar.onerror = () => sidebarAvatar.src = '/assets/images/default-avatar.png';
+                    sidebarUsername.textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    sidebarStatus.textContent = userData.status || 'Exploring the eternal realm...';
+                    
+                    document.querySelectorAll('.user-menu, .open-sidebar-btn').forEach(el => {
+                        el.style.display = 'flex';
+                    });
+                    
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    setGuestUI();
+                }
+            } else {
+                setGuestUI();
+            }
+        }
+        
+        // Set UI for guest users
+        function setGuestUI() {
+            const userMenuAvatar = document.getElementById('userMenuAvatar');
+            const userMenuName = document.getElementById('userMenuName');
+            
+            userMenuAvatar.src = '/assets/images/default-avatar.png';
+            userMenuName.textContent = 'Guest';
+            
+            // Show login options in dropdown
+            const userDropdown = document.getElementById('userDropdown');
+            userDropdown.innerHTML = `
+                <a href="/pages/auth.html?mode=login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="/pages/auth.html?mode=register"><i class="fas fa-user-plus"></i> Register</a>
+                <div class="divider"></div>
+                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+                <a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>
+            `;
+        }
     </script>
-
-    <style>
-        /* Additional styles for new elements */
-        .loading-indicator {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            margin: 2rem auto;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 94, 120, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 1rem;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .error-message {
-            background: rgba(255, 94, 120, 0.1);
-            color: var(--accent);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            margin: 1rem auto;
-            max-width: 600px;
-            text-align: center;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 2rem;
-            font-style: italic;
-            color: var(--text);
-            opacity: 0.8;
-        }
-        
-        .clear-btn.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .clear-btn {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        /* Highlight the active nav item */
-        nav a.active {
-            color: var(--accent);
-            position: relative;
-        }
-        
-        nav a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--accent);
-        }
-    </style>
 </body>
 </html> 
