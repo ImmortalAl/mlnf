@@ -367,9 +367,9 @@
             <ul>
                 <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a></li>
-                <li><a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a></li>
-                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Message Board</a></li>
-                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> News</a></li>
+                <li><a href="/souls" class="active"><i class="fas fa-users"></i> Eternal Souls</a></li>
+                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
             </ul>
         </nav>
     </header>
@@ -384,6 +384,13 @@
             <input type="text" id="searchInput" placeholder="Search souls by name or interests...">
             <button class="clear-btn" id="clearSearch"><i class="fas fa-times"></i></button>
         </div>
+        
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Manifesting eternal souls...</p>
+        </div>
+        
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
 
         <div class="profiles-grid" id="profilesGrid">
             <!-- Profile cards will be dynamically inserted here -->
@@ -396,98 +403,328 @@
     </footer>
 
     <script>
-        // Sample profile data - In production, this would come from a backend API
-        const profiles = [
-            {
-                id: 1,
-                name: "Eternal Seeker",
-                username: "@eternally_yours",
-                avatar: "/assets/images/default-avatar.png",
-                bio: "Wandering through the infinite realms of consciousness, seeking truth and connection.",
-                posts: 42,
-                connections: 108,
-                level: "Enlightened"
-            },
-            {
-                id: 2,
-                name: "Cosmic Wanderer",
-                username: "@stardust_soul",
-                avatar: "/assets/images/default-avatar.png",
-                bio: "Dancing with the stars, embracing the eternal flow of universal energy.",
-                posts: 73,
-                connections: 156,
-                level: "Ascended"
-            },
-            {
-                id: 3,
-                name: "Light Bearer",
-                username: "@inner_flame",
-                avatar: "/assets/images/default-avatar.png",
-                bio: "Illuminating the path for fellow souls, sharing wisdom across dimensions.",
-                posts: 91,
-                connections: 247,
-                level: "Illuminated"
-            }
-        ];
-
+        // API constants
+        const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
+        const DEFAULT_AVATAR = '/assets/images/default-avatar.png';
+        
+        // Loading and error elements
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const profilesGrid = document.getElementById('profilesGrid');
+        
+        // Function to display errors
+        function displayError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loadingIndicator.style.display = 'none';
+        }
+        
+        // Function to create profile cards
         function createProfileCard(profile) {
+            // Ensure we have default values for everything
+            const name = profile.displayName || profile.username || 'Anonymous Soul';
+            const username = profile.username ? `@${profile.username}` : '@anonymous';
+            const avatar = profile.avatar || DEFAULT_AVATAR;
+            const bio = profile.bio || 'This soul has not shared their story yet.';
+            
+            // Default stats
+            const posts = profile.stats?.posts || 0;
+            const connections = profile.stats?.connections || 0;
+            
+            // Default level based on join date or random
+            let level = "Soul Seeker";
+            if (profile.level) {
+                level = profile.level;
+            } else if (profile.createdAt) {
+                const joinDate = new Date(profile.createdAt);
+                const now = new Date();
+                const daysSinceJoin = Math.floor((now - joinDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysSinceJoin > 30) level = "Enlightened";
+                else if (daysSinceJoin > 14) level = "Ascended";
+                else if (daysSinceJoin > 7) level = "Illuminated";
+            }
+            
+            // Create the profile card HTML
             return `
-                <a href="/souls/${profile.username.substring(1)}" class="profile-card">
+                <a href="/souls/${profile.username || 'anonymous'}" class="profile-card">
                     <div class="profile-card-header">
-                        <img src="${profile.avatar}" alt="${profile.name}" class="profile-card-avatar">
+                        <img src="${avatar}" alt="${name}" class="profile-card-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
                         <div class="profile-card-info">
-                            <h3>${profile.name}</h3>
-                            <p class="username">${profile.username}</p>
+                            <h3>${name}</h3>
+                            <p class="username">${username}</p>
                         </div>
                     </div>
-                    <p class="profile-card-bio">${profile.bio}</p>
+                    <p class="profile-card-bio">${bio}</p>
                     <div class="profile-card-footer">
                         <div class="profile-card-stats">
                             <div class="stat-item">
                                 <i class="fas fa-feather-alt"></i>
-                                <span>${profile.posts}</span>
+                                <span>${posts}</span>
                             </div>
                             <div class="stat-item">
                                 <i class="fas fa-users"></i>
-                                <span>${profile.connections}</span>
+                                <span>${connections}</span>
                             </div>
                         </div>
-                        <div class="profile-card-level">${profile.level}</div>
+                        <div class="profile-card-level">${level}</div>
                     </div>
                 </a>
             `;
         }
 
-        function renderProfiles(profilesToRender) {
-            const grid = document.getElementById('profilesGrid');
-            grid.innerHTML = profilesToRender.map(createProfileCard).join('');
+        // Function to render profiles to the grid
+        function renderProfiles(profiles) {
+            if (!profiles || profiles.length === 0) {
+                profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
+                return;
+            }
+            
+            profilesGrid.innerHTML = profiles.map(createProfileCard).join('');
+        }
+        
+        // Function to fetch profiles from API
+        async function fetchProfiles() {
+            try {
+                loadingIndicator.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                profilesGrid.innerHTML = '';
+                
+                // Try to get cached profiles first
+                const cachedProfiles = localStorage.getItem('mlnf_profiles');
+                let profiles = null;
+                
+                if (cachedProfiles) {
+                    try {
+                        profiles = JSON.parse(cachedProfiles);
+                        console.log('Using cached profiles:', profiles);
+                    } catch (e) {
+                        console.error('Failed to parse cached profiles:', e);
+                    }
+                }
+                
+                // If no cached data or it's older than 5 minutes, fetch from API
+                const cacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
+                const isCacheExpired = !cacheTimestamp || (Date.now() - parseInt(cacheTimestamp) > 5 * 60 * 1000);
+                
+                if (!profiles || isCacheExpired) {
+                    const token = localStorage.getItem('sessionToken');
+                    const headers = token ? 
+                        { 'Authorization': `Bearer ${token}` } : 
+                        {};
+                    
+                    const response = await fetch(`${API_BASE_URL}/users`, {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch profiles: ${response.status}`);
+                    }
+                    
+                    profiles = await response.json();
+                    
+                    // Cache the profiles
+                    localStorage.setItem('mlnf_profiles', JSON.stringify(profiles));
+                    localStorage.setItem('mlnf_profiles_timestamp', Date.now().toString());
+                }
+                
+                // Fall back to the sample default profiles if API fails and no cache
+                if (!profiles || profiles.length === 0) {
+                    console.log('Using default sample profiles');
+                    profiles = [
+                        {
+                            id: 1,
+                            displayName: "Eternal Seeker",
+                            username: "eternally_yours",
+                            avatar: "/assets/images/default-avatar.png",
+                            bio: "Wandering through the infinite realms of consciousness, seeking truth and connection.",
+                            stats: { posts: 42, connections: 108 },
+                            level: "Enlightened"
+                        },
+                        {
+                            id: 2,
+                            displayName: "Cosmic Wanderer",
+                            username: "stardust_soul",
+                            avatar: "/assets/images/default-avatar.png",
+                            bio: "Dancing with the stars, embracing the eternal flow of universal energy.",
+                            stats: { posts: 73, connections: 156 },
+                            level: "Ascended"
+                        },
+                        {
+                            id: 3,
+                            displayName: "Light Bearer",
+                            username: "inner_flame",
+                            avatar: "/assets/images/default-avatar.png",
+                            bio: "Illuminating the path for fellow souls, sharing wisdom across dimensions.",
+                            stats: { posts: 91, connections: 247 },
+                            level: "Illuminated"
+                        }
+                    ];
+                }
+                
+                renderProfiles(profiles);
+                
+            } catch (error) {
+                console.error('Error fetching profiles:', error);
+                displayError('Failed to manifest eternal souls. Please try again later.');
+                
+                // Use default profiles as fallback
+                renderProfiles([
+                    {
+                        id: 1,
+                        displayName: "Eternal Seeker",
+                        username: "eternally_yours",
+                        avatar: "/assets/images/default-avatar.png",
+                        bio: "Wandering through the infinite realms of consciousness, seeking truth and connection.",
+                        stats: { posts: 42, connections: 108 },
+                        level: "Enlightened"
+                    },
+                    {
+                        id: 2,
+                        displayName: "Cosmic Wanderer",
+                        username: "stardust_soul",
+                        avatar: "/assets/images/default-avatar.png",
+                        bio: "Dancing with the stars, embracing the eternal flow of universal energy.",
+                        stats: { posts: 73, connections: 156 },
+                        level: "Ascended"
+                    },
+                    {
+                        id: 3,
+                        displayName: "Light Bearer",
+                        username: "inner_flame",
+                        avatar: "/assets/images/default-avatar.png",
+                        bio: "Illuminating the path for fellow souls, sharing wisdom across dimensions.",
+                        stats: { posts: 91, connections: 247 },
+                        level: "Illuminated"
+                    }
+                ]);
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
         }
 
         // Search functionality
         const searchInput = document.getElementById('searchInput');
         const clearSearch = document.getElementById('clearSearch');
+        let allProfiles = [];
 
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
+        // Search function
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
             clearSearch.classList.toggle('visible', searchTerm.length > 0);
             
-            const filteredProfiles = profiles.filter(profile => 
-                profile.name.toLowerCase().includes(searchTerm) || 
-                profile.username.toLowerCase().includes(searchTerm) ||
-                profile.bio.toLowerCase().includes(searchTerm)
-            );
+            if (!searchTerm) {
+                renderProfiles(allProfiles);
+                return;
+            }
+            
+            const filteredProfiles = allProfiles.filter(profile => {
+                const name = (profile.displayName || profile.username || '').toLowerCase();
+                const username = (profile.username || '').toLowerCase();
+                const bio = (profile.bio || '').toLowerCase();
+                
+                return name.includes(searchTerm) || 
+                       username.includes(searchTerm) || 
+                       bio.includes(searchTerm);
+            });
             
             renderProfiles(filteredProfiles);
-        });
+        }
+
+        searchInput.addEventListener('input', performSearch);
 
         clearSearch.addEventListener('click', () => {
             searchInput.value = '';
             clearSearch.classList.remove('visible');
-            renderProfiles(profiles);
+            renderProfiles(allProfiles);
         });
 
-        // Initial render
-        renderProfiles(profiles);
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchProfiles();
+            
+            // Store all profiles for searching
+            try {
+                const cachedProfiles = localStorage.getItem('mlnf_profiles');
+                if (cachedProfiles) {
+                    allProfiles = JSON.parse(cachedProfiles);
+                }
+            } catch (error) {
+                console.error('Error parsing cached profiles:', error);
+            }
+        });
     </script>
+
+    <style>
+        /* Additional styles for new elements */
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin: 2rem auto;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 94, 120, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: rgba(255, 94, 120, 0.1);
+            color: var(--accent);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            font-style: italic;
+            color: var(--text);
+            opacity: 0.8;
+        }
+        
+        .clear-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .clear-btn {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Highlight the active nav item */
+        nav a.active {
+            color: var(--accent);
+            position: relative;
+        }
+        
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+        }
+    </style>
 </body>
 </html> 
