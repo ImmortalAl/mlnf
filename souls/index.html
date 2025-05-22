@@ -771,6 +771,179 @@
         .top-button:hover {
             transform: translateY(-5px);
         }
+
+        /* Copied Soul Modal Styles from css/styles.css */
+        #soulModal.soul-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75); /* Darker overlay for better contrast */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000; /* Ensure it is above other content like user sidebar */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        #soulModal.soul-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #soulModal.soul-modal .modal-content {
+            background: var(--secondary); /* Using existing theme variable */
+            padding: 2rem;
+            border-radius: var(--border-radius); /* Using existing theme variable */
+            box-shadow: var(--shadow); /* Using existing theme variable */
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--accent);
+        }
+
+        #soulModal.soul-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        #soulModalTitle {
+            color: var(--accent);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        #soulLoginForm label {
+            display: block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text_secondary, #ccc);
+        }
+
+        #soulLoginForm label span {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        #soulLoginForm input[type="text"],
+        #soulLoginForm input[type="password"] {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--highlight);
+            border-radius: calc(var(--border-radius) / 2);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        #soulLoginForm input[type="text"]:focus,
+        #soulLoginForm input[type="password"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(255, 94, 120, 0.4);
+        }
+
+        #soulModalSubmit.modal-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--gradient-accent);
+            color: white; /* Ensure text is white on gradient */
+            border: none;
+            border-radius: calc(var(--border-radius) / 2);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        #soulModalSubmit.modal-btn:hover {
+            opacity: 0.85;
+            box-shadow: 0 4px 12px rgba(255, 94, 120, 0.3);
+        }
+
+        .modal-feedback {
+            text-align: center;
+            margin-top: 1rem;
+            min-height: 1.2em; /* Prevent layout shift */
+            font-size: 0.9rem;
+            color: var(--warning); /* Default feedback color */
+        }
+
+        .modal-feedback.error {
+            color: var(--danger); /* Error color */
+        }
+
+        .modal-feedback.success {
+            color: var(--success);
+        }
+
+        .modal-toggle-view {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .modal-toggle-view a {
+            color: var(--accent);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-toggle-view a:hover {
+            color: #ff8f00; /* Lighter accent on hover */
+        }
+
+        @media (max-width: 480px) {
+            #soulModal.soul-modal .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            #soulModalTitle {
+                font-size: 1.5rem;
+            }
+            #soulLoginForm input[type="text"],
+            #soulLoginForm input[type="password"] {
+                padding: 0.7rem;
+            }
+            #soulModalSubmit.modal-btn {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        #soulModal.soul-modal .modal-content .close-modal {
+            position: absolute;
+            top: 0.8rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 2rem; /* Larger close button */
+            font-weight: 300;
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        #soulModal.soul-modal .modal-content .close-modal:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+        /* End of Copied Soul Modal Styles */
+
     </style>
 </head>
 <body>
@@ -894,6 +1067,33 @@
         </div>
     </main>
 
+    <!-- Soul Modal (from index.html) -->
+    <div id="soulModal" class="soul-modal" aria-modal="true" role="dialog" tabindex="-1" style="display:none;">
+      <div class="modal-content">
+        <button class="close-modal" aria-label="Close">&times;</button>
+        <h2 id="soulModalTitle">Enter the Sanctuary</h2>
+        <form id="soulLoginForm" autocomplete="on">
+          <label>
+            <span>Soul Identifier (Username)</span>
+            <input type="text" name="username" required autocomplete="username" />
+          </label>
+          <label>
+            <span>Ethereal Key (Password)</span>
+            <input type="password" name="password" required autocomplete="current-password" />
+          </label>
+          <label id="confirmPasswordField" style="display: none;">
+            <span>Confirm Ethereal Key</span>
+            <input type="password" name="confirmPassword" autocomplete="new-password" />
+          </label>
+          <button type="submit" class="modal-btn" id="soulModalSubmit">Transcend</button>
+        </form>
+        <div class="modal-feedback" id="modalFeedback"></div>
+        <p class="modal-toggle-view" id="modalToggleView">
+          New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>
+        </p>
+      </div>
+    </div>
+
     <!-- Floating Buttons -->
     <div class="floating-buttons">
         <button class="top-button" id="topButton">
@@ -923,6 +1123,16 @@
             loadingIndicator.style.display = 'none';
         }
         
+        // Moved handleLogout function to a higher scope
+        function handleLogout() {
+            console.log("[Souls Page] Logout initiated");
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('user');
+            // Call updateUserInfo to reflect logged-out state, then redirect or reload
+            updateUserInfo(); 
+            window.location.href = '/lander.html'; // Or window.location.reload();
+        }
+
         // Improved Function to create profile cards with image pre-loading
         function createProfileCard(profile) {
             // Ensure we have default values for everything
@@ -950,7 +1160,7 @@
             const cardHTML = `
                 <a href="/souls/${profile.username || 'anonymous'}" class="profile-card" data-username="${profile.username || 'anonymous'}">
                     <div class="profile-card-header">
-                        <img src="${DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar">
+                        <img src="${DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
                         <div class="profile-card-info">
                             <h3>${name}</h3>
                             <p class="username">${username}</p>
@@ -1002,11 +1212,13 @@
                         img.src = actualSrc;
                         img.classList.add('loaded'); 
                         img.classList.remove('lazy-avatar');
+                        img.classList.remove('skeleton');
                     };
                     tempImage.onerror = () => {
                         img.src = DEFAULT_AVATAR; // Fallback
                         img.classList.add('loaded'); // Still mark as 'loaded' to remove initial opacity
                         img.classList.remove('lazy-avatar');
+                        img.classList.remove('skeleton');
                     };
                     tempImage.src = actualSrc; // Start loading in background
                 });
@@ -1237,6 +1449,151 @@
             setupUserUI();
             setupNavigation();
 
+            // --- Initialize Modal Elements and Attach Listeners (after DOM loaded) ---
+            soulModal = document.getElementById('soulModal');
+            soulModalTitle = document.getElementById('soulModalTitle');
+            soulLoginForm = document.getElementById('soulLoginForm');
+            soulModalSubmit = document.getElementById('soulModalSubmit');
+            modalFeedback = document.getElementById('modalFeedback');
+            confirmPasswordField = document.getElementById('confirmPasswordField');
+            modalToggleView = document.getElementById('modalToggleView');
+
+            if (soulModal) {
+                const modalCloseXButton = soulModal.querySelector('.close-modal');
+                if (modalCloseXButton) {
+                    modalCloseXButton.addEventListener('click', closeSoulModal);
+                }
+                soulModal.addEventListener('click', (event) => {
+                    // Close if clicked on the overlay directly, not the content
+                    if (event.target === soulModal) closeSoulModal(); 
+                });
+            }
+
+            if (modalToggleView) {
+                modalToggleView.addEventListener('click', (event) => {
+                    if (event.target.tagName === 'A') {
+                        event.preventDefault();
+                        if (event.target.id === 'switchToRegisterLink') {
+                            setSoulModalView('register');
+                        } else if (event.target.id === 'switchToLoginLink') {
+                            setSoulModalView('login');
+                        }
+                    }
+                });
+            }
+
+            if (soulLoginForm && soulModal && modalFeedback) { 
+                soulLoginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    modalFeedback.textContent = ''; 
+                    modalFeedback.className = 'modal-feedback'; // Reset class
+
+                    const username = soulLoginForm.username.value.trim();
+                    const password = soulLoginForm.password.value;
+                    const mode = soulModal.dataset.mode || 'login';
+
+                    if (!username || !password) {
+                        modalFeedback.textContent = 'Soul Identifier and Ethereal Key are required.';
+                        modalFeedback.classList.add('error');
+                        return;
+                    }
+
+                    let url = '';
+                    let payload = { username, password };
+
+                    if (mode === 'register') {
+                        const confirmPasswordInput = soulLoginForm.confirmPassword;
+                        if (!confirmPasswordInput) {
+                             modalFeedback.textContent = 'Confirm password field missing.'; modalFeedback.classList.add('error'); return;
+                        }
+                        const confirmPassword = confirmPasswordInput.value;
+                        if (password !== confirmPassword) {
+                            modalFeedback.textContent = 'Ethereal Keys do not align.';
+                            modalFeedback.classList.add('error');
+                            return;
+                        }
+                        url = `${API_BASE_URL}/auth/register`;
+                    } else {
+                        url = `${API_BASE_URL}/auth/login`;
+                    }
+
+                    soulModalSubmit.disabled = true;
+                    soulModalSubmit.textContent = mode === 'register' ? 'Forging...' : 'Transcending...';
+                    modalFeedback.textContent = 'Processing...';
+                    modalFeedback.classList.remove('error', 'success');
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            modalFeedback.textContent = data.message || `Error: ${response.status}`;
+                            modalFeedback.classList.add('error');
+                            throw new Error(data.message || `HTTP error ${response.status}`);
+                        }
+
+                        if (mode === 'login') {
+                            if (data.token) {
+                                localStorage.setItem('sessionToken', data.token);
+                                // Fetch user data after login to store it
+                                const userResponse = await fetch(`${API_BASE_URL}/users/me`, { 
+                                    headers: { 'Authorization': `Bearer ${data.token}` }
+                                });
+                                if (userResponse.ok) {
+                                    const userData = await userResponse.json();
+                                    localStorage.setItem('user', JSON.stringify(userData));
+                                    modalFeedback.textContent = 'Sanctuary access granted.';
+                                    modalFeedback.classList.add('success');
+                                    await updateUserInfo(); // Update UI immediately
+                                    closeSoulModal();
+                                    window.location.reload(); // Reload to ensure full page update
+                                } else {
+                                    // Handle failure to fetch user data after login, though token is set
+                                    localStorage.removeItem('user'); // Clear any old user data
+                                    modalFeedback.textContent = 'Failed to fetch user data after login.';
+                                    modalFeedback.classList.add('error');
+                                }
+                            } else {
+                                modalFeedback.textContent = data.message || 'Token not received. Entry denied.';
+                                modalFeedback.classList.add('error');
+                            }
+                        } else { // Register
+                            modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
+                            modalFeedback.classList.add('success');
+                            setTimeout(() => {
+                                setSoulModalView('login'); // Switch to login view
+                                soulModalSubmit.disabled = false; // Re-enable button for login
+                                soulModalSubmit.textContent = 'Transcend';
+                                modalFeedback.textContent = 'Please login with your new credentials.';
+                                modalFeedback.className = 'modal-feedback'; // Reset class
+                            }, 2000);
+                            return; // Don't immediately re-enable button below for register success
+                        }
+
+                    } catch (error) {
+                        console.error(`[Auth Modal Error - ${mode}]:`, error);
+                        if (!modalFeedback.textContent || modalFeedback.textContent === 'Processing...') { 
+                            modalFeedback.textContent = 'An unexpected disturbance occurred.';
+                        }
+                        modalFeedback.classList.add('error');
+                    } finally {
+                        if (mode !== 'register' || !modalFeedback.classList.contains('success')){
+                             // Only re-enable if not a successful registration (which handles its own state)
+                            soulModalSubmit.disabled = false;
+                            soulModalSubmit.textContent = mode === 'register' ? 'Begin Your Eternity' : 'Transcend';
+                        }
+                    }
+                }); 
+            }
+            // --- End of Modal JS ---
+
             // Conditionally hide "Eternal Souls" from dropdown if on /souls page
             if (window.location.pathname === '/souls' || window.location.pathname === '/souls/') {
                 const dropdownSoulsLink = document.getElementById('dropdownSoulsLink');
@@ -1327,13 +1684,6 @@
             const logoutBtn = document.getElementById('logoutBtn');
             const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
             
-            function handleLogout() {
-                console.log("[Souls Page] Logout initiated");
-                localStorage.removeItem('sessionToken');
-                localStorage.removeItem('user');
-                window.location.href = '/lander.html';
-            }
-            
             logoutBtn.addEventListener('click', handleLogout);
             mobileLogoutBtn.addEventListener('click', handleLogout);
             
@@ -1402,7 +1752,7 @@
         }
         
         // Update user information from localStorage or API
-        function updateUserInfo() {
+        async function updateUserInfo() {
             console.log("[Souls Page] updateUserInfo called");
             // Elements to update
             const userMenuAvatar = document.getElementById('userMenuAvatar');
@@ -1415,10 +1765,34 @@
 
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
-            const cachedUser = localStorage.getItem('user');
+            let cachedUser = localStorage.getItem('user');
 
             console.log("[Souls Page] Token:", token ? 'Exists' : 'Not Found');
             console.log("[Souls Page] Cached User String:", cachedUser);
+
+            // If token exists but user is missing, fetch user data and retry
+            if (token && !cachedUser) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/users/me`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        const userData = await response.json();
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        // Re-run updateUserInfo now that user is set
+                        return updateUserInfo();
+                    } else {
+                        // Token invalid, clear it
+                        localStorage.removeItem('sessionToken');
+                        setGuestUI();
+                        return;
+                    }
+                } catch (err) {
+                    console.error('[Souls Page] Error fetching user data:', err);
+                    setGuestUI();
+                    return;
+                }
+            }
 
             if (token && cachedUser) {
                 try {
@@ -1486,22 +1860,103 @@
             if (userMenuAvatar) userMenuAvatar.src = DEFAULT_AVATAR;
             if (userMenuName) userMenuName.textContent = 'Guest';
             
-            // Populate dropdown for guest
+            // Populate dropdown for guest to open the new modal
             if (userDropdown) {
                 userDropdown.innerHTML = `
-                    <a href="/pages/auth.html?mode=login"><i class="fas fa-sign-in-alt"></i> Login</a>
-                    <a href="/pages/auth.html?mode=register"><i class="fas fa-user-plus"></i> Register</a>
+                    <a href="#" id="guestLoginModalBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="#" id="guestRegisterModalBtn"><i class="fas fa-user-plus"></i> Register</a>
                     <div class="divider"></div>
                     <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
                     ${(window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') ? '<a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>' : ''}
                 `;
+                // Add event listeners for modal triggering
+                const guestLoginBtn = document.getElementById('guestLoginModalBtn');
+                const guestRegisterBtn = document.getElementById('guestRegisterModalBtn');
+                if (guestLoginBtn) {
+                    guestLoginBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openSoulModal('login');
+                    });
+                }
+                if (guestRegisterBtn) {
+                    guestRegisterBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openSoulModal('register');
+                    });
+                }
             }
 
             // Hide user-specific elements
             if (openSidebarBtn) openSidebarBtn.style.display = 'none';
-            // The main .user-menu button itself (holding avatar/name) might still be flex, but its content and dropdown reflect guest state.
-            console.log("[Souls Page] Guest UI set.");
+            console.log("[Souls Page] Guest UI set with modal triggers.");
         }
+
+        // --- Copied Soul Modal Core Logic Functions (from MLNF/js/scripts.js) ---
+        let soulModal, soulModalTitle, soulLoginForm, soulModalSubmit, modalFeedback, confirmPasswordField, modalToggleView;
+
+        const switchToRegisterLinkHTML = 'New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>';
+        const switchToLoginLinkHTML = 'Already an Immortal? <a href="#" id="switchToLoginLink">Enter Now</a>';
+
+        function setSoulModalView(mode) {
+            if (!soulModal || !soulLoginForm || !soulModalTitle || !confirmPasswordField || !soulModalSubmit || !modalToggleView) {
+                console.error('[Souls Page Modal] setSoulModalView: Crucial modal elements missing.');
+                return;
+            }
+            soulLoginForm.reset(); 
+            if(modalFeedback) modalFeedback.textContent = '';
+            soulModal.dataset.mode = mode;
+
+            if (mode === 'register') {
+                soulModalTitle.textContent = 'Claim Your Immortality';
+                confirmPasswordField.style.display = 'block';
+                soulModalSubmit.textContent = 'Begin Your Eternity';
+                modalToggleView.innerHTML = switchToLoginLinkHTML;
+                 // Ensure confirm password input is required for registration
+                const confirmPasswordInput = confirmPasswordField.querySelector('input[name="confirmPassword"]');
+                if (confirmPasswordInput) confirmPasswordInput.required = true;
+            } else { // Default to login
+                soulModalTitle.textContent = 'Enter the Sanctuary';
+                confirmPasswordField.style.display = 'none';
+                soulModalSubmit.textContent = 'Transcend';
+                modalToggleView.innerHTML = switchToRegisterLinkHTML;
+                // Ensure confirm password input is NOT required for login
+                const confirmPasswordInput = confirmPasswordField.querySelector('input[name="confirmPassword"]');
+                if (confirmPasswordInput) confirmPasswordInput.required = false;
+            }
+        }
+
+        function openSoulModal(mode = 'login') {
+            if (!soulModal) {
+                console.error('[Souls Page Modal] openSoulModal: soulModal element not found!');
+                return;
+            }
+            // Assign elements here if not already (e.g. if modal was added dynamically or script runs before full parse)
+            if (!soulModalTitle) soulModalTitle = document.getElementById('soulModalTitle');
+            if (!soulLoginForm) soulLoginForm = document.getElementById('soulLoginForm');
+            if (!soulModalSubmit) soulModalSubmit = document.getElementById('soulModalSubmit');
+            if (!modalFeedback) modalFeedback = document.getElementById('modalFeedback');
+            if (!confirmPasswordField) confirmPasswordField = document.getElementById('confirmPasswordField');
+            if (!modalToggleView) modalToggleView = document.getElementById('modalToggleView');
+            
+            setSoulModalView(mode); 
+            soulModal.classList.add('active'); // Use class for CSS transitions
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            const usernameInput = soulModal.querySelector('input[name="username"]');
+            if (usernameInput) usernameInput.focus();
+        }
+
+        function closeSoulModal() {
+            if (!soulModal) {
+                console.error('[Souls Page Modal] closeSoulModal: soulModal is not defined or found!');
+                return;
+            }
+            soulModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scroll
+            if (modalFeedback) modalFeedback.textContent = '';
+            if (soulLoginForm) soulLoginForm.reset();
+        }
+        // --- End of Copied Soul Modal Core Logic ---
+
     </script>
 </body>
 </html> 
