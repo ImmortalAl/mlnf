@@ -17,78 +17,11 @@
     <link rel="stylesheet" href="assets/fontawesome.css" type="text/css" media="all" onload="this.media='all'" onerror="console.warn('Local Font Awesome failed to load')">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/components/shared/styles.css">
     <link rel="stylesheet" href="css/styles.css?v=1.1">
 </head>
 <body>
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
-        <div class="active-users-header">
-            <h3>Eternal Seekers</h3>
-            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
-        </div>
-        <div id="userList"></div>
-    </aside>
-
-    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-
-    <div class="modal" id="messageModal">
-        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
-            <div id="messageHistory" class="message-history"></div>
-            <div>
-                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
-                <div class="modal-actions">
-                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
-                    <button type="button" id="closeMessageModal">Close Nexus</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <header>
-        <div class="logo">
-            <i class="fas fa-infinity" aria-hidden="true"></i>
-            <h1 class="eternal">
-                <span class="title-stack">
-                    <span>Manifest Liberation</span>
-                    <span>Naturally Free</span>
-                </span>
-                <span class="short-title">MLNF</span>
-            </h1>
-        </div>
-        <nav id="mainNav" aria-label="Main navigation">
-            <ul>
-                <li><a href="/souls"><i class="fas fa-user-secret"></i> Eternal Souls</a></li>
-                <li><a href="pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
-                <li><a href="pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
-                <li><a href="pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
-                <li><a href="pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
-                <li><a href="pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
-                <li><a href="pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
-            </ul>
-        </nav>
-        <div class="auth-buttons header-auth-stack">
-            <button id="headerRegisterButton" class="btn btn-primary header-auth-btn">Embrace Immortality</button>
-            <button id="soulButton" class="btn btn-outline header-auth-btn soul-btn locked" aria-pressed="false">
-              <span class="icon" aria-hidden="true">👻</span>
-              <span class="label">Enter</span>
-              <span class="loader" aria-hidden="true"></span>
-            </button>
-        </div>
-        <div class="user-menu" id="userMenu" style="display: none;">
-            <button id="userMenuButton" class="soul-btn unlocked">
-                <img id="userMenuAvatar" src="assets/images/default-avatar.png" alt="User Avatar" class="user-menu-avatar-img" style="width: 24px; height: 24px; border-radius: 50%; margin-right: 8px; vertical-align: middle;"> 
-                <span id="usernameDisplay" class="label">Immortal</span>
-                <i class="fas fa-caret-down" style="margin-left: 5px; vertical-align: middle;"></i>
-            </button>
-            <div class="dropdown-menu" id="userDropdown">
-                <a href="lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
-                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
-            </div>
-        </div>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
-    </header>
+    <header></header>
 
     <main>
         <section class="hero" aria-labelledby="mainHeading">
@@ -96,8 +29,8 @@
                 <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
                 <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers.</p>
                 <div class="hero-buttons">
-                    <a href="pages/auth.html?mode=signup" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
-                    <a href="pages/auth.html?mode=login" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
+                    <a href="#" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
+                    <a href="#" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
                 </div>
             </div>
         </section>
@@ -198,142 +131,100 @@
             <div class="highlight-grid">
                 <div class="highlight-item">
                     <h4>Eternity Over Ephemera</h4>
-                    <p>Why transcending time is the ultimate rebellion against control.</p>
-                    <p class="author">— FreeSoul</p>
+                    <p>Why immortal thought prevails against the temporal.</p>
                 </div>
                 <div class="highlight-item">
-                    <h4>The Chains We Don't See</h4>
-                    <p>A personal journey through a censored world.</p>
-                    <p class="author">— EternalVoice</p>
+                    <h4>The Infinite Perspective</h4>
+                    <p>Seeing beyond the constraints of mortal existence.</p>
                 </div>
-                <a href="pages/blog.html" class="btn btn-primary">Explore Blogs</a>
+                <a href="pages/blog.html" class="btn btn-primary">Read More</a>
             </div>
-        </section>
-
-        <section class="highlights" id="messageboard" aria-labelledby="messageboardHeading">
-            <div class="section-title">
-                <h2 id="messageboardHeading">Echoes Unbound</h2>
-                <p>Hot Threads from the Eternal Tapestry</p>
-            </div>
-            <div class="highlight-grid">
-                <div class="highlight-item">
-                    <h4>Thread: Is Privacy Dead?</h4>
-                    <p>"In 2025, every click is watched—how do we fight back?"</p>
-                    <p class="author">— ImmortalAl (12 replies)</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Thread: The Power of Collective Truth</h4>
-                    <p>"Can we crowdsource our way to freedom?"</p>
-                    <p class="author">— TruthSeeker (8 replies)</p>
-                </div>
-                <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
-            </div>
-        </section>
-
-        <section class="highlights" id="news" aria-labelledby="newsHeading">
-            <div class="section-title">
-                <h2 id="newsHeading">Boundless Chronicles</h2>
-                <p>Featured Stories from the Eternal Chronicles</p>
-            </div>
-            <div class="highlight-grid">
-                <div class="highlight-item">
-                    <h4>Unveiled: The Hidden War on Free Thought</h4>
-                    <p>A deep dive into the censorship mechanisms of 2025.</p>
-                    <p class="author">— ImmortalAl</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>April 2, 2025: A New Dawn for Truth</h4>
-                    <p>Breaking news on the resistance against digital tyranny.</p>
-                    <p class="author">— TruthSeeker</p>
-                </div>
-                <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
-            </div>
-        </section>
-
-        <section class="debate-arena" id="debate" aria-labelledby="debateHeading">
-            <div class="section-title">
-                <h2 id="debateHeading">Clash of Immortals</h2>
-                <p>Where Eternal Minds Forge Truth</p>
-            </div>
-            <h3 class="debate-topic">Resolved: Freedom is an Eternal Right</h3>
-            <p>Join the timeless struggle as liberated souls contest existence.</p>
-            <div class="debate-preview">
-                <div class="debate-position">
-                    <h4>Affirmative</h4>
-                    <p><strong>"Freedom transcends time;</strong> it's woven into existence." — ImmortalAl</p>
-                    <div class="debate-actions">
-                        <button class="btn btn-primary">Vote Yes</button>
-                        <span class="vote-count">12 Votes</span>
-                    </div>
-                </div>
-                <div class="debate-position">
-                    <h4>Negative</h4>
-                    <p><strong>"Freedom is a fleeting illusion,</strong> bound by power." — EternalVoice</p>
-                    <div class="debate-actions">
-                        <button class="btn btn-outline">Vote No</button>
-                        <span class="vote-count">8 Votes</span>
-                    </div>
-                </div>
-            </div>
-            <a href="pages/debate.html" class="btn btn-primary">Join the Discourse</a>
-        </section>
-
-        <section class="mindmap-section" id="mindmap" aria-labelledby="mindmapHeading">
-            <div class="section-title">
-                <h2 id="mindmapHeading">Infinite Nexus</h2>
-                <p>Our Living Web Binds the Unbound</p>
-            </div>
-            <div class="mindmap-preview" id="mindmapPreview">
-                <div class="mindmap-node main">Liberation</div>
-                <div class="mindmap-node node-truth">Truth</div>
-                <div class="mindmap-node node-freedom">Freedom</div>
-                <div class="mindmap-node node-eternity">Eternity</div>
-                <div class="mindmap-node node-unity">Unity</div>
-                <div class="mindmap-line line-1"></div>
-                <div class="mindmap-line line-2"></div>
-                <div class="mindmap-line line-3"></div>
-                <div class="mindmap-line line-4"></div>
-            </div>
-            <a href="pages/mindmap.html" class="btn btn-primary">Contribute to the Nexus</a>
         </section>
     </main>
 
-    <footer>
-        <p>Manifest Liberation, Naturally Free © 2025. An eternal sanctuary for unbound spirits.</p>
-        <div class="social-links">
-            <a href="https://x.com/mlnf" aria-label="Follow MLNF on X"><i class="fab fa-x-twitter"></i></a>
-            <a href="#" aria-label="Join MLNF on Discord"><i class="fab fa-discord"></i></a>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Eternal Links</h3>
+                <ul>
+                    <li><a href="pages/about.html">About Our Eternity</a></li>
+                    <li><a href="pages/faq.html">Immortal Questions</a></li>
+                    <li><a href="pages/contact.html">Contact the Beyond</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="pages/guidelines.html">Sanctuary Guidelines</a></li>
+                    <li><a href="pages/privacy.html">Eternal Privacy</a></li>
+                    <li><a href="pages/terms.html">Terms of Infinity</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Stay Connected</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
+                    <a href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+            <p>Embrace your infinite potential and connect across eternity.</p>
         </div>
     </footer>
 
-    <script src="js/scripts.js?v=1.0"></script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ad58560885c013',t:'MTc0NjQxNzc3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-
-    <!-- Soul Modal -->
-    <div id="soulModal" class="soul-modal" aria-modal="true" role="dialog" tabindex="-1" style="display:none;">
-      <div class="modal-content">
-        <button class="close-modal" aria-label="Close">&times;</button>
-        <h2 id="soulModalTitle">Enter the Sanctuary</h2>
-        <form id="soulLoginForm" autocomplete="on">
-          <label>
-            <span>Soul Identifier (Username)</span>
-            <input type="text" name="username" required autocomplete="username" />
-          </label>
-          <label>
-            <span>Ethereal Key (Password)</span>
-            <input type="password" name="password" required autocomplete="current-password" />
-          </label>
-          <label id="confirmPasswordField" style="display: none;">
-            <span>Confirm Ethereal Key</span>
-            <input type="password" name="confirmPassword" autocomplete="new-password" />
-          </label>
-          <button type="submit" class="modal-btn" id="soulModalSubmit">Transcend</button>
-        </form>
-        <div class="modal-feedback" id="modalFeedback"></div>
-        <p class="modal-toggle-view" id="modalToggleView">
-          New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>
-        </p>
-      </div>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroSignupButton = document.getElementById('heroSignupButton');
+            const heroLoginButton = document.getElementById('heroLoginButton');
+            
+            // Add event listeners to hero buttons
+            if (heroSignupButton) {
+                heroSignupButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('register');
+                    }
+                });
+            }
+            
+            if (heroLoginButton) {
+                heroLoginButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('login');
+                    }
+                });
+            }
+            
+            // Check if user is logged in
+            const token = localStorage.getItem('sessionToken');
+            if (token) {
+                try {
+                    const userData = JSON.parse(localStorage.getItem('user'));
+                    
+                    // Update hero buttons for logged-in users
+                    if (heroSignupButton && heroLoginButton) {
+                        heroSignupButton.textContent = 'View My Soul';
+                        heroSignupButton.href = '/profile';
+                        
+                        heroLoginButton.textContent = 'Enter Eternal Hearth';
+                        heroLoginButton.href = '/lander.html';
+                    }
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
+        });
+    </script>
+    
+    <!-- Shared Components -->
+    <script src="/components/shared/navigation.js"></script>
+    <script src="/components/shared/userMenu.js"></script>
+    <script src="/components/shared/userSidebar.js"></script>
+    <script src="/components/shared/authModal.js"></script>
+    <script src="/components/shared/mlnf-core.js"></script>
 </body>
 </html>

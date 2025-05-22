@@ -11,7 +11,8 @@
     <meta property="og:type" content="website">
     <title>Eternal Souls - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/components/shared/styles.css">
+    <link rel="stylesheet" href="/css/souls.css">
     <style>
         :root {
             --primary: #0d0d1a;
@@ -514,10 +515,13 @@
             cursor: pointer;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
             transition: var(--transition);
-            z-index: 1001;
+            z-index: 100;
         }
         
-        .open-sidebar-btn:hover {            transform: translateY(-3px) scale(1.05);            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);        }
+        .open-sidebar-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
         
         .sidebar-overlay {
             position: fixed;
@@ -942,172 +946,6 @@
         }
         /* End of Copied Soul Modal Styles */
 
-                /* Active Users Sidebar Styles - Matching main site */        .active-users {            position: fixed;            right: -320px;            top: var(--header-height);            width: 320px;            height: calc(100vh - var(--header-height));            background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));            padding: 1.5rem;            transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);            z-index: 2147483647;            box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5);            border-left: 3px solid var(--accent);            overflow-y: auto;            border-radius: 0 0 0 var(--border-radius);        }        .active-users.active {            right: 0;        }        .active-users-header {            display: flex;            justify-content: space-between;            align-items: center;            margin-bottom: 1.5rem;        }        .active-users-header h3 {            font-family: 'Montserrat', sans-serif;            font-size: 1.6rem;            font-weight: 700;            background: var(--gradient-accent);            -webkit-background-clip: text;            background-clip: text;            -webkit-text-fill-color: transparent;            text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);        }        .close-sidebar {            background: transparent;            border: 1px solid var(--accent);            color: var(--accent);            font-size: 1.2rem;            padding: 0.5rem 0.8rem;            border-radius: 50%;            cursor: pointer;            transition: var(--transition);        }        .close-sidebar:hover {            background: var(--accent);            color: var(--primary);            transform: rotate(90deg);        }        .profile-preview {            display: flex;            align-items: center;            padding: 1rem;            margin-bottom: 1rem;            background: rgba(255, 94, 120, 0.08);            border-radius: var(--border-radius);            border: 1px solid rgba(255, 94, 120, 0.25);            transition: var(--transition);            cursor: pointer;            position: relative;        }        .profile-preview:hover {            background: rgba(255, 94, 120, 0.18);            transform: translateX(-5px);            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);        }        .profile-preview img {            width: 48px;            height: 48px;            border-radius: 50%;            margin-right: 1rem;            border: 2px solid var(--accent);            transition: var(--transition);        }        .profile-preview img:hover {            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);        }        .profile-preview .user-info {            flex: 1;        }        .profile-preview a {            color: var(--text);            font-weight: 700;            text-decoration: none;            transition: var(--transition);        }        .profile-preview a:hover {            color: var(--accent);        }        .status {            font-size: 0.9rem;            opacity: 0.8;            margin-top: 0.2rem;            color: var(--highlight);        }        .online-dot {            display: inline-block;            width: 8px;            height: 8px;            background: var(--success);            border-radius: 50%;            margin-left: 0.5rem;            box-shadow: 0 0 10px var(--success);        }                .user-info {            flex: 1;            display: flex;            flex-direction: column;        }                .user-header {            display: flex;            align-items: center;        }                .message-btn {            margin-top: 0.5rem;            background: rgba(255, 94, 120, 0.1);            border: 1px solid var(--accent);            border-radius: var(--border-radius);            color: var(--text);            font-size: 0.8rem;            padding: 0.25rem 0.5rem;            cursor: pointer;            transition: var(--transition);            align-self: flex-start;            display: flex;            align-items: center;            gap: 0.25rem;        }                .message-btn:hover {            background: var(--accent);            color: white;        }        /* Show Users Button */        .show-users-btn {            position: fixed;            bottom: 20px;            right: 20px;            background: var(--secondary);            border: 1px solid var(--accent);            padding: 0.8rem;            border-radius: 50%;            cursor: pointer;            color: var(--text);            z-index: 250;            transition: var(--transition);        }        .show-users-btn:hover {            background: var(--accent);            color: var(--primary);            transform: scale(1.1);        }
-        
-        /* Original User Sidebar */
-        .user-sidebar {
-            display: none; /* Hide the original sidebar since we're using the active users sidebar now */
-        }
-        
-        .open-sidebar-btn {
-            display: none; /* Hide the original sidebar button */
-        }
-        
-        /* Message Modal Styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .auth-modal {
-            background: var(--secondary);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            border: 2px solid var(--accent);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        
-        .modal.active .auth-modal {
-            transform: scale(1);
-        }
-        
-        .auth-modal h3 {
-            color: var(--accent);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        
-        .message-history {
-            border: 1px solid rgba(255, 94, 120, 0.2);
-            border-radius: calc(var(--border-radius) / 2);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            max-height: 300px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        
-        .message-history:empty {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .message-history:empty::before {
-            content: "No previous whispers with this soul...";
-            font-style: italic;
-        }
-        
-        .message {
-            padding: 0.5rem 1rem;
-            border-radius: calc(var(--border-radius) / 2);
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        
-        .message.sent {
-            align-self: flex-end;
-            background: var(--accent);
-            color: white;
-        }
-        
-        .message.received {
-            align-self: flex-start;
-            background: var(--highlight);
-            color: white;
-        }
-        
-        .message-time {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            margin-top: 0.25rem;
-            text-align: right;
-        }
-        
-        #messageInput {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--highlight);
-            border-radius: calc(var(--border-radius) / 2);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-            margin-bottom: 1rem;
-        }
-        
-        #messageInput:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 8px rgba(255, 94, 120, 0.4);
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-        
-        .modal-actions button {
-            padding: 0.8rem 1.5rem;
-            border-radius: calc(var(--border-radius) / 2);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        #sendMessageBtn {
-            background: var(--accent);
-            border: none;
-            color: white;
-        }
-        
-        #sendMessageBtn:hover {
-            background: #ff8f00;
-            transform: translateY(-2px);
-        }
-        
-        #closeMessageModal {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--text);
-        }
-        
-        #closeMessageModal:hover {
-            background: rgba(255, 94, 120, 0.1);
-        }
     </style>
 </head>
 <body>
@@ -1178,7 +1016,35 @@
         </div>
     </nav>
 
-        <!-- Sidebar Overlay for Mobile Menu -->    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- User Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="user-sidebar" id="userSidebar">
+        <div class="sidebar-header">
+            <h2>Eternal Profile</h2>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="user-avatar-container">
+            <img src="/assets/images/default-avatar.png" alt="User Avatar" class="sidebar-avatar" id="sidebarAvatar">
+            <h3 class="sidebar-username" id="sidebarUsername">Anonymous Soul</h3>
+            <p class="sidebar-status" id="sidebarStatus">Exploring the eternal realms...</p>
+        </div>
+        <div class="sidebar-menu">
+            <a href="/profile"><i class="fas fa-user"></i> View My Soul</a>
+            <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
+            <a href="/souls"><i class="fas fa-users"></i> Explore Souls</a>
+            <a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Eternal Messages</a>
+            <a href="/pages/blog.html"><i class="fas fa-scroll"></i> My Scrolls</a>
+        </div>
+        <div class="sidebar-footer">
+            <p>&copy; 2023 Manifest Liberation, Naturally Free</p>
+            <p>Embracing Infinite Potential</p>
+        </div>
+    </div>
+    <button class="open-sidebar-btn" id="openSidebar">
+        <i class="fas fa-user"></i>
+    </button>
 
     <main>
         <div class="section-title">
@@ -1203,33 +1069,6 @@
         </div>
     </main>
 
-    <!-- Soul Modal (from index.html) -->
-    <div id="soulModal" class="soul-modal" aria-modal="true" role="dialog" tabindex="-1" style="display:none;">
-      <div class="modal-content">
-        <button class="close-modal" aria-label="Close">&times;</button>
-        <h2 id="soulModalTitle">Enter the Sanctuary</h2>
-        <form id="soulLoginForm" autocomplete="on">
-          <label>
-            <span>Soul Identifier (Username)</span>
-            <input type="text" name="username" required autocomplete="username" />
-          </label>
-          <label>
-            <span>Ethereal Key (Password)</span>
-            <input type="password" name="password" required autocomplete="current-password" />
-          </label>
-          <label id="confirmPasswordField" style="display: none;">
-            <span>Confirm Ethereal Key</span>
-            <input type="password" name="confirmPassword" autocomplete="new-password" />
-          </label>
-          <button type="submit" class="modal-btn" id="soulModalSubmit">Transcend</button>
-        </form>
-        <div class="modal-feedback" id="modalFeedback"></div>
-        <p class="modal-toggle-view" id="modalToggleView">
-          New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>
-        </p>
-      </div>
-    </div>
-
     <!-- Floating Buttons -->
     <div class="floating-buttons">
         <button class="top-button" id="topButton">
@@ -1237,29 +1076,11 @@
         </button>
     </div>
 
-        <aside class="active-users" id="activeUsers" aria-label="Active users panel">        <div class="active-users-header">            <h3>Eternal Seekers</h3>            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>        </div>        <div id="userList"></div>    </aside>    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-    
-    <!-- Message Modal -->
-    <div class="modal" id="messageModal">
-        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
-            <div id="messageHistory" class="message-history"></div>
-            <div>
-                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
-                <div class="modal-actions">
-                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
-                    <button type="button" id="closeMessageModal">Close Nexus</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
         <p>Embrace your infinite potential and connect across eternity.</p>
     </footer>
 
-    <script src="/js/user-sidebar.js"></script>
     <script>
         // API constants
         const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
@@ -1277,14 +1098,14 @@
             loadingIndicator.style.display = 'none';
         }
         
-        // Define handleLogout function in the global scope
-        function handleLogout(event) {
-            if (event) event.preventDefault();
+        // Moved handleLogout function to a higher scope
+        function handleLogout() {
             console.log("[Souls Page] Logout initiated");
             localStorage.removeItem('sessionToken');
             localStorage.removeItem('user');
-            console.log("[Souls Page] Session data cleared");
-            window.location.reload();
+            // Call updateUserInfo to reflect logged-out state, then redirect or reload
+            updateUserInfo(); 
+            window.location.href = '/lander.html'; // Or window.location.reload();
         }
 
         // Improved Function to create profile cards with image pre-loading
@@ -1703,17 +1524,17 @@
                                 if (userResponse.ok) {
                                     const userData = await userResponse.json();
                                     localStorage.setItem('user', JSON.stringify(userData));
-                                    modalFeedback.textContent = 'Sanctuary access granted.';
-                                    modalFeedback.classList.add('success');
-                                    await updateUserInfo(); // Update UI immediately
-                                    closeSoulModal();
-                                    window.location.reload(); // Reload to ensure full page update
                                 } else {
                                     // Handle failure to fetch user data after login, though token is set
                                     localStorage.removeItem('user'); // Clear any old user data
-                                    modalFeedback.textContent = 'Failed to fetch user data after login.';
-                                    modalFeedback.classList.add('error');
                                 }
+                                modalFeedback.textContent = 'Sanctuary access granted.';
+                                modalFeedback.classList.add('success');
+                                updateUserInfo(); // Update UI immediately
+                                setTimeout(() => {
+                                    closeSoulModal();
+                                    window.location.reload(); // Reload to ensure full page update
+                                }, 1500); 
                             } else {
                                 modalFeedback.textContent = data.message || 'Token not received. Entry denied.';
                                 modalFeedback.classList.add('error');
@@ -1770,153 +1591,6 @@
                     }
                 }
             }
-
-                        // Active users sidebar is always available
-                                    // The user-sidebar.js script handles the sidebar functionality and user list population            // This matches the implementation on the front page
-
-            // Initialize messaging functionality
-            const messageModal = document.getElementById('messageModal');
-            const messageTitle = document.getElementById('messageTitle');
-            const recipientName = document.getElementById('recipientName');
-            const messageHistory = document.getElementById('messageHistory');
-            const messageInput = document.getElementById('messageInput');
-            const sendMessageBtn = document.getElementById('sendMessageBtn');
-            const closeMessageModal = document.getElementById('closeMessageModal');
-            
-            let currentRecipient = null;
-            
-            // Function to open the message modal for a specific user
-            window.openMessageModal = (username) => {
-                if (!username) return;
-                
-                // Check if user is logged in
-                const token = localStorage.getItem('sessionToken');
-                if (!token) {
-                    alert('You must be logged in to send messages');
-                    return;
-                }
-                
-                currentRecipient = username;
-                recipientName.textContent = username;
-                messageHistory.innerHTML = '';
-                messageInput.value = '';
-                
-                // Load message history (if available)
-                loadMessageHistory(username);
-                
-                // Show modal
-                messageModal.classList.add('active');
-            };
-            
-            // Add event listener to close the message modal
-            if (closeMessageModal) {
-                closeMessageModal.addEventListener('click', () => {
-                    messageModal.classList.remove('active');
-                });
-            }
-            
-            // Function to load message history
-            function loadMessageHistory(username) {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) return;
-                
-                // Simulated message history for now
-                // In a real implementation, you would fetch this from an API
-                const messages = [
-                    { sender: 'you', text: 'Hello, eternal soul!', timestamp: new Date(Date.now() - 3600000) },
-                    { sender: username, text: 'Greetings from the infinite realm.', timestamp: new Date(Date.now() - 3000000) },
-                    { sender: 'you', text: 'How is your journey through eternity?', timestamp: new Date(Date.now() - 2400000) }
-                ];
-                
-                displayMessages(messages, username);
-            }
-            
-            // Function to display messages
-            function displayMessages(messages, recipientUsername) {
-                messageHistory.innerHTML = '';
-                
-                messages.forEach(msg => {
-                    const messageEl = document.createElement('div');
-                    messageEl.className = `message ${msg.sender === 'you' ? 'sent' : 'received'}`;
-                    
-                    const messageText = document.createElement('div');
-                    messageText.className = 'message-text';
-                    messageText.textContent = msg.text;
-                    
-                    const messageTime = document.createElement('div');
-                    messageTime.className = 'message-time';
-                    messageTime.textContent = formatTimestamp(msg.timestamp);
-                    
-                    messageEl.appendChild(messageText);
-                    messageEl.appendChild(messageTime);
-                    messageHistory.appendChild(messageEl);
-                });
-                
-                // Scroll to bottom of message history
-                messageHistory.scrollTop = messageHistory.scrollHeight;
-            }
-            
-            // Format timestamp for messages
-            function formatTimestamp(timestamp) {
-                const date = new Date(timestamp);
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            
-            // Send message functionality
-            if (sendMessageBtn && messageInput) {
-                sendMessageBtn.addEventListener('click', () => {
-                    const messageText = messageInput.value.trim();
-                    if (!messageText) return;
-                    
-                    // Create a new message element
-                    const messageEl = document.createElement('div');
-                    messageEl.className = 'message sent';
-                    
-                    const messageTextEl = document.createElement('div');
-                    messageTextEl.className = 'message-text';
-                    messageTextEl.textContent = messageText;
-                    
-                    const messageTime = document.createElement('div');
-                    messageTime.className = 'message-time';
-                    messageTime.textContent = formatTimestamp(new Date());
-                    
-                    messageEl.appendChild(messageTextEl);
-                    messageEl.appendChild(messageTime);
-                    messageHistory.appendChild(messageEl);
-                    
-                    // Clear input and scroll to bottom
-                    messageInput.value = '';
-                    messageHistory.scrollTop = messageHistory.scrollHeight;
-                    
-                    // Here you would send the message to your API
-                    // For now, we'll just simulate a response
-                    setTimeout(() => {
-                        const responseEl = document.createElement('div');
-                        responseEl.className = 'message received';
-                        
-                        const responseTextEl = document.createElement('div');
-                        responseTextEl.className = 'message-text';
-                        responseTextEl.textContent = 'Your message echoes through the eternal realm...';
-                        
-                        const responseTime = document.createElement('div');
-                        responseTime.className = 'message-time';
-                        responseTime.textContent = formatTimestamp(new Date());
-                        
-                        responseEl.appendChild(responseTextEl);
-                        responseEl.appendChild(responseTime);
-                        messageHistory.appendChild(responseEl);
-                        
-                        messageHistory.scrollTop = messageHistory.scrollHeight;
-                    }, 1000 + Math.random() * 2000);
-                });
-                
-                // Allow sending with Enter key
-                messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        sendMessageBtn.click();
-                    }
-                });
-            }
         });
         
         // Setup User Interface - Menus, Sidebar, etc.
@@ -1927,19 +1601,70 @@
             const userMenuAvatar = document.getElementById('userMenuAvatar');
             const userMenuName = document.getElementById('userMenuName');
             
-            if (userMenuBtn) {
-                userMenuBtn.addEventListener('click', () => {
-                    userDropdown.classList.toggle('active');
-                });
-            }
+            userMenuBtn.addEventListener('click', () => {
+                userDropdown.classList.toggle('active');
+            });
             
             document.addEventListener('click', (event) => {
-                if (userMenuBtn && userDropdown && !userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
+                if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
                     userDropdown.classList.remove('active');
                 }
             });
             
-                        // We're using user-sidebar.js for the active users sidebar functionality,            // which matches the implementation on the front page
+            // User Sidebar Functionality
+            const openSidebarBtn = document.getElementById('openSidebar');
+            const closeSidebarBtn = document.getElementById('closeSidebar');
+            const userSidebar = document.getElementById('userSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const sidebarAvatar = document.getElementById('sidebarAvatar');
+            const sidebarUsername = document.getElementById('sidebarUsername');
+            const sidebarStatus = document.getElementById('sidebarStatus');
+            
+            // Improved Sidebar Logic with better error handling and logging
+            if (openSidebarBtn && userSidebar && sidebarOverlay) {
+                openSidebarBtn.addEventListener('click', () => {
+                    console.log("[Souls Page] Open sidebar button clicked");
+                    userSidebar.classList.add('active');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            } else {
+                console.error("[Souls Page] Sidebar toggle button, sidebar, or overlay not found for open action.");
+            }
+            
+            if (closeSidebarBtn && userSidebar && sidebarOverlay) {
+                closeSidebarBtn.addEventListener('click', (e) => {
+                    console.log("[Souls Page] Close sidebar button clicked");
+                    e.preventDefault(); // Prevent any default behavior
+                    userSidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            } else {
+                console.error("[Souls Page] Sidebar close button, sidebar, or overlay not found for close action.");
+            }
+            
+            if (sidebarOverlay && userSidebar) { // Overlay also closes the sidebar
+                sidebarOverlay.addEventListener('click', (e) => {
+                    console.log("[Souls Page] Sidebar overlay clicked");
+                    e.preventDefault(); // Prevent any default behavior
+                    userSidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            } else {
+                console.error("[Souls Page] Sidebar overlay or sidebar not found for overlay click action.");
+            }
+            
+            // Add keydown event for Escape key to close sidebar
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && userSidebar && userSidebar.classList.contains('active')) {
+                    console.log("[Souls Page] Escape key pressed, closing sidebar");
+                    userSidebar.classList.remove('active');
+                    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
             
             // Logout functionality
             const logoutBtn = document.getElementById('logoutBtn');
@@ -1951,22 +1676,20 @@
             // Top button functionality
             const topButton = document.getElementById('topButton');
             
-            if (topButton) {
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 300) {
-                        topButton.classList.add('visible');
-                    } else {
-                        topButton.classList.remove('visible');
-                    }
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    topButton.classList.add('visible');
+                } else {
+                    topButton.classList.remove('visible');
+                }
+            });
+            
+            topButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
                 });
-                
-                topButton.addEventListener('click', () => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
-            }
+            });
             
             // Update user info if logged in
             updateUserInfo();
@@ -2015,38 +1738,23 @@
         }
         
         // Update user information from localStorage or API
-                async function updateUserInfo() {            console.log("[Souls Page] updateUserInfo called");            // Elements to update            const userMenuAvatar = document.getElementById('userMenuAvatar');            const userMenuName = document.getElementById('userMenuName');            const userDropdown = document.getElementById('userDropdown'); // Get the dropdown itself
+        function updateUserInfo() {
+            console.log("[Souls Page] updateUserInfo called");
+            // Elements to update
+            const userMenuAvatar = document.getElementById('userMenuAvatar');
+            const userMenuName = document.getElementById('userMenuName');
+            const sidebarAvatar = document.getElementById('sidebarAvatar');
+            const sidebarUsername = document.getElementById('sidebarUsername');
+            const sidebarStatus = document.getElementById('sidebarStatus');
+            const openSidebarBtn = document.getElementById('openSidebar'); // Get the button
+            const userDropdown = document.getElementById('userDropdown'); // Get the dropdown itself
 
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
-            let cachedUser = localStorage.getItem('user');
+            const cachedUser = localStorage.getItem('user');
 
             console.log("[Souls Page] Token:", token ? 'Exists' : 'Not Found');
             console.log("[Souls Page] Cached User String:", cachedUser);
-
-            // If token exists but user is missing, fetch user data and retry
-            if (token && !cachedUser) {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/users/me`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (response.ok) {
-                        const userData = await response.json();
-                        localStorage.setItem('user', JSON.stringify(userData));
-                        // Re-run updateUserInfo now that user is set
-                        return updateUserInfo();
-                    } else {
-                        // Token invalid, clear it
-                        localStorage.removeItem('sessionToken');
-                        setGuestUI();
-                        return;
-                    }
-                } catch (err) {
-                    console.error('[Souls Page] Error fetching user data:', err);
-                    setGuestUI();
-                    return;
-                }
-            }
 
             if (token && cachedUser) {
                 try {
@@ -2081,7 +1789,15 @@
                         }
                     }
 
-                                        // Ensure user-specific buttons/menus are visible                    document.querySelectorAll('.user-menu').forEach(el => el.style.display = 'flex');
+                    // Update sidebar content
+                    if (sidebarAvatar) sidebarAvatar.src = userData.avatar || DEFAULT_AVATAR;
+                    if (sidebarAvatar) sidebarAvatar.onerror = () => sidebarAvatar.src = DEFAULT_AVATAR;
+                    if (sidebarUsername) sidebarUsername.textContent = userData.displayName || userData.username || 'Soul Seeker';
+                    if (sidebarStatus) sidebarStatus.textContent = userData.status || 'Exploring the eternal realm...';
+                    
+                    // Ensure user-specific buttons/menus are visible
+                    document.querySelectorAll('.user-menu').forEach(el => el.style.display = 'flex');
+                    if (openSidebarBtn) openSidebarBtn.style.display = 'flex'; // Explicitly show sidebar button
 
                     console.log("[Souls Page] UI updated for logged-in user.");
                     
@@ -2098,7 +1814,10 @@
         // Set UI for guest users
         function setGuestUI() {
             console.log("[Souls Page] setGuestUI called");
-                        const userMenuAvatar = document.getElementById('userMenuAvatar');            const userMenuName = document.getElementById('userMenuName');            const userDropdown = document.getElementById('userDropdown');
+            const userMenuAvatar = document.getElementById('userMenuAvatar');
+            const userMenuName = document.getElementById('userMenuName');
+            const userDropdown = document.getElementById('userDropdown');
+            const openSidebarBtn = document.getElementById('openSidebar');
             
             if (userMenuAvatar) userMenuAvatar.src = DEFAULT_AVATAR;
             if (userMenuName) userMenuName.textContent = 'Guest';
@@ -2129,7 +1848,9 @@
                 }
             }
 
-                        console.log("[Souls Page] Guest UI set with modal triggers.");
+            // Hide user-specific elements
+            if (openSidebarBtn) openSidebarBtn.style.display = 'none';
+            console.log("[Souls Page] Guest UI set with modal triggers.");
         }
 
         // --- Copied Soul Modal Core Logic Functions (from MLNF/js/scripts.js) ---
@@ -2199,5 +1920,12 @@
         // --- End of Copied Soul Modal Core Logic ---
 
     </script>
+    
+    <!-- Shared Components -->
+    <script src="/components/shared/navigation.js"></script>
+    <script src="/components/shared/userMenu.js"></script>
+    <script src="/components/shared/userSidebar.js"></script>
+    <script src="/components/shared/authModal.js"></script>
+    <script src="/components/shared/mlnf-core.js"></script>
 </body>
 </html> 
