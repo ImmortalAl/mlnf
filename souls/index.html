@@ -513,13 +513,10 @@
             cursor: pointer;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
             transition: var(--transition);
-            z-index: 100;
+            z-index: 1001;
         }
         
-        .open-sidebar-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        }
+        .open-sidebar-btn:hover {            transform: translateY(-3px) scale(1.05);            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);        }
         
         .sidebar-overlay {
             position: fixed;
@@ -1123,14 +1120,14 @@
             loadingIndicator.style.display = 'none';
         }
         
-        // Moved handleLogout function to a higher scope
-        function handleLogout() {
+        // Define handleLogout function in the global scope
+        function handleLogout(event) {
+            if (event) event.preventDefault();
             console.log("[Souls Page] Logout initiated");
             localStorage.removeItem('sessionToken');
             localStorage.removeItem('user');
-            // Call updateUserInfo to reflect logged-out state, then redirect or reload
-            updateUserInfo(); 
-            window.location.href = '/lander.html'; // Or window.location.reload();
+            console.log("[Souls Page] Session data cleared");
+            window.location.reload();
         }
 
         // Improved Function to create profile cards with image pre-loading
@@ -1616,6 +1613,16 @@
                     }
                 }
             }
+
+            // Force an extra check for logged-in users to fix sidebar button display
+            setTimeout(() => {
+                const openSidebarBtn = document.getElementById('openSidebar');
+                const token = localStorage.getItem('sessionToken');
+                if (token && openSidebarBtn) {
+                    openSidebarBtn.style.display = 'flex';
+                    console.log("[Souls Page] Sidebar button visibility enforced");
+                }
+            }, 500);
         });
         
         // Setup User Interface - Menus, Sidebar, etc.
@@ -1626,12 +1633,14 @@
             const userMenuAvatar = document.getElementById('userMenuAvatar');
             const userMenuName = document.getElementById('userMenuName');
             
-            userMenuBtn.addEventListener('click', () => {
-                userDropdown.classList.toggle('active');
-            });
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', () => {
+                    userDropdown.classList.toggle('active');
+                });
+            }
             
             document.addEventListener('click', (event) => {
-                if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
+                if (userMenuBtn && userDropdown && !userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
                     userDropdown.classList.remove('active');
                 }
             });
@@ -1648,7 +1657,8 @@
             // Simplified Sidebar Logic:
             // Ensure elements exist before adding listeners.
             if (openSidebarBtn && userSidebar && sidebarOverlay) {
-                openSidebarBtn.addEventListener('click', () => {
+                openSidebarBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
                     console.log("Open sidebar button clicked");
                     userSidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
@@ -1684,26 +1694,28 @@
             const logoutBtn = document.getElementById('logoutBtn');
             const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
             
-            logoutBtn.addEventListener('click', handleLogout);
-            mobileLogoutBtn.addEventListener('click', handleLogout);
+            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
             
             // Top button functionality
             const topButton = document.getElementById('topButton');
             
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    topButton.classList.add('visible');
-                } else {
-                    topButton.classList.remove('visible');
-                }
-            });
-            
-            topButton.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
+            if (topButton) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 300) {
+                        topButton.classList.add('visible');
+                    } else {
+                        topButton.classList.remove('visible');
+                    }
                 });
-            });
+                
+                topButton.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
             
             // Update user info if logged in
             updateUserInfo();
