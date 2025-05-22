@@ -2,12 +2,14 @@
 
 // Load and initialize all components
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('[mlnf-core.js] DOM fully loaded and parsed');
+
   // Initialize navigation
   if (window.MLNF && window.MLNF.initNavigation) {
     window.MLNF.initNavigation();
     console.log('MLNF Navigation initialized');
   } else {
-    console.error('MLNF Navigation component not loaded');
+    console.warn('MLNF Navigation component not loaded');
   }
   
   // Initialize user menu
@@ -15,15 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.MLNF.initUserMenu();
     console.log('MLNF User Menu initialized');
   } else {
-    console.error('MLNF User Menu component not loaded');
+    console.warn('MLNF User Menu component not loaded');
   }
   
-  // Initialize user sidebar
-  if (window.MLNF && window.MLNF.initUserSidebar) {
-    window.MLNF.initUserSidebar();
-    console.log('MLNF User Sidebar initialized');
+  // Initialize active users sidebar
+  if (window.MLNF && window.MLNF.initActiveUsers) {
+    window.MLNF.initActiveUsers();
+    console.log('MLNF Active Users Sidebar initialized');
   } else {
-    console.error('MLNF User Sidebar component not loaded');
+    console.warn('MLNF Active Users Sidebar component not loaded');
   }
   
   // Initialize auth modal
@@ -31,7 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.MLNF.initAuthModal();
     console.log('MLNF Auth Modal initialized');
   } else {
-    console.error('MLNF Auth Modal component not loaded');
+    console.warn('MLNF Auth Modal component not loaded');
+  }
+
+  // Initialize Hero Particles
+  if (window.MLNF && window.MLNF.initHeroParticles) {
+    window.MLNF.initHeroParticles(350); // Create a new particle roughly every 350ms
+    console.log('MLNF Hero Particles initialized');
+  } else {
+    console.warn('MLNF Hero Particles component not loaded');
   }
   
   console.log('MLNF Core components initialized');
@@ -48,9 +58,10 @@ window.addEventListener('storage', (event) => {
       window.MLNF.updateUserMenu();
     }
     
-    if (window.MLNF && window.MLNF.updateUserSidebar) {
-      window.MLNF.updateUserSidebar();
-    }
+    // No longer updating userSidebar as it's removed
+    // if (window.MLNF && window.MLNF.updateUserSidebar) {
+    //   window.MLNF.updateUserSidebar();
+    // }
   }
 });
 

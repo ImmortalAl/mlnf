@@ -11,8 +11,9 @@
     <meta property="og:type" content="website">
     <title>Eternal Souls - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="/components/shared/styles.css">
-    <link rel="stylesheet" href="/css/souls.css">
+    <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
+    <link rel="stylesheet" href="../css/souls.css?v=1.2">
+    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <style>
         :root {
             --primary: #0d0d1a;
@@ -301,6 +302,7 @@
             opacity: 0.9;
             display: -webkit-box;
             -webkit-line-clamp: 3;
+            line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -946,9 +948,267 @@
         }
         /* End of Copied Soul Modal Styles */
 
+        /* Active Users Sidebar */
+        .active-users {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: var(--secondary);
+            border-left: 3px solid var(--accent);
+            z-index: 2000;
+            padding: 1rem;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .active-users.active {
+            right: 0;
+        }
+        
+        .active-users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        
+        .active-users-header h3 {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        
+        .active-users .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        #userList {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+        }
+        
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-info h4 {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .status {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .status.online {
+            color: var(--success);
+        }
+        
+        .status.away {
+            color: orange;
+        }
+        
+        .message-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .message-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .show-users-btn {
+            position: fixed;
+            right: 1rem;
+            bottom: 5rem;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .show-users-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Message Modal */
+        #messageModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+        
+        #messageModal .auth-modal {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        #messageModal h3 {
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-history {
+            height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        #messageInput {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        #sendMessageBtn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        #closeMessageModal {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+        
+        .message {
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            position: relative;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+            background: var(--accent);
+            color: white;
+        }
+        
+        .message.received {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            display: block;
+            margin-top: 0.3rem;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
+    <aside class="active-users" id="activeUsers">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div>
+    </aside>
+
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+
+    <div class="modal" id="messageModal">
+        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
+            <div id="messageHistory" class="message-history"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <header>
         <div class="logo">
             <i class="fas fa-infinity"></i>
@@ -1081,10 +1341,13 @@
         <p>Embrace your infinite potential and connect across eternity.</p>
     </footer>
 
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.2"></script> <!-- Cache bust -->
+
     <script>
         // API constants
-        const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
-        const DEFAULT_AVATAR = '/assets/images/default-avatar.png';
+        // const API_BASE_URL = 'https://mlnf-auth.onrender.com/api'; // Now in config.js
+        // const DEFAULT_AVATAR = '/assets/images/default.jpg'; // Now in config.js, accessed via window.MLNF_CONFIG
         
         // Loading and error elements
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -1113,7 +1376,7 @@
             // Ensure we have default values for everything
             const name = profile.displayName || profile.username || 'Anonymous Soul';
             const username = profile.username ? `@${profile.username}` : '@anonymous';
-            let avatar = profile.avatar || DEFAULT_AVATAR; 
+            let avatar = profile.avatar || window.MLNF_CONFIG.DEFAULT_AVATAR; 
             const bio = profile.bio || 'This soul has not shared their story yet.';
             
             const posts = profile.stats?.posts || 0;
@@ -1135,7 +1398,7 @@
             const cardHTML = `
                 <a href="/souls/${profile.username || 'anonymous'}" class="profile-card" data-username="${profile.username || 'anonymous'}">
                     <div class="profile-card-header">
-                        <img src="${DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
+                        <img src="${window.MLNF_CONFIG.DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
                         <div class="profile-card-info">
                             <h3>${name}</h3>
                             <p class="username">${username}</p>
@@ -1190,7 +1453,7 @@
                         img.classList.remove('skeleton');
                     };
                     tempImage.onerror = () => {
-                        img.src = DEFAULT_AVATAR; // Fallback
+                        img.src = window.MLNF_CONFIG.DEFAULT_AVATAR; // Fallback
                         img.classList.add('loaded'); // Still mark as 'loaded' to remove initial opacity
                         img.classList.remove('lazy-avatar');
                         img.classList.remove('skeleton');
@@ -1611,60 +1874,117 @@
                 }
             });
             
-            // User Sidebar Functionality
-            const openSidebarBtn = document.getElementById('openSidebar');
-            const closeSidebarBtn = document.getElementById('closeSidebar');
-            const userSidebar = document.getElementById('userSidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const sidebarAvatar = document.getElementById('sidebarAvatar');
-            const sidebarUsername = document.getElementById('sidebarUsername');
-            const sidebarStatus = document.getElementById('sidebarStatus');
+            // Active users sidebar functionality
+            const showUsersBtn = document.getElementById('showUsersBtn');
+            const closeUsersBtn = document.getElementById('closeUsers');
+            const activeUsers = document.getElementById('activeUsers');
             
-            // Improved Sidebar Logic with better error handling and logging
-            if (openSidebarBtn && userSidebar && sidebarOverlay) {
-                openSidebarBtn.addEventListener('click', () => {
-                    console.log("[Souls Page] Open sidebar button clicked");
-                    userSidebar.classList.add('active');
-                    sidebarOverlay.classList.add('active');
-                    document.body.style.overflow = 'hidden';
+            if (showUsersBtn && activeUsers) {
+                showUsersBtn.addEventListener('click', () => {
+                    activeUsers.classList.toggle('active');
                 });
-            } else {
-                console.error("[Souls Page] Sidebar toggle button, sidebar, or overlay not found for open action.");
             }
             
-            if (closeSidebarBtn && userSidebar && sidebarOverlay) {
-                closeSidebarBtn.addEventListener('click', (e) => {
-                    console.log("[Souls Page] Close sidebar button clicked");
-                    e.preventDefault(); // Prevent any default behavior
-                    userSidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
+            if (closeUsersBtn && activeUsers) {
+                closeUsersBtn.addEventListener('click', () => {
+                    activeUsers.classList.remove('active');
                 });
-            } else {
-                console.error("[Souls Page] Sidebar close button, sidebar, or overlay not found for close action.");
             }
             
-            if (sidebarOverlay && userSidebar) { // Overlay also closes the sidebar
-                sidebarOverlay.addEventListener('click', (e) => {
-                    console.log("[Souls Page] Sidebar overlay clicked");
-                    e.preventDefault(); // Prevent any default behavior
-                    userSidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
+            // Populate active users (mock data for now)
+            const userList = document.getElementById('userList');
+            if (userList) {
+                userList.innerHTML = `
+                    <div class="user-item">
+                        <img src="${window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="User Avatar">
+                        <div class="user-info">
+                            <h4>EternalSeeker</h4>
+                            <span class="status online">Online</span>
+                        </div>
+                        <button class="message-btn" data-username="EternalSeeker">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    </div>
+                    <div class="user-item">
+                        <img src="${window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="User Avatar">
+                        <div class="user-info">
+                            <h4>CosmicWanderer</h4>
+                            <span class="status online">Online</span>
+                        </div>
+                        <button class="message-btn" data-username="CosmicWanderer">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    </div>
+                    <div class="user-item">
+                        <img src="/assets/images/default-avatar.png" alt="User Avatar">
+                        <div class="user-info">
+                            <h4>LightBearer</h4>
+                            <span class="status away">Away</span>
+                        </div>
+                        <button class="message-btn" data-username="LightBearer">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Add event listeners to message buttons
+                document.querySelectorAll('.message-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const username = e.currentTarget.dataset.username;
+                        const messageModal = document.getElementById('messageModal');
+                        const recipientName = document.getElementById('recipientName');
+                        
+                        if (messageModal && recipientName) {
+                            recipientName.textContent = username;
+                            messageModal.style.display = 'flex';
+                        }
+                    });
                 });
-            } else {
-                console.error("[Souls Page] Sidebar overlay or sidebar not found for overlay click action.");
             }
             
-            // Add keydown event for Escape key to close sidebar
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && userSidebar && userSidebar.classList.contains('active')) {
-                    console.log("[Souls Page] Escape key pressed, closing sidebar");
-                    userSidebar.classList.remove('active');
-                    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
+            // Message modal functionality
+            const closeMessageModal = document.getElementById('closeMessageModal');
+            const messageModal = document.getElementById('messageModal');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            
+            if (closeMessageModal && messageModal) {
+                closeMessageModal.addEventListener('click', () => {
+                    messageModal.style.display = 'none';
+                });
+            }
+            
+            if (sendMessageBtn) {
+                sendMessageBtn.addEventListener('click', () => {
+                    const messageInput = document.getElementById('messageInput');
+                    const messageHistory = document.getElementById('messageHistory');
+                    
+                    if (messageInput && messageHistory && messageInput.value.trim()) {
+                        // Add message to history
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'message sent';
+                        messageDiv.innerHTML = `
+                            <span class="message-text">${messageInput.value}</span>
+                            <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                        `;
+                        messageHistory.appendChild(messageDiv);
+                        
+                        // Clear input
+                        messageInput.value = '';
+                        
+                        // Simulate response
+                        setTimeout(() => {
+                            const responseDiv = document.createElement('div');
+                            responseDiv.className = 'message received';
+                            responseDiv.innerHTML = `
+                                <span class="message-text">Your wisdom resonates across the eternal planes...</span>
+                                <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                            `;
+                            messageHistory.appendChild(responseDiv);
+                            messageHistory.scrollTop = messageHistory.scrollHeight;
+                        }, 1500);
+                    }
+                });
+            }
             
             // Logout functionality
             const logoutBtn = document.getElementById('logoutBtn');
@@ -1922,10 +2242,10 @@
     </script>
     
     <!-- Shared Components -->
-    <script src="/components/shared/navigation.js"></script>
-    <script src="/components/shared/userMenu.js"></script>
-    <script src="/components/shared/userSidebar.js"></script>
-    <script src="/components/shared/authModal.js"></script>
-    <script src="/components/shared/mlnf-core.js"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script> <!-- Cache bust -->
+    <script src="../components/shared/userMenu.js?v=1.2"></script> <!-- Cache bust -->
+    <script src="../components/shared/userSidebar.js?v=1.2"></script> <!-- Cache bust -->
+    <script src="../components/shared/authModal.js?v=1.2"></script> <!-- Cache bust -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script> <!-- Cache bust -->
 </body>
 </html> 

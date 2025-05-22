@@ -1,121 +1,168 @@
 // navigation.js - Handles the consistent navigation bar across the site
 
-// Dynamically creates and injects the navigation HTML
+function generateNavLinksHTML(currentPath, navType = 'main') {
+    console.log(`[navigation.js] generateNavLinksHTML called. currentPath: ${currentPath}, navType: ${navType}`); // DEBUG
+    
+    // Normalize currentPath for local file testing (ends with / or /index.html)
+    const isHomePageLocal = currentPath.endsWith('/index.html') || currentPath.endsWith('/');
+    const normalizedCurrentPath = isHomePageLocal && currentPath.includes('/MLNF/index.html') ? '/' : currentPath; // Simplify if it's the full local path to index
+    console.log(`[navigation.js] normalizedCurrentPath: ${normalizedCurrentPath}`); // DEBUG
+
+    const allLinks = [
+        { href: "/", icon: "fas fa-home", text: "Home" },
+        { href: "/lander.html", icon: "fas fa-fire", text: "Eternal Hearth" },
+        { href: "/souls", icon: "fas fa-users", text: "Eternal Souls" },
+        { href: "/pages/blog.html", icon: "fas fa-scroll", text: "Soul Scrolls" },
+        { href: "/pages/messageboard.html", icon: "fas fa-comments", text: "Echoes Unbound" },
+        { href: "/pages/news.html", icon: "fas fa-newspaper", text: "Boundless Chronicles" },
+        { href: "/pages/debate.html", icon: "fas fa-gavel", text: "Clash of Immortals" },
+        { href: "/pages/mindmap.html", icon: "fas fa-project-diagram", text: "Infinite Nexus" },
+        { href: "/pages/archive.html", icon: "fas fa-vault", text: "Timeless Vault" }
+    ];
+
+    let linksToRender = allLinks;
+
+    if (navType === 'main') {
+        // For main navigation:
+        // 1. Remove "Home" if on the homepage (normalized path)
+        // 2. Always remove "Eternal Hearth"
+        linksToRender = allLinks.filter(link => {
+            if (link.text === "Home" && (normalizedCurrentPath === "/" || normalizedCurrentPath === "/index.html")) {
+                console.log('[navigation.js] Filtering Home link on main nav for homepage.'); // DEBUG
+                return false; // Exclude Home on homepage
+            }
+            if (link.text === "Eternal Hearth") {
+                return false; // Always exclude Eternal Hearth from main nav
+            }
+            return true;
+        });
+    }
+    // For 'mobile' navType, we use allLinks by default or apply different rules if needed later
+
+    console.log('[navigation.js] linksToRender BEFORE map:', JSON.stringify(linksToRender)); // DEBUG
+    const finalHTML = linksToRender.map(link => {
+        const isActive = normalizedCurrentPath === link.href || 
+                       (link.href !== "/" && normalizedCurrentPath.startsWith(link.href)) || 
+                       (link.href.endsWith('.html') && normalizedCurrentPath.endsWith(link.href)); // Added check for .html files locally
+        
+        let linkText = link.text;
+        if (navType === 'main' && link.text.includes(' ')) {
+            // For main nav, if text has a space, replace the first one with <br> for two-line effect
+            linkText = link.text.replace(' ', '<br>');
+        }
+
+        // For main nav, wrap icon and text in a span for precise underlining
+        // The icon is now stacked above the (potentially two-line) text due to CSS flex-direction: column on the 'a' tag
+        const linkContent = navType === 'main' 
+            ? `<i class="${link.icon}"></i><span>${linkText}</span>` 
+            : `<i class="${link.icon}"></i> ${link.text}`;
+        return `<li><a href="${link.href}" class="${isActive ? 'active' : ''}">${linkContent}</a></li>`;
+    }).join('');
+    console.log(`[navigation.js] finalHTML for ${navType}:`, finalHTML.length > 100 ? finalHTML.substring(0,100) + '...' : finalHTML); // DEBUG
+    return finalHTML;
+}
+
 function injectNavigation() {
-  // Get the current path to highlight active links
-  const currentPath = window.location.pathname;
-  
-  // Create navigation HTML with conditional active class
-  const navHTML = `
-    <div class="logo">
-      <i class="fas fa-infinity"></i>
-      <h1>MLNF</h1>
-    </div>
-    <button class="mobile-nav-toggle" id="mobileNavToggle">
-      <i class="fas fa-bars"></i>
-    </button>
-    <nav>
-      <ul>
-        <li><a href="/" class="${currentPath === '/' ? 'active' : ''}"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="/lander.html" class="${currentPath === '/lander.html' ? 'active' : ''}"><i class="fas fa-fire"></i> Eternal Hearth</a></li>
-        <li><a href="/souls" class="${currentPath === '/souls' || currentPath.startsWith('/souls/') ? 'active' : ''}"><i class="fas fa-users"></i> Eternal Souls</a></li>
-        <li><a href="/pages/blog.html" class="${currentPath === '/pages/blog.html' ? 'active' : ''}"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
-        <li><a href="/pages/messageboard.html" class="${currentPath === '/pages/messageboard.html' ? 'active' : ''}"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
-        <li><a href="/pages/news.html" class="${currentPath === '/pages/news.html' ? 'active' : ''}"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
-        <li><a href="/pages/debate.html" class="${currentPath === '/pages/debate.html' ? 'active' : ''}"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
-        <li><a href="/pages/mindmap.html" class="${currentPath === '/pages/mindmap.html' ? 'active' : ''}"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
-        <li><a href="/pages/archive.html" class="${currentPath === '/pages/archive.html' ? 'active' : ''}"><i class="fas fa-vault"></i> Timeless Vault</a></li>
-      </ul>
-    </nav>
-    <div class="user-menu" id="userMenu">
-      <!-- User menu will be injected by userMenu.js -->
-    </div>
-  `;
-  
-  // Inject into header
-  const header = document.querySelector('header');
-  if (header) {
-    header.innerHTML = navHTML;
-  }
+    const mainNavUl = document.querySelector('nav.main-nav ul');
+    const mobileNavList = document.querySelector('.mobile-nav-list'); // Target for mobile links
+    const currentPath = window.location.pathname;
 
-  // Also inject mobile navigation
-  injectMobileNavigation();
+    if (mainNavUl) {
+        mainNavUl.innerHTML = generateNavLinksHTML(currentPath, 'main');
+    } else {
+        console.warn('Main navigation UL not found. Main links not injected.');
+    }
+
+    if (mobileNavList) {
+        // Generate mobile links (can include more, like auth, handled separately if needed)
+        // For now, mobile nav will also filter "Home" on homepage, but keeps "Eternal Hearth"
+        // If Eternal Hearth should also be removed from mobile, adjust navType logic or filter here
+        let mobileLinksHTML = generateNavLinksHTML(currentPath, 'mobile'); // Use 'mobile' type
+
+        // Add auth links to mobile nav based on login state (this is a simplified example)
+        const token = localStorage.getItem('sessionToken');
+        if (token) {
+            mobileLinksHTML += `
+                <div class="divider"></div>
+                <a href="/profile" id="mobileProfileLink"><i class="fas fa-user"></i> My Soul</a>
+                <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
+                <div class="divider"></div>
+                <a href="#" id="mobileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+            `;
+        } else {
+            mobileLinksHTML += `
+                <div class="divider"></div>
+                <a href="#" id="mobileLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="#" id="mobileRegisterBtn"><i class="fas fa-user-plus"></i> Register</a>
+            `;
+        }
+        mobileNavList.innerHTML = mobileLinksHTML;
+        // Re-attach event listeners for these new mobile auth buttons if necessary (e.g., in userMenu.js or mlnf-core.js)
+        // Consider centralizing auth link generation if it gets complex
+         if (window.MLNF && window.MLNF.setupMobileAuthClickHandlers) {
+            window.MLNF.setupMobileAuthClickHandlers();
+        }
+
+    } else {
+        console.warn('Mobile navigation list UL not found. Mobile links not injected.');
+    }
 }
 
-// Mobile navigation injection
-function injectMobileNavigation() {
-  const currentPath = window.location.pathname;
-  
-  const mobileNavHTML = `
-    <div class="mobile-overlay" id="mobileOverlay"></div>
-    <nav class="mobile-nav" id="mobileNav">
-      <div class="sidebar-header">
-        <h2>Eternal Navigation</h2>
-        <button class="close-sidebar" id="closeMobileNav">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="mobile-nav-list">
-        <a href="/" class="${currentPath === '/' ? 'active' : ''}"><i class="fas fa-home"></i> Home</a>
-        <a href="/lander.html" class="${currentPath === '/lander.html' ? 'active' : ''}"><i class="fas fa-fire"></i> Eternal Hearth</a>
-        <a href="/souls" class="${currentPath === '/souls' || currentPath.startsWith('/souls/') ? 'active' : ''}"><i class="fas fa-users"></i> Eternal Souls</a>
-        <a href="/pages/blog.html" class="${currentPath === '/pages/blog.html' ? 'active' : ''}"><i class="fas fa-scroll"></i> Soul Scrolls</a>
-        <a href="/pages/messageboard.html" class="${currentPath === '/pages/messageboard.html' ? 'active' : ''}"><i class="fas fa-comments"></i> Echoes Unbound</a>
-        <a href="/pages/news.html" class="${currentPath === '/pages/news.html' ? 'active' : ''}"><i class="fas fa-newspaper"></i> Boundless Chronicles</a>
-        <a href="/pages/debate.html" class="${currentPath === '/pages/debate.html' ? 'active' : ''}"><i class="fas fa-gavel"></i> Clash of Immortals</a>
-        <a href="/pages/mindmap.html" class="${currentPath === '/pages/mindmap.html' ? 'active' : ''}"><i class="fas fa-project-diagram"></i> Infinite Nexus</a>
-        <a href="/pages/archive.html" class="${currentPath === '/pages/archive.html' ? 'active' : ''}"><i class="fas fa-vault"></i> Timeless Vault</a>
-        <div class="divider"></div>
-        <a href="/profile" id="mobileProfileLink"><i class="fas fa-user"></i> My Soul</a>
-        <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
-        <div class="divider"></div>
-        <a href="#" id="mobileLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
-        <a href="#" id="mobileRegisterBtn"><i class="fas fa-user-plus"></i> Register</a>
-        <a href="#" id="mobileLogoutBtn" style="display: none;"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
-      </div>
-    </nav>
-  `;
-  
-  // Append to body
-  const mobileNavContainer = document.createElement('div');
-  mobileNavContainer.innerHTML = mobileNavHTML;
-  document.body.appendChild(mobileNavContainer);
+
+function setupMobileNavEvents() {
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    const closeMobileNav = document.getElementById('closeMobileNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    if (mobileNavToggle && mobileNav && closeMobileNav && mobileOverlay) {
+        mobileNavToggle.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            mobileOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        });
+
+        const closeMenu = () => {
+            mobileNav.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scroll
+        };
+
+        closeMobileNav.addEventListener('click', closeMenu);
+        mobileOverlay.addEventListener('click', closeMenu);
+
+        // Close mobile nav if a link inside it is clicked
+        const mobileNavLinks = mobileNav.querySelectorAll('a');
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Only close if it's a navigation link, not a control like logout
+                // This check might need refinement based on actual link IDs/classes
+                if (!link.id || (!link.id.includes('Logout') && !link.id.includes('Login') && !link.id.includes('Register'))) {
+                    closeMenu();
+                }
+            });
+        });
+
+    } else {
+        console.warn('One or more mobile navigation elements not found. Events not attached.');
+    }
 }
 
-// Setup Mobile Navigation Events
-function setupMobileNavigation() {
-  const mobileNavToggle = document.getElementById('mobileNavToggle');
-  const mobileNav = document.getElementById('mobileNav');
-  const closeMobileNav = document.getElementById('closeMobileNav');
-  const mobileOverlay = document.getElementById('mobileOverlay');
-  
-  if (mobileNavToggle && mobileNav && closeMobileNav && mobileOverlay) {
-    mobileNavToggle.addEventListener('click', () => {
-      mobileNav.classList.add('active');
-      mobileOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    });
-    
-    closeMobileNav.addEventListener('click', () => {
-      mobileNav.classList.remove('active');
-      mobileOverlay.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-    
-    mobileOverlay.addEventListener('click', () => {
-      mobileNav.classList.remove('active');
-      mobileOverlay.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-  }
-}
 
 // Initialize navigation
 function initNavigation() {
-  injectNavigation();
-  setupMobileNavigation();
+    injectNavigation();
+    setupMobileNavEvents();
 }
 
-// Export the initialization function
+// Expose to global MLNF object
 window.MLNF = window.MLNF || {};
-window.MLNF.initNavigation = initNavigation; 
+window.MLNF.initNavigation = initNavigation;
+// Expose injectNavigation if other scripts need to refresh it, e.g., after login/logout
+window.MLNF.injectNavigation = injectNavigation;
+
+// Make sure to call initNavigation after the DOM is loaded,
+// for example, from mlnf-core.js or a DOMContentLoaded listener.
+// For now, if no core script is orchestrating, call it directly for testing,
+// but ideally this is called by a main script.
+// document.addEventListener('DOMContentLoaded', initNavigation); // Example: direct call 

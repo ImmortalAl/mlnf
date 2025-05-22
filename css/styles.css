@@ -377,106 +377,250 @@ main {
 }
 
 header {
-    background: var(--gradient-secondary);
-    padding: 1rem 2rem;
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: space-between;
     justify-content: space-between;
-    -webkit-align-items: center;
     align-items: center;
-    border-bottom: 3px solid var(--accent);
+    padding: 0.8rem 1.5rem;
+    background: var(--gradient-secondary);
+    border-bottom: 2px solid var(--accent);
     position: sticky;
     top: 0;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    min-height: var(--header-height, 70px);
+}
+
+body.light-theme header {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
+    border-color: rgba(214, 45, 77, 0.25);
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
 }
 
 .logo i {
-    font-size: 2.2rem;
     color: var(--accent);
-    animation: pulse 2s infinite;
+    font-size: 2rem;
+    margin-right: 0.75rem;
+    transition: transform 0.3s ease;
 }
 
-.logo h1 {
-    font-size: 1.8rem;
+.logo:hover i {
+    transform: rotate(-15deg) scale(1.1);
+}
+
+.title-stack {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.full-title {
+    display: block !important; /* Should be visible by default */
+    font-family: 'Orbitron', 'Montserrat', sans-serif;
+    font-weight: 300; 
+    font-size: 1.8rem; 
+    line-height: 1.2;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
-    -webkit-text-fill-color: transparent;
     color: transparent;
-    letter-spacing: 1px;
-    text-transform: none;
+    text-shadow: 0 0 10px rgba(255, 94, 120, 0.4);
+    letter-spacing: 0.5px;
+    white-space: normal; /* Allow overall wrapping if very constrained */
 }
 
-.title-stack > span {
-    display: block;
-    line-height: 1.1;
+.full-title .title-line-one,
+.full-title .title-line-two {
+    display: block; /* Each part on its own line effectively */
+}
+
+.full-title .title-line-two {
+    white-space: nowrap; /* Keep "Naturally Free" together */
 }
 
 .short-title {
-    display: none;
+    display: none !important; /* Should be hidden by default */
+    font-family: 'Orbitron', 'Montserrat', sans-serif;
+    font-weight: 300; 
+    font-size: 1.8rem; 
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(255, 94, 120, 0.4);
+    letter-spacing: 0.5px;
 }
 
-nav ul {
+/* Main Navigation */
+nav.main-nav {
+    display: flex; /* Visible by default */
+    align-items: center;
+}
+
+nav.main-nav ul {
     display: flex;
-    gap: 2rem;
     list-style: none;
     margin: 0;
     padding: 0;
+    gap: 1.2rem; /* Adjusted gap */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
 }
 
-nav a {
+nav.main-nav a {
     color: var(--text);
     text-decoration: none;
     font-weight: 600;
+    padding: 0.5rem 0.2rem; /* Adjusted padding slightly */
     transition: var(--transition);
-    position: relative;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    position: relative; /* Needed for child span to be positioned relative to this */
+    /* display: inline-block; /* For better underline behavior with wrapping */
+    white-space: normal; /* Ensure text can wrap */
+    display: flex; /* New for stacking */
+    flex-direction: column; /* New for stacking */
+    align-items: center; /* New for stacking */
+    text-align: center; /* New for stacking */
+    min-width: 80px; /* Give some min-width to prevent excessive squishing */
+}
+
+nav.main-nav a span {
+    display: inline-block; /* Allows the span to be a block for the ::after */
+    position: relative; /* The ::after will be positioned relative to this span */
+}
+
+nav.main-nav a i {
+    margin-right: 0; /* Remove right margin as it's stacked now */
+    margin-bottom: 1em; /* Further Increased space between icon and text */
+    font-size: 0.85rem;
+}
+
+nav.main-nav a span::after { /* Changed from a::after to a span::after */
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px; /* Adjusted for potentially thicker underline */
+    width: 100%; /* Full width, will be scaled */
+    height: 2.5px; /* Slightly thicker */
+    background: var(--accent);
+    border-radius: 1px; /* Slightly rounded ends */
+    transform: scaleX(0);
+    transform-origin: left; /* Animate from the left */
+    transition: transform 0.3s ease-out; /* Smoother easing */
+}
+
+nav.main-nav a:hover,
+nav.main-nav a.active {
+    color: var(--accent);
+}
+
+nav.main-nav a:hover span::after, /* Changed from a:hover::after */
+nav.main-nav a.active span::after { /* Changed from a.active::after */
+    transform: scaleX(1); /* Animate to full width */
+}
+
+body.light-theme nav.main-nav a:hover,
+body.light-theme nav.main-nav a.active {
+    color: var(--accent);
+}
+
+/* Header Controls (User Menu and Mobile Toggle) */
+.header-controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem; /* Add gap for spacing between user menu and mobile toggle */
 }
 
-nav a i {
-    transition: var(--transition);
+/* New Header Auth Buttons (for logged-out state) */
+.header-auth-buttons {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 0.5rem; /* Space between stacked buttons */
 }
 
-nav a:hover {
-    background: rgba(255, 94, 120, 0.1);
-    color: var(--accent);
-    box-shadow: 0 0 15px rgba(255, 94, 120, 0.3);
-    transform: translateY(-2px);
+.header-auth-buttons .btn {
+    padding: 0.4rem 0.8rem; /* Smaller padding for header buttons */
+    font-size: 0.75rem;    /* Smaller font size */
+    min-width: 150px;      /* Adjust min-width as needed */
+    text-align: center;
+    white-space: nowrap;
+    animation: none; /* Remove pulse animation from hero buttons if it was inherited */
 }
 
-nav a:hover i {
-    transform: scale(1.2);
-    color: var(--accent);
+.header-auth-buttons .btn-primary:hover,
+.header-auth-buttons .btn-outline:hover {
+    transform: translateY(-1px); /* Less dramatic hover effect */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
 }
 
-body.light-theme nav a:hover {
-    background: rgba(214, 45, 77, 0.08);
-    box-shadow: 0 0 15px rgba(214, 45, 77, 0.2);
+/* Mobile Nav Toggle is styled in components/shared/styles.css 
+   but we ensure it's hidden by default on large screens here */
+.mobile-nav-toggle {
+    display: none; /* Hidden by default */
 }
 
-.mobile-menu-btn {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: var(--transition);
+/* Styles for .user-menu and .user-dropdown are primarily in components/shared/styles.css */
+/* Ensure userMenuContainer itself is not accidentally hidden */
+#userMenuContainer {
+    display: flex; /* Ensure the container itself is ready to display its content */
+    align-items: center;
+}
+
+
+/* Styles for the hamburger button, from shared component, to be hidden on desktop */
+/* .mobile-menu-btn is used in some contexts, .mobile-nav-toggle in others. Standardizing or ensuring both are handled. */
+.mobile-menu-btn { /* Assuming this is an alternative class for the toggle */
+    display: none; 
+}
+
+/* Mobile Nav Specific Styles from MLNF/css/styles.css */
+@media (max-width: 920px) { /* Aligning with the breakpoint in shared/styles.css */
+    header {
+        padding: 1rem 1.5rem; /* Consistent padding */
+    }
+    .full-title {
+        display: none !important; /* Hide full title on smaller screens, use important to ensure override */
+    }
+    .short-title {
+        display: block !important; /* Show short title on smaller screens, use important */
+    }
+
+    nav.main-nav {
+        display: none; /* Hide main nav */
+    }
+
+    .mobile-nav-toggle { /* Show hamburger */
+        display: flex; /* or block */
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .mobile-menu-btn { /* If this class is also used for the toggle */
+        display: flex; 
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* User menu might need adjustment or could be part of mobile nav */
+    /* .user-menu { margin-left: 0; } */ 
+}
+
+/* Further adjustments for very small screens if needed */
+@media (max-width: 768px) {
+    /* This media query had .title-stack { display: none; } and .short-title { display: block; } */
+    /* which is now handled by the 920px query for .full-title and .short-title specifically. */
+    /* It also had .mobile-menu-btn { display: block; } - covered by 920px */
+    /* nav#mainNav was hidden here - covered by 920px */
+    /* .auth-buttons { display: none; } - If .auth-buttons are part of userMenu, this might be okay or need review */
 }
 
 .hero {
@@ -567,20 +711,32 @@ body.light-theme .hero p {
     flex-wrap: wrap;
 }
 
-.particle {
+.hero .particle {
     position: absolute;
+    bottom: -20px; /* Start below the screen */
     border-radius: 50%;
-    pointer-events: none;
-    z-index: 5;
-    animation: floatUp linear infinite;
+    pointer-events: none; /* Particles should not be interactive */
+    animation-name: floatUp; /* Changed animation name */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite; /* CSS animation will loop */
+    opacity: 0; /* Start invisible, fade in with animation if desired */
 }
 
-@keyframes floatUp {
-    0% { transform: translateY(100vh) scale(0); opacity: 0; }
-    10% { opacity: 1; }
-    50% { opacity: 0.8; }
-    80% { opacity: 0; }
-    100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+@keyframes floatUp { /* Renamed from fall */
+    0% {
+        transform: translateY(0vh) translateX(0px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1; /* Fade in */
+    }
+    90% {
+        opacity: 1; /* Stay visible */
+    }
+    100% {
+        transform: translateY(-105vh) translateX(calc(var(--drift, 0) * 1px)) rotate(360deg); /* Float above screen, add some drift */
+        opacity: 0; /* Fade out */
+    }
 }
 
 .censorship-warning {
@@ -1388,9 +1544,6 @@ header .auth-buttons.header-auth-stack {
     justify-content: center;
 }
 
-#headerRegisterButton.btn.btn-primary {
-}
-
 #soulButton.btn.btn-outline {
     display: inline-flex;
     align-items: center;
@@ -1572,4 +1725,31 @@ header .auth-buttons.header-auth-stack {
 #soulModal.soul-modal .modal-content .close-modal:hover {
     opacity: 1;
     transform: scale(1.1);
+}
+
+/* Force mobile nav off-screen and its header hidden on viewports wider than 920px */
+@media (min-width: 921px) {
+    header nav.mobile-nav {
+        display: none !important; /* More forceful than transform/visibility for testing */
+        transform: translateX(-200%) !important; /* Extra push off-screen */
+        visibility: hidden !important;
+        left: -3000px !important; /* Extreme positioning */
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    header nav.mobile-nav .sidebar-header {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+
+    /* Ensure user menu container is visible and takes space */
+    header .header-controls #userMenuContainer {
+        display: flex !important; /* Or block, if flex is an issue */
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: auto !important; /* Allow it to take space */
+        min-width: 50px; /* Give it some minimum space */
+    }
 }

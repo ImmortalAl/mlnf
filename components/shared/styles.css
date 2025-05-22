@@ -4,7 +4,7 @@
 .user-menu {
     position: relative;
     z-index: 100;
-    margin-left: auto;
+    /* margin-left: auto; -- This might be handled by .header-controls gap now */
 }
 
 .user-menu-btn {
@@ -45,7 +45,7 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     z-index: 100;
 }
 
@@ -86,29 +86,45 @@
     background: none;
     border: none;
     color: var(--text, #f0e6ff);
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Slightly larger for better tap target */
     cursor: pointer;
-    display: none;
-    z-index: 100;
-    margin-left: 1rem;
+    display: none; /* Default to hidden, shown by media query in main styles.css */
+    z-index: 1001; /* Ensure it's above main nav if overlap occurs briefly */
+    padding: 0.25rem; /* Add some padding for easier clicking */
+    line-height: 1; /* Prevent extra space */
 }
 
 .mobile-nav {
     position: fixed;
     top: 0;
-    left: -100%;
+    /* left: -100%; Ensured it's off-screen by transform now */
     width: 280px;
     height: 100vh;
     background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.9)));
     z-index: 2000;
     padding: 2rem 1rem;
-    transition: left 0.3s ease;
+    /* transition: left 0.3s ease; Transition transform and visibility now */
     box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
     overflow-y: auto;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0.3s step-end;
+}
+
+/* Targeting the header within the mobile nav specifically */
+.mobile-nav .sidebar-header {
+    visibility: hidden; /* Ensure this part is hidden when the nav itself is not active */
 }
 
 .mobile-nav.active {
-    left: 0;
+    /* left: 0; Brought on-screen by transform now */
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.3s ease, visibility 0s step-start;
+}
+
+.mobile-nav.active .sidebar-header {
+    visibility: visible; /* Ensure this part is shown when the nav is active */
 }
 
 .mobile-nav-list {
@@ -159,171 +175,6 @@
 }
 
 .mobile-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* User Sidebar Styles */
-.user-sidebar {
-    position: fixed;
-    top: 0;
-    right: -320px;
-    width: 320px;
-    height: 100vh;
-    background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.9)));
-    border-left: 3px solid var(--accent, #ff5e78);
-    z-index: 2000;
-    padding: 2rem 1rem;
-    transition: right 0.3s ease;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-}
-
-.user-sidebar.active {
-    right: 0;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 94, 120, 0.2);
-}
-
-.sidebar-header h2 {
-    font-size: 1.5rem;
-    color: var(--accent, #ff5e78);
-}
-
-.close-sidebar {
-    background: none;
-    border: none;
-    color: var(--text, #f0e6ff);
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
-}
-
-.close-sidebar:hover {
-    color: var(--accent, #ff5e78);
-    transform: scale(1.1);
-}
-
-.user-avatar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.sidebar-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 3px solid var(--accent, #ff5e78);
-    object-fit: cover;
-    margin-bottom: 1rem;
-    transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
-}
-
-.sidebar-avatar:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
-}
-
-.sidebar-username {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--accent, #ff5e78);
-    margin-bottom: 0.5rem;
-}
-
-.sidebar-status {
-    font-style: italic;
-    opacity: 0.8;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.sidebar-menu a {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.8rem 1rem;
-    border-radius: var(--border-radius, 12px);
-    color: var(--text, #f0e6ff);
-    text-decoration: none;
-    transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
-}
-
-.sidebar-menu a i {
-    width: 20px;
-    text-align: center;
-    color: var(--accent, #ff5e78);
-}
-
-.sidebar-menu a:hover {
-    background: rgba(255, 94, 120, 0.1);
-}
-
-.sidebar-footer {
-    margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 94, 120, 0.2);
-    text-align: center;
-    font-size: 0.8rem;
-    opacity: 0.7;
-}
-
-.open-sidebar-btn {
-    position: fixed;
-    right: 1rem;
-    bottom: 1rem;
-    background: var(--accent, #ff5e78);
-    color: var(--primary, #0d0d1a);
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
-    z-index: 100;
-}
-
-.open-sidebar-btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-}
-
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.sidebar-overlay.active {
     opacity: 1;
     pointer-events: auto;
 }

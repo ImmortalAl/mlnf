@@ -6,7 +6,7 @@ This directory contains the shared components for the MLNF website to ensure con
 
 1. **Navigation** - Handles the top navigation bar and mobile navigation
 2. **User Menu** - Handles the user dropdown menu in the top right
-3. **User Sidebar** - Handles the user profile sidebar
+3. **User Sidebar** - Handles the user sidebar
 4. **Auth Modal** - Handles the authentication modal for login/register
 5. **Core** - Initializes all components
 
