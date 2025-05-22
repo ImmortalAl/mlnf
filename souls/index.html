@@ -941,6 +941,344 @@
         }
         /* End of Copied Soul Modal Styles */
 
+        /* Active Users Sidebar Styles */
+        .active-users {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: var(--gradient-secondary);
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            padding-top: 70px; /* Match header height */
+        }
+
+        .active-users.active {
+            right: 0;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .active-users::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px; /* Match header height */
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .active-users-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: var(--gradient-secondary);
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 300px;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+        }
+
+        .active-users.active .active-users-header {
+            transform: translateX(0);
+        }
+
+        .active-users-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #userList {
+            padding: 1.5rem;
+            margin-top: 70px; /* Match header height */
+        }
+
+        .profile-preview {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .profile-preview:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-preview img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-preview a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .profile-preview a:hover {
+            color: var(--accent);
+        }
+
+        .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            border: 2px solid var(--secondary);
+        }
+
+        .status {
+            color: var(--highlight);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        .message-btn {
+            margin-top: 0.5rem;
+            background: rgba(255, 94, 120, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .message-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        /* Show Users Button */
+        .show-users-btn {
+            position: fixed;
+            right: 1rem;
+            bottom: 5rem; /* Position above the top button */
+            background: var(--highlight);
+            color: var(--text);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            z-index: 999;
+        }
+        
+        .show-users-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            background: var(--accent);
+        }
+        
+        /* Original User Sidebar */
+        .user-sidebar {
+            display: none; /* Hide the original sidebar since we're using the active users sidebar now */
+        }
+        
+        .open-sidebar-btn {
+            display: none; /* Hide the original sidebar button */
+        }
+        
+        /* Message Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .auth-modal {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border: 2px solid var(--accent);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .auth-modal {
+            transform: scale(1);
+        }
+        
+        .auth-modal h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .message-history {
+            border: 1px solid rgba(255, 94, 120, 0.2);
+            border-radius: calc(var(--border-radius) / 2);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .message-history:empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .message-history:empty::before {
+            content: "No previous whispers with this soul...";
+            font-style: italic;
+        }
+        
+        .message {
+            padding: 0.5rem 1rem;
+            border-radius: calc(var(--border-radius) / 2);
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+            background: var(--accent);
+            color: white;
+        }
+        
+        .message.received {
+            align-self: flex-start;
+            background: var(--highlight);
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
+            text-align: right;
+        }
+        
+        #messageInput {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--highlight);
+            border-radius: calc(var(--border-radius) / 2);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+            margin-bottom: 1rem;
+        }
+        
+        #messageInput:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(255, 94, 120, 0.4);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .modal-actions button {
+            padding: 0.8rem 1.5rem;
+            border-radius: calc(var(--border-radius) / 2);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        #sendMessageBtn {
+            background: var(--accent);
+            border: none;
+            color: white;
+        }
+        
+        #sendMessageBtn:hover {
+            background: #ff8f00;
+            transform: translateY(-2px);
+        }
+        
+        #closeMessageModal {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--text);
+        }
+        
+        #closeMessageModal:hover {
+            background: rgba(255, 94, 120, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -1098,11 +1436,43 @@
         </button>
     </div>
 
+    <!-- Active Users Sidebar -->
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList">
+            <!-- User list will be populated by JavaScript -->
+        </div>
+    </aside>
+    
+    <!-- Show users button -->
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users">
+        <i class="fas fa-users"></i>
+    </button>
+    
+    <!-- Message Modal -->
+    <div class="modal" id="messageModal">
+        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
+            <div id="messageHistory" class="message-history"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
         <p>Embrace your infinite potential and connect across eternity.</p>
     </footer>
 
+    <script src="/js/user-sidebar.js"></script>
     <script>
         // API constants
         const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
@@ -1623,6 +1993,219 @@
                     console.log("[Souls Page] Sidebar button visibility enforced");
                 }
             }, 500);
+            
+            // Initialize active users sidebar as fallback if user-sidebar.js didn't load
+            if (typeof UserSidebar === 'undefined') {
+                console.log("[Souls Page] UserSidebar class not found, initializing fallback");
+                const activeUsers = document.getElementById('activeUsers');
+                const showUsersBtn = document.getElementById('showUsersBtn');
+                const closeUsersBtn = document.getElementById('closeUsers');
+                const userList = document.getElementById('userList');
+                
+                if (activeUsers && showUsersBtn && closeUsersBtn) {
+                    // Toggle sidebar functionality
+                    const toggleSidebar = () => {
+                        activeUsers.classList.toggle('active');
+                    };
+                    
+                    showUsersBtn.addEventListener('click', toggleSidebar);
+                    closeUsersBtn.addEventListener('click', toggleSidebar);
+                    
+                    // Fetch active users
+                    fetch(`${API_BASE_URL}/users/active`)
+                        .then(response => response.json())
+                        .then(users => {
+                            if (!Array.isArray(users) || users.length === 0) {
+                                // Fallback to all users if active endpoint fails or returns empty
+                                return fetch(`${API_BASE_URL}/users`).then(res => res.json());
+                            }
+                            return users;
+                        })
+                        .then(users => {
+                            // Display users
+                            if (userList) {
+                                if (Array.isArray(users) && users.length > 0) {
+                                    const usersHTML = users.map(user => {
+                                        const username = user.username || user.displayName || 'Anonymous Soul';
+                                        const status = user.status || 'Eternal Seeker';
+                                        const avatar = user.avatar || DEFAULT_AVATAR;
+                                        const isOnline = user.isOnline || Math.random() > 0.5; // Simulate online status if not provided
+                                        
+                                        return `
+                                            <div class="profile-preview">
+                                                <img src="${avatar}" alt="${username}'s avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                                                <div class="user-info">
+                                                    <div class="user-header">
+                                                        <a href="/souls/${user.username || 'anonymous'}">${username}</a>
+                                                        ${isOnline ? '<span class="online-dot"></span>' : ''}
+                                                    </div>
+                                                    <p class="status">${status}</p>
+                                                    <button class="message-btn" onclick="openMessageModal('${username}')">
+                                                        <i class="fas fa-paper-plane"></i> Whisper
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('');
+                                    
+                                    userList.innerHTML = usersHTML;
+                                } else {
+                                    userList.innerHTML = '<p style="padding: 1rem; text-align: center;">No active souls found.</p>';
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('[Souls Page] Error fetching active users:', error);
+                            if (userList) {
+                                userList.innerHTML = '<p style="padding: 1rem; text-align: center; color: #ff5e78;">Failed to connect to the eternal realm.</p>';
+                            }
+                        });
+                }
+            }
+
+            // Initialize messaging functionality
+            const messageModal = document.getElementById('messageModal');
+            const messageTitle = document.getElementById('messageTitle');
+            const recipientName = document.getElementById('recipientName');
+            const messageHistory = document.getElementById('messageHistory');
+            const messageInput = document.getElementById('messageInput');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            const closeMessageModal = document.getElementById('closeMessageModal');
+            
+            let currentRecipient = null;
+            
+            // Function to open the message modal for a specific user
+            window.openMessageModal = (username) => {
+                if (!username) return;
+                
+                // Check if user is logged in
+                const token = localStorage.getItem('sessionToken');
+                if (!token) {
+                    alert('You must be logged in to send messages');
+                    return;
+                }
+                
+                currentRecipient = username;
+                recipientName.textContent = username;
+                messageHistory.innerHTML = '';
+                messageInput.value = '';
+                
+                // Load message history (if available)
+                loadMessageHistory(username);
+                
+                // Show modal
+                messageModal.classList.add('active');
+            };
+            
+            // Add event listener to close the message modal
+            if (closeMessageModal) {
+                closeMessageModal.addEventListener('click', () => {
+                    messageModal.classList.remove('active');
+                });
+            }
+            
+            // Function to load message history
+            function loadMessageHistory(username) {
+                const token = localStorage.getItem('sessionToken');
+                if (!token) return;
+                
+                // Simulated message history for now
+                // In a real implementation, you would fetch this from an API
+                const messages = [
+                    { sender: 'you', text: 'Hello, eternal soul!', timestamp: new Date(Date.now() - 3600000) },
+                    { sender: username, text: 'Greetings from the infinite realm.', timestamp: new Date(Date.now() - 3000000) },
+                    { sender: 'you', text: 'How is your journey through eternity?', timestamp: new Date(Date.now() - 2400000) }
+                ];
+                
+                displayMessages(messages, username);
+            }
+            
+            // Function to display messages
+            function displayMessages(messages, recipientUsername) {
+                messageHistory.innerHTML = '';
+                
+                messages.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${msg.sender === 'you' ? 'sent' : 'received'}`;
+                    
+                    const messageText = document.createElement('div');
+                    messageText.className = 'message-text';
+                    messageText.textContent = msg.text;
+                    
+                    const messageTime = document.createElement('div');
+                    messageTime.className = 'message-time';
+                    messageTime.textContent = formatTimestamp(msg.timestamp);
+                    
+                    messageEl.appendChild(messageText);
+                    messageEl.appendChild(messageTime);
+                    messageHistory.appendChild(messageEl);
+                });
+                
+                // Scroll to bottom of message history
+                messageHistory.scrollTop = messageHistory.scrollHeight;
+            }
+            
+            // Format timestamp for messages
+            function formatTimestamp(timestamp) {
+                const date = new Date(timestamp);
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            // Send message functionality
+            if (sendMessageBtn && messageInput) {
+                sendMessageBtn.addEventListener('click', () => {
+                    const messageText = messageInput.value.trim();
+                    if (!messageText) return;
+                    
+                    // Create a new message element
+                    const messageEl = document.createElement('div');
+                    messageEl.className = 'message sent';
+                    
+                    const messageTextEl = document.createElement('div');
+                    messageTextEl.className = 'message-text';
+                    messageTextEl.textContent = messageText;
+                    
+                    const messageTime = document.createElement('div');
+                    messageTime.className = 'message-time';
+                    messageTime.textContent = formatTimestamp(new Date());
+                    
+                    messageEl.appendChild(messageTextEl);
+                    messageEl.appendChild(messageTime);
+                    messageHistory.appendChild(messageEl);
+                    
+                    // Clear input and scroll to bottom
+                    messageInput.value = '';
+                    messageHistory.scrollTop = messageHistory.scrollHeight;
+                    
+                    // Here you would send the message to your API
+                    // For now, we'll just simulate a response
+                    setTimeout(() => {
+                        const responseEl = document.createElement('div');
+                        responseEl.className = 'message received';
+                        
+                        const responseTextEl = document.createElement('div');
+                        responseTextEl.className = 'message-text';
+                        responseTextEl.textContent = 'Your message echoes through the eternal realm...';
+                        
+                        const responseTime = document.createElement('div');
+                        responseTime.className = 'message-time';
+                        responseTime.textContent = formatTimestamp(new Date());
+                        
+                        responseEl.appendChild(responseTextEl);
+                        responseEl.appendChild(responseTime);
+                        messageHistory.appendChild(responseEl);
+                        
+                        messageHistory.scrollTop = messageHistory.scrollHeight;
+                    }, 1000 + Math.random() * 2000);
+                });
+                
+                // Allow sending with Enter key
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessageBtn.click();
+                    }
+                });
+            }
         });
         
         // Setup User Interface - Menus, Sidebar, etc.
