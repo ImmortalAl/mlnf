@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manifest Liberation, Naturally Free - Embrace your infinite potential">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Page Title - Manifest Liberation, Naturally Free</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/components/shared/styles.css">
+    
+    <!-- Base Variables CSS -->
+    <style>
+        :root {
+            --primary: #0d0d1a;
+            --secondary: #1a1a33;
+            --accent: #ff5e78;
+            --text: #f0e6ff;
+            --highlight: #2a4066;
+            --success: #5cb85c;
+            --gradient-accent: linear-gradient(45deg, var(--accent), #ff8f00);
+            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: var(--gradient-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        main {
+            padding: 3rem 2rem;
+            flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        footer {
+            background: var(--gradient-secondary);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--accent);
+            margin-top: 2rem;
+        }
+    </style>
+    
+    <!-- Page-specific CSS -->
+    <style>
+        /* Add your page-specific CSS here */
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        
+        .content-section {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Will be injected by navigation.js -->
+    <header></header>
+    
+    <main>
+        <div class="page-title">
+            <h1>Page Title</h1>
+            <p>Page subtitle or description goes here</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>Section Title</h2>
+            <p>Your page content goes here. This template uses the shared components for navigation, user menu, sidebar, and authentication.</p>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; <span id="currentYear"></span> Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+        <p>Embrace your infinite potential and connect across eternity.</p>
+    </footer>
+    
+    <!-- Shared Components Scripts -->
+    <script src="/components/shared/navigation.js"></script>
+    <script src="/components/shared/userMenu.js"></script>
+    <script src="/components/shared/userSidebar.js"></script>
+    <script src="/components/shared/authModal.js"></script>
+    <script src="/components/shared/mlnf-core.js"></script>
+    
+    <!-- Page-specific Scripts -->
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Add your page-specific JavaScript here
+    </script>
+</body>
+</html> 
