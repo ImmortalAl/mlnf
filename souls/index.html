@@ -1349,35 +1349,7 @@
         </div>
     </nav>
 
-    <!-- User Sidebar -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="user-sidebar" id="userSidebar">
-        <div class="sidebar-header">
-            <h2>Eternal Profile</h2>
-            <button class="close-sidebar" id="closeSidebar">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="user-avatar-container">
-            <img src="/assets/images/default-avatar.png" alt="User Avatar" class="sidebar-avatar" id="sidebarAvatar">
-            <h3 class="sidebar-username" id="sidebarUsername">Anonymous Soul</h3>
-            <p class="sidebar-status" id="sidebarStatus">Exploring the eternal realms...</p>
-        </div>
-        <div class="sidebar-menu">
-            <a href="/profile"><i class="fas fa-user"></i> View My Soul</a>
-            <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
-            <a href="/souls"><i class="fas fa-users"></i> Explore Souls</a>
-            <a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Eternal Messages</a>
-            <a href="/pages/blog.html"><i class="fas fa-scroll"></i> My Scrolls</a>
-        </div>
-        <div class="sidebar-footer">
-            <p>&copy; 2023 Manifest Liberation, Naturally Free</p>
-            <p>Embracing Infinite Potential</p>
-        </div>
-    </div>
-    <button class="open-sidebar-btn" id="openSidebar">
-        <i class="fas fa-user"></i>
-    </button>
+        <!-- Sidebar Overlay for Mobile Menu -->    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main>
         <div class="section-title">
@@ -1984,15 +1956,7 @@
                 }
             }
 
-            // Force an extra check for logged-in users to fix sidebar button display
-            setTimeout(() => {
-                const openSidebarBtn = document.getElementById('openSidebar');
-                const token = localStorage.getItem('sessionToken');
-                if (token && openSidebarBtn) {
-                    openSidebarBtn.style.display = 'flex';
-                    console.log("[Souls Page] Sidebar button visibility enforced");
-                }
-            }, 500);
+                        // Active users sidebar is always available
             
             // Initialize active users sidebar as fallback if user-sidebar.js didn't load
             if (typeof UserSidebar === 'undefined') {
@@ -2002,14 +1966,7 @@
                 const closeUsersBtn = document.getElementById('closeUsers');
                 const userList = document.getElementById('userList');
                 
-                if (activeUsers && showUsersBtn && closeUsersBtn) {
-                    // Toggle sidebar functionality
-                    const toggleSidebar = () => {
-                        activeUsers.classList.toggle('active');
-                    };
-                    
-                    showUsersBtn.addEventListener('click', toggleSidebar);
-                    closeUsersBtn.addEventListener('click', toggleSidebar);
+                                if (activeUsers && showUsersBtn && closeUsersBtn) {                    // Add overlay support for the active users sidebar                    const sidebarOverlay = document.getElementById('sidebarOverlay');                                        // Toggle sidebar functionality with overlay                    const toggleSidebar = () => {                        activeUsers.classList.toggle('active');                        if (sidebarOverlay) {                            sidebarOverlay.classList.toggle('active');                            document.body.style.overflow = activeUsers.classList.contains('active') ? 'hidden' : '';                        }                    };                                        showUsersBtn.addEventListener('click', toggleSidebar);                    closeUsersBtn.addEventListener('click', toggleSidebar);                                        // Close sidebar when clicking the overlay                    if (sidebarOverlay) {                        sidebarOverlay.addEventListener('click', toggleSidebar);                    }
                     
                     // Fetch active users
                     fetch(`${API_BASE_URL}/users/active`)
@@ -2228,50 +2185,7 @@
                 }
             });
             
-            // User Sidebar Functionality
-            const openSidebarBtn = document.getElementById('openSidebar');
-            const closeSidebarBtn = document.getElementById('closeSidebar');
-            const userSidebar = document.getElementById('userSidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const sidebarAvatar = document.getElementById('sidebarAvatar');
-            const sidebarUsername = document.getElementById('sidebarUsername');
-            const sidebarStatus = document.getElementById('sidebarStatus');
-            
-            // Simplified Sidebar Logic:
-            // Ensure elements exist before adding listeners.
-            if (openSidebarBtn && userSidebar && sidebarOverlay) {
-                openSidebarBtn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    console.log("Open sidebar button clicked");
-                    userSidebar.classList.add('active');
-                    sidebarOverlay.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-            } else {
-                console.error("Sidebar toggle button, sidebar, or overlay not found for open action.");
-            }
-            
-            if (closeSidebarBtn && userSidebar && sidebarOverlay) {
-                closeSidebarBtn.addEventListener('click', () => {
-                    console.log("Close sidebar button clicked");
-                    userSidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-            } else {
-                console.error("Sidebar close button, sidebar, or overlay not found for close action.");
-            }
-            
-            if (sidebarOverlay && userSidebar) { // Overlay also closes the sidebar
-                sidebarOverlay.addEventListener('click', () => {
-                    console.log("Sidebar overlay clicked");
-                    userSidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-            } else {
-                console.error("Sidebar overlay or sidebar not found for overlay click action.");
-            }
+                        // Active Users Sidebar Functionality            const showUsersBtn = document.getElementById('showUsersBtn');            const closeUsersBtn = document.getElementById('closeUsers');            const activeUsers = document.getElementById('activeUsers');            const sidebarOverlay = document.getElementById('sidebarOverlay');                        // Ensure elements exist before adding listeners            if (showUsersBtn && activeUsers) {                showUsersBtn.addEventListener('click', (event) => {                    event.preventDefault();                    console.log("Show users button clicked");                    activeUsers.classList.add('active');                    sidebarOverlay.classList.add('active');                    document.body.style.overflow = 'hidden';                });            } else {                console.error("Show users button or active users sidebar not found.");            }                        if (closeUsersBtn && activeUsers) {                closeUsersBtn.addEventListener('click', () => {                    console.log("Close users button clicked");                    activeUsers.classList.remove('active');                    sidebarOverlay.classList.remove('active');                    document.body.style.overflow = '';                });            } else {                console.error("Close users button or active users sidebar not found.");            }                        if (sidebarOverlay && activeUsers) {                sidebarOverlay.addEventListener('click', () => {                    console.log("Sidebar overlay clicked");                    activeUsers.classList.remove('active');                    sidebarOverlay.classList.remove('active');                    document.body.style.overflow = '';                });            } else {                console.error("Sidebar overlay or active users sidebar not found.");            }
             
             // Logout functionality
             const logoutBtn = document.getElementById('logoutBtn');
@@ -2347,16 +2261,7 @@
         }
         
         // Update user information from localStorage or API
-        async function updateUserInfo() {
-            console.log("[Souls Page] updateUserInfo called");
-            // Elements to update
-            const userMenuAvatar = document.getElementById('userMenuAvatar');
-            const userMenuName = document.getElementById('userMenuName');
-            const sidebarAvatar = document.getElementById('sidebarAvatar');
-            const sidebarUsername = document.getElementById('sidebarUsername');
-            const sidebarStatus = document.getElementById('sidebarStatus');
-            const openSidebarBtn = document.getElementById('openSidebar'); // Get the button
-            const userDropdown = document.getElementById('userDropdown'); // Get the dropdown itself
+                async function updateUserInfo() {            console.log("[Souls Page] updateUserInfo called");            // Elements to update            const userMenuAvatar = document.getElementById('userMenuAvatar');            const userMenuName = document.getElementById('userMenuName');            const userDropdown = document.getElementById('userDropdown'); // Get the dropdown itself
 
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
@@ -2422,15 +2327,7 @@
                         }
                     }
 
-                    // Update sidebar content
-                    if (sidebarAvatar) sidebarAvatar.src = userData.avatar || DEFAULT_AVATAR;
-                    if (sidebarAvatar) sidebarAvatar.onerror = () => sidebarAvatar.src = DEFAULT_AVATAR;
-                    if (sidebarUsername) sidebarUsername.textContent = userData.displayName || userData.username || 'Soul Seeker';
-                    if (sidebarStatus) sidebarStatus.textContent = userData.status || 'Exploring the eternal realm...';
-                    
-                    // Ensure user-specific buttons/menus are visible
-                    document.querySelectorAll('.user-menu').forEach(el => el.style.display = 'flex');
-                    if (openSidebarBtn) openSidebarBtn.style.display = 'flex'; // Explicitly show sidebar button
+                                        // Ensure user-specific buttons/menus are visible                    document.querySelectorAll('.user-menu').forEach(el => el.style.display = 'flex');
 
                     console.log("[Souls Page] UI updated for logged-in user.");
                     
@@ -2447,10 +2344,7 @@
         // Set UI for guest users
         function setGuestUI() {
             console.log("[Souls Page] setGuestUI called");
-            const userMenuAvatar = document.getElementById('userMenuAvatar');
-            const userMenuName = document.getElementById('userMenuName');
-            const userDropdown = document.getElementById('userDropdown');
-            const openSidebarBtn = document.getElementById('openSidebar');
+                        const userMenuAvatar = document.getElementById('userMenuAvatar');            const userMenuName = document.getElementById('userMenuName');            const userDropdown = document.getElementById('userDropdown');
             
             if (userMenuAvatar) userMenuAvatar.src = DEFAULT_AVATAR;
             if (userMenuName) userMenuName.textContent = 'Guest';
@@ -2481,9 +2375,7 @@
                 }
             }
 
-            // Hide user-specific elements
-            if (openSidebarBtn) openSidebarBtn.style.display = 'none';
-            console.log("[Souls Page] Guest UI set with modal triggers.");
+                        console.log("[Souls Page] Guest UI set with modal triggers.");
         }
 
         // --- Copied Soul Modal Core Logic Functions (from MLNF/js/scripts.js) ---
