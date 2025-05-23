@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
-    <link rel="stylesheet" href="/components/shared/styles.css">
+    <link rel="stylesheet" href="components/shared/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/active-users.css">
     <link rel="stylesheet" href="css/lander.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
 </head>
@@ -38,7 +40,51 @@
         </div>
     </div>
 
-    <header></header>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
+                    </span>
+                    <span class="short-title">MLNF</span>
+                </div>
+            </a>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="main-nav">
+            <ul>
+                <!-- Populated by navigation.js -->
+            </ul>
+        </nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
+                <!-- Populated by userMenu.js when logged out -->
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Structure (outside of direct header controls but related) -->
+        <!-- It's often placed outside the main <header> for full-screen overlay behavior -->
+        <!-- but let's keep it structurally associated if scripts expect it near <header> -->
+        <!-- The following mobile nav structure is from index.html, adjust if lander has its own -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <nav class="mobile-nav" id="mobileNav">
+            <div class="sidebar-header">
+                <h2>Eternal Navigation</h2>
+                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-list">
+                <!-- Links will be dynamically populated -->
+            </div>
+        </nav>
+    </header>
 
     <main>
         <section class="welcome-section">
@@ -151,9 +197,19 @@
     </footer>
     
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+    <!-- Shared MLNF Scripts -->
+    <!-- Config MUST be loaded first -->
+    <script src="components/shared/config.js?v=1.2"></script>
+    <script src="components/shared/mlnf-core.js?v=1.2"></script>
+    <script src="components/shared/navigation.js?v=1.2"></script>
+    <script src="components/shared/userMenu.js?v=1.2"></script>
+    <script src="components/shared/authModal.js?v=1.2"></script>
+    <script src="components/shared/activeUsers.js?v=1.2"></script>
+    <!-- End Shared MLNF Scripts -->
+
     <script src="js/scripts.js?v=1.0"></script>
     <script>
-        const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
         let quill;
         
         async function fetchActivities() {
@@ -310,6 +366,7 @@
                 publishButton.addEventListener('click', publishPost);
             }
             
+            /* Commenting out Lander-specific active users sidebar logic to prevent conflict with shared component
             // Active users sidebar
             const showUsersBtn = document.getElementById('showUsersBtn');
             const closeUsersBtn = document.getElementById('closeUsersBtn');
@@ -373,6 +430,7 @@
                     }
                 });
             }
+            */
             
             // Message modal
             const closeMessageModal = document.getElementById('closeMessageModal');
@@ -419,11 +477,5 @@
             }
         });
     </script>
-    
-    <!-- Shared Components -->
-    <script src="/components/shared/navigation.js"></script>
-    <script src="/components/shared/userMenu.js"></script>
-    <script src="/components/shared/authModal.js"></script>
-    <script src="/components/shared/mlnf-core.js"></script>
 </body>
 </html>

@@ -429,7 +429,7 @@ body.light-theme header {
     display: block !important; /* Should be visible by default */
     font-family: 'Orbitron', 'Montserrat', sans-serif;
     font-weight: 300; 
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
     line-height: 1.2;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
@@ -579,7 +579,7 @@ body.light-theme nav.main-nav a.active {
 /* Styles for the hamburger button, from shared component, to be hidden on desktop */
 /* .mobile-menu-btn is used in some contexts, .mobile-nav-toggle in others. Standardizing or ensuring both are handled. */
 .mobile-menu-btn { /* Assuming this is an alternative class for the toggle */
-    display: none; 
+    display: none;
 }
 
 /* Mobile Nav Specific Styles from MLNF/css/styles.css */
@@ -1158,7 +1158,7 @@ body.light-theme .debate-arena p {
 }
 
 .show-users-btn {
-    bottom: 70px;
+    bottom: 80px;
 }
 
 footer {
