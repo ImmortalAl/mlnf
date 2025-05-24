@@ -1,25 +1,14 @@
-:root {
-    --primary: #0d0d1a;
-    --secondary: #1a1a33;
-    --accent: #ff5e78;
-    --text: #f0e6ff;
-    --highlight: #2a4066;
-    --success: #5cb85c;
-    --warning: #ffca28;
-    --danger: #ff4444;
-    --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
-    --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-    --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
-    --border-radius: 10px;
-    --header-height: 70px;
-}
+/* MLNF Main Stylesheet (styles.css) - Refactored */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -29,13 +18,15 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
+/* Light theme overrides */
 body.light-theme {
     --primary: #ffffff;
     --secondary: #f0f0f5;
     --text: #1a1a33;
-    --accent: #d62d4d;
+    --accent: #d62d4d; /* Main accent for light theme */
     --highlight: #3a3a5c;
     --success: #2e7d32;
     --warning: #ff8f00;
@@ -46,29 +37,26 @@ body.light-theme {
 body.light-theme .feature-card,
 body.light-theme .debate-arena,
 body.light-theme .mindmap-section .mindmap-preview,
-body.light-theme header,
-body.light-theme footer,
-body.light-theme .active-users,
-body.light-theme .auth-modal {
+body.light-theme footer
+{
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
-    border-color: rgba(214, 45, 77, 0.25);
+    border-color: rgba(214, 45, 77, 0.25); /* Using light theme accent */
 }
 
 body.light-theme .btn-outline,
-body.light-theme nav a {
+body.light-theme nav.main-nav a {
     color: var(--accent);
     border-color: var(--accent);
 }
 
 body.light-theme .btn-outline:hover,
-body.light-theme nav a:hover {
+body.light-theme nav.main-nav a:hover {
     background: var(--accent);
     color: var(--primary);
 }
 
 body.light-theme .highlight-item,
-body.light-theme .debate-position,
-body.light-theme .profile-preview {
+body.light-theme .debate-position {
     background: rgba(214, 45, 77, 0.06);
     border-left-color: var(--accent);
 }
@@ -82,18 +70,6 @@ body.light-theme .mindmap-line {
     background: rgba(214, 45, 77, 0.35);
 }
 
-.modal-loading {
-    text-align: center;
-    padding: 1rem;
-    color: var(--highlight);
-}
-
-.modal-error {
-    color: var(--danger);
-    text-align: center;
-    padding: 0.5rem;
-}
-
 .spinner {
     display: inline-block;
     width: 24px;
@@ -105,33 +81,27 @@ body.light-theme .mindmap-line {
     margin: 0 auto;
 }
 
-@-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
-}
-
-@-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
-}
-
 @keyframes spin {
-    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 main {
     position: relative;
     z-index: 1;
     flex: 1;
+    padding: 3rem 2rem;
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
 }
 
+/* General Button Styles */
 .btn {
     padding: 0.7rem 1.4rem;
     border-radius: var(--border-radius);
     font-weight: 700;
     cursor: pointer;
-    -webkit-transition: var(--transition);
     transition: var(--transition);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -141,11 +111,7 @@ main {
     text-align: center;
     -webkit-appearance: none;
     appearance: none;
-    -webkit-user-select: none;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-appearance: none !important;
-    appearance: none !important;
 }
 
 .btn-primary {
@@ -156,177 +122,6 @@ main {
     animation: pulseBtn 2s infinite ease-in-out;
 }
 
-.feature-card .btn-primary {
-    margin-left: auto;
-    margin-top: 1rem;
-}
-
-.highlight-grid .btn-primary,
-.debate-arena .btn-primary {
-    margin-left: auto;
-    margin-top: 1rem;
-}
-
-/* Ensure the highlight grid properly positions the button */
-.highlight-grid {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2.5rem;
-    align-items: start;
-}
-
-.highlight-grid .highlight-item {
-    position: relative;
-    padding-right: 2rem; /* Make space for visual connector */
-}
-
-/* Remove visual connector lines */
-.highlight-grid .highlight-item::after {
-    content: none !important;
-    display: none !important;
-}
-
-/* Enhanced button styling positioned to the right */
-.highlight-grid > .btn.btn-primary {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0.7rem 1.25rem !important;
-    font-size: 0.8rem !important;
-    line-height: 1.3 !important;
-    height: fit-content !important;
-    align-self: center !important;
-    margin: 0 !important;
-    border-radius: var(--border-radius) !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-    color: var(--primary) !important;
-    background: linear-gradient(45deg, #ff5e78, #ff8f00) !important;
-    border: none !important;
-    box-shadow: 
-        0 0 8px rgba(255, 94, 120, 0.3), 
-        0 0 15px rgba(255, 94, 120, 0.2), 
-        inset 0 0 5px rgba(255, 255, 255, 0.1) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-    animation: none !important;
-    position: relative !important;
-    z-index: 5 !important;
-    white-space: nowrap !important;
-    min-width: 140px !important;
-    max-width: 200px !important;
-}
-
-/* Remove arrow from buttons */
-.highlight-grid > .btn.btn-primary::after {
-    content: none !important;
-    display: none !important;
-}
-
-.highlight-grid > .btn.btn-primary:hover::after {
-    transform: translateX(3px);
-    opacity: 1;
-}
-
-.highlight-grid > .btn.btn-primary:hover {
-    transform: translateY(-2px) scale(1.03) !important;
-    box-shadow: 
-        0 0 12px rgba(255, 94, 120, 0.5), 
-        0 0 25px rgba(255, 94, 120, 0.3),
-        inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
-    rotate: 0deg !important;
-}
-
-/* Alternative Button Styles - One active, others commented out */
-
-/* ACTIVE: Vertical Gradient with Border */
-.highlight-grid > .btn.btn-primary {
-    background: linear-gradient(to bottom, #ff5e78, #ff8f00) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Pill Shape 
-.highlight-grid > .btn.btn-primary {
-    border-radius: 50px !important;
-    padding: 0.75rem 1.2rem !important;
-}
-*/
-
-/* Subtle Angles 
-.highlight-grid > .btn.btn-primary {
-    border-radius: 4px 10px 4px 10px !important;
-    transform: skew(-5deg) !important;
-}
-.highlight-grid > .btn.btn-primary:hover {
-    transform: skew(-5deg) translateY(-2px) !important;
-}
-*/
-
-/* Breathing Animation 
-.highlight-grid > .btn.btn-primary {
-    animation: buttonBreath 3s infinite ease-in-out !important;
-}
-@keyframes buttonBreath {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 94, 120, 0.3); }
-    50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); }
-}
-*/
-
-/* With Icon 
-.highlight-grid > .btn.btn-primary::before {
-    content: '✦';
-    margin-right: 0.5rem;
-    font-size: 0.9em;
-}
-*/
-
-/* Texture Overlay 
-.highlight-grid > .btn.btn-primary {
-    position: relative !important;
-    overflow: hidden !important;
-}
-.highlight-grid > .btn.btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E");
-    pointer-events: none;
-}
-*/
-
-/* Responsive behavior for smaller screens */
-@media (max-width: 768px) {
-    .highlight-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .highlight-grid .highlight-item {
-        padding-right: 0;
-        padding-bottom: 2rem;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid rgba(255, 94, 120, 0.2);
-    }
-    
-    .highlight-grid .highlight-item::after {
-        top: auto;
-        bottom: 0;
-        right: 50%;
-        width: 2px;
-        height: 1.5rem;
-        background: linear-gradient(to bottom, transparent, var(--accent));
-        transform: translateX(50%);
-    }
-    
-    .highlight-grid > .btn.btn-primary {
-        padding: 0.8rem 1.2rem !important; /* Even taller on mobile for better touch */
-    }
-}
-
 .btn-outline {
     background: transparent;
     border: 1px solid var(--accent);
@@ -334,48 +129,16 @@ main {
 }
 
 .btn:hover {
-    -webkit-transform: translateY(-2px) scale(1.05) rotate(2deg);
-    -ms-transform: translateY(-2px) scale(1.05) rotate(2deg);
     transform: translateY(-2px) scale(1.05) rotate(2deg);
-    -webkit-box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
-    box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
-}
-
-@-webkit-keyframes pulseBtn {
-    0%, 100% { -webkit-box-shadow: 0 0 10px rgba(255, 94, 120, 0.3); box-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-    50% { -webkit-box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); }
+    box-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.7);
 }
 
 @keyframes pulseBtn {
-    0%, 100% { -webkit-box-shadow: 0 0 10px rgba(255, 94, 120, 0.3); box-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-    50% { -webkit-box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); box-shadow: 0 0 15px rgba(255, 94, 120, 0.5); }
+    0%, 100% { box-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.3); }
+    50% { box-shadow: 0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.5); }
 }
 
-#freeSoulBtn {
-    position: relative;
-    overflow: hidden;
-}
-
-#freeSoulBtn[data-state="unlocked"] {
-    border-color: var(--success);
-    background: rgba(92, 184, 92, 0.1);
-}
-
-.soul-status {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: var(--gradient-accent);
-    transition: width 2s ease;
-    z-index: -1;
-}
-
-#freeSoulBtn.loading .soul-status {
-    width: 100%;
-}
-
+/* Header Structure */
 header {
     display: flex;
     justify-content: space-between;
@@ -394,13 +157,6 @@ body.light-theme header {
     border-color: rgba(214, 45, 77, 0.25);
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--text);
-}
-
 .logo a {
     display: flex;
     align-items: center;
@@ -415,7 +171,7 @@ body.light-theme header {
     transition: transform 0.3s ease;
 }
 
-.logo:hover i {
+.logo a:hover i {
     transform: rotate(-15deg) scale(1.1);
 }
 
@@ -426,45 +182,45 @@ body.light-theme header {
 }
 
 .full-title {
-    display: block !important; /* Should be visible by default */
+    display: block !important;
     font-family: 'Orbitron', 'Montserrat', sans-serif;
-    font-weight: 300; 
+    font-weight: 300;
     font-size: 1.8rem;
     line-height: 1.2;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 10px rgba(255, 94, 120, 0.4);
+    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.4);
     letter-spacing: 0.5px;
-    white-space: normal; /* Allow overall wrapping if very constrained */
+    white-space: normal;
 }
 
 .full-title .title-line-one,
 .full-title .title-line-two {
-    display: block; /* Each part on its own line effectively */
+    display: block;
 }
 
 .full-title .title-line-two {
-    white-space: nowrap; /* Keep "Naturally Free" together */
+    white-space: nowrap;
 }
 
 .short-title {
-    display: none !important; /* Should be hidden by default */
+    display: none !important;
     font-family: 'Orbitron', 'Montserrat', sans-serif;
-    font-weight: 300; 
-    font-size: 1.8rem; 
+    font-weight: 300;
+    font-size: 1.8rem;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 10px rgba(255, 94, 120, 0.4);
+    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.4);
     letter-spacing: 0.5px;
 }
 
-/* Main Navigation */
+/* Main Desktop Navigation */
 nav.main-nav {
-    display: flex; /* Visible by default */
+    display: flex;
     align-items: center;
 }
 
@@ -473,49 +229,46 @@ nav.main-nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 1.2rem; /* Adjusted gap */
-    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    gap: 1.2rem;
+    flex-wrap: wrap;
 }
 
 nav.main-nav a {
     color: var(--text);
     text-decoration: none;
     font-weight: 600;
-    padding: 0.5rem 0.2rem; /* Adjusted padding slightly */
+    padding: 0.5rem 0.2rem;
     transition: var(--transition);
-    position: relative; /* Needed for child span to be positioned relative to this */
-    /* display: inline-block; /* For better underline behavior with wrapping */
-    white-space: normal; /* Ensure text can wrap */
-    display: flex; /* New for stacking */
-    flex-direction: column; /* New for stacking */
-    align-items: center; /* New for stacking */
-    text-align: center; /* New for stacking */
-    min-width: 80px; /* Give some min-width to prevent excessive squishing */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 80px;
 }
 
 nav.main-nav a span {
-    display: inline-block; /* Allows the span to be a block for the ::after */
-    position: relative; /* The ::after will be positioned relative to this span */
+    display: inline-block;
+    position: relative;
 }
 
 nav.main-nav a i {
-    margin-right: 0; /* Remove right margin as it's stacked now */
-    margin-bottom: 1em; /* Further Increased space between icon and text */
+    margin-bottom: 0.25em;
     font-size: 0.85rem;
 }
 
-nav.main-nav a span::after { /* Changed from a::after to a span::after */
+nav.main-nav a span::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -3px; /* Adjusted for potentially thicker underline */
-    width: 100%; /* Full width, will be scaled */
-    height: 2.5px; /* Slightly thicker */
+    bottom: -3px;
+    width: 100%;
+    height: 2.5px;
     background: var(--accent);
-    border-radius: 1px; /* Slightly rounded ends */
+    border-radius: 1px;
     transform: scaleX(0);
-    transform-origin: left; /* Animate from the left */
-    transition: transform 0.3s ease-out; /* Smoother easing */
+    transform-origin: left;
+    transition: transform 0.3s ease-out;
 }
 
 nav.main-nav a:hover,
@@ -523,106 +276,38 @@ nav.main-nav a.active {
     color: var(--accent);
 }
 
-nav.main-nav a:hover span::after, /* Changed from a:hover::after */
-nav.main-nav a.active span::after { /* Changed from a.active::after */
-    transform: scaleX(1); /* Animate to full width */
+nav.main-nav a:hover span::after,
+nav.main-nav a.active span::after {
+    transform: scaleX(1);
 }
 
-body.light-theme nav.main-nav a:hover,
-body.light-theme nav.main-nav a.active {
-    color: var(--accent);
-}
-
-/* Header Controls (User Menu and Mobile Toggle) */
+/* Header Controls Wrapper */
 .header-controls {
     display: flex;
     align-items: center;
-    gap: 1rem; /* Add gap for spacing between user menu and mobile toggle */
+    gap: 1rem;
 }
 
-/* New Header Auth Buttons (for logged-out state) */
+/* Header Auth Buttons (for logged-out state) */
 .header-auth-buttons {
     display: flex;
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 0.5rem; /* Space between stacked buttons */
+    gap: 0.5rem;
 }
 
 .header-auth-buttons .btn {
-    padding: 0.4rem 0.8rem; /* Smaller padding for header buttons */
-    font-size: 0.75rem;    /* Smaller font size */
-    min-width: 150px;      /* Adjust min-width as needed */
-    text-align: center;
-    white-space: nowrap;
-    animation: none; /* Remove pulse animation from hero buttons if it was inherited */
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    min-width: auto;
+    animation: none;
 }
 
 .header-auth-buttons .btn-primary:hover,
 .header-auth-buttons .btn-outline:hover {
-    transform: translateY(-1px); /* Less dramatic hover effect */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Mobile Nav Toggle is styled in components/shared/styles.css 
-   but we ensure it's hidden by default on large screens here */
-.mobile-nav-toggle {
-    display: none; /* Hidden by default */
-}
-
-/* Styles for .user-menu and .user-dropdown are primarily in components/shared/styles.css */
-/* Ensure userMenuContainer itself is not accidentally hidden */
-#userMenuContainer {
-    display: flex; /* Ensure the container itself is ready to display its content */
-    align-items: center;
-}
-
-
-/* Styles for the hamburger button, from shared component, to be hidden on desktop */
-/* .mobile-menu-btn is used in some contexts, .mobile-nav-toggle in others. Standardizing or ensuring both are handled. */
-.mobile-menu-btn { /* Assuming this is an alternative class for the toggle */
-    display: none;
-}
-
-/* Mobile Nav Specific Styles from MLNF/css/styles.css */
-@media (max-width: 920px) { /* Aligning with the breakpoint in shared/styles.css */
-    header {
-        padding: 1rem 1.5rem; /* Consistent padding */
-    }
-    .full-title {
-        display: none !important; /* Hide full title on smaller screens, use important to ensure override */
-    }
-    .short-title {
-        display: block !important; /* Show short title on smaller screens, use important */
-    }
-
-    nav.main-nav {
-        display: none; /* Hide main nav */
-    }
-
-    .mobile-nav-toggle { /* Show hamburger */
-        display: flex; /* or block */
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .mobile-menu-btn { /* If this class is also used for the toggle */
-        display: flex; 
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* User menu might need adjustment or could be part of mobile nav */
-    /* .user-menu { margin-left: 0; } */ 
-}
-
-/* Further adjustments for very small screens if needed */
-@media (max-width: 768px) {
-    /* This media query had .title-stack { display: none; } and .short-title { display: block; } */
-    /* which is now handled by the 920px query for .full-title and .short-title specifically. */
-    /* It also had .mobile-menu-btn { display: block; } - covered by 920px */
-    /* nav#mainNav was hidden here - covered by 920px */
-    /* .auth-buttons { display: none; } - If .auth-buttons are part of userMenu, this might be okay or need review */
-}
-
+/* Hero Section */
 .hero {
     position: relative;
     min-height: 90vh;
@@ -633,6 +318,7 @@ body.light-theme nav.main-nav a.active {
     text-align: center;
     padding: 0 2rem;
     z-index: 2;
+    overflow: hidden;
 }
 
 .hero::before {
@@ -642,12 +328,12 @@ body.light-theme nav.main-nav a.active {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(13, 13, 26, 0.9), rgba(26, 26, 51, 0.8));
+    background: linear-gradient(rgba(13, 13, 26, 0.85), rgba(26, 26, 51, 0.75));
     z-index: -1;
 }
 
 body.light-theme .hero::before {
-    background: linear-gradient(rgba(240, 240, 245, 0.85), rgba(220, 220, 235, 0.9));
+    background: linear-gradient(rgba(240, 240, 245, 0.75), rgba(220, 220, 235, 0.85));
 }
 
 .hero-content {
@@ -661,7 +347,7 @@ body.light-theme .hero::before {
     font-weight: 300;
     font-size: 4rem;
     margin-bottom: 1.5rem;
-    text-shadow: 0 0 25px rgba(255, 94, 120, 0.8);
+    text-shadow: 0 0 25px rgba(var(--accent-rgb, 255, 94, 120), 0.8);
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
@@ -683,25 +369,13 @@ body.light-theme .hero h1 {
     margin-bottom: 2.5rem;
     opacity: 0.95;
     font-weight: 400;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
-    position: relative;
+    text-shadow: 0 0 5px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
 }
 
 body.light-theme .hero p {
     text-shadow: none;
     color: #262640;
     font-weight: 500;
-}
-
-.hero p:hover::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--gradient-accent);
-    transition: var(--transition);
 }
 
 .hero-buttons {
@@ -713,37 +387,29 @@ body.light-theme .hero p {
 
 .hero .particle {
     position: absolute;
-    bottom: -20px; /* Start below the screen */
+    bottom: -20px;
     border-radius: 50%;
-    pointer-events: none; /* Particles should not be interactive */
-    animation-name: floatUp; /* Changed animation name */
+    pointer-events: none;
+    animation-name: floatUp;
     animation-timing-function: linear;
-    animation-iteration-count: infinite; /* CSS animation will loop */
-    opacity: 0; /* Start invisible, fade in with animation if desired */
+    animation-iteration-count: infinite;
+    opacity: 0;
 }
 
-@keyframes floatUp { /* Renamed from fall */
-    0% {
-        transform: translateY(0vh) translateX(0px) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1; /* Fade in */
-    }
-    90% {
-        opacity: 1; /* Stay visible */
-    }
-    100% {
-        transform: translateY(-105vh) translateX(calc(var(--drift, 0) * 1px)) rotate(360deg); /* Float above screen, add some drift */
-        opacity: 0; /* Fade out */
-    }
+@keyframes floatUp {
+    0% { transform: translateY(0vh) translateX(0px) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-105vh) translateX(calc(var(--drift, 0) * 1px)) rotate(360deg); opacity: 0; }
 }
 
+/* Censorship Warning Section Style */
 .censorship-warning {
     background: rgba(255, 68, 68, 0.1);
     padding: 1.2rem;
     text-align: center;
-    margin: 2.5rem 0;
+    margin: 2.5rem auto;
+    max-width: 900px;
     border-left: 5px solid var(--danger);
     border-radius: var(--border-radius);
 }
@@ -752,13 +418,13 @@ body.light-theme .hero p {
     font-size: 1.1rem;
     line-height: 1.7;
     opacity: 0.95;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
 }
 
 body.light-theme .censorship-warning p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+    color: var(--text);
 }
 
+/* General Section Title Styling */
 .section-title {
     text-align: center;
     margin-bottom: 3.5rem;
@@ -773,6 +439,7 @@ body.light-theme .censorship-warning p {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
 }
 
 body.light-theme .section-title h2 {
@@ -798,98 +465,63 @@ body.light-theme .section-title h2 {
     font-size: 1.1rem;
     line-height: 1.7;
     opacity: 0.95;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+    color: var(--text-secondary, var(--text));
+    margin-top: 0.5rem;
 }
 
 body.light-theme .section-title p {
-    text-shadow: none;
-    color: #262640;
-    font-weight: 500;
+    color: var(--text-secondary, #3a3a5c);
 }
 
-.features,
-.highlights,
+/* Section Wrappers */
+.features-section,
+.highlights-section,
 .mindmap-section {
     padding: 4.5rem 2rem;
-    background: linear-gradient(to bottom, rgba(13, 13, 26, 0.45), rgba(26, 26, 51, 0.25));
     z-index: 1;
 }
 
-body.light-theme .features,
-body.light-theme .highlights,
-body.light-theme .mindmap-section {
-    background: linear-gradient(to bottom, rgba(240, 240, 245, 0.7), rgba(230, 230, 240, 0.5));
-}
-
+/* Grid Layouts */
 .features-grid,
 .highlight-grid,
-.debate-preview {
-    display: -ms-grid;
-    display: -webkit-grid;
+.debate-preview-grid {
     display: grid;
-    -ms-grid-columns: repeat(auto-fit, minmax(280px, 1fr));
-    -webkit-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    -ms-grid-columns-gap: 2.5rem;
-    -webkit-grid-gap: 2.5rem;
     gap: 2.5rem;
     max-width: 1440px;
     margin: 2.5rem auto;
     align-items: start;
 }
 
+/* Feature Card Styling */
 .feature-card {
     background: var(--gradient-secondary);
     border-radius: var(--border-radius);
     padding: 2rem;
-    border: 1px solid rgba(255, 94, 120, 0.25);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.25);
     transition: var(--transition);
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-box-wrap: wrap;
-    -webkit-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-box-align: start;
-    -webkit-align-items: flex-start;
-    -ms-flex-align: start;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     box-shadow: none;
 }
 
 .feature-card:hover {
-    -webkit-transform: translateY(-10px) scale(1.03);
-    -ms-transform: translateY(-10px) scale(1.03);
     transform: translateY(-10px) scale(1.03);
     border-color: var(--accent);
-    -webkit-box-shadow: 0 20px 30px rgba(255, 94, 120, 0.2);
-    box-shadow: 0 20px 30px rgba(255, 94, 120, 0.2);
-    background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 143, 0, 0.1));
-}
-
-.feature-content {
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    flex: 1;
-    min-width: 200px;
+    box-shadow: 0 20px 30px rgba(var(--accent-rgb, 255, 94, 120), 0.2);
 }
 
 .feature-card i {
     font-size: 2.5rem;
     color: var(--accent);
     margin-bottom: 1rem;
+    transition: transform 0.3s ease;
 }
 
 .feature-card:hover i {
-    color: var(--accent);
+    transform: scale(1.1) rotate(-5deg);
 }
 
 .feature-card h3 {
@@ -898,31 +530,31 @@ body.light-theme .mindmap-section {
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
     color: transparent;
-    -webkit-text-stroke: 1px currentColor;
-    text-shadow: 1px 1px 1px currentColor;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    margin-bottom: 0.75rem;
     font-weight: 700;
 }
 
 .feature-card p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    opacity: 0.95;
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.9;
     margin-bottom: 1.5rem;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+    flex-grow: 1;
 }
 
 body.light-theme .feature-card p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
+    opacity: 1;
 }
 
+.feature-card .btn-primary {
+    margin-top: auto;
+}
+
+/* Highlight Item & Debate Position Styling */
 .highlight-item,
 .debate-position {
-    background: rgba(255, 94, 120, 0.08);
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
     padding: 1.8rem;
     border-radius: var(--border-radius);
     border-left: 4px solid var(--accent);
@@ -943,48 +575,38 @@ body.light-theme .feature-card p {
     line-height: 1.7;
     opacity: 0.95;
     letter-spacing: 0.02em;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
 }
 
-body.light-theme .highlight-item p,
-body.light-theme .debate-position p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
-}
-
+/* Debate Arena Specific Section */
 .debate-arena {
     padding: 4rem 2rem;
     background: var(--gradient-secondary);
-    border: 1px solid rgba(255, 94, 120, 0.35);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.35);
     border-radius: var(--border-radius);
     margin: 2.5rem auto;
     max-width: 1440px;
 }
 
-.debate-arena p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    opacity: 0.95;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
+.debate-arena .section-title {
+    margin-bottom: 2rem;
 }
 
-body.light-theme .debate-arena p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
-}
-
+/* Mindmap Preview Section */
 .mindmap-preview {
     height: 500px;
     background: var(--gradient-secondary);
     border-radius: var(--border-radius);
     position: relative;
     margin: 2.5rem auto;
-    border: 1px solid rgba(255, 94, 120, 0.35);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.35);
     max-width: 1440px;
+    overflow: hidden;
 }
 
 .mindmap-node {
     position: absolute;
     background: var(--accent);
-    color: var(--text);
+    color: var(--primary);
     padding: 1rem 1.5rem;
     border-radius: var(--border-radius);
     transition: var(--transition);
@@ -994,152 +616,33 @@ body.light-theme .debate-arena p {
 .mindmap-node:hover {
     transform: scale(1.12);
     animation-play-state: paused;
-    box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
+    box-shadow: 0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
 }
-
-.main { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-.node-truth { top: 25%; left: 25%; }
-.node-freedom { top: 25%; left: 75%; }
-.node-eternity { top: 75%; left: 25%; }
-.node-unity { top: 75%; left: 75%; }
 
 .mindmap-line {
     position: absolute;
     background: var(--accent);
     height: 3px;
-    width: 141px;
-    top: 50%;
-    left: 50%;
 }
 
-.line-1 { transform: rotate(135deg); }
-.line-2 { transform: rotate(45deg); }
-.line-3 { transform: rotate(225deg); }
-.line-4 { transform: rotate(315deg); }
-
-.active-users {
+/* Generic Modal Overlay Style */
+.modal {
+    display: none; /* Hidden by default, controlled by JS */
     position: fixed;
-    right: -320px;
-    top: var(--header-height);
-    width: 320px;
-    height: calc(100vh - var(--header-height));
-    background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
-    padding: 1.5rem;
-    transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    z-index: 2147483647;
-    box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5);
-    border-left: 3px solid var(--accent);
-    overflow-y: auto;
-    border-radius: 0 0 0 var(--border-radius);
-}
-
-.active-users.active {
+    top: 0;
+    left: 0;
     right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    z-index: 1000; /* High z-index to appear on top */
+    animation: modalFadeIn 0.3s ease-in; /* Fade-in animation */
 }
 
-.active-users-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
+/* Styles for the content box of the Message Modal have been MOVED to components/shared/styles.css */
 
-.active-users-header h3 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-}
-
-.close-sidebar {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 1.2rem;
-    padding: 0.5rem 0.8rem;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.close-sidebar:hover {
-    background: var(--accent);
-    color: var(--primary);
-    transform: rotate(90deg);
-}
-
-.profile-preview {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: rgba(255, 94, 120, 0.08);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 94, 120, 0.25);
-    transition: var(--transition);
-    cursor: pointer;
-    position: relative;
-}
-
-.profile-preview:hover {
-    background: rgba(255, 94, 120, 0.18);
-    transform: translateX(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.profile-preview img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    margin-right: 1rem;
-    border: 2px solid var(--accent);
-    transition: var(--transition);
-}
-
-.profile-preview img:hover {
-    box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
-}
-
-.profile-preview .user-info {
-    flex: 1;
-}
-
-.profile-preview .username-link {
-    color: var(--text);
-    font-weight: 700;
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.profile-preview .username-link:hover {
-    color: var(--accent);
-}
-
-.profile-preview .status {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin-top: 0.2rem;
-}
-
-.profile-preview .online-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--success);
-    border-radius: 50%;
-    margin-left: 0.5rem;
-    box-shadow: 0 0 10px var(--success);
-}
-
-.show-users-btn,
+/* Theme Toggle Button */
 .theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    position: static;
     background: var(--secondary);
     border: 1px solid var(--accent);
     padding: 0.8rem;
@@ -1150,37 +653,29 @@ body.light-theme .debate-arena p {
     transition: var(--transition);
 }
 
-.show-users-btn:hover,
 .theme-toggle:hover {
     background: var(--accent);
     color: var(--primary);
     transform: scale(1.1);
 }
 
-.show-users-btn {
-    bottom: 80px;
-}
-
+/* Footer Styles */
 footer {
     background: var(--gradient-secondary);
     text-align: center;
     border-top: 3px solid var(--accent);
     padding: 3rem 2rem;
+    margin-top: auto; /* Pushes footer to bottom if content is short */
 }
 
 footer p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     line-height: 1.7;
     opacity: 0.95;
-    text-shadow: 0 0 5px rgba(255, 94, 120, 0.3);
-}
-
-body.light-theme footer p {
-    text-shadow: 0 0 5px rgba(214, 45, 77, 0.2);
 }
 
 .social-links {
-    margin: 1rem;
+    margin-top: 1rem;
     display: flex;
     justify-content: center;
     gap: 1.5rem;
@@ -1194,562 +689,205 @@ body.light-theme footer p {
 
 .social-links a:hover {
     color: var(--accent);
-    transform: scale(1.1);
+    transform: scale(1.2) rotate(5deg);
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
-    animation: fadeIn 0.3s ease-in;
-}
-
-.auth-modal {
-    background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    max-width: 500px;
-    margin: 10% auto;
-    box-shadow: var(--shadow), 0 0 30px rgba(255, 94, 120, 0.3);
-    border: 2px solid var(--accent);
-    position: relative;
-    overflow: hidden;
-    animation: modalFadeIn 0.5s ease-out;
-}
-
-.auth-modal::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 94, 120, 0.2), transparent 70%);
-    opacity: 0.3;
-    z-index: -1;
-}
-
-.auth-modal h3 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.7rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-}
-
-.auth-modal input {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--accent);
-    border-radius: var(--border-radius);
-    color: var(--text);
-    font-size: 1rem;
-    transition: var(--transition);
-}
-
-.auth-modal input:focus {
-    outline: none;
-    border-color: var(--warning);
-    box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-}
-
-.auth-modal .modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.auth-modal button {
-    padding: 0.8rem 1.5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.auth-modal button[type="submit"] {
-    background: var(--gradient-accent);
-    color: var(--primary);
-    border: none;
-}
-
-.auth-modal button[type="button"] {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-}
-
-.auth-modal button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
-
-.message-history {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: rgba(255, 94, 120, 0.05);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 94, 120, 0.25);
-}
-
-.message-bubble {
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    max-width: 80%;
-    word-wrap: break-word;
-}
-
-.message-bubble.sent {
-    background: var(--gradient-accent);
-    color: var(--primary);
-    margin-left: auto;
-    text-align: right;
-}
-
-.message-bubble.received {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text);
-    margin-right: auto;
-    text-align: left;
-}
-
-.message-bubble small {
-    display: block;
-    color: var(--highlight);
-    font-size: 0.8rem;
-    margin-top: 0.2rem;
-}
-
-.soul-particle {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: soulFloat ease-out forwards;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-@keyframes soulFloat {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-100vh); opacity: 0; }
-}
-
+/* General Keyframes */
 @keyframes modalFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
 @keyframes eternalGlow {
-    0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 120, 0.3); }
-    50% { text-shadow: 0 0 20px rgba(255, 94, 120, 0.7); }
+    0%, 100% { text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.4), 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.2); }
+    50% { text-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.7), 0 0 40px rgba(var(--accent-rgb, 255, 94, 120), 0.4); }
 }
 
-@keyframes pulseGlow {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
+@keyframes pulseGlow { /* Used by logo icon */
+    0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 5px rgba(var(--accent-rgb,255,94,120),0.2); }
+    50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 15px rgba(var(--accent-rgb,255,94,120),0.4); }
 }
 
-@keyframes floatEternal {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
+@keyframes floatEternal { /* Used by mindmap nodes */
+    0%, 100% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-8px) translateX(3px); }
+    50% { transform: translateY(-3px) translateX(-2px); }
+    75% { transform: translateY(-12px) translateX(1px); }
 }
 
-@media (max-width: 1024px) and (min-width: 769px) {
+
+/* Responsive Media Queries */
+
+/* For Header & Main Nav responsiveness */
+@media (max-width: 920px) {
     header {
-        flex-wrap: wrap;
-        gap: 1rem;
+        padding: 1rem 1.5rem; /* Adjust padding for smaller screens */
     }
-    nav#mainNav {
-        flex: 1 1 100%;
-        order: 3;
+    .full-title {
+        display: none !important; /* Hide full title */
     }
-    nav ul {
-        justify-content: center;
+    .short-title {
+        display: block !important; /* Show short title */
     }
+    nav.main-nav { /* Hide main desktop navigation */
+        display: none;
+    }
+    /* The .mobile-nav-toggle button (hamburger) is styled in components/shared/styles.css */
+    /* and its display:block is handled by a media query there. */
 }
 
+/* For general page layout elements */
 @media (max-width: 768px) {
-    header { padding: 1rem; flex-wrap: nowrap; }
-    .title-stack { display: none; }
-    .short-title { display: block; }
-    .mobile-menu-btn { display: block; }
-    nav#mainNav {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: var(--secondary);
-        padding: 1rem;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        border-bottom: 2px solid var(--accent);
-        z-index: 100;
-    }
-    nav#mainNav.active { display: block; }
-    nav ul { flex-direction: column; gap: 0.8rem; }
-    nav a {
-        padding: 0.8rem 1rem;
-        border-radius: 8px;
-    }
-    nav a:hover {
-        transform: translateX(5px);
-        background: rgba(255, 94, 120, 0.15);
-    }
-    .auth-buttons { display: none; }
-    .hero { min-height: 70vh; padding: 2rem; }
+    .hero { min-height: 70vh; padding: 2rem 1rem; }
     .hero h1 { font-size: 2.5rem; }
     .hero p { font-size: 1rem; }
-    .hero-buttons { flex-direction: column; gap: 1rem; }
-    .auth-modal { width: 90%; margin: 20% auto; }
-    .active-users { width: 100%; right: -100%; }
-    .active-users.active { right: 0; }
-    .feature-card { flex-direction: column; }
-    .feature-card .btn-primary { margin-left: 0; align-self: flex-end; }
-}
+    .hero-buttons { flex-direction: column; gap: 1rem; } /* Stack buttons */
 
-/* User Menu Dropdown */
-.user-menu {
-    position: relative;
-    display: inline-block;
-}
+    .section-title h2 { font-size: 2.2rem; }
+    .section-title p { font-size: 1rem; }
 
-#userMenuButton {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+    .features-grid, .highlight-grid, .debate-preview-grid { gap: 1.5rem; }
+    .feature-card { padding: 1.5rem; }
+    .highlight-item, .debate-position { padding: 1.5rem; }
 
-#userMenuButton i {
-    font-size: 1.2rem;
-}
+    #messageModal .auth-modal { /* Message modal content on smaller screens */
+        width: 95%; /* More screen width */
+        margin: 5% auto; /* Adjust margin */
+        padding: 1.5rem;
+    }
+    #messageModal .auth-modal h3 { font-size: 1.5rem; }
 
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 200px;
-    background: linear-gradient(to bottom, var(--secondary), var(--primary));
-    border: 1px solid rgba(255, 94, 120, 0.4);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    z-index: 100;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-}
-
-.user-menu:hover .dropdown-menu,
-.dropdown-menu.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.dropdown-menu a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    color: var(--text);
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.dropdown-menu a:hover {
-    background: rgba(255, 94, 120, 0.2);
-    color: var(--accent);
-}
-
-.dropdown-menu i {
-    width: 16px;
-    text-align: center;
-}
-
-/* Soul Button and Modal Styles */
-.soul-btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    cursor: pointer;
-    transition: var(--transition);
-    overflow: hidden;
-    text-decoration: none;
-}
-
-.soul-btn:hover {
-    opacity: 1;
-}
-
-.soul-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 94, 120, 0.1);
-    z-index: -1;
-}
-
-.soul-btn:hover::before {
-    background: rgba(255, 94, 120, 0.2);
-}
-
-.soul-btn .icon {
-    font-size: 1.2em;
-}
-
-header .auth-buttons.header-auth-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-}
-
-.header-auth-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-    min-width: 180px;
-    text-align: center;
-    justify-content: center;
-}
-
-#soulButton.btn.btn-outline {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* Ensuring .soul-modal is correctly positioned and displayed */
-#soulModal.soul-modal {
-    display: none; /* Initially hidden, JS will change to flex */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(13, 13, 26, 0.85); /* Darker, consistent overlay */
-    z-index: 2000; /* Ensure it's on top of other elements like header */
-    justify-content: center;
-    align-items: center;
-    padding: 20px; /* Add some padding for smaller screens, content will handle its own size */
-    animation: modalFadeIn 0.4s ease-out; /* Using the existing modalFadeIn animation */
-}
-
-/* Ensuring .modal-content within .soul-modal is also behaving */
-#soulModal.soul-modal .modal-content {
-    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-    padding: 2rem 2.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 40px var(--accent_translucent, rgba(255,94,120,0.3));
-    border: 1px solid var(--accent_translucent, rgba(255,94,120,0.5));
-    color: var(--text);
-    position: relative; /* Keeps it in flow for flex centering */
-    text-align: center;
-    width: auto; /* Let content dictate width up to max-width */
-    min-width: 300px;
-    max-width: 500px; /* Maintain a reasonable max width */
-    animation: modalContentAppear 0.3s ease-out 0.1s backwards; /* Slight delay and pop */
-}
-
-/* Modal Title styling */
-#soulModalTitle {
-    font-size: 1.7rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: var(--accent);
-    text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-}
-
-/* Form Elements styling */
-#soulLoginForm {
-    margin-top: 1.5rem;
-}
-
-#soulLoginForm label {
-    display: block;
-    margin: 0.8rem 0 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: rgba(240, 230, 255, 0.8);
-    text-align: left;
-}
-
-#soulLoginForm input[type="text"],
-#soulLoginForm input[type="password"],
-#soulLoginForm input[type="email"] {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 94, 120, 0.25);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-#soulLoginForm input[type="text"]:focus,
-#soulLoginForm input[type="password"]:focus,
-#soulLoginForm input[type="email"]:focus {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(255, 94, 120, 0.2);
-    outline: none;
-}
-
-/* Submit Button styling */
-#soulModalSubmit.modal-btn {
-    display: block;
-    width: 100%;
-    margin: 1.8rem 0 1.2rem;
-    padding: 0.85rem;
-    background: var(--gradient-accent);
-    border: none;
-    border-radius: 6px;
-    color: var(--primary);
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#soulModalSubmit.modal-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 94, 120, 0.3);
-}
-
-/* Modal Feedback Area */
-.modal-feedback {
-    min-height: 1.5em;
-    margin: 0.5rem 0 1rem;
-    font-size: 0.9rem;
-}
-
-/* View Toggle Links */
-.modal-toggle-view {
-    font-size: 0.9rem;
-    margin-top: 1rem;
-    color: rgba(240, 230, 255, 0.8);
-}
-
-.modal-toggle-view a {
-    color: var(--accent);
-    font-weight: 600;
-    text-decoration: none;
-    transition: color 0.2s ease, text-shadow 0.2s ease;
-}
-
-.modal-toggle-view a:hover {
-    color: #ff8f00;
-    text-shadow: 0 0 5px rgba(255,143,0,0.5);
+    footer { padding: 2rem 1rem; }
 }
 
 @media (max-width: 480px) {
-    #soulModal.soul-modal .modal-content {
-        padding: 2rem 1.5rem;
-        max-width: 95%;
+    .hero h1 { font-size: 2rem; }
+    .section-title h2 { font-size: 1.8rem; }
+    .feature-card h3 { font-size: 1.4rem; }
+
+    #messageModal .auth-modal { padding: 1rem; }
+    #messageModal .auth-modal h3 { font-size: 1.3rem; }
+    #messageModal .auth-modal input[type="text"] { padding: 0.7rem; }
+    #messageModal .auth-modal button { padding: 0.7rem; font-size: 0.9rem; }
+}
+
+/* Fallback for --accent-rgb if not defined in base-theme.css */
+/* This helps if base-theme.css is not loaded or variables are missing */
+:root {
+    --accent-rgb: 255, 94, 120; /* Default to the dark theme accent RGB values */
+}
+body.light-theme {
+    --accent-rgb: 214, 45, 77; /* Light theme accent RGB values */
+}
+
+
+/* Styles for .modal-loading and .modal-error if used by JS directly */
+/* These were previously in styles.css, keeping them for now */
+.modal-loading {
+    text-align: center;
+    padding: 1rem;
+    color: var(--highlight);
+}
+
+.modal-error {
+    color: var(--danger);
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Highlight grid button - this was a very specific override in original file */
+/* Re-integrating this with !important to ensure it takes precedence if needed */
+.highlight-grid > .btn.btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.7rem 1.25rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+    height: fit-content !important;
+    align-self: center !important;
+    margin: 0 !important;
+    border-radius: var(--border-radius) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    color: var(--primary) !important;
+    background: linear-gradient(to bottom, #ff5e78, #ff8f00) !important; /* Vertical Gradient with Border was one of the variants */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow:
+        0 0 8px rgba(255, 94, 120, 0.3),
+        0 0 15px rgba(255, 94, 120, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.1) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    animation: none !important; /* Override general .btn-primary pulse if it was causing issues */
+    position: relative !important; /* Ensure z-index works if needed */
+    z-index: 5 !important;
+    white-space: nowrap !important; /* Prevent text wrapping */
+    min-width: 140px !important;
+    max-width: 200px !important;
+}
+
+.highlight-grid > .btn.btn-primary:hover {
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow:
+        0 0 12px rgba(255, 94, 120, 0.5),
+        0 0 25px rgba(255, 94, 120, 0.3),
+        inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Ensure this media query for highlight grid is also included if it was separate */
+@media (max-width: 768px) {
+    .highlight-grid {
+        grid-template-columns: 1fr; /* Stack items on smaller screens */
     }
-    #soulModalTitle {
-        font-size: 1.5rem;
+    .highlight-grid .highlight-item {
+        padding-right: 0; /* Remove right padding if it was for connector lines */
+        /* Visual connector adjustments if they were part of highlight-item before can be removed */
     }
-    #soulLoginForm input[type="text"],
-    #soulLoginForm input[type="password"],
-    #soulLoginForm input[type="email"] {
-        padding: 0.7rem 0.9rem;
-    }
-    #soulModalSubmit.modal-btn {
-        padding: 0.75rem;
-        font-size: 0.95rem;
+     .highlight-grid > .btn.btn-primary {
+        width: 100%; /* Make button full width in its column */
+        margin-top: 1rem !important; /* Add space if stacked */
     }
 }
 
-@keyframes modalContentAppear {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+/* Floating Action Buttons */
+.floating-buttons {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 250;
 }
 
-@keyframes modalFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Close button styling */
-#soulModal.soul-modal .modal-content .close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-size: 1.8rem;
-    font-weight: bold;
+.top-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--primary); /* Ensure good contrast */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
     cursor: pointer;
-    padding: 5px;
-    line-height: 1;
-    opacity: 0.7;
-    transition: opacity 0.2s, transform 0.2s;
+    transition: var(--transition);
+    border: none;
+    font-size: 1.2rem;
+    opacity: 0; /* Hidden by default, made visible by JS */
+    transform: translateY(20px); /* Start off-screen for animation */
+    pointer-events: none; /* Not interactive when hidden */
 }
 
-#soulModal.soul-modal .modal-content .close-modal:hover {
+.top-button.visible {
     opacity: 1;
-    transform: scale(1.1);
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
-/* Force mobile nav off-screen and its header hidden on viewports wider than 920px */
-@media (min-width: 921px) {
-    header nav.mobile-nav {
-        display: none !important; /* More forceful than transform/visibility for testing */
-        transform: translateX(-200%) !important; /* Extra push off-screen */
-        visibility: hidden !important;
-        left: -3000px !important; /* Extreme positioning */
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    header nav.mobile-nav .sidebar-header {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-
-    /* Ensure user menu container is visible and takes space */
-    header .header-controls #userMenuContainer {
-        display: flex !important; /* Or block, if flex is an issue */
-        visibility: visible !important;
-        opacity: 1 !important;
-        width: auto !important; /* Allow it to take space */
-        min-width: 50px; /* Give it some minimum space */
-    }
+.top-button:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    background: var(--highlight); /* Or a slightly different accent shade */
 }

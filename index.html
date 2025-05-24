@@ -12,6 +12,7 @@
     <title>Manifest Liberation, Naturally Free (v1.1)</title>
     <link rel="preconnect" href="https://mlnf-auth.onrender.com" crossorigin>
     <!-- Font Awesome CDN with integrity check -->
+    <link rel="stylesheet" href="css/base-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Fallback local Font Awesome (optional, requires downloading) -->
     <link rel="stylesheet" href="assets/fontawesome.css" type="text/css" media="all" onload="this.media='all'" onerror="console.warn('Local Font Awesome failed to load')">
@@ -30,13 +31,15 @@
         <div id="userList"></div>
     </aside>
 
-    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    <div class="floating-buttons">
+        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    </div>
 
-    <div class="modal" id="messageModal">
-        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
-            <div id="messageHistory" class="message-history"></div>
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <div class="message-history" id="messageHistory"></div>
             <div>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
@@ -55,8 +58,8 @@
                     <span class="full-title">
                         <span class="title-line-one">Manifest Liberation</span>
                         <span class="title-line-two">Naturally Free</span>
-                    </span>
-                    <span class="short-title">MLNF</span>
+                </span>
+                <span class="short-title">MLNF</span>
                 </div>
             </a>
         </div>
@@ -81,9 +84,6 @@
             <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
                 <!-- Populated by userMenu.js when logged out -->
             </div>
-            <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
         </div>
         
         <!-- Mobile Navigation -->
@@ -93,11 +93,11 @@
                 <h2>Eternal Navigation</h2>
                 <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
                     <i class="fas fa-times"></i>
-                </button>
+            </button>
             </div>
             <div class="mobile-nav-list">
                 <!-- Links will be dynamically populated or can be hardcoded if preferred -->
-            </div>
+        </div>
         </nav>
     </header>
 
@@ -329,7 +329,7 @@
             </div>
             <div class="footer-column">
                 <h3>Stay Connected</h3>
-                <div class="social-links">
+        <div class="social-links">
                     <a href="#" aria-label="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
                     <a href="#" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
                     <a href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
@@ -371,32 +371,8 @@
                 });
             }
             
-            // Initialize active users sidebar
-            const showUsersBtn = document.getElementById('showUsersBtn');
-            const closeUsersBtn = document.getElementById('closeUsers');
-            const activeUsers = document.getElementById('activeUsers');
-            
-            if (showUsersBtn && activeUsers) {
-                showUsersBtn.addEventListener('click', function() {
-                    activeUsers.classList.add('active');
-                });
-            }
-            
-            if (closeUsersBtn && activeUsers) {
-                closeUsersBtn.addEventListener('click', function() {
-                    activeUsers.classList.remove('active');
-                });
-            }
-            
-            // Initialize message modal
-            const messageModal = document.getElementById('messageModal');
-            const closeMessageModal = document.getElementById('closeMessageModal');
-            
-            if (closeMessageModal && messageModal) {
-                closeMessageModal.addEventListener('click', function() {
-                    messageModal.style.display = 'none';
-                });
-            }
+            // Active users sidebar toggle is handled by components/shared/activeUsers.js
+            // Message modal close is handled by components/shared/messageModal.js
             
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
@@ -425,6 +401,7 @@
     <script src="components/shared/authModal.js?v=1.2"></script>
     <script src="js/heroParticles.js?v=1.2"></script>
     <script src="components/shared/mlnf-core.js?v=1.2"></script>
-    <script src="file:///C:/Users/coold/Documents/Sites/MLNF/MLNF/components/shared/activeUsers.js?v=1.2"></script>
+    <script src="components/shared/activeUsers.js?v=1.2"></script>
+    <script src="js/main.js?v=1.2"></script>
 </body>
 </html>
