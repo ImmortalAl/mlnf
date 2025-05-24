@@ -201,16 +201,12 @@ async function handleSoulModalSubmit(event) {
         modalFeedback.textContent = 'Sanctuary access granted.';
         modalFeedback.classList.add('success');
         
-        // Update UI components
+        // After successful login or registration, optionally update user display
         if (window.MLNF && window.MLNF.updateUserMenu) {
           window.MLNF.updateUserMenu();
         }
         
-        if (window.MLNF && window.MLNF.updateUserSidebar) {
-          window.MLNF.updateUserSidebar();
-        }
-        
-        // Close modal and reload page
+        // Close the modal
         setTimeout(() => {
           closeSoulModal();
           window.location.reload();

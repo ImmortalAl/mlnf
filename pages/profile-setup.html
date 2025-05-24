@@ -5,188 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Set up your eternal profile on Manifest Liberation, Naturally Free.">
     <title>Profile Setup - Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="../css/base-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #0d0d1a;
-            --secondary: #1a1a33;
-            --accent: #ff5e78;
-            --text: #f0e6ff;
-            --highlight: #2a4066;
-            --success: #5cb85c;
-            --warning: #ffca28;
-            --danger: #ff4444;
-            --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
-            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
-            --border-radius: 10px;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
-        body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            max-width: 500px;
-            width: 90%;
-            box-shadow: var(--shadow), 0 0 30px rgba(255, 94, 120, 0.3);
-            border: 2px solid var(--accent);
-            position: relative;
-            overflow: hidden;
-            animation: modalFadeIn 0.5s ease-out;
-        }
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 94, 120, 0.2), transparent 70%);
-            opacity: 0.3;
-            z-index: -1;
-        }
-        h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        label {
-            display: block;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--warning);
-            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-        }
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        .avatar-preview {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        .avatar-preview img {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            transition: var(--transition);
-        }
-        .avatar-preview img:hover {
-            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
-        }
-        .error-message {
-            color: var(--danger);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            text-align: center;
-        }
-        .success-message {
-            color: var(--success);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            text-align: center;
-        }
-        .btn {
-            padding: 0.7rem 1.4rem;
-            border-radius: var(--border-radius);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-            min-width: 140px;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-        .btn:hover {
-            transform: translateY(-2px) scale(1.05) rotate(2deg);
-            box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
-        }
-        .form-actions {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-            h2 {
-                font-size: 1.5rem;
-            }
-            .form-actions {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+    <!-- Shared component styles -->
+    <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
+    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
+    <!-- Page specific styles -->
+    <link rel="stylesheet" href="../css/profile-setup.css">
 </head>
 <body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
+                    </span>
+                    <span class="short-title">MLNF</span>
+                </div>
+            </a>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="main-nav">
+            <!-- Populated by navigation.js -->
+        </nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
+                <!-- Populated by userMenu.js when logged out -->
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <nav class="mobile-nav" id="mobileNav">
+            <div class="sidebar-header">
+                <h2>Eternal Navigation</h2>
+                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                    <i class="fas fa-times"></i>
+            </button>
+            </div>
+            <div class="mobile-nav-list">
+                <!-- Links will be dynamically populated -->
+        </div>
+        </nav>
+    </header>
+
+    <!-- Active Users Sidebar (standard part of layout with header) -->
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div> <!-- Populated by activeUsers.js -->
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+
+    <!-- Message Modal (standard part of layout with header) -->
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h2>Eternal Profile Setup</h2>
         <div class="form-group">
@@ -220,6 +114,9 @@
         </div>
     </div>
 
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.2"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const elements = {
@@ -233,28 +130,12 @@
                 message: document.getElementById('message')
             };
 
-            const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
-            const DEBUG_MODE = true;
+            // API_BASE_URL is now in config.js, accessed via window.MLNF_CONFIG
+            const DEBUG_MODE = true; // Keep local debug mode if needed for this page
 
-            console.log('API Base URL:', API_BASE_URL);
+            // console.log('API Base URL:', window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : 'CONFIG NOT LOADED');
 
-            // Check token validity
-            function checkToken() {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) return false;
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    if (payload.exp * 1000 < Date.now()) {
-                        localStorage.removeItem('sessionToken');
-                        return false;
-                    }
-                    return token;
-                } catch (e) {
-                    console.error('Invalid token format:', e);
-                    localStorage.removeItem('sessionToken');
-                    return false;
-                }
-            }
+            // Removed local checkToken() function. Will use localStorage.getItem('sessionToken') directly.
 
             // Fetch with retry and timeout
             async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 30000) {
@@ -328,12 +209,21 @@
 
             // Initial auth check
             async function initializePage() {
-                const token = checkToken();
+                const token = localStorage.getItem('sessionToken'); // Use direct localStorage check
                 if (!token) {
                     elements.message.className = 'error-message';
-                    elements.message.textContent = 'Please log in to save your profile';
-                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 3000);
-                    return;
+                    elements.message.textContent = 'Please log in to view and save your profile.';
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('login'); 
+                        // Add a way to know if login was successful to then call fetchUserData, 
+                        // or rely on user to manually try saving after login.
+                        // For now, just prompt login. The save button will re-check.
+                    } else {
+                        console.error('AuthModal component not available.');
+                        // Fallback or different handling if modal not ready
+                    }
+                    // Do not redirect immediately, let the modal handle it or user interaction.
+                    return; 
                 }
                 await fetchUserData(token);
             }
@@ -341,13 +231,13 @@
             // Fetch user data to pre-fill form
             async function fetchUserData(token) {
                 try {
-                    // Show loading state
                     elements.message.className = '';
                     elements.message.textContent = 'Loading your profile...';
                     
-                    console.log('Fetching user data with token:', token ? 'Valid token present' : 'No token');
-                    
-                    const response = await fetchWithRetry(`${API_BASE_URL}/users/me`, {
+                    const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
+                    if (!apiUrl) { throw new Error('API configuration is missing.'); }
+
+                    const response = await fetchWithRetry(`${apiUrl}/users/me`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -391,7 +281,11 @@
                     }
                     
                     localStorage.removeItem('sessionToken');
-                    setTimeout(() => window.location.href = 'auth.html?mode=login&redirect=profile-setup.html', 3000);
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                         window.MLNF.openSoulModal('login'); // Prompt login again
+                    } else {
+                        elements.message.textContent = 'Session expired. Please login via header.';
+                    }
                 }
             }
 
@@ -407,18 +301,21 @@
             // Handle form submission
             elements.saveProfile.addEventListener('click', async (e) => {
                 console.log('Save button clicked');
-                e.preventDefault(); // Prevent default form submission
+                e.preventDefault(); 
                 
-                const token = checkToken();
+                const token = localStorage.getItem('sessionToken'); // Use direct localStorage check
                 console.log('Token check result:', token ? 'Valid token' : 'No valid token');
                 
                 if (!token) {
                     elements.message.className = 'error-message';
                     elements.message.textContent = 'Please log in to save your profile';
-                    console.log('User not logged in, redirecting to login');
-                    setTimeout(() => {
-                        window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
-                    }, 1500);
+                    console.log('User not logged in, opening login modal');
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('login');
+                    } else {
+                        console.error('AuthModal component not available for save attempt.');
+                        // Fallback, maybe alert or redirect to a general login page if header isn't used.
+                    }
                     return;
                 }
 
@@ -488,7 +385,7 @@
 
                 try {
                     // Correct endpoint URL to match backend route
-                    console.log('Sending request to:', `${API_BASE_URL}/users/me`);
+                    console.log('Sending request to:', `${apiUrl}/users/me`);
                     const requestBody = {
                         username,
                         displayName,
@@ -499,7 +396,7 @@
                     
                     console.log('Request body:', JSON.stringify(requestBody, null, 2));
                     
-                    const response = await fetchWithRetry(`${API_BASE_URL}/users/me`, {
+                    const response = await fetchWithRetry(`${apiUrl}/users/me`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -621,5 +518,13 @@
             }
         });
     </script>
+
+    <!-- Shared Components -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script> 
+    <script src="../components/shared/navigation.js?v=1.2"></script> 
+    <script src="../components/shared/userMenu.js?v=1.2"></script> 
+    <script src="../components/shared/authModal.js?v=1.2"></script> 
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script> 
 </body>
 </html>

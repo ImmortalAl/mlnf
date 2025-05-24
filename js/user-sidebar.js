@@ -73,7 +73,7 @@ class UserSidebar {
 
     async fetchAndDisplayUsers() {
         try {
-            const response = await fetch('https://mlnf-auth.onrender.com/api/users/active');
+            const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/active`);
             const users = await response.json();
             
             if (this.userList) {

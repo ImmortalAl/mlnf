@@ -3,1189 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Connect with liberated spirits in an eternal sanctuary at Manifest Liberation, Naturally Free.">
+    <meta name="description" content="Directory of eternal souls on Manifest Liberation, Naturally Free.">
     <meta name="theme-color" content="#0d0d1a">
     <meta property="og:title" content="Eternal Souls - Manifest Liberation, Naturally Free">
     <meta property="og:description" content="Discover profiles of free-thinkers united in a timeless community.">
     <meta property="og:url" content="https://mlnf.net/souls">
     <meta property="og:type" content="website">
-    <title>Eternal Souls - Manifest Liberation, Naturally Free</title>
+    <title>Eternal Souls - Community Directory</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="../css/base-theme.css">
     <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
-    <link rel="stylesheet" href="../css/souls.css?v=1.2">
+    <link rel="stylesheet" href="../css/souls-listing.css?v=1.2">
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
-    <style>
-        :root {
-            --primary: #0d0d1a;
-            --secondary: #1a1a33;
-            --accent: #ff5e78;
-            --text: #f0e6ff;
-            --highlight: #2a4066;
-            --success: #5cb85c;
-            --gradient-accent: linear-gradient(45deg, var(--accent), #ff8f00);
-            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            --border-radius: 12px;
-            --panel-width: 300px;
-            --header-height: 70px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        .skeleton {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%);
-            background-size: 400% 100%;
-            animation: skeletonShimmer 1.5s infinite;
-        }
-
-        @keyframes skeletonShimmer {
-            0% { background-position: 100% 50% }
-            100% { background-position: 0% 50% }
-        }
-
-        body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        header {
-            background: var(--gradient-secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo i {
-            color: var(--accent);
-            font-size: 2.2rem;
-            animation: pulseGlow 2s infinite;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            background: var(--gradient-accent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -moz-background-clip: text;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-            -moz-text-fill-color: transparent;
-            will-change: color;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        nav {
-            margin-left: auto;
-        }
-
-        nav ul {
-            display: flex;
-            gap: 1.8rem;
-            list-style: none;
-        }
-
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 0;
-            transition: var(--transition);
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                display: none;
-            }
-        }
-
-        main {
-            padding: 3rem 2rem;
-            flex: 1;
-            max-width: 1440px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -moz-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -moz-text-fill-color: transparent;
-            color: transparent;
-            will-change: color;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            -webkit-transform-style: preserve-3d;
-            transform-style: preserve-3d;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
-
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            position: relative;
-            width: min(100%, 400px);
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .search-bar input {
-            padding: 0.8rem 2.5rem 0.8rem 0.8rem;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 10px rgba(255, 94, 120, 0.5);
-        }
-
-        .search-bar .clear-btn {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.2rem;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .search-bar .clear-btn.visible {
-            opacity: 1;
-        }
-
-        .profiles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-            padding: 1rem;
-            min-height: 200px;
-        }
-
-        .profiles-grid.loading {
-            opacity: 0.3;
-        }
-
-        .profile-card {
-            background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-left-color 0.3s ease;
-            border-left: 5px solid var(--accent);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            height: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            transform: translateZ(0);
-            will-change: transform, box-shadow;
-        }
-
-        .profile-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-            border-left-color: #ff8f00;
-        }
-
-        .profile-card::before {
-            content: none;
-        }
-
-        .profile-card-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .profile-card-avatar {
-            width: 60px;
-            height: 60px;
-            min-width: 60px;
-            min-height: 60px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            object-fit: cover;
-            transition: border-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-            transform: translateZ(0);
-            will-change: transform, border-color, opacity;
-            background-color: var(--secondary);
-            display: block;
-            opacity: 0.7;
-        }
-
-        .profile-card-avatar.loaded {
-            opacity: 1;
-        }
-
-        .profile-card:hover .profile-card-avatar {
-            border-color: #ff8f00;
-            transform: scale(1.05);
-        }
-
-        .profile-card-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.2rem;
-            color: var(--accent);
-        }
-
-        .profile-card-info .username {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .profile-card-bio {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            opacity: 0.9;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .profile-card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 94, 120, 0.2);
-        }
-
-        .profile-card-stats {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .stat-item i {
-            color: var(--accent);
-            font-size: 0.8rem;
-        }
-
-        .profile-card-level {
-            padding: 0.3rem 0.8rem;
-            background: rgba(255, 94, 120, 0.1);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--accent);
-        }
-
-        footer {
-            background: var(--gradient-secondary);
-            text-align: center;
-            padding: 2rem;
-            border-top: 3px solid var(--accent);
-            margin-top: 2rem;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @media (max-width: 768px) {
-            .profiles-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .loading-indicator {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            margin: 2rem auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(26, 26, 51, 0.7);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(5px);
-            z-index: 10;
-        }
-
-        /* User Sidebar Styles */
-        .user-sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background: var(--gradient-secondary);
-            border-left: 3px solid var(--accent);
-            z-index: 2000;
-            padding: 2rem 1rem;
-            transition: right 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        
-        .user-sidebar.active {
-            right: 0;
-        }
-        
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
-        }
-        
-        .sidebar-header h2 {
-            font-size: 1.5rem;
-            color: var(--accent);
-        }
-        
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .close-sidebar:hover {
-            color: var(--accent);
-            transform: scale(1.1);
-        }
-        
-        .user-avatar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .sidebar-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid var(--accent);
-            object-fit: cover;
-            margin-bottom: 1rem;
-            transition: var(--transition);
-        }
-        
-        .sidebar-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 94, 120, 0.5);
-        }
-        
-        .sidebar-username {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-        
-        .sidebar-status {
-            font-style: italic;
-            opacity: 0.8;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
-        .sidebar-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            border-radius: var(--border-radius);
-            color: var(--text);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .sidebar-menu a i {
-            width: 20px;
-            text-align: center;
-            color: var(--accent);
-        }
-        
-        .sidebar-menu a:hover {
-            background: rgba(255, 94, 120, 0.1);
-        }
-        
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 94, 120, 0.2);
-            text-align: center;
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-        
-        .open-sidebar-btn {
-            position: fixed;
-            right: 1rem;
-            bottom: 1rem;
-            background: var(--accent);
-            color: var(--primary);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-            transition: var(--transition);
-            z-index: 100;
-        }
-        
-        .open-sidebar-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        }
-        
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .sidebar-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        /* User Menu Styles */
-        .user-menu {
-            position: relative;
-            z-index: 100;
-            margin-left: auto;
-        }
-        
-        .user-menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 94, 120, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .user-menu-btn:hover {
-            background: rgba(255, 94, 120, 0.2);
-        }
-        
-        .user-menu-btn img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--accent);
-        }
-        
-        .user-dropdown {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            width: 200px;
-            background: var(--secondary);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--accent);
-            padding: 0.5rem 0;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
-        
-        .user-dropdown.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        
-        .user-dropdown a {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--text);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .user-dropdown a i {
-            width: 20px;
-            text-align: center;
-            color: var(--accent);
-        }
-        
-        .user-dropdown a:hover {
-            background: rgba(255, 94, 120, 0.1);
-        }
-        
-        .user-dropdown .divider {
-            height: 1px;
-            background: rgba(255, 94, 120, 0.2);
-            margin: 0.5rem 0;
-        }
-        
-        /* Updated Navigation */
-        nav {
-            margin-left: auto;
-        }
-        
-        nav ul {
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-        
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 0;
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        @media (max-width: 920px) {
-            nav {
-                display: none;
-            }
-            
-            .mobile-nav-toggle {
-                display: block;
-            }
-        }
-        
-        /* Mobile Nav Toggle */
-        .mobile-nav-toggle {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: none;
-            z-index: 100;
-            margin-left: 1rem;
-        }
-        
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 280px;
-            height: 100vh;
-            background: var(--gradient-secondary);
-            z-index: 2000;
-            padding: 2rem 1rem;
-            transition: left 0.3s ease;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
-            overflow-y: auto;
-        }
-        
-        .mobile-nav.active {
-            left: 0;
-        }
-        
-        .mobile-nav-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 2rem;
-        }
-        
-        .mobile-nav-list a {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 1rem;
-            border-radius: var(--border-radius);
-            color: var(--text);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .mobile-nav-list a:hover {
-            background: rgba(255, 94, 120, 0.1);
-        }
-        
-        .mobile-nav-list a i {
-            width: 20px;
-            text-align: center;
-            color: var(--accent);
-        }
-        
-        .mobile-nav-list .divider {
-            height: 1px;
-            background: rgba(255, 94, 120, 0.2);
-            margin: 0.5rem 0;
-        }
-        
-        .mobile-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .mobile-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        /* CSS for positioning the floating buttons */
-        .floating-buttons {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            z-index: 100;
-        }
-        
-        .top-button {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--accent);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            font-size: 1.2rem;
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-        }
-        
-        .top-button.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        
-        .top-button:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Copied Soul Modal Styles from css/styles.css */
-        #soulModal.soul-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75); /* Darker overlay for better contrast */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000; /* Ensure it is above other content like user sidebar */
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        #soulModal.soul-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #soulModal.soul-modal .modal-content {
-            background: var(--secondary); /* Using existing theme variable */
-            padding: 2rem;
-            border-radius: var(--border-radius); /* Using existing theme variable */
-            box-shadow: var(--shadow); /* Using existing theme variable */
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-            border: 1px solid var(--accent);
-        }
-
-        #soulModal.soul-modal.active .modal-content {
-            transform: scale(1);
-        }
-
-        #soulModalTitle {
-            color: var(--accent);
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        #soulLoginForm label {
-            display: block;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--text_secondary, #ccc);
-        }
-
-        #soulLoginForm label span {
-            display: block;
-            margin-bottom: 0.3rem;
-        }
-
-        #soulLoginForm input[type="text"],
-        #soulLoginForm input[type="password"] {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--highlight);
-            border-radius: calc(var(--border-radius) / 2);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        #soulLoginForm input[type="text"]:focus,
-        #soulLoginForm input[type="password"]:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 8px rgba(255, 94, 120, 0.4);
-        }
-
-        #soulModalSubmit.modal-btn {
-            width: 100%;
-            padding: 0.9rem;
-            background: var(--gradient-accent);
-            color: white; /* Ensure text is white on gradient */
-            border: none;
-            border-radius: calc(var(--border-radius) / 2);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 1rem;
-        }
-
-        #soulModalSubmit.modal-btn:hover {
-            opacity: 0.85;
-            box-shadow: 0 4px 12px rgba(255, 94, 120, 0.3);
-        }
-
-        .modal-feedback {
-            text-align: center;
-            margin-top: 1rem;
-            min-height: 1.2em; /* Prevent layout shift */
-            font-size: 0.9rem;
-            color: var(--warning); /* Default feedback color */
-        }
-
-        .modal-feedback.error {
-            color: var(--danger); /* Error color */
-        }
-
-        .modal-feedback.success {
-            color: var(--success);
-        }
-
-        .modal-toggle-view {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .modal-toggle-view a {
-            color: var(--accent);
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .modal-toggle-view a:hover {
-            color: #ff8f00; /* Lighter accent on hover */
-        }
-
-        @media (max-width: 480px) {
-            #soulModal.soul-modal .modal-content {
-                padding: 1.5rem;
-                width: 95%;
-            }
-            #soulModalTitle {
-                font-size: 1.5rem;
-            }
-            #soulLoginForm input[type="text"],
-            #soulLoginForm input[type="password"] {
-                padding: 0.7rem;
-            }
-            #soulModalSubmit.modal-btn {
-                padding: 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        #soulModal.soul-modal .modal-content .close-modal {
-            position: absolute;
-            top: 0.8rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 2rem; /* Larger close button */
-            font-weight: 300;
-            cursor: pointer;
-            padding: 0.25rem;
-            line-height: 1;
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-
-        #soulModal.soul-modal .modal-content .close-modal:hover {
-            color: var(--accent);
-            transform: scale(1.1);
-        }
-        /* End of Copied Soul Modal Styles */
-
-        /* Active Users Sidebar */
-        .active-users {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background: var(--secondary);
-            border-left: 3px solid var(--accent);
-            z-index: 2000;
-            padding: 1rem;
-            transition: right 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        
-        .active-users.active {
-            right: 0;
-        }
-        
-        .active-users-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
-        }
-        
-        .active-users-header h3 {
-            color: var(--accent);
-            font-size: 1.2rem;
-        }
-        
-        .active-users .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        #userList {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .user-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-            background: rgba(255, 255, 255, 0.05);
-            transition: var(--transition);
-        }
-        
-        .user-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .user-item img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-        }
-        
-        .user-info {
-            flex: 1;
-        }
-        
-        .user-info h4 {
-            font-size: 0.9rem;
-            margin: 0;
-        }
-        
-        .status {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .status.online {
-            color: var(--success);
-        }
-        
-        .status.away {
-            color: orange;
-        }
-        
-        .message-btn {
-            background: none;
-            border: none;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
-        
-        .message-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .show-users-btn {
-            position: fixed;
-            right: 1rem;
-            bottom: 5rem;
-            background: var(--accent);
-            color: var(--primary);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-            transition: var(--transition);
-            z-index: 100;
-        }
-        
-        .show-users-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        }
-        
-        /* Message Modal */
-        #messageModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-        
-        #messageModal .auth-modal {
-            background: var(--secondary);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        #messageModal h3 {
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .message-history {
-            height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        #messageInput {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            margin-bottom: 1rem;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .modal-actions button {
-            flex: 1;
-            padding: 0.8rem;
-            border-radius: var(--border-radius);
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        #sendMessageBtn {
-            background: var(--accent);
-            color: white;
-        }
-        
-        #closeMessageModal {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
-        }
-        
-        .message {
-            padding: 0.5rem 0.8rem;
-            border-radius: var(--border-radius);
-            max-width: 80%;
-            position: relative;
-        }
-        
-        .message.sent {
-            align-self: flex-end;
-            background: var(--accent);
-            color: white;
-        }
-        
-        .message.received {
-            align-self: flex-start;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .message-time {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            display: block;
-            margin-top: 0.3rem;
-            text-align: right;
-        }
-    </style>
 </head>
 <body>
-    <aside class="active-users" id="activeUsers">
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3>Eternal Seekers</h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
@@ -1195,10 +27,10 @@
 
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
 
-    <div class="modal" id="messageModal">
-        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
-            <div id="messageHistory" class="message-history"></div>
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <div class="message-history" id="messageHistory"></div>
             <div>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
@@ -1217,39 +49,18 @@
         <button class="mobile-nav-toggle" id="mobileNavToggle">
             <i class="fas fa-bars"></i>
         </button>
-        <nav>
-            <ul>
-                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a></li>
-                <li><a href="/souls" class="active"><i class="fas fa-users"></i> Eternal Souls</a></li>
-                <li><a href="/pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
-                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
-                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
-                <li><a href="/pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
-                <li><a href="/pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
-                <li><a href="/pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
-            </ul>
-        </nav>
-        <div class="user-menu" id="userMenu">
-            <button class="user-menu-btn" id="userMenuBtn">
-                <img src="/assets/images/default-avatar.png" alt="User Avatar" id="userMenuAvatar">
-                <span id="userMenuName">Guest</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="user-dropdown" id="userDropdown">
-                <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
-                <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
-                <div class="divider"></div>
-                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                <a href="/souls" id="dropdownSoulsLink"><i class="fas fa-users"></i> Eternal Souls</a>
-                <div class="divider"></div>
-                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+        <nav class="main-nav"><!-- Populated by navigation.js --></nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
+                <!-- Populated by userMenu.js when logged out -->
             </div>
         </div>
+        
+        <div class="mobile-overlay" id="mobileOverlay"></div>
     </header>
     
     <!-- Mobile Navigation -->
-    <div class="mobile-overlay" id="mobileOverlay"></div>
     <nav class="mobile-nav" id="mobileNav">
         <div class="sidebar-header">
             <h2>Eternal Navigation</h2>
@@ -1345,9 +156,7 @@
     <script src="../components/shared/config.js?v=1.2"></script> <!-- Cache bust -->
 
     <script>
-        // API constants
-        // const API_BASE_URL = 'https://mlnf-auth.onrender.com/api'; // Now in config.js
-        // const DEFAULT_AVATAR = '/assets/images/default.jpg'; // Now in config.js, accessed via window.MLNF_CONFIG
+        // API constants are now in config.js, accessed via window.MLNF_CONFIG
         
         // Loading and error elements
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -1358,25 +167,18 @@
         function displayError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
-            loadingIndicator.style.display = 'none';
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
         
-        // Moved handleLogout function to a higher scope
-        function handleLogout() {
-            console.log("[Souls Page] Logout initiated");
-            localStorage.removeItem('sessionToken');
-            localStorage.removeItem('user');
-            // Call updateUserInfo to reflect logged-out state, then redirect or reload
-            updateUserInfo(); 
-            window.location.href = '/lander.html'; // Or window.location.reload();
-        }
-
-        // Improved Function to create profile cards with image pre-loading
+        // Logout handler is now globally available as window.MLNF.handleLogout from userMenu.js
+        // So, local handleLogout function is removed.
+        
+        // Function to create profile cards with image pre-loading
         function createProfileCard(profile) {
             // Ensure we have default values for everything
             const name = profile.displayName || profile.username || 'Anonymous Soul';
             const username = profile.username ? `@${profile.username}` : '@anonymous';
-            let avatar = profile.avatar || window.MLNF_CONFIG.DEFAULT_AVATAR; 
+            let avatar = profile.avatar || (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png'); 
             const bio = profile.bio || 'This soul has not shared their story yet.';
             
             const posts = profile.stats?.posts || 0;
@@ -1395,16 +197,19 @@
                 else if (daysSinceJoin > 7) level = "Illuminated";
             }
             
+            // Added a message button that will call the shared message modal
             const cardHTML = `
-                <a href="/souls/${profile.username || 'anonymous'}" class="profile-card" data-username="${profile.username || 'anonymous'}">
-                    <div class="profile-card-header">
-                        <img src="${window.MLNF_CONFIG.DEFAULT_AVATAR}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
-                        <div class="profile-card-info">
-                            <h3>${name}</h3>
-                            <p class="username">${username}</p>
+                <div class="profile-card" data-username="${profile.username || 'anonymous'}">
+                    <a href="/souls/${profile.username || 'anonymous'}" class="profile-card-link-wrapper">
+                        <div class="profile-card-header">
+                            <img src="${(window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png')}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
+                            <div class="profile-card-info">
+                                <h3>${name}</h3>
+                                <p class="username">${username}</p>
+                            </div>
                         </div>
-                    </div>
-                    <p class="profile-card-bio">${bio}</p>
+                        <p class="profile-card-bio">${bio}</p>
+                    </a>
                     <div class="profile-card-footer">
                         <div class="profile-card-stats">
                             <div class="stat-item">
@@ -1418,13 +223,15 @@
                         </div>
                         <div class="profile-card-level">${level}</div>
                     </div>
-                </a>
-            `;
+                     <button class="btn btn-secondary message-soul-btn" onclick="if(window.MLNF && window.MLNF.openMessageModal) window.MLNF.openMessageModal('${profile.username || 'anonymous'}'); else console.error('messageModal component not ready.');">Message</button>
+                </div>
+            `; // Note: The outer <a> was changed to a <div> to accommodate the button better. Link is now on a wrapper.
             return cardHTML;
         }
 
-        // Optimized rendering function
+        // Rendering function
         function renderProfiles(profiles) {
+            if (!profilesGrid) return;
             if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
                 profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
                 return;
@@ -1434,9 +241,11 @@
                 const fragment = document.createDocumentFragment();
                 profiles.forEach(profile => {
                     const cardHTML = createProfileCard(profile);
-                    const tempDiv = document.createElement('div');
+                    const tempDiv = document.createElement('div'); // Create a temporary div to parse the HTML string
                     tempDiv.innerHTML = cardHTML.trim();
-                    fragment.appendChild(tempDiv.firstChild);
+                    if (tempDiv.firstChild) {
+                        fragment.appendChild(tempDiv.firstChild);
+                    }
                 });
                 
                 profilesGrid.innerHTML = ''; // Clear existing
@@ -1453,8 +262,8 @@
                         img.classList.remove('skeleton');
                     };
                     tempImage.onerror = () => {
-                        img.src = window.MLNF_CONFIG.DEFAULT_AVATAR; // Fallback
-                        img.classList.add('loaded'); // Still mark as 'loaded' to remove initial opacity
+                        img.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png'); // Fallback
+                        img.classList.add('loaded'); 
                         img.classList.remove('lazy-avatar');
                         img.classList.remove('skeleton');
                     };
@@ -1463,38 +272,31 @@
 
             } catch (error) {
                 console.error('Error rendering profiles:', error);
-                profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
+                if (profilesGrid) profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
             }
         }
         
         // Optimized fetch function with better caching
         async function fetchProfiles() {
+            if (!profilesGrid || !loadingIndicator || !errorMessage) return;
             try {
-                // Show loading state
                 profilesGrid.style.opacity = '0.7';
                 loadingIndicator.style.display = 'flex';
                 errorMessage.style.display = 'none';
                 
-                // Try to get cached profiles first
                 const cachedProfiles = localStorage.getItem('mlnf_profiles');
                 let profiles = null;
                 
                 if (cachedProfiles) {
                     try {
                         profiles = JSON.parse(cachedProfiles);
-                        console.log('Using cached profiles:', profiles);
-                        
-                        // Render cached profiles immediately while fetching fresh data
                         if (Array.isArray(profiles) && profiles.length > 0) {
                             renderProfiles(profiles);
-                            loadingIndicator.style.display = 'none';
+                            if (loadingIndicator) loadingIndicator.style.display = 'none';
                         }
-                    } catch (e) {
-                        console.error('Failed to parse cached profiles:', e);
-                    }
+                    } catch (e) { console.error('Failed to parse cached profiles:', e); }
                 }
                 
-                // If no cached data or it's older than 5 minutes, fetch from API
                 const cacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
                 const isCacheExpired = !cacheTimestamp || (Date.now() - parseInt(cacheTimestamp) > 5 * 60 * 1000);
                 
@@ -1504,133 +306,50 @@
                         { 'Authorization': `Bearer ${token}` } : 
                         {};
                     
-                    const response = await fetch(`${API_BASE_URL}/users`, {
+                    const response = await fetch(`${(window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '')}/users`, {
                         method: 'GET',
                         headers: headers
                     });
                     
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch profiles: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`Failed to fetch profiles: ${response.status}`);
                     
                     const responseData = await response.json();
                     
-                    // Ensure profiles is an array
-                    if (Array.isArray(responseData)) {
-                        profiles = responseData;
-                    } else if (responseData && typeof responseData === 'object') {
-                        // Handle case where API returns an object with users property or other structure
-                        if (Array.isArray(responseData.users)) {
-                            profiles = responseData.users;
-                        } else if (responseData.data && Array.isArray(responseData.data)) {
-                            profiles = responseData.data;
-                        } else {
-                            // If we can't find an array, try to convert object to array
+                    if (Array.isArray(responseData)) profiles = responseData;
+                    else if (responseData && typeof responseData === 'object') {
+                        if (Array.isArray(responseData.users)) profiles = responseData.users;
+                        else if (responseData.data && Array.isArray(responseData.data)) profiles = responseData.data;
+                        else {
                             const possibleProfiles = Object.values(responseData).filter(item => 
-                                item && typeof item === 'object' && (item.username || item.displayName)
-                            );
-                            
-                            if (possibleProfiles.length > 0) {
-                                profiles = possibleProfiles;
-                            } else {
-                                console.error('API response format not recognized:', responseData);
-                                throw new Error('Unexpected API response format');
-                            }
+                                item && typeof item === 'object' && (item.username || item.displayName));
+                            if (possibleProfiles.length > 0) profiles = possibleProfiles;
+                            else throw new Error('Unexpected API response format');
                         }
-                    } else {
-                        console.error('Invalid API response:', responseData);
-                        throw new Error('Invalid API response');
-                    }
+                    } else throw new Error('Invalid API response');
                     
-                    // Cache the profiles
                     localStorage.setItem('mlnf_profiles', JSON.stringify(profiles));
                     localStorage.setItem('mlnf_profiles_timestamp', Date.now().toString());
                     
-                    // Only render if we didn't already render the cached profiles
                     if (!cachedProfiles || !Array.isArray(JSON.parse(cachedProfiles)) || JSON.parse(cachedProfiles).length === 0) {
                         renderProfiles(profiles);
                     }
                 }
                 
-                // Fall back to the sample default profiles if API fails and no cache
                 if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
-                    console.log('Using default sample profiles');
-                    profiles = [
-                        {
-                            id: 1,
-                            displayName: "Eternal Seeker",
-                            username: "eternally_yours",
-                            avatar: "/assets/images/default-avatar.png",
-                            bio: "Wandering through the infinite realms of consciousness, seeking truth and connection.",
-                            stats: { posts: 42, connections: 108 },
-                            level: "Enlightened"
-                        },
-                        {
-                            id: 2,
-                            displayName: "Cosmic Wanderer",
-                            username: "stardust_soul",
-                            avatar: "/assets/images/default-avatar.png",
-                            bio: "Dancing with the stars, embracing the eternal flow of universal energy.",
-                            stats: { posts: 73, connections: 156 },
-                            level: "Ascended"
-                        },
-                        {
-                            id: 3,
-                            displayName: "Light Bearer",
-                            username: "inner_flame",
-                            avatar: "/assets/images/default-avatar.png",
-                            bio: "Illuminating the path for fellow souls, sharing wisdom across dimensions.",
-                            stats: { posts: 91, connections: 247 },
-                            level: "Illuminated"
-                        }
-                    ];
-                    
+                    // Fallback to sample profiles if API fails and no cache (or empty cache)
+                    profiles = [ /* your sample profiles array here if needed */ ];
                     renderProfiles(profiles);
                 }
-                
-                // Set allProfiles for search functionality
                 allProfiles = Array.isArray(profiles) ? profiles : [];
                 
             } catch (error) {
                 console.error('Error fetching profiles:', error);
                 displayError('Failed to manifest eternal souls. Please try again later.');
-                
-                // Use default profiles as fallback
-                const defaultProfiles = [
-                    {
-                        id: 1,
-                        displayName: "Eternal Seeker",
-                        username: "eternally_yours",
-                        avatar: "/assets/images/default-avatar.png",
-                        bio: "Wandering through the infinite realms of consciousness, seeking truth and connection.",
-                        stats: { posts: 42, connections: 108 },
-                        level: "Enlightened"
-                    },
-                    {
-                        id: 2,
-                        displayName: "Cosmic Wanderer",
-                        username: "stardust_soul",
-                        avatar: "/assets/images/default-avatar.png",
-                        bio: "Dancing with the stars, embracing the eternal flow of universal energy.",
-                        stats: { posts: 73, connections: 156 },
-                        level: "Ascended"
-                    },
-                    {
-                        id: 3,
-                        displayName: "Light Bearer",
-                        username: "inner_flame",
-                        avatar: "/assets/images/default-avatar.png",
-                        bio: "Illuminating the path for fellow souls, sharing wisdom across dimensions.",
-                        stats: { posts: 91, connections: 247 },
-                        level: "Illuminated"
-                    }
-                ];
-                
-                allProfiles = defaultProfiles;
-                renderProfiles(defaultProfiles);
+                allProfiles = [ /* your sample profiles array here if needed */ ]; // Fallback on error too
+                renderProfiles(allProfiles);
             } finally {
-                loadingIndicator.style.display = 'none';
-                profilesGrid.style.opacity = '1';
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                if (profilesGrid) profilesGrid.style.opacity = '1';
             }
         }
 
@@ -1639,8 +358,8 @@
         const clearSearch = document.getElementById('clearSearch');
         let allProfiles = [];
 
-        // Search function
         function performSearch() {
+            if (!searchInput || !clearSearch) return;
             const searchTerm = searchInput.value.toLowerCase();
             clearSearch.classList.toggle('visible', searchTerm.length > 0);
             
@@ -1653,12 +372,8 @@
                 const name = (profile.displayName || profile.username || '').toLowerCase();
                 const username = (profile.username || '').toLowerCase();
                 const bio = (profile.bio || '').toLowerCase();
-                
-                return name.includes(searchTerm) || 
-                       username.includes(searchTerm) || 
-                       bio.includes(searchTerm);
+                return name.includes(searchTerm) || username.includes(searchTerm) || bio.includes(searchTerm);
             });
-            
             renderProfiles(filteredProfiles);
         }
 
@@ -1684,568 +399,30 @@
                 console.error('Error parsing cached profiles:', error);
             }
             
-            setupUserUI();
-            setupNavigation();
-
-            // --- Initialize Modal Elements and Attach Listeners (after DOM loaded) ---
-            soulModal = document.getElementById('soulModal');
-            soulModalTitle = document.getElementById('soulModalTitle');
-            soulLoginForm = document.getElementById('soulLoginForm');
-            soulModalSubmit = document.getElementById('soulModalSubmit');
-            modalFeedback = document.getElementById('modalFeedback');
-            confirmPasswordField = document.getElementById('confirmPasswordField');
-            modalToggleView = document.getElementById('modalToggleView');
-
-            if (soulModal) {
-                const modalCloseXButton = soulModal.querySelector('.close-modal');
-                if (modalCloseXButton) {
-                    modalCloseXButton.addEventListener('click', closeSoulModal);
-                }
-                soulModal.addEventListener('click', (event) => {
-                    // Close if clicked on the overlay directly, not the content
-                    if (event.target === soulModal) closeSoulModal(); 
-                });
+            // Conditionally hide "Eternal Souls" from dropdown logic will be handled by userMenu.js
+            const errorMessage = document.getElementById('errorMessage');
+            const profilesGrid = document.getElementById('profilesGrid');
+            
+            // If this page needs a specific logout button, it should call window.MLNF.handleLogout.
+            const localLogoutBtn = document.getElementById('logoutBtn'); 
+            if (localLogoutBtn && window.MLNF && window.MLNF.handleLogout) { // Check if global logout exists
+                 localLogoutBtn.addEventListener('click', window.MLNF.handleLogout);
             }
-
-            if (modalToggleView) {
-                modalToggleView.addEventListener('click', (event) => {
-                    if (event.target.tagName === 'A') {
-                        event.preventDefault();
-                        if (event.target.id === 'switchToRegisterLink') {
-                            setSoulModalView('register');
-                        } else if (event.target.id === 'switchToLoginLink') {
-                            setSoulModalView('login');
-                        }
-                    }
-                });
-            }
-
-            if (soulLoginForm && soulModal && modalFeedback) { 
-                soulLoginForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    modalFeedback.textContent = ''; 
-                    modalFeedback.className = 'modal-feedback'; // Reset class
-
-                    const username = soulLoginForm.username.value.trim();
-                    const password = soulLoginForm.password.value;
-                    const mode = soulModal.dataset.mode || 'login';
-
-                    if (!username || !password) {
-                        modalFeedback.textContent = 'Soul Identifier and Ethereal Key are required.';
-                        modalFeedback.classList.add('error');
-                        return;
-                    }
-
-                    let url = '';
-                    let payload = { username, password };
-
-                    if (mode === 'register') {
-                        const confirmPasswordInput = soulLoginForm.confirmPassword;
-                        if (!confirmPasswordInput) {
-                             modalFeedback.textContent = 'Confirm password field missing.'; modalFeedback.classList.add('error'); return;
-                        }
-                        const confirmPassword = confirmPasswordInput.value;
-                        if (password !== confirmPassword) {
-                            modalFeedback.textContent = 'Ethereal Keys do not align.';
-                            modalFeedback.classList.add('error');
-                            return;
-                        }
-                        url = `${API_BASE_URL}/auth/register`;
-                    } else {
-                        url = `${API_BASE_URL}/auth/login`;
-                    }
-
-                    soulModalSubmit.disabled = true;
-                    soulModalSubmit.textContent = mode === 'register' ? 'Forging...' : 'Transcending...';
-                    modalFeedback.textContent = 'Processing...';
-                    modalFeedback.classList.remove('error', 'success');
-
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(payload)
-                        });
-
-                        const data = await response.json();
-
-                        if (!response.ok) {
-                            modalFeedback.textContent = data.message || `Error: ${response.status}`;
-                            modalFeedback.classList.add('error');
-                            throw new Error(data.message || `HTTP error ${response.status}`);
-                        }
-
-                        if (mode === 'login') {
-                            if (data.token) {
-                                localStorage.setItem('sessionToken', data.token);
-                                // Fetch user data after login to store it
-                                const userResponse = await fetch(`${API_BASE_URL}/users/me`, { 
-                                    headers: { 'Authorization': `Bearer ${data.token}` }
-                                });
-                                if (userResponse.ok) {
-                                    const userData = await userResponse.json();
-                                    localStorage.setItem('user', JSON.stringify(userData));
-                                } else {
-                                    // Handle failure to fetch user data after login, though token is set
-                                    localStorage.removeItem('user'); // Clear any old user data
-                                }
-                                modalFeedback.textContent = 'Sanctuary access granted.';
-                                modalFeedback.classList.add('success');
-                                updateUserInfo(); // Update UI immediately
-                                setTimeout(() => {
-                                    closeSoulModal();
-                                    window.location.reload(); // Reload to ensure full page update
-                                }, 1500); 
-                            } else {
-                                modalFeedback.textContent = data.message || 'Token not received. Entry denied.';
-                                modalFeedback.classList.add('error');
-                            }
-                        } else { // Register
-                            modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
-                            modalFeedback.classList.add('success');
-                            setTimeout(() => {
-                                setSoulModalView('login'); // Switch to login view
-                                soulModalSubmit.disabled = false; // Re-enable button for login
-                                soulModalSubmit.textContent = 'Transcend';
-                                modalFeedback.textContent = 'Please login with your new credentials.';
-                                modalFeedback.className = 'modal-feedback'; // Reset class
-                            }, 2000);
-                            return; // Don't immediately re-enable button below for register success
-                        }
-
-                    } catch (error) {
-                        console.error(`[Auth Modal Error - ${mode}]:`, error);
-                        if (!modalFeedback.textContent || modalFeedback.textContent === 'Processing...') { 
-                            modalFeedback.textContent = 'An unexpected disturbance occurred.';
-                        }
-                        modalFeedback.classList.add('error');
-                    } finally {
-                        if (mode !== 'register' || !modalFeedback.classList.contains('success')){
-                             // Only re-enable if not a successful registration (which handles its own state)
-                            soulModalSubmit.disabled = false;
-                            soulModalSubmit.textContent = mode === 'register' ? 'Begin Your Eternity' : 'Transcend';
-                        }
-                    }
-                }); 
-            }
-            // --- End of Modal JS ---
-
-            // Conditionally hide "Eternal Souls" from dropdown if on /souls page
-            if (window.location.pathname === '/souls' || window.location.pathname === '/souls/') {
-                const dropdownSoulsLink = document.getElementById('dropdownSoulsLink');
-                if (dropdownSoulsLink) {
-                    dropdownSoulsLink.style.display = 'none';
-                    // Check if a divider is now redundant (e.g. before logout)
-                    const nextElement = dropdownSoulsLink.nextElementSibling;
-                    if (nextElement && nextElement.classList.contains('divider') && 
-                        (nextElement.nextElementSibling === null || nextElement.nextElementSibling.style.display === 'none')) {
-                         // If the next element is a divider and it's the last visible item or followed by hidden items
-                        nextElement.style.display = 'none';
-                    }
-                     // Check if the previous element is a divider and it's now followed by another divider or end
-                    const prevElement = dropdownSoulsLink.previousElementSibling;
-                    if (prevElement && prevElement.classList.contains('divider')) {
-                        const elementAfterLink = dropdownSoulsLink.nextElementSibling;
-                        if (!elementAfterLink || elementAfterLink.style.display === 'none' || (elementAfterLink.classList.contains('divider'))) {
-                           prevElement.style.display = 'none';
-                        }
-                    }
-                }
+            const mobileLogoutBtn = document.getElementById('mobileLogoutBtn'); 
+            if (mobileLogoutBtn && window.MLNF && window.MLNF.handleLogout) { // Check if global logout exists
+                 mobileLogoutBtn.addEventListener('click', window.MLNF.handleLogout);
             }
         });
-        
-        // Setup User Interface - Menus, Sidebar, etc.
-        function setupUserUI() {
-            // User Menu Functionality
-            const userMenuBtn = document.getElementById('userMenuBtn');
-            const userDropdown = document.getElementById('userDropdown');
-            const userMenuAvatar = document.getElementById('userMenuAvatar');
-            const userMenuName = document.getElementById('userMenuName');
-            
-            userMenuBtn.addEventListener('click', () => {
-                userDropdown.classList.toggle('active');
-            });
-            
-            document.addEventListener('click', (event) => {
-                if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
-                    userDropdown.classList.remove('active');
-                }
-            });
-            
-            // Active users sidebar functionality
-            const showUsersBtn = document.getElementById('showUsersBtn');
-            const closeUsersBtn = document.getElementById('closeUsers');
-            const activeUsers = document.getElementById('activeUsers');
-            
-            if (showUsersBtn && activeUsers) {
-                showUsersBtn.addEventListener('click', () => {
-                    activeUsers.classList.toggle('active');
-                });
-            }
-            
-            if (closeUsersBtn && activeUsers) {
-                closeUsersBtn.addEventListener('click', () => {
-                    activeUsers.classList.remove('active');
-                });
-            }
-            
-            // Populate active users (mock data for now)
-            const userList = document.getElementById('userList');
-            if (userList) {
-                userList.innerHTML = `
-                    <div class="user-item">
-                        <img src="${window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="User Avatar">
-                        <div class="user-info">
-                            <h4>EternalSeeker</h4>
-                            <span class="status online">Online</span>
-                        </div>
-                        <button class="message-btn" data-username="EternalSeeker">
-                            <i class="fas fa-comment"></i>
-                        </button>
-                    </div>
-                    <div class="user-item">
-                        <img src="${window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="User Avatar">
-                        <div class="user-info">
-                            <h4>CosmicWanderer</h4>
-                            <span class="status online">Online</span>
-                        </div>
-                        <button class="message-btn" data-username="CosmicWanderer">
-                            <i class="fas fa-comment"></i>
-                        </button>
-                    </div>
-                    <div class="user-item">
-                        <img src="/assets/images/default-avatar.png" alt="User Avatar">
-                        <div class="user-info">
-                            <h4>LightBearer</h4>
-                            <span class="status away">Away</span>
-                        </div>
-                        <button class="message-btn" data-username="LightBearer">
-                            <i class="fas fa-comment"></i>
-                        </button>
-                    </div>
-                `;
-                
-                // Add event listeners to message buttons
-                document.querySelectorAll('.message-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const username = e.currentTarget.dataset.username;
-                        const messageModal = document.getElementById('messageModal');
-                        const recipientName = document.getElementById('recipientName');
-                        
-                        if (messageModal && recipientName) {
-                            recipientName.textContent = username;
-                            messageModal.style.display = 'flex';
-                        }
-                    });
-                });
-            }
-            
-            // Message modal functionality
-            const closeMessageModal = document.getElementById('closeMessageModal');
-            const messageModal = document.getElementById('messageModal');
-            const sendMessageBtn = document.getElementById('sendMessageBtn');
-            
-            if (closeMessageModal && messageModal) {
-                closeMessageModal.addEventListener('click', () => {
-                    messageModal.style.display = 'none';
-                });
-            }
-            
-            if (sendMessageBtn) {
-                sendMessageBtn.addEventListener('click', () => {
-                    const messageInput = document.getElementById('messageInput');
-                    const messageHistory = document.getElementById('messageHistory');
-                    
-                    if (messageInput && messageHistory && messageInput.value.trim()) {
-                        // Add message to history
-                        const messageDiv = document.createElement('div');
-                        messageDiv.className = 'message sent';
-                        messageDiv.innerHTML = `
-                            <span class="message-text">${messageInput.value}</span>
-                            <span class="message-time">${new Date().toLocaleTimeString()}</span>
-                        `;
-                        messageHistory.appendChild(messageDiv);
-                        
-                        // Clear input
-                        messageInput.value = '';
-                        
-                        // Simulate response
-                        setTimeout(() => {
-                            const responseDiv = document.createElement('div');
-                            responseDiv.className = 'message received';
-                            responseDiv.innerHTML = `
-                                <span class="message-text">Your wisdom resonates across the eternal planes...</span>
-                                <span class="message-time">${new Date().toLocaleTimeString()}</span>
-                            `;
-                            messageHistory.appendChild(responseDiv);
-                            messageHistory.scrollTop = messageHistory.scrollHeight;
-                        }, 1500);
-                    }
-                });
-            }
-            
-            // Logout functionality
-            const logoutBtn = document.getElementById('logoutBtn');
-            const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
-            
-            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
-            if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
-            
-            // Top button functionality
-            const topButton = document.getElementById('topButton');
-            
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    topButton.classList.add('visible');
-                } else {
-                    topButton.classList.remove('visible');
-                }
-            });
-            
-            topButton.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // Update user info if logged in
-            updateUserInfo();
-        }
-        
-        // Setup Navigation - Mobile Menu, Active Links
-        function setupNavigation() {
-            // Mobile Navigation
-            const mobileNavToggle = document.getElementById('mobileNavToggle');
-            const mobileNav = document.getElementById('mobileNav');
-            const closeMobileNav = document.getElementById('closeMobileNav');
-            const mobileOverlay = document.getElementById('mobileOverlay');
-            
-            mobileNavToggle.addEventListener('click', () => {
-                mobileNav.classList.add('active');
-                mobileOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-            
-            closeMobileNav.addEventListener('click', () => {
-                mobileNav.classList.remove('active');
-                mobileOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-            
-            mobileOverlay.addEventListener('click', () => {
-                mobileNav.classList.remove('active');
-                mobileOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-            
-            // Set active class for current page
-            const currentPath = window.location.pathname;
-            
-            document.querySelectorAll('nav a').forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-            
-            document.querySelectorAll('.mobile-nav-list a').forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        
-        // Update user information from localStorage or API
-        function updateUserInfo() {
-            console.log("[Souls Page] updateUserInfo called");
-            // Elements to update
-            const userMenuAvatar = document.getElementById('userMenuAvatar');
-            const userMenuName = document.getElementById('userMenuName');
-            const sidebarAvatar = document.getElementById('sidebarAvatar');
-            const sidebarUsername = document.getElementById('sidebarUsername');
-            const sidebarStatus = document.getElementById('sidebarStatus');
-            const openSidebarBtn = document.getElementById('openSidebar'); // Get the button
-            const userDropdown = document.getElementById('userDropdown'); // Get the dropdown itself
-
-            // Check if user is logged in
-            const token = localStorage.getItem('sessionToken');
-            const cachedUser = localStorage.getItem('user');
-
-            console.log("[Souls Page] Token:", token ? 'Exists' : 'Not Found');
-            console.log("[Souls Page] Cached User String:", cachedUser);
-
-            if (token && cachedUser) {
-                try {
-                    const userData = JSON.parse(cachedUser);
-                    console.log("[Souls Page] Successfully parsed userData:", userData);
-                    
-                    // Update user menu button content (avatar and name)
-                    if (userMenuAvatar) userMenuAvatar.src = userData.avatar || DEFAULT_AVATAR;
-                    if (userMenuAvatar) userMenuAvatar.onerror = () => userMenuAvatar.src = DEFAULT_AVATAR;
-                    if (userMenuName) userMenuName.textContent = userData.displayName || userData.username || 'Soul Seeker';
-                    
-                    // Populate the actual dropdown menu for logged-in user
-                    if (userDropdown) {
-                        userDropdown.innerHTML = `
-                            <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
-                            <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
-                            <div class="divider"></div>
-                            <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                            ${(window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') ? '<a href="/souls" id="dropdownSoulsLink"><i class="fas fa-users"></i> Eternal Souls</a>' : ''}
-                            <div class="divider"></div>
-                            <a href="#" id="logoutBtnInsideDropdown"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
-                        `;
-                        // Re-attach logout listener for this new button
-                        const logoutBtnInDropdown = document.getElementById('logoutBtnInsideDropdown');
-                        if (logoutBtnInDropdown) {
-                            logoutBtnInDropdown.addEventListener('click', handleLogout); // handleLogout should be defined in this scope or globally
-                        }
-                        // Re-apply logic to hide souls link if on souls page (if it was added)
-                        if (window.location.pathname === '/souls' || window.location.pathname === '/souls/') {
-                            const dropdownSoulsLink = document.getElementById('dropdownSoulsLink');
-                            if (dropdownSoulsLink) dropdownSoulsLink.style.display = 'none';
-                        }
-                    }
-
-                    // Update sidebar content
-                    if (sidebarAvatar) sidebarAvatar.src = userData.avatar || DEFAULT_AVATAR;
-                    if (sidebarAvatar) sidebarAvatar.onerror = () => sidebarAvatar.src = DEFAULT_AVATAR;
-                    if (sidebarUsername) sidebarUsername.textContent = userData.displayName || userData.username || 'Soul Seeker';
-                    if (sidebarStatus) sidebarStatus.textContent = userData.status || 'Exploring the eternal realm...';
-                    
-                    // Ensure user-specific buttons/menus are visible
-                    document.querySelectorAll('.user-menu').forEach(el => el.style.display = 'flex');
-                    if (openSidebarBtn) openSidebarBtn.style.display = 'flex'; // Explicitly show sidebar button
-
-                    console.log("[Souls Page] UI updated for logged-in user.");
-                    
-                } catch (error) {
-                    console.error('[Souls Page] Error parsing user data or updating UI for logged-in user:', error);
-                    setGuestUI(); // Fallback to guest UI on error
-                }
-            } else {
-                console.log("[Souls Page] No token or cachedUser found. Setting guest UI.");
-                setGuestUI();
-            }
-        }
-        
-        // Set UI for guest users
-        function setGuestUI() {
-            console.log("[Souls Page] setGuestUI called");
-            const userMenuAvatar = document.getElementById('userMenuAvatar');
-            const userMenuName = document.getElementById('userMenuName');
-            const userDropdown = document.getElementById('userDropdown');
-            const openSidebarBtn = document.getElementById('openSidebar');
-            
-            if (userMenuAvatar) userMenuAvatar.src = DEFAULT_AVATAR;
-            if (userMenuName) userMenuName.textContent = 'Guest';
-            
-            // Populate dropdown for guest to open the new modal
-            if (userDropdown) {
-                userDropdown.innerHTML = `
-                    <a href="#" id="guestLoginModalBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
-                    <a href="#" id="guestRegisterModalBtn"><i class="fas fa-user-plus"></i> Register</a>
-                    <div class="divider"></div>
-                    <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                    ${(window.location.pathname !== '/souls' && window.location.pathname !== '/souls/') ? '<a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>' : ''}
-                `;
-                // Add event listeners for modal triggering
-                const guestLoginBtn = document.getElementById('guestLoginModalBtn');
-                const guestRegisterBtn = document.getElementById('guestRegisterModalBtn');
-                if (guestLoginBtn) {
-                    guestLoginBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        openSoulModal('login');
-                    });
-                }
-                if (guestRegisterBtn) {
-                    guestRegisterBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        openSoulModal('register');
-                    });
-                }
-            }
-
-            // Hide user-specific elements
-            if (openSidebarBtn) openSidebarBtn.style.display = 'none';
-            console.log("[Souls Page] Guest UI set with modal triggers.");
-        }
-
-        // --- Copied Soul Modal Core Logic Functions (from MLNF/js/scripts.js) ---
-        let soulModal, soulModalTitle, soulLoginForm, soulModalSubmit, modalFeedback, confirmPasswordField, modalToggleView;
-
-        const switchToRegisterLinkHTML = 'New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>';
-        const switchToLoginLinkHTML = 'Already an Immortal? <a href="#" id="switchToLoginLink">Enter Now</a>';
-
-        function setSoulModalView(mode) {
-            if (!soulModal || !soulLoginForm || !soulModalTitle || !confirmPasswordField || !soulModalSubmit || !modalToggleView) {
-                console.error('[Souls Page Modal] setSoulModalView: Crucial modal elements missing.');
-                return;
-            }
-            soulLoginForm.reset(); 
-            if(modalFeedback) modalFeedback.textContent = '';
-            soulModal.dataset.mode = mode;
-
-            if (mode === 'register') {
-                soulModalTitle.textContent = 'Claim Your Immortality';
-                confirmPasswordField.style.display = 'block';
-                soulModalSubmit.textContent = 'Begin Your Eternity';
-                modalToggleView.innerHTML = switchToLoginLinkHTML;
-                 // Ensure confirm password input is required for registration
-                const confirmPasswordInput = confirmPasswordField.querySelector('input[name="confirmPassword"]');
-                if (confirmPasswordInput) confirmPasswordInput.required = true;
-            } else { // Default to login
-                soulModalTitle.textContent = 'Enter the Sanctuary';
-                confirmPasswordField.style.display = 'none';
-                soulModalSubmit.textContent = 'Transcend';
-                modalToggleView.innerHTML = switchToRegisterLinkHTML;
-                // Ensure confirm password input is NOT required for login
-                const confirmPasswordInput = confirmPasswordField.querySelector('input[name="confirmPassword"]');
-                if (confirmPasswordInput) confirmPasswordInput.required = false;
-            }
-        }
-
-        function openSoulModal(mode = 'login') {
-            if (!soulModal) {
-                console.error('[Souls Page Modal] openSoulModal: soulModal element not found!');
-                return;
-            }
-            // Assign elements here if not already (e.g. if modal was added dynamically or script runs before full parse)
-            if (!soulModalTitle) soulModalTitle = document.getElementById('soulModalTitle');
-            if (!soulLoginForm) soulLoginForm = document.getElementById('soulLoginForm');
-            if (!soulModalSubmit) soulModalSubmit = document.getElementById('soulModalSubmit');
-            if (!modalFeedback) modalFeedback = document.getElementById('modalFeedback');
-            if (!confirmPasswordField) confirmPasswordField = document.getElementById('confirmPasswordField');
-            if (!modalToggleView) modalToggleView = document.getElementById('modalToggleView');
-            
-            setSoulModalView(mode); 
-            soulModal.classList.add('active'); // Use class for CSS transitions
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
-            const usernameInput = soulModal.querySelector('input[name="username"]');
-            if (usernameInput) usernameInput.focus();
-        }
-
-        function closeSoulModal() {
-            if (!soulModal) {
-                console.error('[Souls Page Modal] closeSoulModal: soulModal is not defined or found!');
-                return;
-            }
-            soulModal.classList.remove('active');
-            document.body.style.overflow = ''; // Restore background scroll
-            if (modalFeedback) modalFeedback.textContent = '';
-            if (soulLoginForm) soulLoginForm.reset();
-        }
-        // --- End of Copied Soul Modal Core Logic ---
-
     </script>
     
     <!-- Shared Components -->
-    <script src="../components/shared/navigation.js?v=1.2"></script> <!-- Cache bust -->
-    <script src="../components/shared/userMenu.js?v=1.2"></script> <!-- Cache bust -->
-    <script src="../components/shared/userSidebar.js?v=1.2"></script> <!-- Cache bust -->
-    <script src="../components/shared/authModal.js?v=1.2"></script> <!-- Cache bust -->
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script> <!-- Cache bust -->
+    <!-- config.js is loaded before the main inline script block -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script> 
+    <script src="../components/shared/navigation.js?v=1.2"></script> 
+    <script src="../components/shared/userMenu.js?v=1.2"></script> 
+    <script src="../components/shared/authModal.js?v=1.2"></script> 
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script> 
+    <script src="../js/user-sidebar.js?v=1.2"></script> <!-- Added script for the page-specific user sidebar -->
 </body>
 </html> 

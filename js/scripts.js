@@ -11,7 +11,7 @@ const switchToRegisterLinkHTML = 'New to the Sanctuary? <a href="#" id="switchTo
 const switchToLoginLinkHTML = 'Already an Immortal? <a href="#" id="switchToLoginLink">Enter Now</a>';
 
 // Backend API URL (Restored)
-const API_URL = 'https://mlnf-auth.onrender.com/api';
+const API_URL = MLNF_CONFIG.API_BASE_URL;
 
 // Mocking infrastructure for local testing
 window.MOCK_LOGGED_IN_STATE = false;

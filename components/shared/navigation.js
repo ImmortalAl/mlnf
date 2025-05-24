@@ -79,28 +79,14 @@ function injectNavigation() {
         // If Eternal Hearth should also be removed from mobile, adjust navType logic or filter here
         let mobileLinksHTML = generateNavLinksHTML(currentPath, 'mobile'); // Use 'mobile' type
 
-        // Add auth links to mobile nav based on login state (this is a simplified example)
-        const token = localStorage.getItem('sessionToken');
-        if (token) {
-            mobileLinksHTML += `
-                <div class="divider"></div>
-                <a href="/profile" id="mobileProfileLink"><i class="fas fa-user"></i> My Soul</a>
-                <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
-                <div class="divider"></div>
-                <a href="#" id="mobileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
-            `;
-        } else {
-            mobileLinksHTML += `
-                <div class="divider"></div>
-                <a href="#" id="mobileLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
-                <a href="#" id="mobileRegisterBtn"><i class="fas fa-user-plus"></i> Register</a>
-            `;
-        }
+        // Set the main navigation links first
         mobileNavList.innerHTML = mobileLinksHTML;
-        // Re-attach event listeners for these new mobile auth buttons if necessary (e.g., in userMenu.js or mlnf-core.js)
-        // Consider centralizing auth link generation if it gets complex
-         if (window.MLNF && window.MLNF.setupMobileAuthClickHandlers) {
-            window.MLNF.setupMobileAuthClickHandlers();
+
+        // Now, let userMenu.js handle adding/updating the auth-related links and their events
+        if (window.MLNF && window.MLNF.updateMobileAuthLinks) { // Assuming userMenu.js exposes this
+            window.MLNF.updateMobileAuthLinks();
+        } else {
+            console.warn('[navigation.js] window.MLNF.updateMobileAuthLinks not found. Mobile auth links might be missing or stale.');
         }
 
     } else {

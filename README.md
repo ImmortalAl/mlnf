@@ -1,10 +1,10 @@
 # Manifest Liberation, Naturally Free (MLNF)
 
 **Important Project Structure Note:**
-- The front-end static site files are located in: `MLNF/MLNF/`
-- The back-end Express.js app is in: `MLNF/mlnf-auth/`
+- The front-end static site files are located in: `MLNF/front/`
+- The back-end Express.js app is in: `MLNF/back/`
 
-This is to avoid confusion when running git commands or editing files. Always `cd MLNF/MLNF` for front-end git operations.
+This is to avoid confusion when running git commands or editing files. Always `cd MLNF/front` for front-end git operations.
 
 ---
 

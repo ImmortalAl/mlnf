@@ -1,0 +1,266 @@
+/* Styles for blog.html will go here */ 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+body {
+    background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
+                url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+header {
+    background: var(--gradient-secondary);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--accent);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.logo i {
+    color: var(--accent);
+    font-size: 2.2rem;
+    animation: pulseGlow 2s infinite;
+}
+.logo h1 {
+    font-size: 1.8rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+nav ul {
+    display: flex;
+    gap: 1.8rem;
+    list-style: none;
+}
+nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 0;
+    transition: var(--transition);
+}
+nav a:hover {
+    color: var(--accent);
+}
+main {
+    padding: 3rem 2rem;
+    flex: 1;
+}
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.section-title h2 {
+    font-size: 2.5rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.blog-form {
+    background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 5px solid var(--accent);
+}
+.blog-form input, .blog-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+.blog-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+.blog-form button {
+    padding: 0.8rem 1.5rem;
+    background: var(--gradient-accent);
+    border: none;
+    border-radius: 8px;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.blog-form button:hover {
+    box-shadow: var(--shadow);
+}
+.blog-form .error {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+.blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.blog-post {
+    background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    transition: var(--transition);
+    border-left: 5px solid var(--accent);
+}
+.blog-post:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow);
+}
+.blog-post h3 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+.blog-post .content {
+    color: #d9ccff;
+    margin-bottom: 1rem;
+}
+.blog-post .author {
+    font-style: italic;
+    color: var(--success);
+    font-size: 0.9rem;
+}
+.blog-post .date {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+.active-users {
+    position: fixed;
+    right: -300px; /* Initially hidden */
+    top: 70px; /* Adjust if header height changes */
+    width: 300px;
+    height: calc(100% - 70px); /* Adjust if header height changes */
+    background: var(--gradient-secondary);
+    padding: 1.5rem;
+    transition: right 0.3s ease;
+    z-index: 200; /* Ensure it's above content but below modal/header overlay */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+.active-users.active {
+    right: 0;
+}
+.active-users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 94, 120, 0.3); /* Using accent color with alpha */
+}
+.active-users h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.active-users ul {
+    list-style: none;
+    /* max-height: calc(100% - 100px); /* Adjust if header/other elements change */
+    /* overflow-y: auto; /* Already on .active-users */
+}
+.active-users li {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 0;
+    gap: 0.5rem; /* Replaced margin-right on image */
+}
+.profile-preview img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    /* margin-right: 1rem; */ /* Replaced by gap on parent */
+}
+.profile-preview a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+}
+.profile-preview .status {
+    font-size: 0.8rem;
+    color: #d9ccff; /* A light, readable color */
+}
+.online-dot { /* Already in base-theme.css or styles.css, verify */
+    width: 10px;
+    height: 10px;
+    background: var(--success);
+    border-radius: 50%;
+    margin-left: 0.5rem; /* If needed for spacing */
+}
+.show-users-btn {
+    position: fixed;
+    bottom: 70px; /* Consistent with active-users top */
+    right: 20px;
+    background: var(--secondary);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text);
+    z-index: 300; /* Above active-users panel when closed */
+    transition: var(--transition);
+}
+.show-users-btn:hover {
+    background: var(--accent);
+}
+.close-sidebar { /* General close button style, could be in shared */
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute; /* Contextual positioning */
+    top: 10px;
+    right: 10px;
+    z-index: 250; /* Ensure clickable */
+}
+footer {
+    background: var(--gradient-secondary);
+    text-align: center;
+    padding: 2rem;
+    border-top: 3px solid var(--accent);
+}
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+@media (max-width: 768px) {
+    header { /* This might conflict with shared header styles, review */
+        flex-direction: column;
+        padding: 1rem;
+    }
+    nav ul { /* This might conflict with shared header styles, review */
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .blog-post, .blog-form {
+        padding: 1.5rem;
+    }
+    .active-users { /* Adjust for mobile view if it becomes full screen */
+        width: 100%;
+        top: 0; /* Assuming header is also adjusted or hidden */
+        height: 100%;
+    }
+} 

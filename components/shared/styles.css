@@ -334,9 +334,7 @@
 
 /* Responsive Styles */
 @media (max-width: 920px) {
-    nav {
-        display: none;
-    }
+    /* nav { display: none; } /* This is handled by styles.css */
     
     .mobile-nav-toggle {
         display: block;
@@ -372,6 +370,268 @@
 }
 
 @keyframes skeletonShimmer {
-    0% { background-position: 100% 50% }
-    100% { background-position: 0% 50% }
-} 
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+/* Additional styles for .soul-modal content (moved from styles.css) */
+.soul-modal #soulModalTitle {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+    /* text-shadow: 0 0 8px var(--accent_translucent); */ /* Re-evaluate if text-shadow is needed, .soul-modal .modal-content h2 already has some styling */
+}
+
+.soul-modal #soulLoginForm label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text_secondary);
+}
+
+.soul-modal #soulLoginForm input[type="text"],
+.soul-modal #soulLoginForm input[type="password"] {
+    /* font-size is already defined in .soul-modal form input[type="text"] earlier */
+    /* width, padding, background, border, border-radius, color are also defined earlier */
+    margin-bottom: 1rem; /* Adjusted from 1.2rem to be consistent */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.soul-modal #soulLoginForm input[type="text"]:focus,
+.soul-modal #soulLoginForm input[type="password"]:focus {
+    /* outline, border-color, box-shadow are already defined in .soul-modal form input[type="text"]:focus */
+    /* Ensure consistency or override if necessary */
+    border-color: var(--accent); /* Overriding from var(--highlight) for more emphasis */
+    box-shadow: 0 0 10px var(--accent_translucent, rgba(255,94,120,0.5));
+}
+
+.soul-modal #soulModalSubmit.modal-btn {
+    /* General .modal-btn styles are already defined */
+    /* This applies to the main submit button */
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    margin-top: 0.5rem; /* Add some space above the button */
+    /* background, color, border, transition already in .soul-modal .modal-btn */
+}
+
+.soul-modal #soulModalSubmit.modal-btn:hover {
+    /* transform, box-shadow already in .soul-modal .modal-btn:hover */
+    /* letter-spacing might be specific */
+    letter-spacing: 0.5px; 
+}
+
+.soul-modal .modal-feedback {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: calc(var(--border-radius) / 2); 
+    font-size: 0.9rem;
+    text-align: center;
+    display: none; /* Hidden by default */
+}
+/* .modal-feedback.error and .success are already defined and should work if this is the common class */
+
+.soul-modal .modal-toggle-view {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.soul-modal .modal-toggle-view a {
+    color: var(--accent);
+    text-decoration: underline;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.soul-modal .modal-toggle-view a:hover {
+    color: var(--text);
+    text-decoration: none;
+}
+
+/* Styles for the close button, already in .soul-modal .modal-content .close-modal */
+/* Verify if the one from styles.css had any unique properties to merge */
+/* Original in styles.css (around 1692): */
+/* #soulModal.soul-modal .modal-content .close-modal { ... } */
+/* The existing .soul-modal .modal-content .close-modal in shared/styles.css (line 315) seems sufficient. */
+
+/* Media Queries for Soul Modal from styles.css */
+@media (max-width: 480px) {
+    .soul-modal #soulModalTitle {
+        font-size: 1.5rem; /* Slightly smaller on very small screens */
+    }
+
+    /* .soul-modal form input styles are already responsive via .soul-modal .modal-content in this file */
+    /* .soul-modal #soulLoginForm input[type="text"], */
+    /* .soul-modal #soulLoginForm input[type="password"] { */
+        /* padding: 0.7rem; */ /* Already handled */
+    /* } */
+
+    .soul-modal #soulModalSubmit.modal-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Keyframes from styles.css if not already present and are used by above modal styles */
+/* @keyframes modalContentAppear - not used by the styles moved here, seems specific to old #soulModal styles */
+/* @keyframes modalFadeIn - already used by .soul-modal in shared, and potentially by generic .modal in styles.css */
+
+/* OLD Message Modal Styles (moved from active-users.css) are being REMOVED from here. */
+/* This section (approx lines 481-579) will be replaced by the more detailed styles from styles.css. */
+
+/* The enhanced Message Modal styles will be added below this comment block. */
+
+/* Enhanced Message Modal Content Styles (from styles.css) */
+/* Styles for the content box of the Message Modal */
+/* Note: #messageModal itself is styled in components/shared/styles.css for its overlay behavior */
+/* This class is being renamed from .auth-modal */
+/* TODO: Rename class in HTML from auth-modal to message-modal-content */
+#messageModal .message-modal-content {
+    background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    max-width: 500px; /* Or your preferred max-width */
+    margin: 10% auto; /* Centers the modal vertically, adjust as needed */
+    box-shadow: var(--shadow), 0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border: 2px solid var(--accent);
+    position: relative; /* For pseudo-elements or inner positioning */
+    animation: modalContentAppear 0.4s ease-out 0.1s backwards; /* Staggered appearance */
+}
+
+/* Optional decorative pseudo-element for the message modal content box */
+#messageModal .message-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(var(--accent-rgb, 255, 94, 120), 0.15), transparent 70%);
+    animation: spin 20s linear infinite reverse; /* Slow spin */
+    z-index: -1; /* Behind the content */
+    opacity: 0.5;
+}
+
+#messageModal .message-modal-content h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+}
+
+#messageModal .message-modal-content input[type="text"] { /* For message input field */
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+#messageModal .message-modal-content input[type="text"]:focus {
+    outline: none;
+    border-color: var(--warning); /* Or another focus color */
+    box-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+}
+
+#messageModal .message-modal-content .modal-actions {
+    display: flex;
+    justify-content: center; /* Or space-between, flex-end */
+    gap: 1rem;
+}
+
+#messageModal .message-modal-content button { /* General button styling within message modal */
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-grow: 1; /* If buttons should share space */
+}
+
+#messageModal .message-modal-content button[type="submit"] { /* Send button */
+    background: var(--gradient-accent);
+    color: var(--primary);
+    border: none;
+}
+
+#messageModal .message-modal-content button[type="button"] { /* Close/Cancel button */
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+
+#messageModal .message-modal-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow); /* Use a general shadow or define a specific one */
+}
+
+/* Styles for message history area if it's part of this modal structure */
+#messageModal .message-history { /* This class is within .message-modal-content, so it does not need renaming as part of this step */
+    max-height: 300px; /* Or your preferred height */
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.25);
+}
+
+#messageModal .message-bubble { /* This class is within .message-history, so it does not need renaming as part of this step */
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px; /* Or var(--border-radius) */
+    max-width: 80%;
+    word-wrap: break-word; /* Prevent long words from overflowing */
+}
+
+#messageModal .message-bubble.sent {
+    background: var(--gradient-accent);
+    color: var(--primary);
+    margin-left: auto; /* Align to right */
+    text-align: right;
+}
+
+#messageModal .message-bubble.received {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    margin-right: auto; /* Align to left */
+    text-align: left;
+}
+
+#messageModal .message-bubble small { /* Timestamp or sender info */
+    display: block;
+    color: var(--highlight); /* Or a lighter text color */
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+/* Light theme overrides for Message Modal Content (moved from styles.css) */
+body.light-theme #messageModal .message-modal-content
+{
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
+    border-color: rgba(214, 45, 77, 0.25); /* Using light theme accent */
+}
+
+body.light-theme #messageModal .message-modal-content::before { /* Adjust message modal pseudo-element for light theme */
+    background: radial-gradient(circle, rgba(214, 45, 77, 0.1), transparent 70%);
+}
+
+/* Keyframes used by modals in this file */
+@keyframes modalContentAppear {
+    from { transform: scale(0.95) translateY(10px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+/* @keyframes modalFadeIn is defined in styles.css and used by .soul-modal */
+/* @keyframes skeletonShimmer is defined above and used by .skeleton */ 

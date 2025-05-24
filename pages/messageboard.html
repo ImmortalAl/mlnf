@@ -10,251 +10,9 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
-    <style>
-        :root {
-            --primary: #0d0d1a;
-            --secondary: #1a1a33;
-            --accent: #ff5e78;
-            --text: #f0e6ff;
-            --highlight: #2a4066;
-            --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
-            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
-            --border-radius: 10px;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
-        body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            background: var(--gradient-secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .logo i {
-            color: var(--accent);
-            font-size: 2.2rem;
-            animation: pulseGlow 2s infinite;
-        }
-        .logo h1 {
-            font-weight: 300;
-            font-size: 1.8rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        nav ul {
-            display: flex;
-            gap: 0.5rem;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition);
-        }
-        nav a:hover {
-            color: var(--accent);
-            background: rgba(255, 94, 120, 0.2);
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-        .user-info:hover {
-            background: rgba(255, 94, 120, 0.2);
-            transform: scale(1.05);
-        }
-        .user-info img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-        }
-        .user-info span {
-            font-weight: 600;
-        }
-        .btn {
-            padding: 0.7rem 1.4rem;
-            border-radius: var(--border-radius);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-        }
-        .btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
-        }
-        main {
-            padding: 2rem;
-            flex: 1;
-            max-width: 1440px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        section {
-            background: var(--gradient-secondary);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 94, 120, 0.25);
-        }
-        h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.6rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-        .thread-list, .reply-list {
-            list-style: none;
-        }
-        .thread, .reply {
-            background: rgba(255, 94, 120, 0.08);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--accent);
-            transition: var(--transition);
-        }
-        .thread:hover, .reply:hover {
-            background: rgba(255, 94, 120, 0.18);
-            transform: scale(1.02);
-        }
-        .thread h3, .reply h4 {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .thread p, .reply p {
-            margin-bottom: 1rem;
-        }
-        .thread .meta, .reply .meta {
-            font-size: 0.8rem;
-            color: var(--highlight);
-        }
-        .reply {
-            margin-left: 2rem;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--accent);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
-            font-size: 1rem;
-        }
-        #editor {
-            height: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-        }
-        .message {
-            text-align: center;
-            margin: 1rem 0;
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-        }
-        .message.error {
-            background: rgba(255, 68, 68, 0.2);
-            color: #ff4444;
-        }
-        .message.success {
-            background: rgba(68, 255, 68, 0.2);
-            color: #44ff44;
-        }
-        .search-bar {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .search-bar input {
-            flex: 1;
-        }
-        .thread-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .notification {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: var(--gradient-secondary);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--accent);
-            z-index: 2000;
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-        @media (max-width: 768px) {
-            header { flex-wrap: wrap; }
-            nav ul { flex-direction: column; }
-            .search-bar { flex-direction: column; }
-        }
-    </style>
+    <script src="../components/shared/config.js"></script>
+    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/messageboard.css">
 </head>
 <body>
     <header>
@@ -328,7 +86,7 @@
         </section>
     </main>
     <script>
-        const API_BASE_URL = 'https://mlnf-auth.onrender.com';
+        const API_BASE_URL = MLNF_CONFIG.API_BASE_URL;
         const message = document.getElementById('message');
         const threadList = document.getElementById('threadList');
         const loginBtn = document.getElementById('loginBtn');
@@ -393,18 +151,19 @@
         }
 
         // Fetch threads
-        async function fetchThreads(filter = '') {
+        async function fetchThreads(searchTerm = '') {
             try {
-                const token = localStorage.getItem('sessionToken');
-                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-                const response = await fetch(`${API_BASE_URL}/api/threads${filter ? `?category=${filter}` : ''}`, {
-                    headers
+                showLoadingIndicator(threadsList, 'Loading eternal echoes...');
+                const url = searchTerm ? `${API_BASE_URL}/threads/search?term=${encodeURIComponent(searchTerm)}` : `${API_BASE_URL}/threads`;
+                const response = await fetch(url, {
+                    headers: getAuthHeaders()
                 });
                 if (!response.ok) throw new Error('Failed to fetch threads');
                 const data = await response.json();
                 renderThreads(data.threads);
             } catch (error) {
-                showMessage(error.message, 'error');
+                console.error('Error fetching threads:', error);
+                displayMessage('Failed to load threads. The connection to the eternal tapestry may be disrupted.', 'error', threadsList);
             }
         }
 

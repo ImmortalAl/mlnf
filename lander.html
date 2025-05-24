@@ -6,6 +6,7 @@
     <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
     <link rel="canonical" href="https://mlnf.net">
     <title>MLNF Headquarters</title>
+    <link rel="stylesheet" href="css/base-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
@@ -26,10 +27,10 @@
     </aside>
     <button class="show-users-btn" id="showUsersBtn" aria-label="Toggle active users sidebar"><i class="fas fa-users"></i></button>
 
-    <div class="modal" id="messageModal">
-        <div class="auth-modal" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Eternal Whisper to <span id="recipientName"></span></h3>
-            <div id="messageHistory" class="message-history"></div>
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message to <span id="messageRecipientName">User</span></h3>
+            <div class="message-history" id="messageHistory"></div>
             <div>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
@@ -366,115 +367,9 @@
                 publishButton.addEventListener('click', publishPost);
             }
             
-            /* Commenting out Lander-specific active users sidebar logic to prevent conflict with shared component
-            // Active users sidebar
-            const showUsersBtn = document.getElementById('showUsersBtn');
-            const closeUsersBtn = document.getElementById('closeUsersBtn');
-            const activeUsers = document.getElementById('activeUsers');
-            const refreshUsersBtn = document.getElementById('refreshUsersBtn');
+            // Message modal logic is now handled by front/components/shared/messageModal.js
+            // Old inline logic removed.
             
-            if (showUsersBtn && activeUsers) {
-                showUsersBtn.addEventListener('click', () => {
-                    activeUsers.classList.toggle('active');
-                });
-            }
-            
-            if (closeUsersBtn && activeUsers) {
-                closeUsersBtn.addEventListener('click', () => {
-                    activeUsers.classList.remove('active');
-                });
-            }
-            
-            if (refreshUsersBtn) {
-                refreshUsersBtn.addEventListener('click', () => {
-                    // Fetch online users from API
-                    const onlineUsersList = document.getElementById('onlineUsersList');
-                    if (onlineUsersList) {
-                        onlineUsersList.innerHTML = '<li>Loading users...</li>';
-                        
-                        // This would be replaced with an actual API call
-                        setTimeout(() => {
-                            onlineUsersList.innerHTML = `
-                                <li>
-                                    <img src="assets/images/default-avatar.png" alt="User Avatar">
-                                    <a href="#" class="message-user" data-username="EternalSeeker">EternalSeeker</a>
-                                    <span class="status">Online</span>
-                                </li>
-                                <li>
-                                    <img src="assets/images/default-avatar.png" alt="User Avatar">
-                                    <a href="#" class="message-user" data-username="LiberatedMind">LiberatedMind</a>
-                                    <span class="status">Online</span>
-                                </li>
-                                <li>
-                                    <img src="assets/images/default-avatar.png" alt="User Avatar">
-                                    <a href="#" class="message-user" data-username="TruthSeeker">TruthSeeker</a>
-                                    <span class="status">Away</span>
-                                </li>
-                            `;
-                            
-                            // Add event listeners for messaging
-                            document.querySelectorAll('.message-user').forEach(link => {
-                                link.addEventListener('click', (e) => {
-                                    e.preventDefault();
-                                    const username = e.target.dataset.username;
-                                    const messageModal = document.getElementById('messageModal');
-                                    const recipientName = document.getElementById('recipientName');
-                                    
-                                    if (messageModal && recipientName) {
-                                        recipientName.textContent = username;
-                                        messageModal.style.display = 'flex';
-                                    }
-                                });
-                            });
-                        }, 1000);
-                    }
-                });
-            }
-            */
-            
-            // Message modal
-            const closeMessageModal = document.getElementById('closeMessageModal');
-            const messageModal = document.getElementById('messageModal');
-            const sendMessageBtn = document.getElementById('sendMessageBtn');
-            
-            if (closeMessageModal && messageModal) {
-                closeMessageModal.addEventListener('click', () => {
-                    messageModal.style.display = 'none';
-                });
-            }
-            
-            if (sendMessageBtn) {
-                sendMessageBtn.addEventListener('click', () => {
-                    const messageInput = document.getElementById('messageInput');
-                    const messageHistory = document.getElementById('messageHistory');
-                    
-                    if (messageInput && messageHistory && messageInput.value.trim()) {
-                        // Add message to history
-                        const messageDiv = document.createElement('div');
-                        messageDiv.className = 'message sent';
-                        messageDiv.innerHTML = `
-                            <span class="message-text">${messageInput.value}</span>
-                            <span class="message-time">${new Date().toLocaleTimeString()}</span>
-                        `;
-                        messageHistory.appendChild(messageDiv);
-                        
-                        // Clear input
-                        messageInput.value = '';
-                        
-                        // Simulate response
-                        setTimeout(() => {
-                            const responseDiv = document.createElement('div');
-                            responseDiv.className = 'message received';
-                            responseDiv.innerHTML = `
-                                <span class="message-text">Your wisdom resonates across the eternal planes...</span>
-                                <span class="message-time">${new Date().toLocaleTimeString()}</span>
-                            `;
-                            messageHistory.appendChild(responseDiv);
-                            messageHistory.scrollTop = messageHistory.scrollHeight;
-                        }, 1500);
-                    }
-                });
-            }
         });
     </script>
 </body>

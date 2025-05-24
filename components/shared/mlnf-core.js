@@ -43,6 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.warn('MLNF Hero Particles component not loaded');
   }
+
+  // Initialize Message Modal
+  if (window.MLNF && window.MLNF.initMessageModal) {
+    window.MLNF.initMessageModal();
+    console.log('MLNF Message Modal initialized');
+  } else {
+    console.warn('MLNF Message Modal component not loaded');
+  }
   
   console.log('MLNF Core components initialized');
 });

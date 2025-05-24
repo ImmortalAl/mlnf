@@ -1,0 +1,12 @@
+# Vanity URLs for main sections
+/profile     /pages/profile/index.html   200
+/souls       /pages/souls/index.html     200
+
+# Vanity URL for individual soul profiles
+/souls/:username    /pages/souls/profile.html?username=:username   200
+
+# Redirect for old profile URL structure
+# (This will redirect /pages/souls/profile.html?username=foo to /souls/?username=foo)
+# The rule above for /souls/:username should then ideally pick it up if :username can be part of query string.
+# Or, the application logic in profile.html needs to handle username from query param.
+/pages/souls/profile.html   /souls/  301 
