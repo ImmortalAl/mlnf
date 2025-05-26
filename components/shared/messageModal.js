@@ -30,6 +30,18 @@ function openMessageModal(username) {
         return;
     }
     console.log(`[messageModal.js] Opening message modal for ${username}`);
+    
+    // Close active users sidebar if it's open to prevent overlay conflicts
+    const activeUsersSidebar = document.getElementById('activeUsers');
+    const activeUsersOverlay = document.getElementById('activeUsersOverlay');
+    if (activeUsersSidebar && activeUsersSidebar.classList.contains('active')) {
+        activeUsersSidebar.classList.remove('active');
+        if (activeUsersOverlay) {
+            activeUsersOverlay.classList.remove('active');
+        }
+        console.log('[messageModal.js] Closed active users sidebar to prevent overlay conflicts');
+    }
+    
     recipientNameElement.textContent = username;
     messageModal.style.display = 'flex'; // Or your preferred way to show it, e.g., add class
     if(messageInputElement) messageInputElement.focus();
