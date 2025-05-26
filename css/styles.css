@@ -31,7 +31,8 @@ body.light-theme {
     --success: #2e7d32;
     --warning: #ff8f00;
     --danger: #c62828;
-    background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.85)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80&duotone=FFFFFF,CCCCFF') center/cover fixed;
+    background: linear-gradient(180deg, #ffffff, rgba(240, 240, 245, 0.9)), 
+                url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
 }
 
 body.light-theme .feature-card,
