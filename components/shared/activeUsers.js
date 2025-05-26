@@ -63,10 +63,22 @@ async function populateActiveUsersList() {
         return;
     }
 
+    const token = localStorage.getItem('sessionToken');
+    if (!token) {
+        console.log('[activeUsers.js] No session token found. Skipping fetch for active users.');
+        userListDiv.innerHTML = '<p class="login-required">Please log in to see active souls.</p>';
+        return;
+    }
+
     userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
     try {
-        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/active`);
+        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/active`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch active users: ${response.status} ${response.statusText}`);
         }
