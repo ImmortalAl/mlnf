@@ -66,6 +66,9 @@ h3 {
     padding: 1.5rem;
     transition: var(--transition);
     border: 1px solid rgba(255, 94, 120, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .hub-card:hover {
@@ -89,6 +92,7 @@ h3 {
 .hub-card p {
     margin-bottom: 1.5rem;
     opacity: 0.9;
+    flex-grow: 1;
 }
 
 .hub-card-actions {
