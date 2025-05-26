@@ -634,4 +634,82 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     to { transform: scale(1) translateY(0); opacity: 1; }
 }
 /* @keyframes modalFadeIn is defined in styles.css and used by .soul-modal */
-/* @keyframes skeletonShimmer is defined above and used by .skeleton */ 
+/* @keyframes skeletonShimmer is defined above and used by .skeleton */
+
+/* Light Theme Mobile Navigation Styles */
+body.light-theme .mobile-nav-toggle {
+    color: var(--text, #1a1a33);
+}
+
+body.light-theme .mobile-nav {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.9));
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+body.light-theme .mobile-nav .sidebar-header {
+    color: var(--text, #1a1a33);
+}
+
+body.light-theme .mobile-nav .sidebar-header h2 {
+    color: var(--text, #1a1a33);
+}
+
+body.light-theme .mobile-nav .close-sidebar {
+    color: var(--text, #1a1a33);
+    background: rgba(214, 45, 77, 0.1);
+    border: 1px solid var(--accent, #d62d4d);
+}
+
+body.light-theme .mobile-nav .close-sidebar:hover {
+    background: var(--accent, #d62d4d);
+    color: var(--primary, #ffffff);
+}
+
+body.light-theme .mobile-nav-list a {
+    color: var(--text, #1a1a33);
+}
+
+body.light-theme .mobile-nav-list a:hover {
+    background: rgba(214, 45, 77, 0.1);
+}
+
+body.light-theme .mobile-nav-list a i {
+    color: var(--accent, #d62d4d);
+}
+
+body.light-theme .mobile-nav-list .divider {
+    background: rgba(214, 45, 77, 0.2);
+}
+
+/* Light Theme User Menu Styles */
+body.light-theme .user-menu-btn {
+    background: rgba(214, 45, 77, 0.1);
+    border-color: var(--accent, #d62d4d);
+    color: var(--text, #1a1a33);
+}
+
+body.light-theme .user-menu-btn:hover {
+    background: rgba(214, 45, 77, 0.2);
+}
+
+body.light-theme .user-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--accent, #d62d4d);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme .user-dropdown a {
+    color: var(--text, #1a1a33);
+}
+
+body.light-theme .user-dropdown a:hover {
+    background: rgba(214, 45, 77, 0.1);
+}
+
+body.light-theme .user-dropdown a i {
+    color: var(--accent, #d62d4d);
+}
+
+body.light-theme .user-dropdown .divider {
+    background: rgba(214, 45, 77, 0.2);
+} 
