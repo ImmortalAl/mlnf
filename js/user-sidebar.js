@@ -150,43 +150,38 @@ class UserSidebar {
         }
     }
 
-    static initialize(users = []) {
-        console.log('Attempting to initialize UserSidebar');
+    static initMessageModal(users = []) {
+        console.log('Attempting to initialize UserSidebar (initMessageModal)');
         
-        // Initialize immediately if elements exist
-        const activeUsers = document.querySelector('.active-users');
-        const showUsersBtn = document.querySelector('.show-users-btn');
-        
-        if (activeUsers && showUsersBtn) {
-            console.log('Elements found, initializing');
-            new UserSidebar(users);
+        const initLogic = () => {
+            console.log('Elements found, initializing UserSidebar instance and exposing openMessageModal');
+            const sidebarInstance = new UserSidebar(users);
+            window.MLNF = window.MLNF || {};
+            window.MLNF.openMessageModal = sidebarInstance.openMessageModal.bind(sidebarInstance);
+        };
+
+        // Check if elements are already available
+        const activeUsersEl = document.querySelector('.active-users');
+        const showUsersBtnEl = document.querySelector('.show-users-btn');
+
+        if (activeUsersEl && showUsersBtnEl) {
+            initLogic();
         } else {
-            console.log('Elements not found, waiting for them to be loaded');
-            
-            // Use MutationObserver to wait for elements
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach(mutation => {
-                    mutation.addedNodes.forEach(node => {
-                        if (node.nodeType === 1) {
-                            if (node.classList.contains('active-users') || 
-                                node.classList.contains('show-users-btn')) {
-                                console.log('Found required element:', node);
-                                observer.disconnect();
-                                new UserSidebar(users);
-                            }
-                        }
-                    });
-                });
+            console.log('UserSidebar elements not found immediately, waiting for them to be loaded');
+            const observer = new MutationObserver((mutations, obs) => {
+                const activeUsersNode = document.querySelector('.active-users');
+                const showUsersBtnNode = document.querySelector('.show-users-btn');
+                if (activeUsersNode && showUsersBtnNode) {
+                    console.log('UserSidebar elements found by MutationObserver');
+                    obs.disconnect();
+                    initLogic();
+                }
             });
-            
             observer.observe(document.body, { childList: true, subtree: true });
         }
     }
 }
 
-// Initialize the sidebar when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded event fired');
-    // Try to fetch real data first, fall back to mock data if needed
-    UserSidebar.initialize();
-});
+// Ensure MLNF namespace exists and attach initMessageModal
+window.MLNF = window.MLNF || {};
+window.MLNF.initMessageModal = UserSidebar.initMessageModal;
