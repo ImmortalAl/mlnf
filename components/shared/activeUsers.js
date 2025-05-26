@@ -56,47 +56,73 @@ function setupActiveUsersEvents() {
     populateActiveUsersList(); // Basic population
 }
 
-function populateActiveUsersList() {
+async function populateActiveUsersList() {
     const userListDiv = document.getElementById('userList');
     if (!userListDiv) {
         console.warn('[activeUsers.js] userList div not found.');
         return;
     }
 
-    // Mock data for now - replace with actual data fetching later
-    const users = [
-        { name: 'EternalSeeker', status: 'Online', avatar: window.MLNF_CONFIG?.DEFAULT_AVATAR || 'assets/images/default.jpg' },
-        { name: 'CosmicWanderer', status: 'Online', avatar: window.MLNF_CONFIG?.DEFAULT_AVATAR || 'assets/images/default.jpg' },
-        { name: 'LightBearer', status: 'Away', avatar: window.MLNF_CONFIG?.DEFAULT_AVATAR || 'assets/images/default.jpg' }
-    ];
+    userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
-    userListDiv.innerHTML = users.map(user => `
-        <div class="user-item">
-            <img src="${user.avatar}" alt="${user.name}">
-            <div class="user-info">
-                <h4>${user.name}</h4>
-                <span class="status ${user.status.toLowerCase()}">${user.status}</span>
-            </div>
-            <button class="message-btn" data-username="${user.name}" aria-label="Message ${user.name}">
-                <i class="fas fa-comment"></i>
-            </button>
-        </div>
-    `).join('');
+    try {
+        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/active`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch active users: ${response.status} ${response.statusText}`);
+        }
+        const fetchedUsers = await response.json();
 
-    // Add event listeners for new message buttons
-    userListDiv.querySelectorAll('.message-btn').forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            const username = event.currentTarget.dataset.username;
-            console.log(`[activeUsers.js] Message button clicked for ${username}`);
-            // Assuming a global function or event to open message modal
-            if (window.MLNF && window.MLNF.openMessageModal) {
-                window.MLNF.openMessageModal(username);
-            } else {
-                alert(`Messaging ${username} (modal function not found).`);
-            }
+        // Assuming fetchedUsers is an array of user objects.
+        // Example mapping, adjust based on actual API response structure:
+        // API might return: { username: 'xxx', avatarUrl: 'yyy', status: 'Online', isOnline: true }
+        // HTML template expects: { name: 'xxx', avatar: 'yyy', status: 'Online' }
+
+        if (fetchedUsers && fetchedUsers.length > 0) {
+            userListDiv.innerHTML = fetchedUsers.map(user => {
+                const displayName = user.username || user.name || 'Unnamed Soul';
+                const avatarUrl = user.avatarUrl || user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || 'assets/images/default.jpg');
+                let currentStatus = user.status || (user.isOnline ? 'Online' : 'Offline');
+                if (typeof currentStatus !== 'string') { // Ensure status is a string for .toLowerCase()
+                    currentStatus = user.isOnline ? 'Online' : 'Offline';
+                }
+
+                return `
+                <div class="user-item">
+                    <img src="${avatarUrl}" alt="${displayName}">
+                    <div class="user-info">
+                        <h4>${displayName}</h4>
+                        <span class="status ${currentStatus.toLowerCase()}">${currentStatus}</span>
+                    </div>
+                    <button class="message-btn" data-username="${displayName}" aria-label="Message ${displayName}">
+                        <i class="fas fa-comment"></i>
+                    </button>
+                </div>`;
+            }).join('');
+        } else {
+            userListDiv.innerHTML = '<p class="no-users">No souls currently manifest.</p>';
+        }
+
+        // Re-attach event listeners for new message buttons
+        userListDiv.querySelectorAll('.message-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                const username = event.currentTarget.dataset.username;
+                console.log(`[activeUsers.js] Message button clicked for ${username}`);
+                if (window.MLNF && window.MLNF.openMessageModal) {
+                    window.MLNF.openMessageModal(username);
+                } else {
+                    // This alert is the source of "message modal function not found"
+                    alert(`Messaging ${username} (modal function not found).`);
+                }
+            });
         });
-    });
-    console.log('[activeUsers.js] Mock user list populated.');
+        console.log('[activeUsers.js] User list populated with fetched data.');
+
+    } catch (error) {
+        console.error('[activeUsers.js] Error populating active users list:', error);
+        if (userListDiv) { // Check again as it might be null if error is early
+            userListDiv.innerHTML = '<p class="error-users">Could not summon souls. The aether is disturbed.</p>';
+        }
+    }
 }
 
 function updateActiveUsersButtonVisibility() {
