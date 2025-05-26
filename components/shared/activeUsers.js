@@ -73,7 +73,7 @@ async function populateActiveUsersList() {
     userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
     try {
-        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/active`, {
+        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/online`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
