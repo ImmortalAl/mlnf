@@ -353,46 +353,57 @@
             const heroSignupButton = document.getElementById('heroSignupButton');
             const heroLoginButton = document.getElementById('heroLoginButton');
             
-            // Add event listeners to hero buttons
-            if (heroSignupButton) {
-                heroSignupButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('register');
-                    }
-                });
-            }
-            
-            if (heroLoginButton) {
-                heroLoginButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('login');
-                    }
-                });
-            }
-            
-            // Active users sidebar toggle is handled by components/shared/activeUsers.js
-            // Message modal close is handled by components/shared/messageModal.js
-            
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
+            
             if (token) {
+                // User is logged in - update buttons to be proper links
                 try {
                     const userData = JSON.parse(localStorage.getItem('user'));
                     
-                    // Update hero buttons for logged-in users
                     if (heroSignupButton && heroLoginButton) {
                         heroSignupButton.textContent = 'View My Soul';
                         heroSignupButton.href = '/profile';
                         
                         heroLoginButton.textContent = 'Enter Eternal Hearth';
                         heroLoginButton.href = '/lander.html';
+                        
+                        // Remove any existing event listeners by cloning and replacing the elements
+                        const newSignupButton = heroSignupButton.cloneNode(true);
+                        const newLoginButton = heroLoginButton.cloneNode(true);
+                        heroSignupButton.parentNode.replaceChild(newSignupButton, heroSignupButton);
+                        heroLoginButton.parentNode.replaceChild(newLoginButton, heroLoginButton);
+                        
+                        console.log('[index.html] Hero buttons updated for logged-in user');
                     }
                 } catch (error) {
                     console.error('Error parsing user data:', error);
                 }
+            } else {
+                // User is not logged in - add modal event listeners
+                if (heroSignupButton) {
+                    heroSignupButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.MLNF && window.MLNF.openSoulModal) {
+                            window.MLNF.openSoulModal('register');
+                        }
+                    });
+                }
+                
+                if (heroLoginButton) {
+                    heroLoginButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.MLNF && window.MLNF.openSoulModal) {
+                            window.MLNF.openSoulModal('login');
+                        }
+                    });
+                }
+                
+                console.log('[index.html] Hero buttons configured for logged-out user');
             }
+            
+            // Active users sidebar toggle is handled by components/shared/activeUsers.js
+            // Message modal close is handled by components/shared/messageModal.js
         });
     </script>
     
