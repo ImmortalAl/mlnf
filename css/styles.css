@@ -636,6 +636,8 @@ body.light-theme .feature-card p {
     background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
     z-index: 1000; /* High z-index to appear on top */
     animation: modalFadeIn 0.3s ease-in; /* Fade-in animation */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
 }
 
 /* Styles for the content box of the Message Modal have been MOVED to components/shared/styles.css */

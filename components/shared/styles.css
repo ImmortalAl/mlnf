@@ -494,7 +494,7 @@
     padding: 2rem;
     border-radius: var(--border-radius);
     max-width: 500px; /* Or your preferred max-width */
-    margin: 10% auto; /* Centers the modal vertically, adjust as needed */
+    width: 90%; /* Responsive width */
     box-shadow: var(--shadow), 0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
     border: 2px solid var(--accent);
     position: relative; /* For pseudo-elements or inner positioning */
