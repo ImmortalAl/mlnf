@@ -816,18 +816,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (soulLoginForm && soulModal) { 
         soulLoginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            console.log('[Login Debug] Form submitted.');
             if (!modalFeedback) {
                 console.error('modalFeedback element not found for displaying messages.');
                 return;
             }
-            modalFeedback.textContent = ''; // Clear previous feedback
+            modalFeedback.textContent = '';
 
             const username = soulLoginForm.username.value.trim();
             const password = soulLoginForm.password.value;
-            const mode = soulModal.dataset.mode || 'login'; // 'login' or 'register'
+            const mode = soulModal.dataset.mode || 'login';
+            console.log(`[Login Debug] Mode: ${mode}, Username: ${username}`);
 
             if (!username || !password) {
                 modalFeedback.textContent = 'Soul Identifier and Ethereal Key are required.';
+                console.log('[Login Debug] Username or password missing.');
                 return;
             }
 
@@ -838,17 +841,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const confirmPassword = soulLoginForm.confirmPassword.value;
                 if (password !== confirmPassword) {
                     modalFeedback.textContent = 'Ethereal Keys do not align.';
+                    console.log('[Login Debug] Passwords do not match in register mode.');
                     return;
                 }
                 url = `${API_URL}/auth/register`;
             } else {
                 url = `${API_URL}/auth/login`;
             }
+            console.log(`[Login Debug] API URL: ${url}`);
 
             soulModalSubmit.disabled = true;
             soulModalSubmit.textContent = mode === 'register' ? 'Forging...' : 'Transcending...';
+            console.log('[Login Debug] Submit button disabled.');
 
             try {
+                console.log('[Login Debug] Attempting fetch...');
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -856,11 +863,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify(payload)
                 });
+                console.log('[Login Debug] Fetch response received:', response.status);
 
                 const data = await response.json();
+                console.log('[Login Debug] Response data:', data);
 
                 if (!response.ok) {
                     modalFeedback.textContent = data.message || `Error: ${response.status} - ${response.statusText}`;
+                    console.log('[Login Debug] Response not OK:', data.message || `Error: ${response.status} - ${response.statusText}`);
                     throw new Error(data.message || `HTTP error ${response.status}`);
                 }
 
@@ -868,6 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.token) {
                         localStorage.setItem('sessionToken', data.token);
                         modalFeedback.textContent = 'Sanctuary access granted. The gateway opens...';
+                        console.log('[Login Debug] Login successful, token stored.');
                         await updateAuthUI(true);
                         setTimeout(() => {
                             closeSoulModal();
@@ -878,9 +889,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         }, 1500); 
                     } else {
                         modalFeedback.textContent = 'Token not received. Entry denied.';
+                        console.log('[Login Debug] Token not received in login mode.');
                     }
                 } else { // Register
                     modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
+                    console.log('[Login Debug] Registration successful.');
                     // Optionally switch to login view or auto-login
                     setTimeout(() => {
                         setSoulModalView('login'); // Switch to login view
@@ -892,9 +905,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!modalFeedback.textContent) { // Avoid overwriting specific backend error
                     modalFeedback.textContent = 'An unexpected disturbance occurred. Try again.';
                 }
+                console.log('[Login Debug] Error caught:', error.message);
             } finally {
                 soulModalSubmit.disabled = false;
                 soulModalSubmit.textContent = mode === 'register' ? 'Begin Your Eternity' : 'Transcend';
+                console.log('[Login Debug] Submit button re-enabled in finally block.');
             }
         }); 
         console.log('[Reintegration] Soul Modal form submission listener ATTACHED.');

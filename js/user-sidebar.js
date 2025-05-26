@@ -60,6 +60,15 @@ class UserSidebar {
         if (this.closeUsersBtn) {
             this.closeUsersBtn.addEventListener('click', () => this.toggleSidebar());
         }
+
+        if (this.userList) {
+            this.userList.addEventListener('click', (event) => {
+                if (event.target.classList.contains('message-btn')) {
+                    const username = event.target.dataset.username;
+                    this.openMessageModal(username);
+                }
+            });
+        }
     }
 
     toggleSidebar() {
@@ -101,9 +110,44 @@ class UserSidebar {
                     <a href="profiles.html#${user.username}">${user.username}</a>
                     ${user.isOnline ? '<span class="online-dot"></span>' : ''}
                     <p class="status">${user.status || 'Eternal Seeker'}</p>
+                    <button class="message-btn" data-username="${user.username}">Message</button>
                 </div>
             </div>
         `).join('');
+    }
+
+    openMessageModal(username) {
+        const modal = document.getElementById('messageModal');
+        const modalUsername = document.getElementById('modalUsername');
+        const closeModal = document.getElementById('closeModal');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+
+        if (modal && modalUsername && closeModal && sendMessageBtn) {
+            modalUsername.textContent = `Send a message to ${username}`;
+            modal.style.display = 'block';
+
+            closeModal.onclick = () => {
+                modal.style.display = 'none';
+            }
+
+            sendMessageBtn.onclick = () => {
+                const messageText = document.getElementById('messageText').value;
+                // Add logic to send the message (e.g., via WebSocket or API call)
+                console.log(`Sending message to ${username}: ${messageText}`);
+                modal.style.display = 'none'; // Close modal after sending
+                document.getElementById('messageText').value = ''; // Clear textarea
+            }
+
+            // Close modal if user clicks outside of it
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        } else {
+            console.error('Message modal elements not found');
+            alert('Message modal functionality is not available.');
+        }
     }
 
     static initialize(users = []) {
