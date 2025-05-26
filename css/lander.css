@@ -275,4 +275,126 @@ footer {
 .ql-snow .ql-picker-options {
     background-color: var(--secondary) !important;
     border-color: rgba(255, 94, 120, 0.2) !important;
-} 
+}
+
+/* Light Theme Styles for Lander Page */
+body.light-theme {
+    background: linear-gradient(180deg, #ffffff, rgba(240, 240, 245, 0.9)), 
+                url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+}
+
+body.light-theme section {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.9));
+    border: 1px solid rgba(214, 45, 77, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme h2 {
+    background: linear-gradient(45deg, #d62d4d, #ff8f00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme h3 {
+    color: var(--light-text);
+}
+
+body.light-theme .hub-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(214, 45, 77, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .hub-card:hover {
+    box-shadow: 0 8px 32px rgba(214, 45, 77, 0.2);
+    border-color: var(--light-accent);
+}
+
+body.light-theme .hub-card-header i {
+    color: var(--light-accent);
+}
+
+body.light-theme .hub-card p {
+    color: var(--light-text);
+}
+
+body.light-theme .quick-post-container {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(214, 45, 77, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .activity-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-left: 4px solid var(--light-accent);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .activity-card h3 {
+    color: var(--light-accent);
+}
+
+body.light-theme .activity-card a {
+    color: var(--light-text);
+}
+
+body.light-theme .activity-card a:hover {
+    color: var(--light-accent);
+}
+
+body.light-theme .form-group input {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(214, 45, 77, 0.2);
+    color: var(--light-text);
+}
+
+body.light-theme select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(214, 45, 77, 0.2);
+    color: var(--light-text);
+}
+
+body.light-theme #editor {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(214, 45, 77, 0.2);
+}
+
+body.light-theme footer {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 245, 0.9));
+    border-top: 3px solid var(--light-accent);
+    color: var(--light-text);
+}
+
+/* Light theme Quill editor overrides */
+body.light-theme .ql-toolbar.ql-snow {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(214, 45, 77, 0.2) !important;
+}
+
+body.light-theme .ql-container.ql-snow {
+    border-color: rgba(214, 45, 77, 0.2) !important;
+}
+
+body.light-theme .ql-editor {
+    color: var(--light-text) !important;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.light-theme .ql-snow .ql-stroke {
+    stroke: var(--light-text) !important;
+}
+
+body.light-theme .ql-snow .ql-fill {
+    fill: var(--light-text) !important;
+}
+
+body.light-theme .ql-snow .ql-picker {
+    color: var(--light-text) !important;
+}
+
+body.light-theme .ql-snow .ql-picker-options {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(214, 45, 77, 0.2) !important;
+    color: var(--light-text) !important;
+}
