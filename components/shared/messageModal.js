@@ -46,6 +46,11 @@ function openMessageModal(username) {
     messageModal.style.display = 'flex'; // Or your preferred way to show it, e.g., add class
     if(messageInputElement) messageInputElement.focus();
     document.body.style.overflow = 'hidden'; // Prevent background scroll
+    
+    // Add click outside to close functionality
+    setTimeout(() => {
+        messageModal.addEventListener('click', handleModalBackgroundClick);
+    }, 100); // Small delay to prevent immediate closing if opened by click
 }
 
 function closeMessageModal() {
@@ -55,6 +60,9 @@ function closeMessageModal() {
     document.body.style.overflow = ''; // Restore background scroll
     if (messageInputElement) messageInputElement.value = '';
     // Optionally clear messageHistoryElement.innerHTML = '';
+    
+    // Remove click outside event listener to prevent memory leaks
+    messageModal.removeEventListener('click', handleModalBackgroundClick);
 }
 
 function handleSendMessage() {
@@ -92,6 +100,14 @@ function handleSendMessage() {
         messageHistoryElement.appendChild(responseDiv);
         messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
     }, 1500);
+}
+
+function handleModalBackgroundClick(event) {
+    // Only close if clicking on the modal background (not the modal content)
+    if (event.target === messageModal) {
+        console.log('[messageModal.js] Clicked outside modal content, closing modal.');
+        closeMessageModal();
+    }
 }
 
 function escapeHTML(str) {
