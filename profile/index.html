@@ -38,7 +38,7 @@
 
         body {
             background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                        url('/assets/images/bg.jpg') center/cover fixed;
+                        url('../assets/images/bg.jpg') center/cover fixed;
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
@@ -835,14 +835,14 @@
             privacyModal.style.display = 'none';
         });
         
-        // API constants from config
-        const API_BASE_URL = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
-        const DEFAULT_AVATAR = window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png';
+        // API constants from config are available via window.MLNF_CONFIG
+        // const API_BASE_URL = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
+        // const DEFAULT_AVATAR = window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png';
         
         // Debug logging
         console.log('Profile page loaded');
-        console.log('API_BASE_URL:', API_BASE_URL);
-        console.log('DEFAULT_AVATAR:', DEFAULT_AVATAR);
+        console.log('API_BASE_URL:', window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : 'NOT FOUND');
+        console.log('DEFAULT_AVATAR:', window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : 'NOT FOUND');
         console.log('MLNF_CONFIG:', window.MLNF_CONFIG);
         
         // Function to check if user is authenticated
@@ -899,7 +899,7 @@
                 document.getElementById('errorMessage').style.display = 'none';
                 
                 // Check if API configuration is available
-                if (!API_BASE_URL) {
+                if (!(window.MLNF_CONFIG && window.MLNF_CONFIG.API_BASE_URL)) {
                     console.error('API configuration is missing');
                     displayError('Configuration error. Please refresh the page.');
                     return;
@@ -926,7 +926,7 @@
                 if (!userData) {
                     try {
                         console.log('Fetching user data from API...');
-                        const apiUrl = `${API_BASE_URL}/users/me`;
+                        const apiUrl = `${window.MLNF_CONFIG.API_BASE_URL}/users/me`;
                         console.log('API URL:', apiUrl);
                         
                         const response = await fetch(apiUrl, {
@@ -974,9 +974,9 @@
                     console.log('Displaying user data:', userData);
                     // Set avatar
                     const avatarElement = document.getElementById('profileAvatar');
-                    avatarElement.src = userData.avatar || DEFAULT_AVATAR;
+                    avatarElement.src = userData.avatar || (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png');
                     avatarElement.onerror = () => {
-                        avatarElement.src = DEFAULT_AVATAR;
+                        avatarElement.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png');
                     };
                     
                     // Set display name and username
@@ -1015,7 +1015,7 @@
                     document.getElementById('profileUsername').textContent = '@anonymous';
                     document.getElementById('profileStatus').textContent = 'Exploring the eternal realm...';
                     document.getElementById('profileBio').textContent = 'This soul is just beginning their journey.';
-                    document.getElementById('profileAvatar').src = DEFAULT_AVATAR;
+                    document.getElementById('profileAvatar').src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png');
                     document.getElementById('joinedDate').textContent = 'Recently joined';
                     
                     // Load privacy settings
