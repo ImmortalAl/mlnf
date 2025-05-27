@@ -794,16 +794,16 @@
         const savePrivacySettings = document.getElementById('savePrivacySettings');
         
         privacySettingsBtn.addEventListener('click', () => {
-            privacyModal.style.display = 'flex';
+            privacyModal.classList.add('active');
         });
         
         closeModal.addEventListener('click', () => {
-            privacyModal.style.display = 'none';
+            privacyModal.classList.remove('active');
         });
         
         window.addEventListener('click', (event) => {
             if (event.target === privacyModal) {
-                privacyModal.style.display = 'none';
+                privacyModal.classList.remove('active');
             }
         });
         
@@ -842,7 +842,7 @@
             localStorage.setItem('mlnf_privacy_settings', JSON.stringify(privacySettings));
             
             // Close modal
-            privacyModal.style.display = 'none';
+            privacyModal.classList.remove('active');
         });
         
         // API constants from config are available via window.MLNF_CONFIG

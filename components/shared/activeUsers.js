@@ -27,16 +27,22 @@ function setupActiveUsersEvents() {
 
     if (showUsersBtn && activeUsersSidebar && activeUsersOverlay) {
         showUsersBtn.addEventListener('click', () => {
-            console.log('[activeUsers.js] showUsersBtn clicked.');
+            console.log('[activeUsers.js] showUsersBtn clicked. Attempting to activate sidebar and overlay.');
+            console.log('[activeUsers.js] Sidebar element before add class:', activeUsersSidebar);
             activeUsersSidebar.classList.add('active');
             activeUsersOverlay.classList.add('active');
+            console.log('[activeUsers.js] Sidebar classList after add:', activeUsersSidebar.classList);
+            console.log('[activeUsers.js] Overlay classList after add:', activeUsersOverlay.classList);
             document.body.style.overflow = 'hidden';
         });
 
         const closeActiveSidebar = () => {
-            console.log('[activeUsers.js] closeActiveSidebar called.');
+            console.log('[activeUsers.js] closeActiveSidebar called. Attempting to deactivate.');
+            console.log('[activeUsers.js] Sidebar element before remove class:', activeUsersSidebar);
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
+            console.log('[activeUsers.js] Sidebar classList after remove:', activeUsersSidebar.classList);
+            console.log('[activeUsers.js] Overlay classList after remove:', activeUsersOverlay.classList);
             document.body.style.overflow = '';
         };
 
