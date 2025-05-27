@@ -836,8 +836,14 @@
         });
         
         // API constants from config
-        const API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
-        const DEFAULT_AVATAR = window.MLNF_CONFIG.DEFAULT_AVATAR;
+        const API_BASE_URL = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
+        const DEFAULT_AVATAR = window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png';
+        
+        // Debug logging
+        console.log('Profile page loaded');
+        console.log('API_BASE_URL:', API_BASE_URL);
+        console.log('DEFAULT_AVATAR:', DEFAULT_AVATAR);
+        console.log('MLNF_CONFIG:', window.MLNF_CONFIG);
         
         // Function to check if user is authenticated
         function checkAuthentication() {
@@ -873,7 +879,13 @@
             
             if (isRedirect) {
                 setTimeout(() => {
-                    window.location.href = '/pages/auth.html?mode=login&redirect=/profile/';
+                    // Use auth modal instead of non-existent auth.html page
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('login');
+                    } else {
+                        // Fallback to lander page if auth modal not available
+                        window.location.href = '../lander.html';
+                    }
                 }, 3000);
             }
         }
@@ -885,6 +897,13 @@
                 document.getElementById('loading').style.display = 'flex';
                 document.getElementById('profileCard').style.display = 'none';
                 document.getElementById('errorMessage').style.display = 'none';
+                
+                // Check if API configuration is available
+                if (!API_BASE_URL) {
+                    console.error('API configuration is missing');
+                    displayError('Configuration error. Please refresh the page.');
+                    return;
+                }
                 
                 // Check authentication
                 const token = checkAuthentication();
@@ -906,7 +925,11 @@
                 // If no cached data, fetch from API
                 if (!userData) {
                     try {
-                        const response = await fetch(`${API_BASE_URL}/users/me`, {
+                        console.log('Fetching user data from API...');
+                        const apiUrl = `${API_BASE_URL}/users/me`;
+                        console.log('API URL:', apiUrl);
+                        
+                        const response = await fetch(apiUrl, {
                             method: 'GET',
                             headers: {
                                 'Authorization': `Bearer ${token}`,
@@ -914,24 +937,41 @@
                             }
                         });
                         
+                        console.log('API Response status:', response.status);
+                        console.log('API Response ok:', response.ok);
+                        
                         if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
+                            const errorText = await response.text();
+                            console.error('API Error response:', errorText);
+                            throw new Error(`HTTP error! Status: ${response.status} - ${errorText}`);
                         }
                         
                         const data = await response.json();
+                        console.log('API Response data:', data);
                         userData = data;
                         
                         // Cache the user data
                         localStorage.setItem('user', JSON.stringify(userData));
                     } catch (error) {
                         console.error('Error fetching user data:', error);
-                        displayError('Failed to load your profile. Please try again later.');
+                        
+                        // More specific error messages
+                        if (error.message.includes('Failed to fetch')) {
+                            displayError('Unable to connect to the server. Please check your internet connection and try again.');
+                        } else if (error.message.includes('401')) {
+                            displayError('Your session has expired. Please log in again.', true);
+                        } else if (error.message.includes('404')) {
+                            displayError('Profile not found. Please contact support if this persists.');
+                        } else {
+                            displayError(`Failed to load your profile: ${error.message}`);
+                        }
                         return;
                     }
                 }
                 
-                // Display the user data
+                // Display the user data (use cached data, API data, or fallback)
                 if (userData) {
+                    console.log('Displaying user data:', userData);
                     // Set avatar
                     const avatarElement = document.getElementById('profileAvatar');
                     avatarElement.src = userData.avatar || DEFAULT_AVATAR;
@@ -969,7 +1009,21 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('profileCard').style.display = 'block';
                 } else {
-                    displayError('Failed to load profile data. Please try again later.');
+                    console.log('No user data available, showing fallback profile');
+                    // Show a basic profile with fallback data
+                    document.getElementById('profileDisplayName').textContent = 'Soul Seeker';
+                    document.getElementById('profileUsername').textContent = '@anonymous';
+                    document.getElementById('profileStatus').textContent = 'Exploring the eternal realm...';
+                    document.getElementById('profileBio').textContent = 'This soul is just beginning their journey.';
+                    document.getElementById('profileAvatar').src = DEFAULT_AVATAR;
+                    document.getElementById('joinedDate').textContent = 'Recently joined';
+                    
+                    // Load privacy settings
+                    loadPrivacySettings();
+                    
+                    // Hide loading, show profile
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('profileCard').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Unexpected error loading profile:', error);
