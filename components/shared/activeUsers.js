@@ -94,9 +94,19 @@ function setupActiveUsersEvents() {
             
             console.log('[activeUsers.js] closeActiveSidebar: Attempted to remove "active" classes.'); // Changed log message slightly
             console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after remove:', activeUsersSidebar ? activeUsersSidebar.className : 'Sidebar N/A');
-            console.log('[activeUsers.js] closeActiveSidebar: Overlay classes after remove:', activeUsersOverlay ? activeUsersOverlay.className : 'Overlay N/A');
-            console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right after class removal:', activeUsersSidebar.style.right);
-
+            
+            try {
+                console.log('[activeUsers.js] closeActiveSidebar: About to log overlay classes...');
+                console.log('[activeUsers.js] closeActiveSidebar: Overlay classes after remove:', activeUsersOverlay ? activeUsersOverlay.className : 'Overlay N/A');
+                console.log('[activeUsers.js] closeActiveSidebar: About to log sidebar style.right...');
+                console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right after class removal:', activeUsersSidebar.style.right);
+                console.log('[activeUsers.js] closeActiveSidebar: Successfully logged all post-removal info.');
+            } catch (error) {
+                console.error('[activeUsers.js] closeActiveSidebar: ERROR in post-removal logging:', error);
+                console.error('[activeUsers.js] closeActiveSidebar: activeUsersOverlay type:', typeof activeUsersOverlay);
+                console.error('[activeUsers.js] closeActiveSidebar: activeUsersSidebar type:', typeof activeUsersSidebar);
+                return; // Exit early if there's an error
+            }
 
             // Now that 'active' (and its !important rules) are gone,
             // set the target styles to trigger transitions.
