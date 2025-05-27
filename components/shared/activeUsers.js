@@ -75,21 +75,23 @@ function setupActiveUsersEvents() {
             console.log('[activeUsers.js] Sidebar element before remove class:', activeUsersSidebar);
             console.log('[activeUsers.js] Overlay element before remove class:', activeUsersOverlay);
             
+            // Force sidebar to close by setting inline style first, then remove class
+            activeUsersSidebar.style.right = '-320px';
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
-            // Clear any inline styles that might override CSS transitions
-            activeUsersSidebar.style.right = '';
             activeUsersOverlay.style.opacity = '';
             
             console.log('[activeUsers.js] Sidebar classList after remove:', activeUsersSidebar.classList);
             console.log('[activeUsers.js] Overlay classList after remove:', activeUsersOverlay.classList);
-            console.log('[activeUsers.js] Cleared inline right style');
+            console.log('[activeUsers.js] Forced sidebar right to -320px');
             document.body.style.overflow = '';
             
-            // Reset the flag after a short delay
+            // After transition, clear the inline style to let CSS take over
             setTimeout(() => {
+                activeUsersSidebar.style.right = '';
+                console.log('[activeUsers.js] Cleared inline right style after transition');
                 isClosing = false;
-            }, 500);
+            }, 350);
         };
 
         if (closeUsersBtn) {
