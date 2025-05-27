@@ -384,10 +384,6 @@
                     status: status || 'No status',
                     bio: bio || 'No bio'
                 });
-                
-                console.log('[profile-setup] Bio field value before save:', bio);
-                console.log('[profile-setup] Bio field element value:', elements.bio.value);
-                console.log('[profile-setup] Bio field length:', bio.length);
 
                 try {
                     // Get API URL from config
@@ -437,48 +433,19 @@
                         }
                         
                         elements.message.className = 'success-message';
-                        elements.message.textContent = '✅ Profile saved successfully! Redirecting in 10 seconds...';
+                        elements.message.textContent = '✅ Profile saved successfully!';
                         
                         // Store the updated user data in localStorage
                         if (data) {
                             localStorage.setItem('user', JSON.stringify(data));
                             console.log('[profile-setup] Saved user to localStorage:', data);
                             console.log('[profile-setup] Bio in response:', data.bio);
-                            console.log('[profile-setup] Full user data stored:', JSON.stringify(data, null, 2));
                         }
                         
-                        // Add countdown timer for debugging
-                        let countdown = 10;
-                        let redirectCancelled = false;
-                        
-                        // Add cancel redirect button
-                        const cancelButton = document.createElement('button');
-                        cancelButton.textContent = 'Cancel Redirect (Debug)';
-                        cancelButton.style.marginLeft = '10px';
-                        cancelButton.onclick = () => {
-                            redirectCancelled = true;
-                            clearInterval(countdownInterval);
-                            elements.message.textContent = '✅ Profile saved successfully! Redirect cancelled for debugging.';
-                            console.log('[profile-setup] Redirect cancelled by user for debugging');
-                        };
-                        elements.message.parentNode.appendChild(cancelButton);
-                        
-                        const countdownInterval = setInterval(() => {
-                            if (redirectCancelled) {
-                                clearInterval(countdownInterval);
-                                return;
-                            }
-                            
-                            countdown--;
-                            elements.message.textContent = `✅ Profile saved successfully! Redirecting in ${countdown} seconds...`;
-                            console.log(`[profile-setup] Redirecting in ${countdown} seconds. Current localStorage user:`, JSON.parse(localStorage.getItem('user') || '{}'));
-                            
-                            if (countdown <= 0) {
-                                clearInterval(countdownInterval);
-                                console.log('[profile-setup] Redirecting to lander.html now');
-                                window.location.href = '../lander.html';
-                            }
-                        }, 1000);
+                        // Redirect after a short delay
+                        setTimeout(() => {
+                            window.location.href = '../lander.html';
+                        }, 1500);
                     } catch (error) {
                         console.error('Error saving profile:', {
                             name: error.name,
