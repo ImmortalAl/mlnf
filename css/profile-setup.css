@@ -11,8 +11,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
         .container {
             background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
@@ -24,7 +22,8 @@
             border: 2px solid var(--accent);
             position: relative;
             overflow: hidden;
-            animation: modalFadeIn 0.5s ease-out;
+            margin: 2rem auto;
+            flex: 1;
         }
         .container::before {
             content: '';
@@ -130,7 +129,7 @@
             color: var(--accent);
         }
         .btn:hover {
-            transform: translateY(-2px) scale(1.05) rotate(2deg);
+            transform: translateY(-2px) scale(1.05);
             box-shadow: 0 0 20px rgba(255, 94, 120, 0.7);
         }
         .form-actions {
@@ -139,10 +138,33 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+        
+        /* Ensure proper z-index for overlays */
+        .user-dropdown {
+            z-index: 2100 !important;
         }
+        
+        .active-users {
+            z-index: 2000 !important;
+        }
+        
+        .mobile-nav {
+            z-index: 2200 !important;
+        }
+        
+        .mobile-overlay {
+            z-index: 2199 !important;
+        }
+        
+        /* Message Modal z-index */
+        #messageModal {
+            z-index: 2300 !important;
+        }
+        
+        .modal {
+            z-index: 2300 !important;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
