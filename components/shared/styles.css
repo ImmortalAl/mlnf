@@ -179,6 +179,33 @@
     pointer-events: auto;
 }
 
+/* Generic Modal Styles (for #messageModal, #privacyModal, etc.) */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none; /* Hidden by default using display: none */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000; /* Default z-index, can be overridden by more specific modals */
+    opacity: 0;
+    /* visibility: hidden; -- Handled by display:none now */
+    transition: opacity 0.3s ease; /* Only transition opacity */
+    backdrop-filter: blur(5px);
+}
+
+.modal.active {
+    display: flex; /* Shown with display: flex */
+    opacity: 1;
+    /* visibility: visible; -- Handled by display:flex now */
+}
+
+/* Styles for the content box within a generic modal */
+/* Individual modals should style their own .modal-content or similar inner div */
+
 /* Soul Modal Styles */
 .soul-modal {
     position: fixed;

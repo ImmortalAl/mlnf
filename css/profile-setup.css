@@ -79,6 +79,7 @@
 
         .main-nav ul {
             display: flex;
+            flex-wrap: nowrap;
             gap: 1.8rem;
             list-style: none;
             margin: 0;
@@ -86,7 +87,8 @@
         }
 
         .main-nav li {
-            display: inline-block;
+            display: flex;
+            align-items: center;
         }
 
         .main-nav a {

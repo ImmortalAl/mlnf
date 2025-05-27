@@ -73,7 +73,7 @@ async function populateActiveUsersList() {
     userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
     try {
-        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/users/online`, {
+        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/online`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ async function populateActiveUsersList() {
         if (fetchedUsers && fetchedUsers.length > 0) {
             userListDiv.innerHTML = fetchedUsers.map(user => {
                 const displayName = user.username || user.name || 'Unnamed Soul';
-                const avatarUrl = user.avatarUrl || user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || 'assets/images/default.jpg');
+                const avatarUrl = user.avatarUrl || user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '../assets/images/default-avatar.png');
                 let currentStatus = user.status || (user.isOnline ? 'Online' : 'Offline');
                 if (typeof currentStatus !== 'string') { // Ensure status is a string for .toLowerCase()
                     currentStatus = user.isOnline ? 'Online' : 'Offline';
@@ -122,8 +122,7 @@ async function populateActiveUsersList() {
                 if (window.MLNF && window.MLNF.openMessageModal) {
                     window.MLNF.openMessageModal(username);
                 } else {
-                    // This alert is the source of "message modal function not found"
-                    alert(`Messaging ${username} (modal function not found).`);
+                    console.error(`[activeUsers.js] MLNF.openMessageModal function not found for user ${username}.`);
                 }
             });
         });
