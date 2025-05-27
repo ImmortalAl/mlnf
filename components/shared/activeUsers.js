@@ -128,11 +128,11 @@ function setupActiveUsersEvents() {
 
             // Now that 'active' (and its !important rules) are gone,
             // set the target styles to trigger transitions.
-            activeUsersSidebar.style.right = '-320px';
+            activeUsersSidebar.classList.add('force-close'); // Use CSS class instead of inline style
             activeUsersOverlay.style.opacity = '0'; // Ensure overlay fades out
             
-            console.log('[activeUsers.js] closeActiveSidebar: Set inline sidebar right to -320px and overlay opacity to 0.');
-            console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right is now:', activeUsersSidebar.style.right);
+            console.log('[activeUsers.js] closeActiveSidebar: Added force-close class and set overlay opacity to 0.');
+            console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes now:', activeUsersSidebar.className);
 
             // Force reflow to ensure styles are applied before getComputedStyle and transition
             if (activeUsersSidebar) { 
@@ -143,7 +143,7 @@ function setupActiveUsersEvents() {
             // Log computed styles immediately after setting them
             let computedSidebarRight = getComputedStyle(activeUsersSidebar).right;
             let computedOverlayOpacity = getComputedStyle(activeUsersOverlay).opacity;
-            console.log('[activeUsers.js] closeActiveSidebar: Computed sidebar right after inline set:', computedSidebarRight);
+            console.log('[activeUsers.js] closeActiveSidebar: Computed sidebar right after force-close class:', computedSidebarRight);
             console.log('[activeUsers.js] closeActiveSidebar: Computed overlay opacity after inline set:', computedOverlayOpacity);
 
             document.body.style.overflow = '';
@@ -151,10 +151,10 @@ function setupActiveUsersEvents() {
             console.log('[activeUsers.js] closeActiveSidebar: Setting 350ms timeout for style cleanup.');
             setTimeout(() => {
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): Started.');
-                activeUsersSidebar.style.right = ''; // Let CSS class .active-users take over fully for position
+                activeUsersSidebar.classList.remove('force-close'); // Remove the force-close class
                 activeUsersOverlay.style.opacity = ''; // Let CSS class .active-users-overlay take over for opacity
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): Cleared inline styles (sidebar right, overlay opacity).');
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar style.right after clearing:', activeUsersSidebar.style.right);
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Removed force-close class and cleared overlay opacity.');
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar classes after cleanup:', activeUsersSidebar.className);
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): Overlay style.opacity after clearing:', activeUsersOverlay.style.opacity);
                 isClosing = false;
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): isClosing set to false. Finished.');
