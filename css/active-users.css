@@ -16,8 +16,23 @@
     overflow-y: auto;
 }
 
+/* ---------------------------------------------------------
+   Sidebar Activation Override
+   ---------------------------------------------------------
+   On some pages (e.g. profile/index.html) local CSS may have
+   broader selectors that unintentionally override the
+   .active-users.active rule coming from this file.  When that
+   happens the sidebar's computed "right" value stays at the
+   default -320px, so it remains off-screen even though the
+   JavaScript added the .active class successfully.
+
+   We fix that generically here by re-declaring the rule with
+   !important and a short explanation so future devs know why
+   the extra specificity is required.  This guarantees the
+   sidebar slides in whenever it has the .active class.
+--------------------------------------------------------- */
 .active-users.active {
-    right: 0;
+    right: 0 !important; /* Force visible – wins against page-specific overrides */
 }
 
 .active-users-header {

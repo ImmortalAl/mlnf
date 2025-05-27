@@ -794,16 +794,21 @@
         const savePrivacySettings = document.getElementById('savePrivacySettings');
         
         privacySettingsBtn.addEventListener('click', () => {
+            // Remove any inline display:none so CSS can control visibility
+            privacyModal.style.display = '';
             privacyModal.classList.add('active');
         });
         
         closeModal.addEventListener('click', () => {
             privacyModal.classList.remove('active');
+            // Ensure it is hidden after animation by re-applying display:none
+            privacyModal.style.display = 'none';
         });
         
         window.addEventListener('click', (event) => {
             if (event.target === privacyModal) {
                 privacyModal.classList.remove('active');
+                privacyModal.style.display = 'none';
             }
         });
         
