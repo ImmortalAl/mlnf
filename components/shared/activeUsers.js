@@ -105,6 +105,12 @@ function setupActiveUsersEvents() {
             
             console.log('[activeUsers.js] closeActiveSidebar: Set inline sidebar right to -320px and overlay opacity to 0.');
             console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right is now:', activeUsersSidebar.style.right);
+
+            // Force reflow to ensure styles are applied before getComputedStyle and transition
+            if (activeUsersSidebar) { 
+                const_ = activeUsersSidebar.offsetHeight; // Reading offsetHeight can trigger reflow
+                console.log('[activeUsers.js] closeActiveSidebar: Forced reflow via offsetHeight.');
+            }
             
             // Log computed styles immediately after setting them
             let computedSidebarRight = getComputedStyle(activeUsersSidebar).right;
