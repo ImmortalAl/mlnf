@@ -865,6 +865,14 @@ body.light-theme {
     z-index: 300;
 }
 
+.floating-buttons .show-users-btn {
+    order: 1; /* Ensure sidebar button is first */
+}
+
+.floating-buttons .theme-toggle {
+    order: 2; /* Ensure theme toggle button is second */
+}
+
 .top-button {
     width: 50px;
     height: 50px;
