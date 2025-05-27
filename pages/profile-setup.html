@@ -438,6 +438,8 @@
                         // Store the updated user data in localStorage
                         if (data) {
                             localStorage.setItem('user', JSON.stringify(data));
+                            console.log('[profile-setup] Saved user to localStorage:', data);
+                            console.log('[profile-setup] Bio in response:', data.bio);
                         }
                         
                         // Redirect after a short delay

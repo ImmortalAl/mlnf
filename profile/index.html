@@ -1013,6 +1013,7 @@
                     // Set status and bio
                     document.getElementById('profileStatus').textContent = userData.status || 'Exploring the eternal realm...';
                     document.getElementById('profileBio').textContent = userData.bio || 'This soul has not shared their story yet.';
+                    console.log('[profile] Displaying bio:', userData.bio);
                     
                     // Set user stats (using placeholder data for now)
                     document.getElementById('postsCount').textContent = userData.stats?.posts || '0';

@@ -46,7 +46,8 @@ function setupActiveUsersEvents() {
             document.body.style.overflow = 'hidden';
         });
 
-        const closeActiveSidebar = () => {
+        // Fix: Always close sidebar on overlay or X click
+        const closeActiveSidebar = (event) => {
             console.log('[activeUsers.js] closeActiveSidebar called. Attempting to deactivate.');
             console.log('[activeUsers.js] Sidebar element before remove class:', activeUsersSidebar);
             activeUsersSidebar.classList.remove('active');
@@ -57,12 +58,11 @@ function setupActiveUsersEvents() {
         };
 
         if (closeUsersBtn) {
-            closeUsersBtn.addEventListener('click', closeActiveSidebar);
+            closeUsersBtn.onclick = closeActiveSidebar;
         } else {
             console.warn('[activeUsers.js] Close button (#closeUsers) not found inside sidebar.');
         }
-        
-        activeUsersOverlay.addEventListener('click', closeActiveSidebar);
+        activeUsersOverlay.onclick = closeActiveSidebar;
 
     } else {
         console.warn('[activeUsers.js] Could not find one or more required elements for active users sidebar. Events not fully attached.');
