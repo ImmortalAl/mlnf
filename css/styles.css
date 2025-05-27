@@ -866,15 +866,15 @@ body.light-theme {
 }
 
 .floating-buttons .show-users-btn {
-    order: 1 !important; /* Ensure sidebar button is first */
-    background: #ffdddd !important; /* Debug: light red */
-    border: 2px solid #ff0000 !important;
+    /* order: 1 !important; Ensure sidebar button is first */
+    /* background: #ffdddd !important; Debug: light red */
+    /* border: 2px solid #ff0000 !important; */
 }
 
 .floating-buttons .theme-toggle {
-    order: 2 !important; /* Ensure theme toggle button is second */
-    background: #ddddff !important; /* Debug: light blue */
-    border: 2px solid #0000ff !important;
+    /* order: 2 !important; Ensure theme toggle button is second */
+    /* background: #ddddff !important; Debug: light blue */
+    /* border: 2px solid #0000ff !important; */
 }
 
 .top-button {
