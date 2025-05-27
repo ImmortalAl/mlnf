@@ -65,33 +65,53 @@ function setupActiveUsersEvents() {
         let isClosing = false; // Prevent multiple rapid calls
         const closeActiveSidebar = (event) => {
             if (isClosing) {
-                console.log('[activeUsers.js] Already closing, ignoring duplicate call');
+                console.log('[activeUsers.js] closeActiveSidebar: Already closing, ignoring duplicate call. Event target:', event?.target);
                 return;
             }
             isClosing = true;
             
-            console.log('[activeUsers.js] closeActiveSidebar called. Event target:', event?.target);
-            console.log('[activeUsers.js] closeActiveSidebar called. Attempting to deactivate.');
-            console.log('[activeUsers.js] Sidebar element before remove class:', activeUsersSidebar);
-            console.log('[activeUsers.js] Overlay element before remove class:', activeUsersOverlay);
-            
-            // Force sidebar to close by setting inline style first, then remove class
-            activeUsersSidebar.style.right = '-320px';
+            console.log('[activeUsers.js] closeActiveSidebar: Starting. Event target:', event?.target);
+            console.log('[activeUsers.js] closeActiveSidebar: Initial sidebar style.right:', activeUsersSidebar.style.right);
+            console.log('[activeUsers.js] closeActiveSidebar: Initial sidebar classes:', activeUsersSidebar.className);
+            console.log('[activeUsers.js] closeActiveSidebar: Initial overlay classes:', activeUsersOverlay.className);
+
+            // Remove 'active' class first to remove !important overrides
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
-            activeUsersOverlay.style.opacity = '';
             
-            console.log('[activeUsers.js] Sidebar classList after remove:', activeUsersSidebar.classList);
-            console.log('[activeUsers.js] Overlay classList after remove:', activeUsersOverlay.classList);
-            console.log('[activeUsers.js] Forced sidebar right to -320px');
+            console.log('[activeUsers.js] closeActiveSidebar: Removed "active" classes.');
+            console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after remove:', activeUsersSidebar.className);
+            console.log('[activeUsers.js] closeActiveSidebar: Overlay classes after remove:', activeUsersOverlay.className);
+            console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right after class removal:', activeUsersSidebar.style.right);
+
+
+            // Now that 'active' (and its !important rules) are gone,
+            // set the target styles to trigger transitions.
+            activeUsersSidebar.style.right = '-320px';
+            activeUsersOverlay.style.opacity = '0'; // Ensure overlay fades out
+            
+            console.log('[activeUsers.js] closeActiveSidebar: Set inline sidebar right to -320px and overlay opacity to 0.');
+            console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right is now:', activeUsersSidebar.style.right);
+            
+            // Log computed styles immediately after setting them
+            let computedSidebarRight = getComputedStyle(activeUsersSidebar).right;
+            let computedOverlayOpacity = getComputedStyle(activeUsersOverlay).opacity;
+            console.log('[activeUsers.js] closeActiveSidebar: Computed sidebar right after inline set:', computedSidebarRight);
+            console.log('[activeUsers.js] closeActiveSidebar: Computed overlay opacity after inline set:', computedOverlayOpacity);
+
             document.body.style.overflow = '';
             
-            // After transition, clear the inline style to let CSS take over
+            console.log('[activeUsers.js] closeActiveSidebar: Setting 350ms timeout for style cleanup.');
             setTimeout(() => {
-                activeUsersSidebar.style.right = '';
-                console.log('[activeUsers.js] Cleared inline right style after transition');
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Started.');
+                activeUsersSidebar.style.right = ''; // Let CSS class .active-users take over fully for position
+                activeUsersOverlay.style.opacity = ''; // Let CSS class .active-users-overlay take over for opacity
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Cleared inline styles (sidebar right, overlay opacity).');
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar style.right after clearing:', activeUsersSidebar.style.right);
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Overlay style.opacity after clearing:', activeUsersOverlay.style.opacity);
                 isClosing = false;
-            }, 350);
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): isClosing set to false. Finished.');
+            }, 350); // Match CSS transition duration (0.3s)
         };
 
         if (closeUsersBtn) {
