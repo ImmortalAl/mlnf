@@ -108,7 +108,7 @@ function setupActiveUsersEvents() {
 
             // Force reflow to ensure styles are applied before getComputedStyle and transition
             if (activeUsersSidebar) { 
-                const_ = activeUsersSidebar.offsetHeight; // Reading offsetHeight can trigger reflow
+                const forceReflow = activeUsersSidebar.offsetHeight; // Reading offsetHeight can trigger reflow
                 console.log('[activeUsers.js] closeActiveSidebar: Forced reflow via offsetHeight.');
             }
             
