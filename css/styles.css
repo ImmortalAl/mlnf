@@ -860,6 +860,7 @@ body.light-theme {
     right: 1.5rem;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 1rem;
     z-index: 300;
 }
