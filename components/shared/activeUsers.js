@@ -75,13 +75,26 @@ function setupActiveUsersEvents() {
             console.log('[activeUsers.js] closeActiveSidebar: Initial sidebar classes:', activeUsersSidebar.className);
             console.log('[activeUsers.js] closeActiveSidebar: Initial overlay classes:', activeUsersOverlay.className);
 
+            // Check elements just before classList manipulation
+            console.log('[activeUsers.js] closeActiveSidebar: Checking activeUsersSidebar. Type:', typeof activeUsersSidebar, 'Value:', activeUsersSidebar);
+            console.log('[activeUsers.js] closeActiveSidebar: Checking activeUsersOverlay. Type:', typeof activeUsersOverlay, 'Value:', activeUsersOverlay);
+
             // Remove 'active' class first to remove !important overrides
-            activeUsersSidebar.classList.remove('active');
-            activeUsersOverlay.classList.remove('active');
+            if (activeUsersSidebar) {
+                activeUsersSidebar.classList.remove('active');
+            } else {
+                console.error('[activeUsers.js] closeActiveSidebar: activeUsersSidebar is null or undefined before classList.remove!');
+            }
             
-            console.log('[activeUsers.js] closeActiveSidebar: Removed "active" classes.');
-            console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after remove:', activeUsersSidebar.className);
-            console.log('[activeUsers.js] closeActiveSidebar: Overlay classes after remove:', activeUsersOverlay.className);
+            if (activeUsersOverlay) {
+                activeUsersOverlay.classList.remove('active');
+            } else {
+                console.error('[activeUsers.js] closeActiveSidebar: activeUsersOverlay is null or undefined before classList.remove!');
+            }
+            
+            console.log('[activeUsers.js] closeActiveSidebar: Attempted to remove "active" classes.'); // Changed log message slightly
+            console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after remove:', activeUsersSidebar ? activeUsersSidebar.className : 'Sidebar N/A');
+            console.log('[activeUsers.js] closeActiveSidebar: Overlay classes after remove:', activeUsersOverlay ? activeUsersOverlay.className : 'Overlay N/A');
             console.log('[activeUsers.js] closeActiveSidebar: Sidebar style.right after class removal:', activeUsersSidebar.style.right);
 
 
