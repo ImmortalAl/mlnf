@@ -8,6 +8,9 @@
     <title>My Soul - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Shared component styles -->
+    <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
+    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <style>
         :root {
             --primary: #0d0d1a;
@@ -541,6 +544,30 @@
     </style>
 </head>
 <body>
+    <!-- Active Users Sidebar -->
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div> <!-- Populated by activeUsers.js -->
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <header id="mainHeader">
         <div class="logo">
             <i class="fas fa-infinity"></i>
@@ -559,17 +586,26 @@
                 <li><a href="/profile" class="active"><i class="fas fa-user"></i> My Soul</a></li>
             </ul>
         </nav>
-        <div class="user-menu" id="userMenu">
-            <button id="userMenuButton" class="btn btn-outline">
-                <span id="usernameDisplay">User</span>
-                <i class="fas fa-caret-down"></i>
-            </button>
-            <div class="dropdown-menu" id="userDropdown">
-                <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
-                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
+                <!-- Populated by userMenu.js when logged out -->
             </div>
         </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <nav class="mobile-nav" id="mobileNav">
+            <div class="sidebar-header">
+                <h2>Eternal Navigation</h2>
+                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-list">
+                <!-- Links will be dynamically populated -->
+            </div>
+        </nav>
     </header>
     <div class="overlay" id="navOverlay"></div>
 
@@ -736,20 +772,10 @@
         </div>
     </div>
 
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.2"></script>
+    
     <script>
-        // Dropdown menu functionality
-        const userMenuButton = document.getElementById('userMenuButton');
-        const userDropdown = document.getElementById('userDropdown');
-        
-        userMenuButton.addEventListener('click', () => {
-            userDropdown.classList.toggle('active');
-        });
-        
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
-                userDropdown.classList.remove('active');
-            }
-        });
         
         // Privacy Modal Functionality
         const privacySettingsBtn = document.getElementById('privacySettingsBtn');
@@ -809,9 +835,9 @@
             privacyModal.style.display = 'none';
         });
         
-        // API constants
-        const API_BASE_URL = 'https://mlnf-auth.onrender.com/api';
-        const DEFAULT_AVATAR = '/assets/images/default-avatar.png';
+        // API constants from config
+        const API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
+        const DEFAULT_AVATAR = window.MLNF_CONFIG.DEFAULT_AVATAR;
         
         // Function to check if user is authenticated
         function checkAuthentication() {
@@ -916,7 +942,6 @@
                     // Set display name and username
                     document.getElementById('profileDisplayName').textContent = userData.displayName || userData.username || 'Soul Seeker';
                     document.getElementById('profileUsername').textContent = userData.username ? `@${userData.username}` : '@anonymous';
-                    document.getElementById('usernameDisplay').textContent = userData.displayName || userData.username || 'Soul Seeker';
                     
                     // Set status and bio
                     document.getElementById('profileStatus').textContent = userData.status || 'Exploring the eternal realm...';
@@ -989,54 +1014,15 @@
             }
         }
         
-        // Logout functionality
-        document.getElementById('logoutLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Clear storage
-            localStorage.removeItem('sessionToken');
-            localStorage.removeItem('user');
-            
-            // Redirect to login
-            window.location.href = '/lander.html';
-        });
-
-        // Mobile Navigation Functionality
-        const mobileNavToggle = document.getElementById('mobileNavToggle');
-        const mainNav = document.getElementById('mainNav');
-        const navOverlay = document.getElementById('navOverlay');
-        
-        mobileNavToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('active');
-            navOverlay.classList.toggle('active');
-            mobileNavToggle.innerHTML = mainNav.classList.contains('active') ? 
-                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-        });
-        
-        navOverlay.addEventListener('click', () => {
-            mainNav.classList.remove('active');
-            navOverlay.classList.remove('active');
-            mobileNavToggle.innerHTML = '<i class="fas fa-bars"></i>';
-        });
-        
-        // Close mobile menu when a link is clicked
-        document.querySelectorAll('#mainNav a').forEach(link => {
-            link.addEventListener('click', () => {
-                mainNav.classList.remove('active');
-                navOverlay.classList.remove('active');
-                mobileNavToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-        
-        // Highlight current page in navigation
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentPath = window.location.pathname;
-            document.querySelectorAll('#mainNav a').forEach(link => {
-                if (currentPath === link.getAttribute('href')) {
-                    link.classList.add('active');
-                }
-            });
-        });
     </script>
+
+    <!-- Shared Components -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script> 
+    <script src="../components/shared/navigation.js?v=1.2"></script> 
+    <script src="../components/shared/userMenu.js?v=1.2"></script> 
+    <script src="../components/shared/authModal.js?v=1.2"></script> 
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script> 
+    <script src="../js/user-sidebar.js?v=1.2"></script>
 </body>
 </html> 
