@@ -65,12 +65,12 @@ function setupActiveUsersEvents() {
         let isClosing = false; // Prevent multiple rapid calls
         const closeActiveSidebar = (event) => {
             if (isClosing) {
-                console.log('[activeUsers.js] closeActiveSidebar: Already closing, ignoring duplicate call. Event target:', event?.target);
+                console.log('[activeUsers.js] closeActiveSidebar: Already closing (isClosing=true), ignoring duplicate call. Event target:', event?.target, 'Current target:', event?.currentTarget);
                 return;
             }
             isClosing = true;
             
-            console.log('[activeUsers.js] closeActiveSidebar: Starting. Event target:', event?.target);
+            console.log('[activeUsers.js] closeActiveSidebar: Starting (isClosing set to true). Event target:', event?.target, 'Current target:', event?.currentTarget);
             console.log('[activeUsers.js] closeActiveSidebar: Initial sidebar style.right:', activeUsersSidebar.style.right);
             console.log('[activeUsers.js] closeActiveSidebar: Initial sidebar classes:', activeUsersSidebar.className);
             console.log('[activeUsers.js] closeActiveSidebar: Initial overlay classes:', activeUsersOverlay.className);
