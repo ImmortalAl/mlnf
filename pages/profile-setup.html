@@ -386,6 +386,12 @@
                 });
 
                 try {
+                    // Get API URL from config
+                    const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
+                    if (!apiUrl) { 
+                        throw new Error('API configuration is missing.'); 
+                    }
+                    
                     // Correct endpoint URL to match backend route
                     console.log('Sending request to:', `${apiUrl}/users/me`);
                     const requestBody = {
@@ -456,7 +462,11 @@
                             errorMessage = 'Session expired. Please log in again.';
                             localStorage.removeItem('sessionToken');
                             setTimeout(() => {
-                                window.location.href = 'auth.html?mode=login&redirect=profile-setup.html';
+                                if (window.MLNF && window.MLNF.openSoulModal) {
+                                    window.MLNF.openSoulModal('login');
+                                } else {
+                                    window.location.href = '../lander.html';
+                                }
                             }, 2000);
                         } else {
                             errorMessage = error.message || errorMessage;
