@@ -43,11 +43,19 @@ function setupActiveUsersEvents() {
             setTimeout(() => {
                 const rect = activeUsersSidebar.getBoundingClientRect();
                 const compRight = getComputedStyle(activeUsersSidebar).right;
+                const overlayOpacity = getComputedStyle(activeUsersOverlay).opacity;
                 console.log('[activeUsers.js] Sidebar bounding rect after activation:', rect);
                 console.log('[activeUsers.js] Computed right style:', compRight);
+                console.log('[activeUsers.js] Overlay opacity after transition:', overlayOpacity);
+                
                 if (compRight === '-320px') {
                     console.warn('[activeUsers.js] Sidebar still off-screen after activation; applying inline fallback.');
                     activeUsersSidebar.style.right = '0px'; // Fallback
+                }
+                
+                if (overlayOpacity === '0') {
+                    console.warn('[activeUsers.js] Overlay still invisible after activation; applying inline fallback.');
+                    activeUsersOverlay.style.opacity = '1'; // Fallback
                 }
             }, 350); // wait for transition
             document.body.style.overflow = 'hidden';
@@ -71,6 +79,7 @@ function setupActiveUsersEvents() {
             activeUsersOverlay.classList.remove('active');
             // Clear any inline styles that might override CSS transitions
             activeUsersSidebar.style.right = '';
+            activeUsersOverlay.style.opacity = '';
             
             console.log('[activeUsers.js] Sidebar classList after remove:', activeUsersSidebar.classList);
             console.log('[activeUsers.js] Overlay classList after remove:', activeUsersOverlay.classList);

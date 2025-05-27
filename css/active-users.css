@@ -181,7 +181,7 @@
 }
 
 .active-users-overlay.active {
-    opacity: 1;
+    opacity: 1 !important; /* Force visible – wins against page-specific overrides */
     pointer-events: auto;
 }
 
