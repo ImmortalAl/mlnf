@@ -33,6 +33,12 @@ function setupActiveUsersEvents() {
             activeUsersOverlay.classList.add('active');
             console.log('[activeUsers.js] Sidebar classList after add:', activeUsersSidebar.classList);
             console.log('[activeUsers.js] Overlay classList after add:', activeUsersOverlay.classList);
+            console.log('[activeUsers.js] Overlay computed styles:', {
+                display: getComputedStyle(activeUsersOverlay).display,
+                opacity: getComputedStyle(activeUsersOverlay).opacity,
+                zIndex: getComputedStyle(activeUsersOverlay).zIndex,
+                pointerEvents: getComputedStyle(activeUsersOverlay).pointerEvents
+            });
             setTimeout(() => {
                 const rect = activeUsersSidebar.getBoundingClientRect();
                 const compRight = getComputedStyle(activeUsersSidebar).right;
@@ -48,8 +54,10 @@ function setupActiveUsersEvents() {
 
         // Fix: Always close sidebar on overlay or X click
         const closeActiveSidebar = (event) => {
+            console.log('[activeUsers.js] closeActiveSidebar called. Event target:', event?.target);
             console.log('[activeUsers.js] closeActiveSidebar called. Attempting to deactivate.');
             console.log('[activeUsers.js] Sidebar element before remove class:', activeUsersSidebar);
+            console.log('[activeUsers.js] Overlay element before remove class:', activeUsersOverlay);
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
             console.log('[activeUsers.js] Sidebar classList after remove:', activeUsersSidebar.classList);
@@ -59,10 +67,12 @@ function setupActiveUsersEvents() {
 
         if (closeUsersBtn) {
             closeUsersBtn.onclick = closeActiveSidebar;
+            console.log('[activeUsers.js] Close button click handler attached');
         } else {
             console.warn('[activeUsers.js] Close button (#closeUsers) not found inside sidebar.');
         }
         activeUsersOverlay.onclick = closeActiveSidebar;
+        console.log('[activeUsers.js] Overlay click handler attached to:', activeUsersOverlay);
 
     } else {
         console.warn('[activeUsers.js] Could not find one or more required elements for active users sidebar. Events not fully attached.');
