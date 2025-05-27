@@ -447,10 +447,20 @@
             height: 100%;
             background: rgba(13, 13, 26, 0.85);
             z-index: 2000;
-            display: flex;
+            display: none; /* Hide by default */
             justify-content: center;
             align-items: center;
             padding: 20px;
+            opacity: 0; /* Add opacity for transition */
+            visibility: hidden; /* Add visibility for transition */
+            transition: opacity 0.3s ease, visibility 0.3s step-end; /* Add transitions */
+        }
+
+        .modal.active {
+            display: flex; /* Show when active */
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s step-start; /* Adjust transition for showing */
         }
         
         .modal-content {
