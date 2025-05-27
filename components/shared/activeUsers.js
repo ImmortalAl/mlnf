@@ -33,6 +33,11 @@ function setupActiveUsersEvents() {
             activeUsersOverlay.classList.add('active');
             console.log('[activeUsers.js] Sidebar classList after add:', activeUsersSidebar.classList);
             console.log('[activeUsers.js] Overlay classList after add:', activeUsersOverlay.classList);
+            setTimeout(() => {
+                const rect = activeUsersSidebar.getBoundingClientRect();
+                console.log('[activeUsers.js] Sidebar bounding rect after activation:', rect);
+                console.log('[activeUsers.js] Computed right style:', getComputedStyle(activeUsersSidebar).right);
+            }, 350); // wait for transition
             document.body.style.overflow = 'hidden';
         });
 
