@@ -81,6 +81,10 @@ function setupActiveUsersEvents() {
             console.log('[activeUsers.js] closeActiveSidebar: Removed .active class from sidebar and overlay.');
             console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after .active removal:', activeUsersSidebar.className);
 
+            // !!! ADD THIS: Clear any inline right style from opening fallback !!!
+            activeUsersSidebar.style.right = '';
+            console.log('[activeUsers.js] closeActiveSidebar: Cleared inline sidebar style.right.');
+
             // 2. Add 'force-close' to trigger the closing animation via CSS.
             activeUsersSidebar.classList.add('force-close');
             activeUsersOverlay.style.opacity = '0'; // Still use JS for overlay opacity as it's simpler
