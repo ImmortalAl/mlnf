@@ -85,7 +85,15 @@
             padding: 0;
         }
 
+        .main-nav li {
+            display: inline-block;
+        }
+
         .main-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
             color: var(--text);
             text-decoration: none;
             font-weight: 600;
