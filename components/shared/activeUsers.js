@@ -151,8 +151,12 @@ function setupActiveUsersEvents() {
             console.log('[activeUsers.js] closeActiveSidebar: Setting 350ms timeout for style cleanup.');
             setTimeout(() => {
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): Started.');
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar classes before cleanup:', activeUsersSidebar.className);
+                console.log('[activeUsers.js] closeActiveSidebar (timeout): Overlay classes before cleanup:', activeUsersOverlay.className);
+                
                 activeUsersSidebar.classList.remove('force-close'); // Remove the force-close class
                 activeUsersOverlay.style.opacity = ''; // Let CSS class .active-users-overlay take over for opacity
+                
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): Removed force-close class and cleared overlay opacity.');
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar classes after cleanup:', activeUsersSidebar.className);
                 console.log('[activeUsers.js] closeActiveSidebar (timeout): Overlay style.opacity after clearing:', activeUsersOverlay.style.opacity);

@@ -31,12 +31,12 @@
    the extra specificity is required.  This guarantees the
    sidebar slides in whenever it has the .active class.
 --------------------------------------------------------- */
-.active-users.active {
+aside#activeUsers.active-users.active {
     right: 0 !important; /* Force visible – wins against page-specific overrides */
 }
 
 /* Force sidebar to close - overrides all other rules including .active */
-.active-users.force-close {
+aside#activeUsers.active-users.force-close {
     right: -320px !important; /* Force hidden – wins against all other overrides */
     transition: right 0.3s ease !important;
 }
