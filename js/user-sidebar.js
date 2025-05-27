@@ -118,34 +118,66 @@ class UserSidebar {
 
     openMessageModal(username) {
         const modal = document.getElementById('messageModal');
-        const modalUsername = document.getElementById('modalUsername');
-        const closeModal = document.getElementById('closeModal');
+        const messageTitle = document.getElementById('messageTitle');
+        const messageInput = document.getElementById('messageInput');
+        const closeModalBtn = document.getElementById('closeMessageModal');
         const sendMessageBtn = document.getElementById('sendMessageBtn');
 
-        if (modal && modalUsername && closeModal && sendMessageBtn) {
-            modalUsername.textContent = `Send a message to ${username}`;
-            modal.style.display = 'block';
+        if (modal && messageTitle && messageInput && closeModalBtn && sendMessageBtn) {
+            // Update the modal title
+            messageTitle.textContent = `Direct Message to ${username}`;
+            
+            // Clear any previous message
+            messageInput.value = '';
+            
+            // Show the modal using the class-based approach
+            modal.classList.add('active');
 
-            closeModal.onclick = () => {
-                modal.style.display = 'none';
+            // Set up close button
+            closeModalBtn.onclick = () => {
+                modal.classList.remove('active');
             }
 
+            // Set up send button
             sendMessageBtn.onclick = () => {
-                const messageText = document.getElementById('messageText').value;
-                // Add logic to send the message (e.g., via WebSocket or API call)
-                console.log(`Sending message to ${username}: ${messageText}`);
-                modal.style.display = 'none'; // Close modal after sending
-                document.getElementById('messageText').value = ''; // Clear textarea
+                const messageText = messageInput.value.trim();
+                if (messageText) {
+                    // Add logic to send the message (e.g., via WebSocket or API call)
+                    console.log(`Sending message to ${username}: ${messageText}`);
+                    
+                    // For now, just show a success message
+                    alert(`Message sent to ${username}: "${messageText}"`);
+                    
+                    // Clear the input and close modal
+                    messageInput.value = '';
+                    modal.classList.remove('active');
+                } else {
+                    alert('Please enter a message before sending.');
+                }
             }
 
             // Close modal if user clicks outside of it
-            window.onclick = (event) => {
-                if (event.target == modal) {
-                    modal.style.display = "none";
+            const handleOutsideClick = (event) => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                    window.removeEventListener('click', handleOutsideClick);
                 }
             }
+            
+            // Add the outside click listener
+            setTimeout(() => {
+                window.addEventListener('click', handleOutsideClick);
+            }, 100); // Small delay to prevent immediate closing
+            
         } else {
-            console.error('Message modal elements not found');
+            console.error('Message modal elements not found. Expected: messageModal, messageTitle, messageInput, closeMessageModal, sendMessageBtn');
+            console.log('Found elements:', {
+                modal: !!modal,
+                messageTitle: !!messageTitle,
+                messageInput: !!messageInput,
+                closeModalBtn: !!closeModalBtn,
+                sendMessageBtn: !!sendMessageBtn
+            });
             alert('Message modal functionality is not available.');
         }
     }

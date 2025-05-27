@@ -932,12 +932,23 @@
                     try {
                         userData = JSON.parse(cachedUser);
                         console.log('Using cached user data:', userData);
+                        
+                        // Check if cached data is older than 5 minutes, if so, refresh from API
+                        const cacheTime = localStorage.getItem('user_cache_time');
+                        const now = Date.now();
+                        const fiveMinutes = 5 * 60 * 1000;
+                        
+                        if (!cacheTime || (now - parseInt(cacheTime)) > fiveMinutes) {
+                            console.log('Cached data is stale, fetching fresh data from API');
+                            userData = null; // Force API fetch
+                        }
                     } catch (e) {
                         console.error('Failed to parse cached user data:', e);
+                        userData = null;
                     }
                 }
                 
-                // If no cached data, fetch from API
+                // If no cached data or stale cache, fetch from API
                 if (!userData) {
                     try {
                         console.log('Fetching user data from API...');
@@ -965,8 +976,9 @@
                         console.log('API Response data:', data);
                         userData = data;
                         
-                        // Cache the user data
+                        // Cache the user data with timestamp
                         localStorage.setItem('user', JSON.stringify(userData));
+                        localStorage.setItem('user_cache_time', Date.now().toString());
                     } catch (error) {
                         console.error('Error fetching user data:', error);
                         
