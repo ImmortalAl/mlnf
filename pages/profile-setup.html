@@ -15,6 +15,31 @@
     <link rel="stylesheet" href="../css/profile-setup.css">
 </head>
 <body>
+    <!-- Active Users Sidebar -->
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div> <!-- Populated by activeUsers.js -->
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="logo">
             <a href="/">
@@ -42,46 +67,21 @@
                 <!-- Populated by userMenu.js when logged out -->
             </div>
         </div>
-        
-        <!-- Mobile Navigation -->
-        <div class="mobile-overlay" id="mobileOverlay"></div>
-        <nav class="mobile-nav" id="mobileNav">
-            <div class="sidebar-header">
-                <h2>Eternal Navigation</h2>
-                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
-                    <i class="fas fa-times"></i>
-            </button>
-            </div>
-            <div class="mobile-nav-list">
-                <!-- Links will be dynamically populated -->
-        </div>
-        </nav>
     </header>
 
-    <!-- Active Users Sidebar (standard part of layout with header) -->
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
-        <div class="active-users-header">
-            <h3>Eternal Seekers</h3>
-            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+    <!-- Mobile Navigation -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="sidebar-header">
+            <h2>Eternal Navigation</h2>
+            <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div id="userList"></div> <!-- Populated by activeUsers.js -->
-    </aside>
-    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-
-    <!-- Message Modal (standard part of layout with header) -->
-    <div id="messageModal" class="modal" aria-hidden="true">
-        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Direct Message</h3>
-            <div class="message-history" id="messageHistory"></div>
-            <div>
-                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
-                <div class="modal-actions">
-                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
-                    <button type="button" id="closeMessageModal">Close Nexus</button>
-                </div>
-            </div>
+        <div class="mobile-nav-list">
+            <!-- Links will be dynamically populated -->
         </div>
-    </div>
+    </nav>
 
     <div class="container">
         <h2>Eternal Profile Setup</h2>
