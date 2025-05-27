@@ -77,7 +77,25 @@ function setupActiveUsersEvents() {
 
             // Check elements just before classList manipulation
             console.log('[activeUsers.js] closeActiveSidebar: Checking activeUsersSidebar. Type:', typeof activeUsersSidebar, 'Value:', activeUsersSidebar);
-            console.log('[activeUsers.js] closeActiveSidebar: Checking activeUsersOverlay. Type:', typeof activeUsersOverlay, 'Value:', activeUsersOverlay);
+            
+            console.log('[activeUsers.js] closeActiveSidebar: About to check activeUsersOverlay...');
+            console.log('[activeUsers.js] closeActiveSidebar: activeUsersOverlay variable type:', typeof activeUsersOverlay);
+            
+            if (activeUsersOverlay) {
+                console.log('[activeUsers.js] closeActiveSidebar: activeUsersOverlay exists, getting its properties...');
+                try {
+                    console.log('[activeUsers.js] closeActiveSidebar: activeUsersOverlay.id:', activeUsersOverlay.id);
+                    console.log('[activeUsers.js] closeActiveSidebar: activeUsersOverlay.className:', activeUsersOverlay.className);
+                    console.log('[activeUsers.js] closeActiveSidebar: Checking activeUsersOverlay. Type: object Value:', activeUsersOverlay);
+                } catch (overlayError) {
+                    console.error('[activeUsers.js] closeActiveSidebar: Error accessing activeUsersOverlay properties:', overlayError);
+                }
+            } else {
+                console.error('[activeUsers.js] closeActiveSidebar: activeUsersOverlay is null/undefined!');
+                console.log('[activeUsers.js] closeActiveSidebar: Trying to re-find overlay by ID...');
+                const refoundOverlay = document.getElementById('activeUsersOverlay');
+                console.log('[activeUsers.js] closeActiveSidebar: Re-found overlay:', refoundOverlay);
+            }
 
             // Remove 'active' class first to remove !important overrides
             if (activeUsersSidebar) {
