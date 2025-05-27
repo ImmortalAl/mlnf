@@ -119,11 +119,30 @@ function setupActiveUsersEvents() {
             }, 350); 
         };
 
+        // Create a DEDICATED handler for the X button
+        const closeUsersBtnHandler = (event) => {
+            console.log('[activeUsers.js] X BUTTON CLICKED (closeUsersBtnHandler). Event target:', event?.target);
+            activeUsersSidebar.classList.remove('active');
+            activeUsersSidebar.style.right = ''; // Clear inline style
+            activeUsersSidebar.classList.add('force-close');
+            activeUsersOverlay.classList.remove('active');
+            activeUsersOverlay.style.opacity = '0';
+            document.body.style.overflow = '';
+
+            // Simplified timeout for X button
+            setTimeout(() => {
+                console.log('[activeUsers.js] X BUTTON (timeout): Removing .force-close.');
+                activeUsersSidebar.classList.remove('force-close');
+                console.log('[activeUsers.js] X BUTTON (timeout): Sidebar classes after .force-close removal:', activeUsersSidebar.className);
+            }, 350);
+        };
+
         if (closeUsersBtn) {
             // Remove any existing handlers to prevent duplicates
             closeUsersBtn.onclick = null;
-            closeUsersBtn.onclick = closeActiveSidebar;
-            console.log('[activeUsers.js] Close button click handler attached');
+            // closeUsersBtn.onclick = closeActiveSidebar; // Use the original for now
+            closeUsersBtn.onclick = closeUsersBtnHandler; // Assign DEDICATED handler
+            console.log('[activeUsers.js] Close button click handler attached (DEDICATED).');
         } else {
             console.warn('[activeUsers.js] Close button (#closeUsers) not found inside sidebar.');
         }
