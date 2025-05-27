@@ -32,6 +32,31 @@ body {
     visibility: visible !important;
 }
 
+#themeToggle {
+    position: fixed !important;
+    bottom: 2rem !important;
+    right: calc(2rem + 40px + 10px) !important;
+    background: var(--accent-secondary, #555) !important;
+    color: var(--text) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: var(--transition) !important;
+    z-index: 1000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#themeToggle:hover {
+    background: var(--accent-secondary-hover, #777) !important;
+    transform: scale(1.1) !important;
+}
+
 .show-users-btn:hover, #showUsersBtn:hover {
     background: #ff8f00 !important;
     transform: scale(1.1) !important;
