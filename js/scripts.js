@@ -747,11 +747,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    if (closeUsers && activeUsers) {
-        closeUsers.addEventListener('click', () => {
-            activeUsers.classList.remove('active');
-        });
-    }
 
     // Expose openSoulModal for console testing
     window.openSoulModal = openSoulModal;
