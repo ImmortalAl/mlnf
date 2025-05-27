@@ -33,6 +33,7 @@ function setupActiveUsersEvents() {
             activeUsersOverlay.classList.add('active');
             console.log('[activeUsers.js] Sidebar classList after add:', activeUsersSidebar.classList);
             console.log('[activeUsers.js] Overlay classList after add:', activeUsersOverlay.classList);
+            console.log('[activeUsers.js] Overlay element after activation:', activeUsersOverlay);
             console.log('[activeUsers.js] Overlay computed styles:', {
                 display: getComputedStyle(activeUsersOverlay).display,
                 opacity: getComputedStyle(activeUsersOverlay).opacity,
@@ -53,24 +54,45 @@ function setupActiveUsersEvents() {
         });
 
         // Fix: Always close sidebar on overlay or X click
+        let isClosing = false; // Prevent multiple rapid calls
         const closeActiveSidebar = (event) => {
+            if (isClosing) {
+                console.log('[activeUsers.js] Already closing, ignoring duplicate call');
+                return;
+            }
+            isClosing = true;
+            
             console.log('[activeUsers.js] closeActiveSidebar called. Event target:', event?.target);
             console.log('[activeUsers.js] closeActiveSidebar called. Attempting to deactivate.');
             console.log('[activeUsers.js] Sidebar element before remove class:', activeUsersSidebar);
             console.log('[activeUsers.js] Overlay element before remove class:', activeUsersOverlay);
+            
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
+            // Clear any inline styles that might override CSS transitions
+            activeUsersSidebar.style.right = '';
+            
             console.log('[activeUsers.js] Sidebar classList after remove:', activeUsersSidebar.classList);
             console.log('[activeUsers.js] Overlay classList after remove:', activeUsersOverlay.classList);
+            console.log('[activeUsers.js] Cleared inline right style');
             document.body.style.overflow = '';
+            
+            // Reset the flag after a short delay
+            setTimeout(() => {
+                isClosing = false;
+            }, 500);
         };
 
         if (closeUsersBtn) {
+            // Remove any existing handlers to prevent duplicates
+            closeUsersBtn.onclick = null;
             closeUsersBtn.onclick = closeActiveSidebar;
             console.log('[activeUsers.js] Close button click handler attached');
         } else {
             console.warn('[activeUsers.js] Close button (#closeUsers) not found inside sidebar.');
         }
+        // Remove any existing handlers to prevent duplicates
+        activeUsersOverlay.onclick = null;
         activeUsersOverlay.onclick = closeActiveSidebar;
         console.log('[activeUsers.js] Overlay click handler attached to:', activeUsersOverlay);
 
