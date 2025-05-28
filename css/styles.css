@@ -865,11 +865,11 @@ body.light-theme {
 }
 
 .floating-buttons .show-users-btn {
-    background-color: rgba(255, 0, 0, 0.3) !important; /* Debug: Red tint to confirm this rule is applied */
+    background-color: #ff0000 !important; /* Debug: Bright red to confirm this rule is applied */
 }
 
 .floating-buttons .theme-toggle {
-    background-color: rgba(0, 0, 255, 0.3) !important; /* Debug: Blue tint to confirm this rule is applied */
+    background-color: #0000ff !important; /* Debug: Bright blue to confirm this rule is applied */
 }
 
 .top-button {
