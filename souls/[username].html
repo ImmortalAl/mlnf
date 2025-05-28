@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View profile of an eternal soul on Manifest Liberation, Naturally Free.">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Soul Profile - Manifest Liberation, Naturally Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
+    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .profile-header {
+            background: var(--gradient-secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 2px solid var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--accent);
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 94, 120, 0.5);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-username {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .profile-status {
+            font-style: italic;
+            color: var(--warning);
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 202, 40, 0.1);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .profile-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .meta-item i {
+            color: var(--accent);
+        }
+
+        .profile-bio {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .profile-bio h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-bio p {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 94, 120, 0.3);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--danger);
+        }
+
+        .error-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 0 0.5rem;
+            }
+
+            .profile-header {
+                padding: 1.5rem;
+            }
+
+            .profile-name {
+                font-size: 1.5rem;
+            }
+
+            .profile-meta {
+                gap: 1rem;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Active Users Sidebar -->
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div>
+    </aside>
+    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message to <span id="recipientName"></span></h3>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
+                    </span>
+                    <span class="short-title">MLNF</span>
+                </div>
+            </a>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="main-nav"><ul></ul></nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div>
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;"></div>
+        </div>
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="sidebar-header">
+            <h2>Eternal Navigation</h2>
+            <button class="close-sidebar" id="closeMobileNav">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-nav-list">
+            <!-- Populated by navigation.js -->
+        </div>
+    </nav>
+
+    <main>
+        <div class="profile-container">
+            <a href="/souls" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Eternal Souls
+            </a>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Manifesting eternal soul...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Soul Not Found</h2>
+                <p id="errorMessage">This eternal soul has not manifested in our realm.</p>
+                <a href="/souls" class="action-btn btn-secondary">
+                    <i class="fas fa-users"></i>
+                    Explore Other Souls
+                </a>
+            </div>
+
+            <!-- Profile Content -->
+            <div id="profileContent" style="display: none;">
+                <div class="profile-header">
+                    <img id="profileAvatar" src="../assets/images/default-avatar.png" alt="Profile Avatar" class="profile-avatar">
+                    <h1 id="profileName" class="profile-name">Loading...</h1>
+                    <p id="profileUsername" class="profile-username">@loading</p>
+                    <div id="profileStatus" class="profile-status" style="display: none;"></div>
+                    
+                    <div class="profile-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Joined <span id="joinDate">Unknown</span></span>
+                        </div>
+                        <div class="meta-item" id="onlineStatus">
+                            <i class="fas fa-circle"></i>
+                            <span>Status Unknown</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profileBioSection" class="profile-bio" style="display: none;">
+                    <h3><i class="fas fa-scroll"></i> Soul Story</h3>
+                    <p id="profileBio"></p>
+                </div>
+
+                <div class="profile-actions">
+                    <button id="messageBtn" class="action-btn btn-primary">
+                        <i class="fas fa-envelope"></i>
+                        Send Message
+                    </button>
+                    <a href="/souls" class="action-btn btn-secondary">
+                        <i class="fas fa-users"></i>
+                        Explore More Souls
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+        <p>Embrace your infinite potential and connect across eternity.</p>
+    </footer>
+
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.2"></script>
+
+    <script>
+        // Get username from URL path
+        const pathParts = window.location.pathname.split('/');
+        const username = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
+
+        // DOM elements
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const profileContent = document.getElementById('profileContent');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Profile elements
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const profileUsername = document.getElementById('profileUsername');
+        const profileStatus = document.getElementById('profileStatus');
+        const profileBioSection = document.getElementById('profileBioSection');
+        const profileBio = document.getElementById('profileBio');
+        const joinDate = document.getElementById('joinDate');
+        const onlineStatus = document.getElementById('onlineStatus');
+        const messageBtn = document.getElementById('messageBtn');
+
+        // Fetch and display profile
+        async function fetchProfile() {
+            if (!username || username === 'index.html') {
+                showError('Invalid profile URL');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('sessionToken');
+                if (!token) {
+                    showError('Please log in to view profiles');
+                    return;
+                }
+
+                const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
+                if (!apiUrl) {
+                    throw new Error('API configuration missing');
+                }
+
+                const response = await fetch(`${apiUrl}/users/${username}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        showError(`Soul "${username}" not found in our eternal realm`);
+                    } else if (response.status === 401) {
+                        showError('Please log in to view profiles');
+                    } else {
+                        showError('Failed to load profile');
+                    }
+                    return;
+                }
+
+                const user = await response.json();
+                displayProfile(user);
+
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                showError('Connection to the eternal realm failed');
+            }
+        }
+
+        // Display profile data
+        function displayProfile(user) {
+            // Update page title
+            document.title = `${user.displayName || user.username} - Eternal Soul`;
+
+            // Update profile elements
+            profileAvatar.src = user.avatar || '../assets/images/default-avatar.png';
+            profileAvatar.alt = `${user.displayName || user.username}'s avatar`;
+            
+            profileName.textContent = user.displayName || user.username;
+            profileUsername.textContent = `@${user.username}`;
+
+            // Status
+            if (user.status && user.status.trim()) {
+                profileStatus.textContent = user.status;
+                profileStatus.style.display = 'inline-block';
+            }
+
+            // Bio
+            if (user.bio && user.bio.trim()) {
+                profileBio.textContent = user.bio;
+                profileBioSection.style.display = 'block';
+            }
+
+            // Join date
+            if (user.createdAt) {
+                const date = new Date(user.createdAt);
+                joinDate.textContent = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            // Online status
+            const statusIcon = onlineStatus.querySelector('i');
+            const statusText = onlineStatus.querySelector('span');
+            if (user.online) {
+                statusIcon.className = 'fas fa-circle';
+                statusIcon.style.color = '#5cb85c'; // Success color
+                statusText.textContent = 'Online';
+            } else {
+                statusIcon.className = 'fas fa-circle';
+                statusIcon.style.color = '#666';
+                statusText.textContent = 'Offline';
+            }
+
+            // Message button
+            messageBtn.addEventListener('click', () => {
+                if (window.MLNF && window.MLNF.openMessageModal) {
+                    window.MLNF.openMessageModal(user.username);
+                } else {
+                    console.error('Message modal not available');
+                }
+            });
+
+            // Show profile content
+            loadingState.style.display = 'none';
+            profileContent.style.display = 'block';
+        }
+
+        // Show error state
+        function showError(message) {
+            errorMessage.textContent = message;
+            loadingState.style.display = 'none';
+            errorState.style.display = 'block';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProfile();
+        });
+    </script>
+
+    <!-- Shared Components -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/userMenu.js?v=1.2"></script>
+    <script src="../components/shared/authModal.js?v=1.2"></script>
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
+</body>
+</html> 
