@@ -4,20 +4,20 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[mlnf-core.js] DOM fully loaded and parsed');
 
+  // Initialize user menu FIRST, so its functions are available to other components like navigation
+  if (window.MLNF && window.MLNF.initUserMenu) {
+    window.MLNF.initUserMenu();
+    console.log('MLNF User Menu initialized');
+  } else {
+    console.warn('MLNF User Menu component not loaded');
+  }
+
   // Initialize navigation
   if (window.MLNF && window.MLNF.initNavigation) {
     window.MLNF.initNavigation();
     console.log('MLNF Navigation initialized');
   } else {
     console.warn('MLNF Navigation component not loaded');
-  }
-  
-  // Initialize user menu
-  if (window.MLNF && window.MLNF.initUserMenu) {
-    window.MLNF.initUserMenu();
-    console.log('MLNF User Menu initialized');
-  } else {
-    console.warn('MLNF User Menu component not loaded');
   }
   
   // Initialize active users sidebar
