@@ -24,6 +24,57 @@
 
 ---
 
+## Session Summary: May 28, 2025 - Critical Authentication & Profile System Fixes
+
+**Objective:** Resolve critical registration failures and implement functional public profile system.
+
+**Critical Issues Resolved:**
+
+1.  **Registration System Complete Overhaul:**
+    *   **Root Cause Identified:** Frontend calling `/auth/register` while backend expected `/auth/signup` - causing 401 errors and JSON parse failures.
+    *   **Files Fixed:** 
+        *   `front/components/shared/authModal.js` - Updated endpoint from `/auth/register` to `/auth/signup`
+        *   `front/js/scripts.js` - Updated duplicate registration logic to use correct endpoint
+    *   **Enhanced User Experience:** 
+        *   Registration now automatically logs users in (backend returns token + user data)
+        *   Eliminated manual login step after successful registration
+        *   Updated success message: "Eternity claimed! Welcome to the Sanctuary."
+        *   Added automatic page refresh to show logged-in state
+    *   **Added Missing Function:** Created `isLoggedIn()` helper function that was being called but not defined
+
+2.  **Public Profile System Architecture:**
+    *   **Dynamic Template System:** Confirmed `/souls/[username].html` serves as universal template for all user profiles
+    *   **URL Routing Fixed:** Updated `front/_redirects` configuration:
+        *   OLD (broken): `/souls/:username → /pages/souls/profile.html?username=:username`
+        *   NEW (working): `/souls/:username → /souls/[username].html`
+    *   **Backend API Enhanced:** 
+        *   Added `online` status field to `GET /users/:username` endpoint in `back/routes/users.js`
+        *   Profile endpoint now returns: `username`, `displayName`, `avatar`, `status`, `bio`, `createdAt`, `online`
+
+3.  **System Integration Improvements:**
+    *   **Consistent Token Handling:** Both login and registration now store session token and user data identically
+    *   **Real-time UI Updates:** Authentication state changes immediately update user interface
+    *   **Error Handling:** Improved feedback for authentication failures with specific error messages
+
+**Technical Architecture Confirmed:**
+*   **Profile URL Flow:** `https://mlnf.net/souls/username` → Netlify redirects → `/souls/[username].html` → JavaScript extracts username → API call → Dynamic rendering
+*   **Authentication Flow:** Registration → Backend returns token + user data → Frontend stores both → Auto-login → UI refresh
+*   **API Endpoints:** All authentication and user management endpoints verified and functional
+
+**Files Modified:**
+*   `front/components/shared/authModal.js` - Registration endpoint fix + auto-login logic
+*   `front/js/scripts.js` - Registration endpoint fix + auto-login logic + isLoggedIn() function
+*   `front/_redirects` - Fixed profile URL routing configuration
+*   `back/routes/users.js` - Added online status to profile endpoint
+
+**Overall Impact:**
+*   Registration system now fully functional - users can create accounts seamlessly
+*   Public profile sharing works via clean URLs (`/souls/username`)
+*   Enhanced user experience with automatic login after registration
+*   Solid foundation established for messaging system and admin dashboard development
+
+---
+
 ## Session Summary: [Date of This Session] - Extensive Spring Cleaning & Refactoring
 
 **Objective:** Organize codebase, remove redundancies, ensure efficiency, and prepare for future development. Vanilla JS frontend, Express.js/MongoDB backend.
