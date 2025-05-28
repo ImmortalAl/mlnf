@@ -776,22 +776,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[MSG MODAL DEBUG] Modal:', messageModal);
     }
 
-    if (messageModal) {
-        messageModal.addEventListener('click', (event) => {
-            console.log('[MSG MODAL DEBUG] Backdrop area CLICKED.');
-            console.log('[MSG MODAL DEBUG] event.target:', event.target);
-            console.log('[MSG MODAL DEBUG] expected_messageModal_backdrop:', messageModal);
-            if (event.target === messageModal) { // Click was directly on the backdrop
-                messageModal.style.display = 'none';
-                console.log('[Messaging] Message modal closed via backdrop click.');
-            } else {
-                console.log('[MSG MODAL DEBUG] Click was inside modal content, not on backdrop.');
-            }
-        });
-        console.log('[Debug Step] Listener for message modal outside click ATTACHED.');
-    } else {
-        console.error('[MSG MODAL DEBUG] Could not attach backdrop click listener. messageModal missing.');
-    }
+    // REMOVED: Duplicate messageModal click listener - this is handled in messageModal.js
+    // The messageModal component (messageModal.js) handles its own backdrop click events
+    console.log('[Debug Step] Message modal backdrop click listener is handled by messageModal.js component.');
 
     // SEND MESSAGE BUTTON LISTENER (Uses sendMessageBtn declared earlier in DOMContentLoaded)
     console.log('[MSG MODAL DEBUG] sendMessageBtn element check:', sendMessageBtn);

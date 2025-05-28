@@ -1,4 +1,5 @@
 let messageModal, recipientNameElement, messageInputElement, messageHistoryElement, sendMessageBtnElement, closeMessageModalBtnElement;
+let currentBackdropListener = null; // Track the current backdrop click listener
 
 function initMessageModal() {
     console.log('[messageModal.js] Initializing...');
@@ -31,6 +32,9 @@ function openMessageModal(username) {
     }
     console.log(`[messageModal.js] Opening message modal for ${username}`);
     
+    // Remove any existing click listener to prevent duplicates
+    messageModal.removeEventListener('click', handleModalBackgroundClick);
+    
     // Close active users sidebar if it's open to prevent overlay conflicts
     const activeUsersSidebar = document.getElementById('activeUsers');
     const activeUsersOverlay = document.getElementById('activeUsersOverlay');
@@ -47,10 +51,24 @@ function openMessageModal(username) {
     if(messageInputElement) messageInputElement.focus();
     document.body.style.overflow = 'hidden'; // Prevent background scroll
     
-    // Add click outside to close functionality
+    // Add click outside to close functionality with proper cleanup
     setTimeout(() => {
-        messageModal.addEventListener('click', handleModalBackgroundClick);
-    }, 300); // Increased delay to prevent immediate closing from button click propagation
+        // Remove any existing listener before adding a new one
+        if (currentBackdropListener) {
+            messageModal.removeEventListener('click', currentBackdropListener);
+        }
+        
+        // Create new listener
+        currentBackdropListener = (event) => {
+            if (event.target === messageModal) {
+                console.log('[messageModal.js] Valid backdrop click detected, closing modal.');
+                closeMessageModal();
+            }
+        };
+        
+        messageModal.addEventListener('click', currentBackdropListener);
+        console.log('[messageModal.js] Click outside listener attached after 300ms delay.');
+    }, 300); // Delay to prevent immediate closing from button click propagation
 }
 
 function closeMessageModal() {
@@ -62,7 +80,11 @@ function closeMessageModal() {
     // Optionally clear messageHistoryElement.innerHTML = '';
     
     // Remove click outside event listener to prevent memory leaks
-    messageModal.removeEventListener('click', handleModalBackgroundClick);
+    if (currentBackdropListener) {
+        messageModal.removeEventListener('click', currentBackdropListener);
+        currentBackdropListener = null;
+        console.log('[messageModal.js] Removed backdrop click listener.');
+    }
 }
 
 function handleSendMessage() {
