@@ -551,6 +551,77 @@
                 left: auto;
             }
         }
+
+        /* Message Modal Specific Styles */
+        #messageModal {
+            z-index: 2300 !important; /* Ensure it's above everything */
+        }
+
+        #messageModal.active {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .message-history {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .message-form {
+            margin-top: 1rem;
+        }
+
+        #messageInput {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: var(--warning);
+            box-shadow: 0 0 10px rgba(255, 202, 40, 0.3);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-actions button {
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        #sendMessageBtn {
+            background: var(--gradient-accent);
+            color: var(--primary);
+        }
+
+        #closeMessageModal {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid var(--accent);
+        }
+
+        .modal-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -567,9 +638,12 @@
     <!-- Message Modal -->
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Direct Message</h3>
-            <div class="message-history" id="messageHistory"></div>
-            <div>
+            <h3 id="messageTitle">Soul-to-Soul Connection</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory">
+                <!-- Messages will be dynamically added here -->
+            </div>
+            <div class="message-form">
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
                     <button type="submit" id="sendMessageBtn">Send Whisper</button>
@@ -723,6 +797,25 @@
                 </div>
             </div>
             
+        </div>
+
+        <!-- Manual test button for debugging -->
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="testMessageModal()" style="background: #ff5e78; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">
+                Test Message Modal (Debug)
+            </button>
+            <script>
+                function testMessageModal() {
+                    console.log('[TEST] Testing message modal...');
+                    if (window.MLNF && window.MLNF.openMessageModal) {
+                        console.log('[TEST] Calling openMessageModal...');
+                        window.MLNF.openMessageModal('TestUser');
+                    } else {
+                        console.error('[TEST] MLNF.openMessageModal not available!');
+                        alert('Message modal not initialized properly. Check console for errors.');
+                    }
+                }
+            </script>
         </div>
     </main>
 
@@ -1103,8 +1196,49 @@
     <script src="../components/shared/navigation.js?v=1.2"></script> 
     <script src="../components/shared/userMenu.js?v=1.2"></script> 
     <script src="../components/shared/authModal.js?v=1.2"></script> 
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <script src="../components/shared/messageModal.js?v=1.2"></script> 
-    <script src="../js/user-sidebar.js?v=1.2"></script>
+    
+    <script>
+        // Initialize components in the correct order
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[profile] DOM loaded, initializing components...');
+            
+            // Debug: Check if required elements exist
+            console.log('[profile] Checking for required elements:');
+            console.log('- messageModal:', !!document.getElementById('messageModal'));
+            console.log('- recipientName:', !!document.getElementById('recipientName'));
+            console.log('- messageInput:', !!document.getElementById('messageInput'));
+            console.log('- messageHistory:', !!document.getElementById('messageHistory'));
+            console.log('- sendMessageBtn:', !!document.getElementById('sendMessageBtn'));
+            console.log('- closeMessageModal:', !!document.getElementById('closeMessageModal'));
+            
+            // Initialize message modal first
+            if (window.MLNF && window.MLNF.initMessageModal) {
+                window.MLNF.initMessageModal();
+                console.log('[profile] Message modal initialized');
+                console.log('[profile] MLNF.openMessageModal available:', typeof window.MLNF.openMessageModal === 'function');
+            } else {
+                console.error('[profile] MLNF.initMessageModal not found!');
+            }
+            
+            // Then initialize active users (which depends on message modal)
+            if (window.MLNF && window.MLNF.initActiveUsers) {
+                window.MLNF.initActiveUsers();
+                console.log('[profile] Active users initialized');
+                
+                // Debug: Check if message buttons get created
+                setTimeout(() => {
+                    const messageButtons = document.querySelectorAll('.message-btn');
+                    console.log('[profile] Message buttons found:', messageButtons.length);
+                    messageButtons.forEach((btn, index) => {
+                        console.log(`- Button ${index}: username="${btn.dataset.username}"`);
+                    });
+                }, 1000);
+            } else {
+                console.error('[profile] MLNF.initActiveUsers not found!');
+            }
+        });
+    </script>
 </body>
 </html> 
