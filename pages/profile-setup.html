@@ -29,6 +29,7 @@
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
             <h3 id="messageTitle">Direct Message</h3>
+            <p id="recipientName">To: Username</p>
             <div class="message-history" id="messageHistory"></div>
             <div>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
@@ -538,7 +539,19 @@
     <script src="../components/shared/navigation.js?v=1.2"></script> 
     <script src="../components/shared/userMenu.js?v=1.2"></script> 
     <script src="../components/shared/authModal.js?v=1.2"></script> 
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <script src="../components/shared/messageModal.js?v=1.2"></script> 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize message modal first
+            if (window.MLNF && window.MLNF.initMessageModal) {
+                window.MLNF.initMessageModal();
+            }
+            // Then initialize active users (which depends on message modal)
+            if (window.MLNF && window.MLNF.initActiveUsers) {
+                window.MLNF.initActiveUsers();
+            }
+        });
+    </script>
 </body>
 </html>
