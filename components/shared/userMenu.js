@@ -150,7 +150,7 @@ function handleLogout() {
   
   // No updateUserSidebar to call
   
-  window.location.href = '/lander.html'; // Or refresh current page if preferred
+  window.location.href = '/'; // Redirect to home page after logout
 }
 
 // Check if token exists but user data is missing, then fetch user data
