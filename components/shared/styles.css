@@ -516,6 +516,12 @@
 /* Note: #messageModal itself is styled in components/shared/styles.css for its overlay behavior */
 /* This class is being renamed from .auth-modal */
 /* TODO: Rename class in HTML from auth-modal to message-modal-content */
+
+/* Ensure message modal has highest z-index */
+#messageModal {
+    z-index: 2300 !important;
+}
+
 #messageModal .message-modal-content {
     background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
     padding: 2rem;

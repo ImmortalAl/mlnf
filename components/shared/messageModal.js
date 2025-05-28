@@ -47,9 +47,21 @@ function openMessageModal(username) {
     }
     
     recipientNameElement.textContent = username;
-    messageModal.style.display = 'flex'; // Or your preferred way to show it, e.g., add class
+    messageModal.classList.add('active'); // Use class-based approach to show modal
+    messageModal.style.display = 'flex'; // Ensure display is set
+    messageModal.setAttribute('aria-hidden', 'false'); // Update accessibility attribute
     if(messageInputElement) messageInputElement.focus();
     document.body.style.overflow = 'hidden'; // Prevent background scroll
+    
+    // Debug: Check if modal is actually visible
+    console.log('[messageModal.js] Modal state after opening:', {
+        classList: messageModal.classList.toString(),
+        display: messageModal.style.display,
+        computedDisplay: getComputedStyle(messageModal).display,
+        computedOpacity: getComputedStyle(messageModal).opacity,
+        computedVisibility: getComputedStyle(messageModal).visibility,
+        ariaHidden: messageModal.getAttribute('aria-hidden')
+    });
     
     // Add click outside to close functionality with proper cleanup
     setTimeout(() => {
@@ -74,7 +86,9 @@ function openMessageModal(username) {
 function closeMessageModal() {
     if (!messageModal) return;
     console.log('[messageModal.js] Closing message modal.');
-    messageModal.style.display = 'none'; // Or remove active class
+    messageModal.classList.remove('active'); // Remove active class
+    messageModal.style.display = 'none'; // Ensure display is hidden
+    messageModal.setAttribute('aria-hidden', 'true'); // Update accessibility attribute
     document.body.style.overflow = ''; // Restore background scroll
     if (messageInputElement) messageInputElement.value = '';
     // Optionally clear messageHistoryElement.innerHTML = '';
