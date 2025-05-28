@@ -334,8 +334,9 @@
     opacity: 0.7;
 }
 
-.user-sidebar .open-sidebar-btn { /* Scoped, though this class might be on the main page */
-    position: fixed; /* This button might be part of the HTML, not the sidebar itself */
+/* User Sidebar Toggle Button - Fixed positioning */
+.open-sidebar-btn {
+    position: fixed;
     right: 1rem;
     bottom: 1rem;
     background: var(--accent);
@@ -351,10 +352,10 @@
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     transition: var(--transition);
-    z-index: 100; /* Ensure it's above profile cards but below sidebar/modals */
+    z-index: 100;
 }
 
-.user-sidebar .open-sidebar-btn:hover { /* Scoped */
+.open-sidebar-btn:hover {
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
