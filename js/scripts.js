@@ -432,6 +432,11 @@ async function updateAuthUI(isAuthenticated) {
     console.log('[Reintegration Stage X] updateAuthUI finished.');
 }
 
+// Helper function to check if user is logged in
+function isLoggedIn() {
+    return !!localStorage.getItem('sessionToken');
+}
+
 // Welcome Modal for new users
 function showWelcomeModal() {
     // Check if user has seen the welcome message
