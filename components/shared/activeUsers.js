@@ -220,6 +220,8 @@ async function populateActiveUsersList() {
         // Re-attach event listeners for new message buttons
         userListDiv.querySelectorAll('.message-btn').forEach(btn => {
             btn.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent event from bubbling up to modal backdrop
+                event.preventDefault(); // Prevent default button behavior
                 const username = event.currentTarget.dataset.username;
                 console.log(`[activeUsers.js] Message button clicked for ${username}`);
                 if (window.MLNF && window.MLNF.openMessageModal) {

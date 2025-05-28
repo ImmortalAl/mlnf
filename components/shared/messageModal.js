@@ -50,7 +50,7 @@ function openMessageModal(username) {
     // Add click outside to close functionality
     setTimeout(() => {
         messageModal.addEventListener('click', handleModalBackgroundClick);
-    }, 100); // Small delay to prevent immediate closing if opened by click
+    }, 300); // Increased delay to prevent immediate closing from button click propagation
 }
 
 function closeMessageModal() {
