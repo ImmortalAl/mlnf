@@ -45,15 +45,11 @@ function updateUserMenu() {
         <i class="fas fa-chevron-down"></i>
       `;
       
-      const currentPath = window.location.pathname;
-      const hideEternalSouls = currentPath === '/souls' || currentPath.startsWith('/souls/');
-      
       userDropdown.innerHTML = `
         <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
         <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
         <div class="divider"></div>
         <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-        ${!hideEternalSouls ? '<a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a>' : ''}
         <div class="divider"></div>
         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
       `;
