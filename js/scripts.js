@@ -874,12 +874,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log('[Login Debug] Token not received in login mode.');
                     }
                 } else { // Register
-                    modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
-                    console.log('[Login Debug] Registration successful.');
-                    // Optionally switch to login view or auto-login
-                    setTimeout(() => {
-                        setSoulModalView('login'); // Switch to login view
-                    }, 2000);
+                    // Registration successful - handle like login since backend returns token and user
+                    if (data.token) {
+                        localStorage.setItem('sessionToken', data.token);
+                        
+                        // Store user data if provided
+                        if (data.user) {
+                            localStorage.setItem('user', JSON.stringify(data.user));
+                        }
+                        
+                        modalFeedback.textContent = 'Eternity claimed! Welcome to the Sanctuary.';
+                        console.log('[Login Debug] Registration successful, token stored.');
+                        await updateAuthUI(true);
+                        setTimeout(() => {
+                            closeSoulModal();
+                            // Optionally, refresh online users if sidebar was open or redirect
+                            if (activeUsers && activeUsers.classList.contains('active')) {
+                                fetchOnlineUsers();
+                            }
+                        }, 1500);
+                    } else {
+                        // Fallback if no token (shouldn't happen with current backend)
+                        modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
+                        console.log('[Login Debug] Registration successful.');
+                        // Optionally switch to login view or auto-login
+                        setTimeout(() => {
+                            setSoulModalView('login'); // Switch to login view
+                        }, 2000);
+                    }
                 }
 
             } catch (error) {

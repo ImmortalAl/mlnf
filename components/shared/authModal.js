@@ -216,18 +216,43 @@ async function handleSoulModalSubmit(event) {
         modalFeedback.classList.add('error');
       }
     } else { // Register
-      modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
-      modalFeedback.classList.add('success');
-      
-      setTimeout(() => {
-        setSoulModalView('login');
-        soulModalSubmit.disabled = false;
-        soulModalSubmit.textContent = 'Transcend';
-        modalFeedback.textContent = 'Please login with your new credentials.';
-        modalFeedback.className = 'modal-feedback';
-      }, 2000);
-      
-      return; // Skip re-enabling button below
+      // Registration successful - handle like login since backend returns token and user
+      if (data.token) {
+        localStorage.setItem('sessionToken', data.token);
+        
+        // Store user data if provided
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+        
+        modalFeedback.textContent = 'Eternity claimed! Welcome to the Sanctuary.';
+        modalFeedback.classList.add('success');
+        
+        // Update user display
+        if (window.MLNF && window.MLNF.updateUserMenu) {
+          window.MLNF.updateUserMenu();
+        }
+        
+        // Close the modal and refresh page
+        setTimeout(() => {
+          closeSoulModal();
+          window.location.reload();
+        }, 1500);
+      } else {
+        // Fallback if no token (shouldn't happen with current backend)
+        modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
+        modalFeedback.classList.add('success');
+        
+        setTimeout(() => {
+          setSoulModalView('login');
+          soulModalSubmit.disabled = false;
+          soulModalSubmit.textContent = 'Transcend';
+          modalFeedback.textContent = 'Please login with your new credentials.';
+          modalFeedback.className = 'modal-feedback';
+        }, 2000);
+        
+        return; // Skip re-enabling button below
+      }
     }
   } catch (error) {
     console.error(`[Auth Modal Error - ${mode}]:`, error);
