@@ -155,7 +155,7 @@ async function handleSoulModalSubmit(event) {
       return;
     }
     
-    url = `${API_BASE_URL}/auth/register`;
+    url = `${API_BASE_URL}/auth/signup`;
   } else {
     url = `${API_BASE_URL}/auth/login`;
   }

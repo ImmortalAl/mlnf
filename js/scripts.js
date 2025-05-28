@@ -826,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('[Login Debug] Passwords do not match in register mode.');
                     return;
                 }
-                url = `${API_URL}/auth/register`;
+                url = `${API_URL}/auth/signup`;
             } else {
                 url = `${API_URL}/auth/login`;
             }
