@@ -864,12 +864,36 @@ body.light-theme {
     z-index: 1000 !important;
 }
 
-.floating-buttons .show-users-btn, #showUsersBtn {
-    background-color: #ff0000 !important; /* Debug: Bright red to confirm this rule is applied */
+/* Override active-users.css positioning */
+.floating-buttons .show-users-btn, 
+.floating-buttons #showUsersBtn,
+#showUsersBtn {
+    position: static !important; /* Remove fixed positioning from active-users.css */
+    bottom: auto !important;
+    right: auto !important;
+    order: 1 !important; /* Ensure it's first in flex order */
+    /* Remove debug color for now */
 }
 
-.floating-buttons .theme-toggle, #themeToggle {
+.floating-buttons .theme-toggle,
+.floating-buttons #themeToggle,
+#themeToggle {
+    position: static !important; /* Remove fixed positioning from active-users.css */
+    bottom: auto !important;
+    right: auto !important;
+    order: 2 !important; /* Ensure it's second in flex order */
+    /* Remove debug color for now */
+}
+
+/* Ultimate override for show-users-btn to ensure style application - DEBUG ONLY */
+body .floating-buttons button.show-users-btn#showUsersBtn {
+    background-color: #ff0000 !important; /* Debug: Bright red to confirm this rule is applied */
+    z-index: 1001 !important; /* Ensure it's above other elements if needed */
+}
+
+body .floating-buttons button.theme-toggle#themeToggle {
     background-color: #0000ff !important; /* Debug: Bright blue to confirm this rule is applied */
+    z-index: 1000 !important;
 }
 
 .top-button {
@@ -900,15 +924,4 @@ body.light-theme {
 .top-button:hover {
     transform: translateY(-5px); /* Slight lift on hover */
     background: var(--highlight); /* Or a slightly different accent shade */
-}
-
-/* Ultimate override for show-users-btn to ensure style application - DEBUG ONLY */
-body .floating-buttons button.show-users-btn#showUsersBtn {
-    background-color: #ff0000 !important; /* Debug: Bright red to confirm this rule is applied */
-    z-index: 1001 !important; /* Ensure it's above other elements if needed */
-}
-
-body .floating-buttons button.theme-toggle#themeToggle {
-    background-color: #0000ff !important; /* Debug: Bright blue to confirm this rule is applied */
-    z-index: 1000 !important;
 }
