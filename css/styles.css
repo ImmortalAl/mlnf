@@ -901,3 +901,14 @@ body.light-theme {
     transform: translateY(-5px); /* Slight lift on hover */
     background: var(--highlight); /* Or a slightly different accent shade */
 }
+
+/* Ultimate override for show-users-btn to ensure style application - DEBUG ONLY */
+body .floating-buttons button.show-users-btn#showUsersBtn {
+    background-color: #ff0000 !important; /* Debug: Bright red to confirm this rule is applied */
+    z-index: 1001 !important; /* Ensure it's above other elements if needed */
+}
+
+body .floating-buttons button.theme-toggle#themeToggle {
+    background-color: #0000ff !important; /* Debug: Bright blue to confirm this rule is applied */
+    z-index: 1000 !important;
+}
