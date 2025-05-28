@@ -798,25 +798,6 @@
             </div>
             
         </div>
-
-        <!-- Manual test button for debugging -->
-        <div style="text-align: center; margin: 20px 0;">
-            <button onclick="testMessageModal()" style="background: #ff5e78; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">
-                Test Message Modal (Debug)
-            </button>
-            <script>
-                function testMessageModal() {
-                    console.log('[TEST] Testing message modal...');
-                    if (window.MLNF && window.MLNF.openMessageModal) {
-                        console.log('[TEST] Calling openMessageModal...');
-                        window.MLNF.openMessageModal('TestUser');
-                    } else {
-                        console.error('[TEST] MLNF.openMessageModal not available!');
-                        alert('Message modal not initialized properly. Check console for errors.');
-                    }
-                }
-            </script>
-        </div>
     </main>
 
     <footer>
