@@ -1,9 +1,12 @@
 # Vanity URLs for main sections
-/profile     /pages/profile/index.html   200
-/souls       /pages/souls/index.html     200
+/profile     /pages/profile-setup.html   200
+/souls       /souls/index.html           200
 
-# Vanity URL for individual soul profiles
-/souls/:username    /pages/souls/profile.html?username=:username   200
+# Vanity URL for individual soul profiles - route to dynamic template
+/souls/:username    /souls/[username].html   200
+
+# Fallback for any unmatched souls routes
+/souls/*     /souls/index.html           200
 
 # Redirect for old profile URL structure
 # (This will redirect /pages/souls/profile.html?username=foo to /souls/?username=foo)
