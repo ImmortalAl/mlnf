@@ -864,11 +864,11 @@ body.light-theme {
     z-index: 1000 !important;
 }
 
-.floating-buttons .show-users-btn {
+.floating-buttons .show-users-btn, #showUsersBtn {
     background-color: #ff0000 !important; /* Debug: Bright red to confirm this rule is applied */
 }
 
-.floating-buttons .theme-toggle {
+.floating-buttons .theme-toggle, #themeToggle {
     background-color: #0000ff !important; /* Debug: Bright blue to confirm this rule is applied */
 }
 
