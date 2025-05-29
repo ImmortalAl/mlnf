@@ -38,11 +38,10 @@ MLNF/
 
 ## 🚀 **Next Development Priorities**
 
-### **1. Administrative Control Center** (HIGH PRIORITY)
+### **Future Idea: Administrative Control Center** 
 Create `/admin` dashboard with:
-- **User Management**: View, search, ban/suspend users, role assignment
-- **Content Moderation**: Reported content queue, automated flagging
-- **Site Analytics**: Registration trends, active users, system health
+- **User Management**: View, search
+- **Site Analytics**: Registration trends, system health
 - **Configuration**: Site announcements, feature toggles, backups
 
 **Implementation Notes:**
@@ -62,9 +61,6 @@ Replace mock responses in `messageModal.js` with:
 
 ### **3. Enhanced Community Features**
 - User search and discovery improvements
-- Interest-based matching system
-- Achievement/badge system
-- Community guidelines enforcement tools
 
 ## 🛠️ **Technical Context**
 
@@ -115,12 +111,6 @@ Replace mock responses in `messageModal.js` with:
 ### **Messaging System**
 - Currently shows mock responses
 - Need to implement WebSocket for real-time
-- Consider rate limiting for spam prevention
-
-### **Admin Dashboard**
-- No admin role system yet (needs User model update)
-- Requires secure authentication middleware
-- Should include audit logging
 
 ### **Performance**
 - Consider pagination for large user lists
@@ -148,7 +138,7 @@ Replace mock responses in `messageModal.js` with:
 
 ## 🎯 **Immediate Next Steps**
 
-1. **Choose Priority**: Admin dashboard OR messaging system
+1. messaging system
 2. **Review Current Code**: Understand existing patterns and architecture
 3. **Plan Implementation**: Database schema, API endpoints, frontend components
 4. **Start Development**: Follow established patterns and update documentation
@@ -159,7 +149,7 @@ Replace mock responses in `messageModal.js` with:
 - **Documentation**: Update dev-log.md and relevant docs
 - **Testing**: Test authentication flows and API endpoints thoroughly
 
----
+Future Steps: Develop site subpages: Echoes Unbound, Boundless Chronicles, Clash of Immortals, Infinite Nexus, Timeless Vault
 
 **Ready to continue building this digital sanctuary for free thinkers!** 🌟
 

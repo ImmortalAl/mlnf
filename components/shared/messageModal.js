@@ -1,5 +1,7 @@
 let messageModal, recipientNameElement, messageInputElement, messageHistoryElement, sendMessageBtnElement, closeMessageModalBtnElement;
 let currentBackdropListener = null; // Track the current backdrop click listener
+let currentRecipientUsername = null; // Track current conversation
+let typingTimeout = null; // For typing indicator debouncing
 
 function initMessageModal() {
     console.log('[messageModal.js] Initializing...');
@@ -22,46 +24,42 @@ function initMessageModal() {
     if (sendMessageBtnElement) {
         sendMessageBtnElement.addEventListener('click', handleSendMessage);
     }
+
+    // Add Enter key support for sending messages
+    if (messageInputElement) {
+        messageInputElement.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+
+        // Add typing indicator
+        messageInputElement.addEventListener('input', handleTyping);
+    }
+
+    // Set up WebSocket message handlers
+    if (window.MLNF && window.MLNF.websocket) {
+        window.MLNF.websocket.on('newMessage', handleIncomingMessage);
+        window.MLNF.websocket.on('typing', handleTypingIndicator);
+    }
+
     console.log('[messageModal.js] Initialized.');
 }
 
-function openMessageModal(username) {
+async function openMessageModal(username) {
     if (!messageModal || !recipientNameElement) {
-        console.error('[messageModal.js] Cannot open modal, essential elements missing.');
+        console.error('[messageModal.js] Modal elements not found.');
         return;
     }
-    console.log(`[messageModal.js] Opening message modal for ${username}`);
-    
-    // Remove any existing click listener to prevent duplicates
-    messageModal.removeEventListener('click', handleModalBackgroundClick);
-    
-    // Close active users sidebar if it's open to prevent overlay conflicts
-    const activeUsersSidebar = document.getElementById('activeUsers');
-    const activeUsersOverlay = document.getElementById('activeUsersOverlay');
-    if (activeUsersSidebar && activeUsersSidebar.classList.contains('active')) {
-        activeUsersSidebar.classList.remove('active');
-        if (activeUsersOverlay) {
-            activeUsersOverlay.classList.remove('active');
-        }
-        console.log('[messageModal.js] Closed active users sidebar to prevent overlay conflicts');
-    }
-    
+
+    currentRecipientUsername = username;
     recipientNameElement.textContent = username;
-    messageModal.classList.add('active'); // Use class-based approach to show modal
-    messageModal.style.display = 'flex'; // Ensure display is set
-    messageModal.setAttribute('aria-hidden', 'false'); // Update accessibility attribute
-    if(messageInputElement) messageInputElement.focus();
-    document.body.style.overflow = 'hidden'; // Prevent background scroll
-    
-    // Debug: Check if modal is actually visible
-    console.log('[messageModal.js] Modal state after opening:', {
-        classList: messageModal.classList.toString(),
-        display: messageModal.style.display,
-        computedDisplay: getComputedStyle(messageModal).display,
-        computedOpacity: getComputedStyle(messageModal).opacity,
-        computedVisibility: getComputedStyle(messageModal).visibility,
-        ariaHidden: messageModal.getAttribute('aria-hidden')
-    });
+    messageHistoryElement.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
+    messageModal.style.display = 'block';
+
+    // Load conversation history
+    await loadConversation(username);
     
     // Add click outside to close functionality with proper cleanup
     setTimeout(() => {
@@ -84,84 +82,199 @@ function openMessageModal(username) {
 }
 
 function closeMessageModal() {
-    if (!messageModal) return;
-    console.log('[messageModal.js] Closing message modal.');
-    messageModal.classList.remove('active'); // Remove active class
-    messageModal.style.display = 'none'; // Ensure display is hidden
-    messageModal.setAttribute('aria-hidden', 'true'); // Update accessibility attribute
-    document.body.style.overflow = ''; // Restore background scroll
-    if (messageInputElement) messageInputElement.value = '';
-    // Optionally clear messageHistoryElement.innerHTML = '';
-    
-    // Remove click outside event listener to prevent memory leaks
+    if (!messageModal) {
+        console.error('[messageModal.js] Modal element not found.');
+        return;
+    }
+
+    messageModal.style.display = 'none';
+    currentRecipientUsername = null;
+
+    // Clean up backdrop listener
     if (currentBackdropListener) {
         messageModal.removeEventListener('click', currentBackdropListener);
         currentBackdropListener = null;
-        console.log('[messageModal.js] Removed backdrop click listener.');
+    }
+
+    console.log('[messageModal.js] Modal closed.');
+}
+
+async function loadConversation(username) {
+    try {
+        const token = localStorage.getItem('sessionToken');
+        if (!token) {
+            console.error('[messageModal.js] No authentication token found');
+            return;
+        }
+
+        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/messages/conversation/${username}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const messages = await response.json();
+        displayMessages(messages);
+    } catch (error) {
+        console.error('[messageModal.js] Error loading conversation:', error);
+        messageHistoryElement.innerHTML = '<p class="modal-error">Failed to load messages. Please try again.</p>';
     }
 }
 
-function handleSendMessage() {
+function displayMessages(messages) {
+    messageHistoryElement.innerHTML = '';
+    
+    if (messages.length === 0) {
+        messageHistoryElement.innerHTML = '<p class="modal-info">No messages yet. Start the conversation!</p>';
+        return;
+    }
+
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    
+    messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        const isSent = message.sender._id === currentUser.id;
+        messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+        
+        const timestamp = new Date(message.timestamp).toLocaleTimeString([], { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        messageDiv.innerHTML = `
+            <span class="message-text">${escapeHTML(message.content)}</span>
+            <span class="message-time">${timestamp}</span>
+        `;
+        
+        messageHistoryElement.appendChild(messageDiv);
+    });
+    
+    // Scroll to bottom
+    messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+}
+
+async function handleSendMessage() {
     if (!messageInputElement || !messageHistoryElement || !messageInputElement.value.trim()) {
         console.warn('[messageModal.js] Cannot send message, input or history element missing, or message empty.');
         return;
     }
-    console.log('[messageModal.js] Sending message...');
 
     const messageText = messageInputElement.value.trim();
+    const recipientUsername = currentRecipientUsername;
 
-    // Add message to history (as sent)
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message sent'; // Ensure these classes are styled
-    messageDiv.innerHTML = `
-        <span class="message-text">${escapeHTML(messageText)}</span>
-        <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-    `;
-    messageHistoryElement.appendChild(messageDiv);
-    messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+    if (!recipientUsername) {
+        console.error('[messageModal.js] No recipient specified');
+        return;
+    }
 
+    // Clear input immediately for better UX
     messageInputElement.value = '';
 
-    // TODO: Actual message sending logic via API would go here
-    console.log(`[messageModal.js] Message to send: ${messageText} to ${recipientNameElement.textContent}`);
+    // Add message to UI optimistically
+    addMessageToUI(messageText, true);
 
-    // Simulate receiving a response (for UI testing)
-    setTimeout(() => {
-        const responseDiv = document.createElement('div');
-        responseDiv.className = 'message received'; // Ensure these classes are styled
-        responseDiv.innerHTML = `
-            <span class="message-text">Automated reply: Your wisdom resonates across the eternal planes...</span>
-            <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-        `;
-        messageHistoryElement.appendChild(responseDiv);
-        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
-    }, 1500);
-}
+    try {
+        const token = localStorage.getItem('sessionToken');
+        if (!token) {
+            console.error('[messageModal.js] No authentication token found');
+            return;
+        }
 
-function handleModalBackgroundClick(event) {
-    // Only close if clicking on the modal background (not the modal content)
-    if (event.target === messageModal) {
-        console.log('[messageModal.js] Clicked outside modal content, closing modal.');
-        closeMessageModal();
+        const response = await fetch(`${MLNF_CONFIG.API_BASE_URL}/messages/send`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                recipientUsername: recipientUsername,
+                content: messageText
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('[messageModal.js] Message sent successfully:', result);
+
+    } catch (error) {
+        console.error('[messageModal.js] Error sending message:', error);
+        // Show error message to user
+        addMessageToUI('Failed to send message. Please try again.', false, true);
     }
 }
 
-function escapeHTML(str) {
-    return str.replace(/[&<>'"/]/g, function (s) {
-        const entityMap = {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': '&quot;',
-            "'": '&#39;',
-            "/": '&#x2F;'
-        };
-        return entityMap[s];
+function addMessageToUI(content, isSent, isError = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isSent ? 'sent' : 'received'} ${isError ? 'error' : ''}`;
+    
+    const timestamp = new Date().toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
     });
+    
+    messageDiv.innerHTML = `
+        <span class="message-text">${escapeHTML(content)}</span>
+        <span class="message-time">${timestamp}</span>
+    `;
+    
+    messageHistoryElement.appendChild(messageDiv);
+    messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+}
+
+function handleIncomingMessage(data) {
+    // Only show message if it's for the current conversation
+    if (currentRecipientUsername && data.message && data.message.sender.username === currentRecipientUsername) {
+        addMessageToUI(data.message.content, false);
+    }
+}
+
+function handleTyping(e) {
+    if (!currentRecipientUsername || !window.MLNF || !window.MLNF.websocket) {
+        return;
+    }
+
+    // Clear previous timeout
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+    }
+
+    // Send typing indicator
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    if (currentUser) {
+        window.MLNF.websocket.sendTypingIndicator(currentRecipientUsername, true);
+        
+        // Stop typing indicator after 2 seconds of no input
+        typingTimeout = setTimeout(() => {
+            window.MLNF.websocket.sendTypingIndicator(currentRecipientUsername, false);
+        }, 2000);
+    }
+}
+
+function handleTypingIndicator(data) {
+    // Show typing indicator for current conversation
+    if (currentRecipientUsername && data.senderId === currentRecipientUsername) {
+        // TODO: Implement typing indicator UI
+        console.log(`[messageModal.js] ${currentRecipientUsername} is ${data.isTyping ? 'typing' : 'not typing'}`);
+    }
+}
+
+function escapeHTML(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Expose to global MLNF object
 window.MLNF = window.MLNF || {};
 window.MLNF.initMessageModal = initMessageModal;
 window.MLNF.openMessageModal = openMessageModal;
-window.MLNF.closeMessageModal = closeMessageModal; // Optional: if other components need to close it 
+window.MLNF.closeMessageModal = closeMessageModal; 
