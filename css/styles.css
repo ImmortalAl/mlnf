@@ -864,17 +864,6 @@ body.light-theme {
     z-index: 1000 !important;
 }
 
-/* Override active-users.css positioning */
-.floating-buttons .show-users-btn, 
-.floating-buttons #showUsersBtn,
-#showUsersBtn {
-    position: static !important; /* Remove fixed positioning from active-users.css */
-    bottom: auto !important;
-    right: auto !important;
-    order: 1 !important; /* Ensure it's first in flex order */
-    /* Remove debug color for now */
-}
-
 .floating-buttons .theme-toggle,
 .floating-buttons #themeToggle,
 #themeToggle {
