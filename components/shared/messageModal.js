@@ -53,10 +53,21 @@ async function openMessageModal(username) {
         return;
     }
 
+    console.log(`[messageModal.js] Opening message modal for ${username}`);
+
     currentRecipientUsername = username;
     recipientNameElement.textContent = username;
     messageHistoryElement.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
-    messageModal.style.display = 'block';
+    
+    // Use the proper modal system with .active class
+    messageModal.classList.add('active');
+    messageModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // Prevent background scroll
+
+    // Focus the input for better UX
+    if (messageInputElement) {
+        setTimeout(() => messageInputElement.focus(), 100);
+    }
 
     // Load conversation history
     await loadConversation(username);
@@ -87,7 +98,13 @@ function closeMessageModal() {
         return;
     }
 
-    messageModal.style.display = 'none';
+    console.log('[messageModal.js] Closing message modal.');
+    
+    // Use the proper modal system
+    messageModal.classList.remove('active');
+    messageModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = ''; // Restore background scroll
+    
     currentRecipientUsername = null;
 
     // Clean up backdrop listener
