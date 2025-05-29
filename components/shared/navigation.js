@@ -36,8 +36,22 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
             }
             return true;
         });
+    } else if (navType === 'mobile') {
+        // For mobile navigation:
+        // 1. Remove "Home" if on the homepage (normalized path)  
+        // 2. Always remove "Eternal Hearth" (available in user dropdown)
+        linksToRender = allLinks.filter(link => {
+            if (link.text === "Home" && (normalizedCurrentPath === "/" || normalizedCurrentPath === "/index.html")) {
+                console.log('[navigation.js] Filtering Home link on mobile nav for homepage.'); // DEBUG
+                return false; // Exclude Home on homepage
+            }
+            if (link.text === "Eternal Hearth") {
+                return false; // Always exclude Eternal Hearth from mobile nav
+            }
+            return true;
+        });
     }
-    // For 'mobile' navType, we use allLinks by default or apply different rules if needed later
+    // For any other navType, we use allLinks by default
 
     console.log('[navigation.js] linksToRender BEFORE map:', JSON.stringify(linksToRender)); // DEBUG
     const finalHTML = linksToRender.map(link => {
