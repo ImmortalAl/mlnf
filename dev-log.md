@@ -121,3 +121,37 @@
 *   Reduced CSS and JavaScript redundancy, promoting better caching and performance.
 *   Established clearer patterns for managing global styles, component-specific styles, and shared JavaScript functionality.
 *   The project is now in a much stronger position for ongoing and future development. 
+
+---
+
+## Session Summary: [Current Date] - Eternal Souls Refactor & Immortal's Sanctum Admin Panel
+
+**Objective:** Simplify the Eternal Souls user directory, unify online status and messaging, and implement a robust administrative control center.
+
+**Key Changes Implemented:**
+
+1.  **Eternal Souls Directory Refactor:**
+    *   Removed feather (posts) and connections count from user cards.
+    *   Eliminated search/filter functionality for now, focusing on a clean, simple user listing.
+    *   Ensured only the shared Active Users sidebar is used for online status and instant messaging (removed duplicate/custom user sidebar and related JS/CSS).
+    *   Kept privacy controls as is.
+    *   Updated UI for clarity and simplicity.
+
+2.  **Admin Panel Creation (Immortal's Sanctum):**
+    *   Created a new admin panel at `/admin/`, initially named "Eternal Dominion," then renamed to **Immortal's Sanctum** per user preference.
+    *   Features dashboard, user management (Soul Management), and analytics (Eternal Analytics) sections.
+    *   Admin role detection is currently by username.
+    *   All references and documentation updated to use the new name.
+
+3.  **Documentation & Logging:**
+    *   Updated `README.md`, `DEV-SETUP.md`, and `DEVELOPMENT-PREFERENCES.md` to reflect the Eternal Souls refactor, admin panel creation, and session progress.
+    *   Confirmed that `dev-log.md` is the canonical development log file in the frontend directory.
+
+4.  **Git Troubleshooting:**
+    *   Encountered and documented a "not a git repository" error in the frontend; provided troubleshooting steps for resolving git issues in the `front` directory.
+
+**Overall Impact:**
+*   The Eternal Souls page is now a clean, user-friendly directory with unified online status and messaging.
+*   The admin panel (Immortal's Sanctum) provides a foundation for robust site management and analytics.
+*   All major changes and session progress are now consistently documented.
+*   The project is well-positioned for further enhancements to Eternal Souls and administrative features. 

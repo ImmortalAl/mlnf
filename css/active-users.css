@@ -92,6 +92,11 @@ aside#activeUsers.active-users.force-close {
     background: rgba(255, 255, 255, 0.1);
 }
 
+.user-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .user-item img {
     width: 40px;
     height: 40px;
@@ -99,13 +104,47 @@ aside#activeUsers.active-users.force-close {
     border: 2px solid var(--accent, #ff5e78);
 }
 
+.online-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--secondary, #1a1a33);
+}
+
+.online-dot.online {
+    background-color: var(--success, #5cb85c);
+    box-shadow: 0 0 6px rgba(92, 184, 92, 0.6);
+}
+
+.online-dot.offline {
+    background-color: #6c757d;
+}
+
 .user-info {
     flex: 1;
+    min-width: 0; /* Allow text truncation */
 }
 
 .user-info h4 {
     font-size: 0.9rem;
     margin: 0;
+    font-weight: 600;
+    color: var(--text, #f0e6ff);
+}
+
+.status-message {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    color: var(--text, #f0e6ff);
+    font-style: italic;
+    display: block;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .status {

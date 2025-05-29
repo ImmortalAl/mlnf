@@ -150,6 +150,12 @@ A Content Delivery Network (CDN) is a network of servers worldwide that store co
 - **User-Friendly**: Intuitive navigation and interactions
 - **Accessibility First**: Ensure all users can access content
 
+## [Session Log: Eternal Souls Refactor & Admin Panel]
+- Eternal Souls now uses only the shared Active Users sidebar for online status and instant messaging.
+- Removed duplicate user sidebar and related code.
+- Created 'Immortal's Sanctum' admin panel for site management and analytics.
+- Updated documentation and naming for clarity and consistency.
+
 ---
 
 *This document should be updated after each development session to maintain accurate preferences and requirements.* 

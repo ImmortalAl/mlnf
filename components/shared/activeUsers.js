@@ -194,21 +194,25 @@ async function populateActiveUsersList() {
 
         if (fetchedUsers && fetchedUsers.length > 0) {
             userListDiv.innerHTML = fetchedUsers.map(user => {
-                const displayName = user.username || user.name || 'Unnamed Soul';
+                const displayName = user.displayName || user.username || 'Unnamed Soul';
+                const username = user.username || displayName;
                 const avatarUrl = user.avatarUrl || user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '../assets/images/default-avatar.png');
-                let currentStatus = user.status || (user.isOnline ? 'Online' : 'Offline');
-                if (typeof currentStatus !== 'string') { // Ensure status is a string for .toLowerCase()
-                    currentStatus = user.isOnline ? 'Online' : 'Offline';
-                }
+                const isOnline = user.online || user.isOnline || false;
+                const statusMessage = user.status || 'Wandering the eternal realms...';
+                const onlineClass = isOnline ? 'online' : 'offline';
+                const onlineText = isOnline ? 'Online' : 'Offline';
 
                 return `
                 <div class="user-item">
-                    <img src="${avatarUrl}" alt="${displayName}">
+                    <div class="user-avatar-wrapper">
+                        <img src="${avatarUrl}" alt="${displayName}">
+                        <span class="online-dot ${onlineClass}" title="${onlineText}"></span>
+                    </div>
                     <div class="user-info">
                         <h4>${displayName}</h4>
-                        <span class="status ${currentStatus.toLowerCase()}">${currentStatus}</span>
+                        <span class="status-message">${statusMessage}</span>
                     </div>
-                    <button class="message-btn" data-username="${displayName}" aria-label="Message ${displayName}">
+                    <button class="message-btn" data-username="${username}" aria-label="Message ${displayName}">
                         <i class="fas fa-comment"></i>
                     </button>
                 </div>`;

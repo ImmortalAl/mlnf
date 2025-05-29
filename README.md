@@ -18,6 +18,8 @@ A timeless sanctuary for liberated spirits to manifest truth and freedom.
 - **CSS Architecture**: Comprehensive documentation and modular structure
 - **User Management**: Backend API endpoints for user operations
 - **Responsive Design**: Mobile-friendly interface across all pages
+- **Eternal Souls Refactor:** Simplified the Eternal Souls directory to use only the shared Active Users sidebar for online status and instant messaging. Removed duplicate user sidebar and unnecessary stats/levels.
+- **Immortal's Sanctum Admin Panel:** Created a new admin panel for site management, user analytics, and future moderation tools. Accessible at /admin/ for the administrator.
 
 ### 🔧 Active Features
 - User registration with automatic login
@@ -27,6 +29,8 @@ A timeless sanctuary for liberated spirits to manifest truth and freedom.
 - Theme switching (dark/light mode)
 - Active users sidebar
 - Profile customization (avatar, bio, status)
+- Immortal's Sanctum admin dashboard (user management, analytics, role detection by username)
+- Clean Eternal Souls directory with instant messaging and online status
 
 ## 🎯 Next Development Priorities
 

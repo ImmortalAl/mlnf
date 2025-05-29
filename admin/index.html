@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Eternal Dominion - Administrative control center for Manifest Liberation, Naturally Free">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Immortal's Sanctum - MLNF Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
+    <link rel="stylesheet" href="../css/admin.css?v=1.0">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Immortal's Sanctum</span>
+                        <span class="title-line-two">Administrative Sanctum</span>
+                    </span>
+                    <span class="short-title">MLNF Admin</span>
+                </div>
+            </a>
+        </div>
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="#dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="#users"><i class="fas fa-users"></i> Soul Management</a></li>
+                <li><a href="#analytics"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
+                <li><a href="/"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
+            </ul>
+        </nav>
+        <div class="admin-user">
+            <span id="adminUsername">Administrator</span>
+            <button id="logoutBtn" class="btn btn-outline">
+                <i class="fas fa-sign-out-alt"></i> Transcend
+            </button>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="admin-section active">
+            <h2 class="section-title">
+                <i class="fas fa-crown"></i> Immortal's Overview
+            </h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Souls</h3>
+                        <p class="stat-number" id="totalUsers">--</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Online Now</h3>
+                        <p class="stat-number" id="onlineUsers">--</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Soul Scrolls</h3>
+                        <p class="stat-number" id="totalPosts">--</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Eternal Echoes</h3>
+                        <p class="stat-number" id="totalMessages">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h3>Recent Manifestations</h3>
+                <div id="activityFeed" class="activity-feed">
+                    <p class="loading">Gathering cosmic data...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Management Section -->
+        <section id="users" class="admin-section">
+            <h2 class="section-title">
+                <i class="fas fa-users-cog"></i> Soul Management
+            </h2>
+            
+            <div class="management-controls">
+                <div class="search-bar">
+                    <input type="text" id="userSearch" placeholder="Search eternal souls...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <div class="filter-controls">
+                    <select id="filterStatus">
+                        <option value="all">All Souls</option>
+                        <option value="online">Online Souls</option>
+                        <option value="offline">Dormant Souls</option>
+                        <option value="banned">Banished Souls</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="users-table-wrapper">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Username</th>
+                            <th>Display Name</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                            <th>Last Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">Summoning souls...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="usersPagination">
+                <!-- Pagination controls will be generated here -->
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics" class="admin-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i> Eternal Analytics
+            </h2>
+            
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <h3>Soul Growth</h3>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Activity Patterns</h3>
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h4>Average Session Duration</h4>
+                    <p class="metric-value" id="avgSession">--</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4>Daily Active Souls</h4>
+                    <p class="metric-value" id="dailyActive">--</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4>Content Creation Rate</h4>
+                    <p class="metric-value" id="contentRate">--</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4>Engagement Score</h4>
+                    <p class="metric-value" id="engagement">--</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- User Action Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h3 id="modalTitle">Soul Details</h3>
+            <div id="modalContent">
+                <!-- User details and actions will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Manifest Liberation, Naturally Free. Administrator Access Only.</p>
+        <p>With great power comes eternal responsibility.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../components/shared/config.js?v=1.2"></script>
+    <script src="../js/admin.js?v=1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html> 

@@ -1,0 +1,432 @@
+// Eternal Dominion - Admin Panel JavaScript
+(function() {
+    'use strict';
+    
+    // State
+    let currentSection = 'dashboard';
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let allUsers = [];
+    let isAdmin = false;
+    
+    // DOM Elements
+    const sections = document.querySelectorAll('.admin-section');
+    const navLinks = document.querySelectorAll('.admin-nav a');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Check admin authorization
+    async function checkAdminAuth() {
+        const token = localStorage.getItem('sessionToken');
+        if (!token) {
+            window.location.href = '/pages/auth.html';
+            return false;
+        }
+        
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Unauthorized');
+            }
+            
+            const userData = await response.json();
+            
+            // Check if user is admin (you'll need to implement this field in your backend)
+            // For now, check username - in production, use proper role checking
+            if (userData.username === 'ImmortalAl' || userData.role === 'admin') {
+                isAdmin = true;
+                document.getElementById('adminUsername').textContent = userData.displayName || userData.username;
+                return true;
+            } else {
+                alert('Access denied. Administrator privileges required.');
+                window.location.href = '/';
+                return false;
+            }
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            window.location.href = '/pages/auth.html';
+            return false;
+        }
+    }
+    
+    // Navigation
+    function setupNavigation() {
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.getAttribute('href').substring(1);
+                
+                if (target === '') {
+                    // Return to main site
+                    return;
+                }
+                
+                showSection(target);
+                
+                // Update active state
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    }
+    
+    function showSection(sectionId) {
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            currentSection = sectionId;
+            
+            // Load section-specific data
+            switch(sectionId) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+            }
+        }
+    }
+    
+    // Dashboard
+    async function loadDashboard() {
+        try {
+            // Load stats
+            await loadStats();
+            
+            // Load recent activity
+            await loadRecentActivity();
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+        }
+    }
+    
+    async function loadStats() {
+        const token = localStorage.getItem('sessionToken');
+        
+        try {
+            // Fetch total users
+            const usersResponse = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (usersResponse.ok) {
+                const users = await usersResponse.json();
+                document.getElementById('totalUsers').textContent = users.length || '0';
+                
+                // Count online users
+                const onlineCount = users.filter(u => u.online).length;
+                document.getElementById('onlineUsers').textContent = onlineCount;
+            }
+            
+            // For now, use placeholder data for posts and messages
+            // You'll implement these endpoints later
+            document.getElementById('totalPosts').textContent = '0';
+            document.getElementById('totalMessages').textContent = '0';
+            
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+    
+    async function loadRecentActivity() {
+        const activityFeed = document.getElementById('activityFeed');
+        
+        // For now, show placeholder
+        // In production, fetch real activity data
+        activityFeed.innerHTML = `
+            <div class="activity-item">
+                <i class="fas fa-user-plus activity-icon"></i>
+                <div class="activity-content">
+                    <strong>New soul manifested</strong>
+                    <p>A new user joined the eternal sanctuary</p>
+                </div>
+                <span class="activity-time">Just now</span>
+            </div>
+        `;
+    }
+    
+    // User Management
+    async function loadUsers() {
+        const token = localStorage.getItem('sessionToken');
+        const tbody = document.getElementById('usersTableBody');
+        
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">Summoning souls...</td></tr>';
+        
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) throw new Error('Failed to fetch users');
+            
+            allUsers = await response.json();
+            displayUsers();
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            tbody.innerHTML = '<tr><td colspan="7" class="error">Failed to summon souls</td></tr>';
+        }
+    }
+    
+    function displayUsers() {
+        const tbody = document.getElementById('usersTableBody');
+        const filterStatus = document.getElementById('filterStatus').value;
+        const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+        
+        // Filter users
+        let filteredUsers = allUsers;
+        
+        if (filterStatus !== 'all') {
+            filteredUsers = filteredUsers.filter(user => {
+                if (filterStatus === 'online') return user.online;
+                if (filterStatus === 'offline') return !user.online;
+                if (filterStatus === 'banned') return user.banned;
+                return true;
+            });
+        }
+        
+        if (searchTerm) {
+            filteredUsers = filteredUsers.filter(user => 
+                (user.username && user.username.toLowerCase().includes(searchTerm)) ||
+                (user.displayName && user.displayName.toLowerCase().includes(searchTerm)) ||
+                (user.email && user.email.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Paginate
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+        
+        // Display users
+        if (paginatedUsers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7">No souls found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = paginatedUsers.map(user => `
+            <tr>
+                <td><img src="${user.avatar || window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="${user.username}" class="user-avatar"></td>
+                <td>${user.username}</td>
+                <td>${user.displayName || '--'}</td>
+                <td><span class="user-status status-${user.online ? 'online' : 'offline'}">${user.online ? 'Online' : 'Offline'}</span></td>
+                <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="viewUser('${user.username}')">View</button>
+                        <button class="action-btn" onclick="editUser('${user.username}')">Edit</button>
+                        <button class="action-btn danger" onclick="banUser('${user.username}')">Ban</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+        
+        // Update pagination
+        updatePagination(filteredUsers.length);
+    }
+    
+    function updatePagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById('usersPagination');
+        
+        let html = '';
+        
+        if (currentPage > 1) {
+            html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">Previous</button>`;
+        }
+        
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+        }
+        
+        if (currentPage < totalPages) {
+            html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Next</button>`;
+        }
+        
+        pagination.innerHTML = html;
+    }
+    
+    // Analytics
+    async function loadAnalytics() {
+        // Initialize charts
+        initCharts();
+        
+        // Load metrics
+        loadMetrics();
+    }
+    
+    function initCharts() {
+        // User Growth Chart
+        const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+        new Chart(userGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'New Souls',
+                    data: [12, 19, 23, 35, 42, 55],
+                    borderColor: 'rgb(255, 94, 120)',
+                    backgroundColor: 'rgba(255, 94, 120, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f0e6ff'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#f0e6ff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#f0e6ff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+        
+        // Activity Chart
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Daily Activity',
+                    data: [65, 59, 80, 81, 56, 55, 70],
+                    backgroundColor: 'rgba(255, 202, 40, 0.5)',
+                    borderColor: 'rgb(255, 202, 40)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f0e6ff'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#f0e6ff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#f0e6ff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+    }
+    
+    function loadMetrics() {
+        // Placeholder metrics - implement real calculations later
+        document.getElementById('avgSession').textContent = '12m 34s';
+        document.getElementById('dailyActive').textContent = '42';
+        document.getElementById('contentRate').textContent = '3.2/day';
+        document.getElementById('engagement').textContent = '87%';
+    }
+    
+    // User Actions
+    window.viewUser = function(username) {
+        const user = allUsers.find(u => u.username === username);
+        if (!user) return;
+        
+        const modal = document.getElementById('userModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        modalContent.innerHTML = `
+            <div class="user-details">
+                <img src="${user.avatar || window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="${user.username}" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
+                <h4>${user.displayName || user.username}</h4>
+                <p>@${user.username}</p>
+                <p>Status: ${user.status || 'No status set'}</p>
+                <p>Bio: ${user.bio || 'No bio available'}</p>
+                <p>Joined: ${new Date(user.createdAt).toLocaleDateString()}</p>
+                <p>Email: ${user.email || 'Not provided'}</p>
+            </div>
+        `;
+        
+        modal.classList.add('active');
+    };
+    
+    window.editUser = function(username) {
+        alert(`Edit functionality for ${username} coming soon`);
+    };
+    
+    window.banUser = function(username) {
+        if (confirm(`Are you sure you want to banish ${username} from the eternal sanctuary?`)) {
+            alert(`Ban functionality for ${username} coming soon`);
+        }
+    };
+    
+    window.changePage = function(page) {
+        currentPage = page;
+        displayUsers();
+    };
+    
+    // Event Listeners
+    function setupEventListeners() {
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = '/pages/auth.html';
+        });
+        
+        // Search
+        document.getElementById('userSearch').addEventListener('input', displayUsers);
+        document.getElementById('filterStatus').addEventListener('change', displayUsers);
+        
+        // Modal close
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('userModal').classList.remove('active');
+        });
+    }
+    
+    // Initialize
+    async function init() {
+        // Check admin auth first
+        const authorized = await checkAdminAuth();
+        if (!authorized) return;
+        
+        // Setup navigation
+        setupNavigation();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Load initial section
+        loadDashboard();
+    }
+    
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})(); 
