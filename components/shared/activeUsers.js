@@ -176,7 +176,8 @@ async function populateActiveUsersList() {
     userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
     try {
-        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/online`, {
+        // Fetch with cache-busting to ensure fresh data
+        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/online?_cb=${new Date().getTime()}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -187,18 +188,15 @@ async function populateActiveUsersList() {
         }
         const fetchedUsers = await response.json();
 
-        // Assuming fetchedUsers is an array of user objects.
-        // Example mapping, adjust based on actual API response structure:
-        // API might return: { username: 'xxx', avatarUrl: 'yyy', status: 'Online', isOnline: true }
-        // HTML template expects: { name: 'xxx', avatar: 'yyy', status: 'Online' }
-
         if (fetchedUsers && fetchedUsers.length > 0) {
             userListDiv.innerHTML = fetchedUsers.map(user => {
                 const displayName = user.displayName || user.username || 'Unnamed Soul';
-                const username = user.username || displayName;
-                const avatarUrl = user.avatarUrl || user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '../assets/images/default-avatar.png');
-                const isOnline = user.online || user.isOnline || false;
-                const statusMessage = user.status || 'Wandering the eternal realms...';
+                const username = user.username || displayName; // Ensure username is available for messaging
+                const avatarUrl = user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '../assets/images/default-avatar.png');
+                // Use 'online' field from API directly.
+                const isOnline = user.online === true; 
+                // Use custom status if available, otherwise default
+                const statusMessage = user.status && user.status.trim() !== '' ? user.status : 'Wandering the eternal realms...'; 
                 const onlineClass = isOnline ? 'online' : 'offline';
                 const onlineText = isOnline ? 'Online' : 'Offline';
 
@@ -224,8 +222,8 @@ async function populateActiveUsersList() {
         // Re-attach event listeners for new message buttons
         userListDiv.querySelectorAll('.message-btn').forEach(btn => {
             btn.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent event from bubbling up to modal backdrop
-                event.preventDefault(); // Prevent default button behavior
+                event.stopPropagation(); 
+                event.preventDefault(); 
                 const username = event.currentTarget.dataset.username;
                 console.log(`[activeUsers.js] Message button clicked for ${username}`);
                 if (window.MLNF && window.MLNF.openMessageModal) {
@@ -239,7 +237,7 @@ async function populateActiveUsersList() {
 
     } catch (error) {
         console.error('[activeUsers.js] Error populating active users list:', error);
-        if (userListDiv) { // Check again as it might be null if error is early
+        if (userListDiv) { 
             userListDiv.innerHTML = '<p class="error-users">Could not summon souls. The aether is disturbed.</p>';
         }
     }
