@@ -155,9 +155,9 @@
             const username = profile.username ? `@${profile.username}` : '@anonymous';
             let avatar = profile.avatar || (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png'); 
             const bio = profile.bio || 'This soul has not shared their story yet.';
-            const isOnline = profile.online || false;
+            const isOnline = profile.online === true;
             const onlineClass = isOnline ? 'online' : 'offline';
-            const onlineStatus = isOnline ? 'Online' : 'Offline';
+            const onlineStatusText = isOnline ? 'Online' : 'Offline';
             
             // Create profile card with online status indicator
             const cardHTML = `
@@ -166,7 +166,7 @@
                         <div class="profile-card-header">
                             <div class="avatar-container">
                                 <img src="${(window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png')}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
-                                <span class="online-indicator ${onlineClass}" title="${onlineStatus}"></span>
+                                <span class="online-indicator ${onlineClass}" title="${onlineStatusText}"></span>
                             </div>
                             <div class="profile-card-info">
                                 <h3>${name}</h3>
