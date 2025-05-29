@@ -24,132 +24,112 @@ function setupActiveUsersEvents() {
     const activeUsersOverlay = document.getElementById('activeUsersOverlay');
 
     console.log('[activeUsers.js] setupActiveUsersEvents: Elements found - showBtn:', !!showUsersBtn, 'sidebar:', !!activeUsersSidebar, 'closeBtn:', !!closeUsersBtn, 'overlay:', !!activeUsersOverlay);
+    if (activeUsersSidebar) {
+        console.log('[activeUsers.js] Sidebar initial state - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
+    }
+    if (activeUsersOverlay) {
+        console.log('[activeUsers.js] Overlay initial state - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
+    }
 
     if (showUsersBtn && activeUsersSidebar && activeUsersOverlay) {
         showUsersBtn.addEventListener('click', () => {
-            console.log('[activeUsers.js] showUsersBtn clicked. Attempting to activate sidebar and overlay.');
-            console.log('[activeUsers.js] Sidebar element before add class:', activeUsersSidebar);
+            console.log('[activeUsers.js] showUsersBtn clicked.');
+            console.log('[activeUsers.js] --- BEFORE ACTIVATION ---');
+            if (activeUsersSidebar) {
+                console.log('[activeUsers.js] Sidebar BEFORE - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
+                console.log('[activeUsers.js] Sidebar BEFORE - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
+            }
+            if (activeUsersOverlay) {
+                console.log('[activeUsers.js] Overlay BEFORE - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
+                console.log('[activeUsers.js] Overlay BEFORE - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
+            }
+
             activeUsersSidebar.classList.add('active');
             activeUsersOverlay.classList.add('active');
-            console.log('[activeUsers.js] Sidebar classList after add:', activeUsersSidebar.classList);
-            console.log('[activeUsers.js] Overlay classList after add:', activeUsersOverlay.classList);
-            console.log('[activeUsers.js] Overlay element after activation:', activeUsersOverlay);
-            console.log('[activeUsers.js] Overlay computed styles:', {
-                display: getComputedStyle(activeUsersOverlay).display,
-                opacity: getComputedStyle(activeUsersOverlay).opacity,
-                zIndex: getComputedStyle(activeUsersOverlay).zIndex,
-                pointerEvents: getComputedStyle(activeUsersOverlay).pointerEvents
-            });
-            setTimeout(() => {
-                const rect = activeUsersSidebar.getBoundingClientRect();
-                const compRight = getComputedStyle(activeUsersSidebar).right;
-                const overlayOpacity = getComputedStyle(activeUsersOverlay).opacity;
-                console.log('[activeUsers.js] Sidebar bounding rect after activation:', rect);
-                console.log('[activeUsers.js] Computed right style:', compRight);
-                console.log('[activeUsers.js] Overlay opacity after transition:', overlayOpacity);
-                
-                if (compRight === '-320px') {
-                    console.warn('[activeUsers.js] Sidebar still off-screen after activation; applying inline fallback.');
-                    activeUsersSidebar.style.right = '0px'; // Fallback
-                }
-                
-                if (overlayOpacity === '0') {
-                    console.warn('[activeUsers.js] Overlay still invisible after activation; applying inline fallback.');
-                    activeUsersOverlay.style.opacity = '1'; // Fallback
-                }
-            }, 350); // wait for transition
+            
+            // Force a reflow to ensure class changes are applied before next check
+            if (activeUsersSidebar) { activeUsersSidebar.offsetHeight; }
+            if (activeUsersOverlay) { activeUsersOverlay.offsetHeight; }
+
+            console.log('[activeUsers.js] --- AFTER CLASS ADD ---');
+            if (activeUsersSidebar) {
+                console.log('[activeUsers.js] Sidebar AFTER - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
+                console.log('[activeUsers.js] Sidebar AFTER - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
+            }
+            if (activeUsersOverlay) {
+                console.log('[activeUsers.js] Overlay AFTER - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
+                console.log('[activeUsers.js] Overlay AFTER - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
+            }
+            
             document.body.style.overflow = 'hidden';
+
+            // Reduced timeout for quicker feedback, original fallback logic removed for now
+            setTimeout(() => {
+                console.log('[activeUsers.js] --- AFTER TIMEOUT (30ms) ---');
+                 if (activeUsersSidebar) {
+                    console.log('[activeUsers.js] Sidebar TIMEOUT - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
+                    console.log('[activeUsers.js] Sidebar TIMEOUT - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
+                }
+                if (activeUsersOverlay) {
+                    console.log('[activeUsers.js] Overlay TIMEOUT - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
+                    console.log('[activeUsers.js] Overlay TIMEOUT - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
+                }
+            }, 30); 
         });
 
         // Fix: Always close sidebar on overlay or X click
         let isClosing = false; // Prevent multiple rapid calls
         const closeActiveSidebar = (event) => {
             if (isClosing) {
-                console.log('[activeUsers.js] closeActiveSidebar: Already closing (isClosing=true), ignoring duplicate call. Event target:', event?.target, 'Current target:', event?.currentTarget);
+                console.log('[activeUsers.js] closeActiveSidebar: Already closing, ignoring. Target:', event?.target?.id);
                 return;
             }
             isClosing = true;
             
-            console.log('[activeUsers.js] closeActiveSidebar: Starting (isClosing set to true). Event target:', event?.target, 'Current target:', event?.currentTarget);
-            console.log('[activeUsers.js] closeActiveSidebar: Initial sidebar classes:', activeUsersSidebar.className);
-            console.log('[activeUsers.js] closeActiveSidebar: Initial overlay classes:', activeUsersOverlay.className);
+            console.log('[activeUsers.js] closeActiveSidebar: Starting. Target:', event?.target?.id);
+            console.log('[activeUsers.js] Sidebar PRE-CLOSE - Classes:', activeUsersSidebar.className, 'Inline right:', activeUsersSidebar.style.right);
+            console.log('[activeUsers.js] Overlay PRE-CLOSE - Classes:', activeUsersOverlay.className, 'Inline opacity:', activeUsersOverlay.style.opacity);
 
-            // --- Core Closing Logic --- 
-            // 1. Immediately remove 'active' to stop it from trying to keep the sidebar open.
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
-            console.log('[activeUsers.js] closeActiveSidebar: Removed .active class from sidebar and overlay.');
-            console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after .active removal:', activeUsersSidebar.className);
-
-            // !!! ADD THIS: Clear any inline right style from opening fallback !!!
-            activeUsersSidebar.style.right = '';
-            console.log('[activeUsers.js] closeActiveSidebar: Cleared inline sidebar style.right.');
-
-            // 2. Add 'force-close' to trigger the closing animation via CSS.
-            activeUsersSidebar.classList.add('force-close');
-            activeUsersOverlay.style.opacity = '0'; // Still use JS for overlay opacity as it's simpler
-            console.log('[activeUsers.js] closeActiveSidebar: Added .force-close to sidebar. Overlay opacity set to 0.');
-            console.log('[activeUsers.js] closeActiveSidebar: Sidebar classes after .force-close add:', activeUsersSidebar.className);
-
-            // Force reflow might still be useful here to ensure .force-close is applied before transition ends
-            if (activeUsersSidebar) { 
-                const forceReflow = activeUsersSidebar.offsetHeight;
-                console.log('[activeUsers.js] closeActiveSidebar: Forced reflow via offsetHeight.');
-            }
+            console.log('[activeUsers.js] Removed .active from sidebar and overlay.');
             
-            let computedRight = getComputedStyle(activeUsersSidebar).right;
-            console.log('[activeUsers.js] closeActiveSidebar: Computed sidebar right after force-close and reflow:', computedRight);
-            // --- End Core Closing Logic ---
+            activeUsersSidebar.style.right = ''; // Clear any inline style from opening
+            activeUsersOverlay.style.opacity = ''; // Clear any inline style from opening
+
+            activeUsersSidebar.classList.add('force-close');
+            console.log('[activeUsers.js] Added .force-close to sidebar. Sidebar classes:', activeUsersSidebar.className);
+            
+            // Force reflow
+            activeUsersSidebar.offsetHeight; 
+            console.log('[activeUsers.js] Sidebar POST .force-close - Computed right:', getComputedStyle(activeUsersSidebar).right);
 
             document.body.style.overflow = '';
             
-            console.log('[activeUsers.js] closeActiveSidebar: Setting 350ms timeout for style cleanup.');
             setTimeout(() => {
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): Started.');
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar classes BEFORE cleanup:', activeUsersSidebar.className);
-                
-                // Only remove force-close. Leave .active as it is (should be absent).
+                console.log('[activeUsers.js] Close TIMEOUT: Removing .force-close.');
                 activeUsersSidebar.classList.remove('force-close');
-                activeUsersOverlay.style.opacity = ''; // Reset overlay opacity style
-                
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): Removed .force-close class.');
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): Sidebar classes AFTER cleanup:', activeUsersSidebar.className);
+                console.log('[activeUsers.js] Close TIMEOUT: Sidebar classes final:', activeUsersSidebar.className);
                 isClosing = false;
-                console.log('[activeUsers.js] closeActiveSidebar (timeout): isClosing set to false. Finished.');
             }, 350); 
         };
 
-        // Create a DEDICATED handler for the X button
         const closeUsersBtnHandler = (event) => {
-            console.log('[activeUsers.js] X BUTTON CLICKED (closeUsersBtnHandler). Event target:', event?.target);
-            activeUsersSidebar.classList.remove('active');
-            activeUsersSidebar.style.right = ''; // Clear inline style
-            activeUsersSidebar.classList.add('force-close');
-            activeUsersOverlay.classList.remove('active');
-            activeUsersOverlay.style.opacity = '0';
-            document.body.style.overflow = '';
-
-            // Simplified timeout for X button
-            setTimeout(() => {
-                console.log('[activeUsers.js] X BUTTON (timeout): Removing .force-close.');
-                activeUsersSidebar.classList.remove('force-close');
-                console.log('[activeUsers.js] X BUTTON (timeout): Sidebar classes after .force-close removal:', activeUsersSidebar.className);
-            }, 350);
+            console.log('[activeUsers.js] X BUTTON CLICKED.');
+            closeActiveSidebar(event); // Utilize the main closing logic
         };
 
         if (closeUsersBtn) {
-            // Remove any existing handlers to prevent duplicates
-            closeUsersBtn.onclick = null;
-            // closeUsersBtn.onclick = closeActiveSidebar; // Use the original for now
-            closeUsersBtn.onclick = closeUsersBtnHandler; // Assign DEDICATED handler
-            console.log('[activeUsers.js] Close button click handler attached (DEDICATED).');
+            closeUsersBtn.onclick = null; 
+            closeUsersBtn.onclick = closeUsersBtnHandler;
+            console.log('[activeUsers.js] Close button (X) click handler attached.');
         } else {
-            console.warn('[activeUsers.js] Close button (#closeUsers) not found inside sidebar.');
+            console.warn('[activeUsers.js] Close button (#closeUsers) not found.');
         }
-        // Remove any existing handlers to prevent duplicates
+        
         activeUsersOverlay.onclick = null;
         activeUsersOverlay.onclick = closeActiveSidebar;
-        console.log('[activeUsers.js] Overlay click handler attached to:', activeUsersOverlay);
+        console.log('[activeUsers.js] Overlay click handler attached.');
 
     } else {
         console.warn('[activeUsers.js] Could not find one or more required elements for active users sidebar. Events not fully attached.');
