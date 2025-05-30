@@ -4,7 +4,7 @@
 // Global-like variables for DOM elements accessed by global functions - assigned in DOMContentLoaded
 let soulModal, soulModalTitle, soulLoginForm, soulModalSubmit, modalFeedback, confirmPasswordField, modalToggleView;
 let activeUsers; // Used by logout()
-let messageModal, recipientName, messageHistory, messageInput; // Used by openMessageModal, loadMessages
+let messageModal, recipientName, messageHistory, messageInput, currentRecipientId, currentRecipientUsername;
 
 // HTML snippets for toggling views - define them early
 const switchToRegisterLinkHTML = 'New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>';
@@ -14,7 +14,8 @@ const switchToLoginLinkHTML = 'Already an Immortal? <a href="#" id="switchToLogi
 const API_URL = MLNF_CONFIG.API_BASE_URL;
 
 // Mocking infrastructure for local testing
-window.MOCK_LOGGED_IN_STATE = false;
+const MOCK_LOGGED_IN_STATE = localStorage.getItem('sessionToken') !== null;
+window.MOCK_LOGGED_IN_STATE = MOCK_LOGGED_IN_STATE;
 
 function enableMockLogin() {
     window.MOCK_LOGGED_IN_STATE = true;
@@ -254,26 +255,24 @@ function updateSeekersList(users) {
 }
 
 // Messaging modal functions (Restored)
-async function openMessageModal(username) {
+window.openMessageModal = async function(username) {
     console.log(`[MOCK DEBUG] openMessageModal called for ${username}. MOCK_LOGGED_IN_STATE before checkToken: ${window.MOCK_LOGGED_IN_STATE}`);
-    const isAuthenticated = await checkToken();
+    const isAuthenticated = await checkToken(); 
     console.log(`[MOCK DEBUG] openMessageModal: isAuthenticated result from checkToken: ${isAuthenticated}`);
 
     if (!isAuthenticated) {
         console.warn('[MOCK DEBUG] openMessageModal: User NOT authenticated according to checkToken. Opening Soul Modal for login.');
-        if (typeof openSoulModal === 'function') {
-            openSoulModal('login');
-        } else {
-            console.error('openSoulModal function is not defined. Cannot redirect to login.');
-        }
+        openSoulModal('login'); // Redirect to login/register if not authenticated
         return;
-    } else {
-        console.log('[MOCK DEBUG] openMessageModal: User IS authenticated. Proceeding to open message modal.');
     }
 
-    // Proceed with opening the message modal if authenticated
-    if (!messageModal || !recipientName || !messageHistory) {
+    console.log('[MOCK DEBUG] openMessageModal: User IS authenticated. Proceeding to open message modal.');
+    // Ensure DOM elements are ready (they should be if this script runs after DOMContentLoaded)
+    // It seems messageModal was already being initialized in DOMContentLoaded, good.
+
+    if (!messageModal || !recipientName || !messageHistory || !messageInput) {
         console.error('[Reintegration] Message modal elements not found for openMessageModal.');
+        alert('Message modal elements are not ready. Please try again later.');
         return;
     }
     recipientName.textContent = username;
