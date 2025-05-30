@@ -122,20 +122,38 @@
             });
             
             if (usersResponse.ok) {
-                const users = await usersResponse.json();
-                document.getElementById('totalUsers').textContent = users.length || '0';
+                const responseData = await usersResponse.json();
+                console.log('[Admin] Response from /users in loadStats:', responseData); // Log the data
                 
-                // Count online users
-                const onlineCount = users.filter(u => u.online).length;
+                // Ensure usersArray is an array
+                let usersArray = [];
+                if (Array.isArray(responseData)) {
+                    usersArray = responseData;
+                } else if (responseData && Array.isArray(responseData.data)) { // Common pattern: { data: [...] }
+                    usersArray = responseData.data;
+                } else if (responseData && Array.isArray(responseData.users)) { // Another common pattern: { users: [...] }
+                    usersArray = responseData.users;
+                }
+                // Add more checks here if other structures are possible based on console output
+
+                document.getElementById('totalUsers').textContent = usersArray.length || '0';
+                
+                const onlineCount = usersArray.filter(u => u.online).length;
                 document.getElementById('onlineUsers').textContent = onlineCount;
+            } else {
+                console.error('[Admin] Failed to fetch users for stats:', usersResponse.status, usersResponse.statusText);
+                document.getElementById('totalUsers').textContent = 'Error';
+                document.getElementById('onlineUsers').textContent = 'Error';
             }
             
             // TODO: Replace placeholder post/message counts with real API calls when endpoints are available
-            document.getElementById('totalPosts').textContent = '0';
-            document.getElementById('totalMessages').textContent = '0';
+            document.getElementById('totalPosts').textContent = '0'; // Keep as placeholder or fetch if API ready
+            document.getElementById('totalMessages').textContent = '0'; // Keep as placeholder
             
         } catch (error) {
             console.error('Error loading stats:', error);
+            document.getElementById('totalUsers').textContent = 'Error';
+            document.getElementById('onlineUsers').textContent = 'Error';
         }
     }
     
@@ -167,14 +185,31 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
-            if (!response.ok) throw new Error('Failed to fetch users');
+            if (!response.ok) {
+                console.error('[Admin] Failed to fetch users for user list:', response.status, response.statusText);
+                throw new Error('Failed to fetch users');
+            }
             
-            allUsers = await response.json();
+            const responseData = await response.json();
+            console.log('[Admin] Response from /users in loadUsers:', responseData); // Log the data
+
+            // Ensure allUsers is an array
+            if (Array.isArray(responseData)) {
+                allUsers = responseData;
+            } else if (responseData && Array.isArray(responseData.data)) { // Common pattern: { data: [...] }
+                allUsers = responseData.data;
+            } else if (responseData && Array.isArray(responseData.users)) { // Another common pattern: { users: [...] }
+                allUsers = responseData.users;
+            } else {
+                allUsers = []; // Default to empty array if structure is not as expected
+                console.warn('[Admin] Unexpected response structure from /users. Expected an array or an object with a "data" or "users" array property. Treating as empty list.');
+            }
+            
             displayUsers();
             
         } catch (error) {
             console.error('Error loading users:', error);
-            tbody.innerHTML = '<tr><td colspan="7" class="error">Failed to summon souls</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="error">Failed to summon souls. Check console.</td></tr>';
         }
     }
     
