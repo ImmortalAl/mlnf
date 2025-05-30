@@ -276,7 +276,9 @@ window.openMessageModal = async function(username) {
     recipientName.textContent = username;
     messageHistory.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
     messageModal.style.display = 'block';
-    console.log('[MOCK DEBUG] messageModal.style.display set to block. Element:', messageModal);
+    messageModal.style.opacity = '1';
+    messageModal.style.visibility = 'visible';
+    console.log('[MOCK DEBUG] messageModal styles set for display. Element:', messageModal);
     loadMessages(username);
 }
 
