@@ -130,8 +130,7 @@
                 document.getElementById('onlineUsers').textContent = onlineCount;
             }
             
-            // For now, use placeholder data for posts and messages
-            // You'll implement these endpoints later
+            // TODO: Replace placeholder post/message counts with real API calls when endpoints are available
             document.getElementById('totalPosts').textContent = '0';
             document.getElementById('totalMessages').textContent = '0';
             
@@ -143,8 +142,7 @@
     async function loadRecentActivity() {
         const activityFeed = document.getElementById('activityFeed');
         
-        // For now, show placeholder
-        // In production, fetch real activity data
+        // TODO: Replace placeholder activity with real recent activity data from backend
         activityFeed.innerHTML = `
             <div class="activity-item">
                 <i class="fas fa-user-plus activity-icon"></i>
@@ -343,7 +341,7 @@
     }
     
     function loadMetrics() {
-        // Placeholder metrics - implement real calculations later
+        // TODO: Replace placeholder analytics/chart data with real data after site launch
         document.getElementById('avgSession').textContent = '12m 34s';
         document.getElementById('dailyActive').textContent = '42';
         document.getElementById('contentRate').textContent = '3.2/day';
@@ -374,12 +372,68 @@
     };
     
     window.editUser = function(username) {
-        alert(`Edit functionality for ${username} coming soon`);
+        const user = allUsers.find(u => u.username === username);
+        if (!user) return;
+        const modal = document.getElementById('userModal');
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+            <div class="user-details">
+                <img src="${user.avatar || window.MLNF_CONFIG.DEFAULT_AVATAR}" alt="${user.username}" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
+                <h4>Edit Soul: ${user.displayName || user.username}</h4>
+                <label>Display Name: <input type="text" id="editDisplayName" value="${user.displayName || ''}"></label><br>
+                <label>Status: <input type="text" id="editStatus" value="${user.status || ''}"></label><br>
+                <label>Bio: <textarea id="editBio">${user.bio || ''}</textarea></label><br>
+                <label>Email: <input type="email" id="editEmail" value="${user.email || ''}"></label><br>
+                <button id="saveUserBtn">Save</button>
+            </div>
+            <div id="editUserFeedback"></div>
+        `;
+        modal.classList.add('active');
+        document.getElementById('saveUserBtn').onclick = async function() {
+            const displayName = document.getElementById('editDisplayName').value;
+            const status = document.getElementById('editStatus').value;
+            const bio = document.getElementById('editBio').value;
+            const email = document.getElementById('editEmail').value;
+            const token = localStorage.getItem('sessionToken');
+            try {
+                const res = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ displayName, status, bio, email })
+                });
+                if (!res.ok) throw new Error('Failed to update user');
+                document.getElementById('editUserFeedback').textContent = 'Saved!';
+                await loadUsers();
+            } catch (err) {
+                document.getElementById('editUserFeedback').textContent = 'Error: ' + err.message;
+            }
+        };
     };
     
-    window.banUser = function(username) {
-        if (confirm(`Are you sure you want to banish ${username} from the eternal sanctuary?`)) {
-            alert(`Ban functionality for ${username} coming soon`);
+    window.banUser = async function(username) {
+        if (!confirm(`Are you sure you want to banish ${username} from the eternal sanctuary?`)) return;
+        const token = localStorage.getItem('sessionToken');
+        try {
+            // Try PATCH first, fallback to DELETE if needed
+            let res = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}/ban`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) {
+                // Try DELETE as fallback
+                res = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+            }
+            if (!res.ok) throw new Error('Failed to ban user');
+            alert('User banished!');
+            await loadUsers();
+        } catch (err) {
+            alert('Error: ' + err.message);
         }
     };
     
