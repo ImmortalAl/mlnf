@@ -626,22 +626,165 @@ body.light-theme .feature-card p {
     height: 3px;
 }
 
-/* Generic Modal Overlay Style */
+/* Immortal Feedback Modal & Button Styles */
 .modal {
-    display: none; /* Hidden by default, controlled by JS */
+    display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
-    z-index: 1000; /* High z-index to appear on top */
-    animation: modalFadeIn 0.3s ease-in; /* Fade-in animation */
-    align-items: center; /* Center content vertically */
-    justify-content: center; /* Center content horizontally */
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
 }
-
-/* Styles for the content box of the Message Modal have been MOVED to components/shared/styles.css */
+.modal[aria-hidden="false"] {
+    display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
+}
+.feedback-modal {
+    background: var(--background-primary, #181825);
+    border-radius: 18px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 1.5px 8px rgba(255,94,120,0.08);
+    max-width: 420px;
+    width: 95vw;
+    max-height: 90vh;
+    padding: 2.2rem 1.7rem 1.7rem 1.7rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    animation: modalFadeIn 0.3s cubic-bezier(.4,1.4,.6,1);
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.close-modal {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #aaa);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    z-index: 10;
+    line-height: 1;
+}
+.close-modal:hover, .close-modal:focus {
+    color: var(--accent, #ff5e78);
+    transform: rotate(90deg) scale(1.1);
+    outline: none;
+}
+.feedback-modal h3 {
+    color: var(--accent, #ff5e78);
+    font-size: 1.45rem;
+    margin-bottom: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+.feedback-subtitle {
+    color: var(--text-muted, #aaa);
+    margin-bottom: 1.1rem;
+    font-style: italic;
+    font-size: 1.01rem;
+}
+.feedback-modal .form-group {
+    margin-bottom: 1.1rem;
+}
+.feedback-modal textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 1rem;
+    border: 2px solid var(--border-color, #333);
+    border-radius: 8px;
+    background: var(--background-secondary, #232336);
+    color: var(--text-primary, #fff);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s;
+}
+.feedback-modal textarea:focus {
+    outline: none;
+    border-color: var(--accent, #ff5e78);
+}
+.feedback-modal textarea::placeholder {
+    color: var(--text-muted, #aaa);
+}
+.checkbox-group {
+    margin: 0.7rem 0 0.5rem 0;
+}
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    cursor: pointer;
+    font-size: 0.97rem;
+    color: var(--text-secondary, #aaa);
+}
+.user-info-display {
+    padding: 0.7rem 1rem;
+    background: var(--background-tertiary, #232336);
+    border-radius: 6px;
+    margin-bottom: 0.7rem;
+    border-left: 4px solid var(--accent, #ff5e78);
+    font-size: 0.93rem;
+}
+.modal-actions {
+    display: flex;
+    gap: 0.7rem;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+.feedback-btn.footer {
+    margin: 0;
+    font-size: 1rem;
+    border-radius: 50px;
+    padding: 0.7rem 1.7rem;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent, #ff5e78), var(--secondary-color, #ffca28));
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(255,94,120,0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.feedback-btn.footer:hover {
+    background: linear-gradient(90deg, var(--secondary-color, #ffca28), var(--accent, #ff5e78));
+    box-shadow: 0 4px 24px rgba(255,94,120,0.18);
+}
+.feedback-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.feedback-error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+@media (max-width: 600px) {
+    .feedback-modal {
+        max-width: 98vw;
+        padding: 1.1rem 0.5rem 1.1rem 0.5rem;
+    }
+    .close-modal {
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1.5rem;
+    }
+}
 
 /* Theme Toggle Button */
 .theme-toggle {
@@ -913,200 +1056,4 @@ body .floating-buttons button.theme-toggle#themeToggle {
 .top-button:hover {
     transform: translateY(-5px); /* Slight lift on hover */
     background: var(--highlight); /* Or a slightly different accent shade */
-}
-
-/* Feedback System Styles */
-.feedback-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
-    color: white;
-    border: none;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.3);
-}
-
-.feedback-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.4);
-    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-}
-
-/* Footer Feedback Button */
-.footer-feedback {
-    margin-top: 1rem;
-    text-align: center;
-}
-
-.feedback-btn.footer {
-    margin: 0 auto;
-    font-size: 1rem;
-}
-
-/* Feedback Modal Styles */
-.feedback-modal {
-    max-width: 600px;
-    padding: 2rem;
-}
-
-.feedback-modal h3 {
-    color: var(--accent-color);
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.feedback-subtitle {
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-    font-style: italic;
-}
-
-.feedback-modal .form-group {
-    margin-bottom: 1.5rem;
-}
-
-.feedback-modal textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--background-secondary);
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: 1rem;
-    resize: vertical;
-    transition: border-color 0.3s ease;
-}
-
-.feedback-modal textarea:focus {
-    outline: none;
-    border-color: var(--accent-color);
-}
-
-.feedback-modal textarea::placeholder {
-    color: var(--text-muted);
-}
-
-/* Checkbox Styling */
-.checkbox-group {
-    margin: 1rem 0;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-}
-
-.checkbox-label input[type="checkbox"] {
-    display: none;
-}
-
-.checkmark {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--border-color);
-    border-radius: 4px;
-    background: var(--background-secondary);
-    transition: all 0.3s ease;
-}
-
-.checkmark::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 2px;
-    width: 6px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-    opacity: 1;
-}
-
-/* User Info Display */
-.user-info-display {
-    padding: 0.75rem 1rem;
-    background: var(--background-tertiary);
-    border-radius: 6px;
-    margin-bottom: 1rem;
-    border-left: 4px solid var(--accent-color);
-}
-
-.user-info-display p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-/* Success/Error States */
-.feedback-success {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.feedback-error {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .feedback-modal {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
-    
-    .feedback-btn.footer {
-        font-size: 0.9rem;
-        padding: 0.6rem 1.2rem;
-    }
-}
-
-/* Dark Theme Adjustments */
-[data-theme="dark"] .feedback-modal textarea {
-    background: var(--background-primary);
-    border-color: var(--border-color-dark);
-}
-
-[data-theme="dark"] .checkmark {
-    background: var(--background-primary);
-    border-color: var(--border-color-dark);
-}
-
-[data-theme="dark"] .user-info-display {
-    background: var(--background-primary);
 }

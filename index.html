@@ -51,50 +51,6 @@
         </div>
     </div>
 
-    <!-- Feedback Modal -->
-    <div id="feedbackModal" class="modal" aria-hidden="true">
-        <div class="modal-content feedback-modal" role="dialog" aria-labelledby="feedbackTitle">
-            <button class="close-modal" id="closeFeedbackModal" aria-label="Close feedback form">&times;</button>
-            <h3 id="feedbackTitle">
-                <i class="fas fa-heart"></i> Share Your Eternal Wisdom
-            </h3>
-            <p class="feedback-subtitle">Help us shape this sanctuary for all free-thinking souls. Visitors and users welcome!</p>
-            
-            <form id="feedbackForm">
-                <div class="form-group">
-                    <label for="feedbackContent" class="visually-hidden">Your feedback</label>
-                    <textarea 
-                        id="feedbackContent" 
-                        placeholder="Share your thoughts, suggestions, or cosmic insights..." 
-                        required
-                        rows="5"
-                    ></textarea>
-                </div>
-                
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="feedbackAnonymous">
-                        <span class="checkmark"></span>
-                        Send anonymously (honest feedback is valued, no judgment)
-                    </label>
-                </div>
-                
-                <div id="feedbackUserInfo" class="user-info-display">
-                    <p><strong>Sending as:</strong> <span id="feedbackUsername">--</span></p>
-                </div>
-                
-                <div class="modal-actions">
-                    <button type="submit" id="submitFeedback" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Send Feedback
-                    </button>
-                    <button type="button" id="cancelFeedback" class="btn btn-secondary">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <header>
         <div class="logo">
             <a href="/">
@@ -373,7 +329,7 @@
             </div>
             <div class="footer-column">
                 <h3>Stay Connected</h3>
-        <div class="social-links">
+                <div class="social-links">
                     <a href="#" aria-label="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
                     <a href="#" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
                     <a href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
@@ -383,14 +339,39 @@
         <div class="footer-bottom">
             <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
             <p>Embrace your infinite potential and connect across eternity.</p>
-            <!-- Primary Placement: Footer Feedback Button -->
             <div class="footer-feedback">
-                <button class="feedback-btn footer" id="feedbackBtnFooter">
-                    <i class="fas fa-heart"></i> Share Your Feedback
+                <button type="button" class="feedback-btn footer" id="feedbackBtnFooter">
+                    <i class="fas fa-heart"></i> Share Your Eternal Feedback
                 </button>
             </div>
         </div>
     </footer>
+
+    <!-- Feedback Modal (hidden by default) -->
+    <div id="feedbackModal" class="modal" aria-hidden="true">
+      <form id="feedbackForm" class="feedback-modal" autocomplete="off" tabindex="-1" role="dialog" aria-labelledby="feedbackTitle">
+        <button type="button" class="close-modal" id="closeFeedbackModal" aria-label="Close Feedback Modal"><i class="fas fa-times"></i></button>
+        <h3 id="feedbackTitle"><i class="fas fa-infinity"></i> Eternal Feedback</h3>
+        <div class="feedback-subtitle">Your thoughts help shape our immortal sanctuary. Share freely—anonymity is honored.</div>
+        <div class="form-group">
+          <textarea id="feedbackContent" placeholder="Share your eternal thoughts..." maxlength="1000" required></textarea>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="feedbackAnonymous">
+            <span class="checkmark"></span>
+            Send as <span style="font-style:italic;">Anonymous Soul</span>
+          </label>
+        </div>
+        <div id="feedbackUserInfo" class="user-info-display" style="display:none;">
+          <span id="feedbackUsername"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" id="submitFeedback" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Feedback</button>
+          <button type="button" id="cancelFeedback" class="btn btn-outline">Cancel</button>
+        </div>
+      </form>
+    </div>
 
     <!-- Config MUST be loaded first -->
     <script src="components/shared/config.js?v=1.2"></script>

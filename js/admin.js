@@ -14,17 +14,6 @@
     const navLinks = document.querySelectorAll('.admin-nav a');
     const logoutBtn = document.getElementById('logoutBtn');
     
-    // Initialize managers
-    let userManager;
-    let analyticsManager;
-    let feedbackManager;
-
-    function initializeManagers() {
-        userManager = new UserManager();
-        analyticsManager = new AnalyticsManager();
-        feedbackManager = new FeedbackManager();
-    }
-    
     // Check admin authorization
     async function checkAdminAuth() {
         const token = localStorage.getItem('sessionToken');
@@ -86,42 +75,30 @@
     }
     
     function showSection(sectionId) {
-        // Hide all sections
-        document.querySelectorAll('.admin-section').forEach(section => {
+        sections.forEach(section => {
             section.classList.remove('active');
         });
-
-        // Remove active class from nav links
-        document.querySelectorAll('.admin-nav a').forEach(link => {
-            link.classList.remove('active');
-        });
-
-        // Show selected section
+        
         const targetSection = document.getElementById(sectionId);
         if (targetSection) {
             targetSection.classList.add('active');
-        }
-
-        // Add active class to corresponding nav link
-        const navLink = document.querySelector(`.admin-nav a[href="#${sectionId}"]`);
-        if (navLink) {
-            navLink.classList.add('active');
-        }
-
-        // Load section-specific data
-        switch (sectionId) {
-            case 'dashboard':
-                loadDashboardData();
-                break;
-            case 'users':
-                if (userManager) userManager.loadUsers();
-                break;
-            case 'feedback':
-                if (feedbackManager) feedbackManager.loadFeedback();
-                break;
-            case 'analytics':
-                if (analyticsManager) analyticsManager.loadAnalytics();
-                break;
+            currentSection = sectionId;
+            
+            // Load section-specific data
+            switch(sectionId) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'feedback':
+                    loadFeedback();
+                    break;
+            }
         }
     }
     
@@ -538,261 +515,71 @@
         loadDashboard();
     }
     
-    // Initialize admin panel
-    init();
-    
-    // Initialize managers after DOM is ready
-    initializeManagers();
-    
-    // Show dashboard by default
-    showSection('dashboard');
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 
-    // Feedback Management
-    class FeedbackManager {
-        constructor() {
-            this.currentPage = 1;
-            this.currentFilter = 'all';
-            this.feedbackData = [];
-            
-            this.init();
-        }
-        
-        init() {
-            // Event listeners
-            const refreshBtn = document.getElementById('refreshFeedback');
-            const filterSelect = document.getElementById('filterFeedback');
-            
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', () => this.loadFeedback());
+    // --- Eternal Feedback Logic ---
+    async function loadFeedback() {
+        const token = localStorage.getItem('sessionToken');
+        const tbody = document.getElementById('feedbackTableBody');
+        tbody.innerHTML = '<tr><td colspan="5" class="loading">Summoning immortal feedback...</td></tr>';
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/feedback`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error('Failed to fetch feedback');
+            const feedback = await response.json();
+            if (!Array.isArray(feedback) || feedback.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">No feedback received yet. The silence of eternity...</td></tr>';
+                return;
             }
-            
-            if (filterSelect) {
-                filterSelect.addEventListener('change', (e) => {
-                    this.currentFilter = e.target.value;
-                    this.currentPage = 1;
-                    this.loadFeedback();
-                });
-            }
-        }
-        
-        async loadFeedback(page = 1) {
-            try {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) {
-                    throw new Error('Authentication required');
-                }
-                
-                this.showLoading();
-                
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/feedback?page=${page}&limit=10`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+            tbody.innerHTML = '';
+            feedback.forEach(item => {
+                const date = new Date(item.timestamp).toLocaleString();
+                const content = item.content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const sender = item.anonymous ? '<span class="anonymous">Anonymous Soul</span>' : (item.sender?.displayName || item.sender?.username || 'Unknown');
+                const replyBtn = item.anonymous ? '<span class="muted">(N/A)</span>' : `<button class="btn btn-primary btn-reply" data-uid="${item.sender?._id}" data-username="${item.sender?.username}"><i class="fas fa-reply"></i> Reply</button>`;
+                const deleteBtn = `<button class="btn btn-outline btn-delete" data-id="${item._id}"><i class="fas fa-trash"></i></button>`;
+                tbody.innerHTML += `<tr>
+                    <td>${date}</td>
+                    <td>${content}</td>
+                    <td>${sender}</td>
+                    <td>${replyBtn}</td>
+                    <td>${deleteBtn}</td>
+                </tr>`;
+            });
+            // Attach event listeners for reply and delete
+            tbody.querySelectorAll('.btn-reply').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const username = btn.getAttribute('data-username');
+                    if (window.openMessageModal) {
+                        window.openMessageModal(username);
+                    } else {
+                        alert('Messaging system not available.');
                     }
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to load feedback: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                this.feedbackData = data.feedback || [];
-                
-                this.updateStats(data);
-                this.renderFeedback();
-                this.renderPagination(data.pagination);
-                
-            } catch (error) {
-                console.error('Load feedback error:', error);
-                this.showError('Failed to load feedback. Please try again.');
-            }
-        }
-        
-        updateStats(data) {
-            const totalFeedback = data.pagination?.total || this.feedbackData.length;
-            const anonymousFeedback = this.feedbackData.filter(f => f.feedbackMetadata?.anonymous).length;
-            const pendingReplies = this.feedbackData.filter(f => !f.replied).length; // You can track this with additional field
-            
-            const totalEl = document.getElementById('totalFeedback');
-            const anonymousEl = document.getElementById('anonymousFeedback');
-            const pendingEl = document.getElementById('pendingReplies');
-            
-            if (totalEl) totalEl.textContent = totalFeedback;
-            if (anonymousEl) anonymousEl.textContent = anonymousFeedback;
-            if (pendingEl) pendingEl.textContent = pendingReplies;
-        }
-        
-        renderFeedback() {
-            const feedbackList = document.getElementById('feedbackList');
-            if (!feedbackList) return;
-            
-            if (!this.feedbackData || this.feedbackData.length === 0) {
-                feedbackList.innerHTML = `
-                    <div class="feedback-empty">
-                        <i class="fas fa-heart"></i>
-                        <h3>No Feedback Yet</h3>
-                        <p>When users share their eternal wisdom, it will appear here.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let filteredFeedback = this.feedbackData;
-            
-            // Apply filters
-            switch (this.currentFilter) {
-                case 'anonymous':
-                    filteredFeedback = this.feedbackData.filter(f => f.feedbackMetadata?.anonymous);
-                    break;
-                case 'identified':
-                    filteredFeedback = this.feedbackData.filter(f => !f.feedbackMetadata?.anonymous && f.sender);
-                    break;
-                case 'recent':
-                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                    filteredFeedback = this.feedbackData.filter(f => new Date(f.timestamp) > weekAgo);
-                    break;
-            }
-            
-            const feedbackHTML = filteredFeedback.map(feedback => this.createFeedbackItem(feedback)).join('');
-            feedbackList.innerHTML = feedbackHTML;
-        }
-        
-        createFeedbackItem(feedback) {
-            const isAnonymous = feedback.feedbackMetadata?.anonymous || !feedback.sender;
-            const timestamp = new Date(feedback.timestamp).toLocaleString();
-            const senderInfo = isAnonymous 
-                ? { displayName: 'Anonymous Soul', username: 'anonymous' }
-                : (feedback.sender || feedback.feedbackMetadata?.senderInfo);
-            
-            const avatar = isAnonymous 
-                ? '<div class="avatar anonymous-avatar"><i class="fas fa-user-secret"></i></div>'
-                : `<div class="avatar">${(senderInfo?.displayName || senderInfo?.username || 'U')[0].toUpperCase()}</div>`;
-            
-            const replyButton = !isAnonymous && senderInfo?.username 
-                ? `<button class="btn btn-primary" onclick="feedbackManager.openReplyModal('${feedback._id}', '${senderInfo.username}')">
-                     <i class="fas fa-reply"></i> Reply
-                   </button>`
-                : '';
-            
-            return `
-                <div class="feedback-item" data-id="${feedback._id}">
-                    <div class="feedback-header">
-                        <div class="feedback-sender">
-                            ${avatar}
-                            <div class="feedback-sender-info">
-                                <h4>${senderInfo?.displayName || senderInfo?.username || 'Anonymous Soul'}</h4>
-                                <p>${isAnonymous ? 'Anonymous feedback' : `@${senderInfo?.username || 'unknown'}`}</p>
-                            </div>
-                        </div>
-                        <div class="feedback-meta">
-                            <div class="feedback-timestamp">${timestamp}</div>
-                            <div class="feedback-badges">
-                                <span class="feedback-badge ${isAnonymous ? 'anonymous' : 'identified'}">
-                                    ${isAnonymous ? 'Anonymous' : 'Identified'}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="feedback-content">
-                        ${feedback.content.replace(/\n/g, '<br>')}
-                    </div>
-                    <div class="feedback-actions">
-                        ${replyButton}
-                        <button class="btn btn-secondary" onclick="feedbackManager.deleteFeedback('${feedback._id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        openReplyModal(feedbackId, username) {
-            const feedback = this.feedbackData.find(f => f._id === feedbackId);
-            if (!feedback || !username) return;
-            
-            // Use the existing message modal or create a new one
-            if (window.MLNF && window.MLNF.openMessageModal) {
-                window.MLNF.openMessageModal(username);
-            } else {
-                // Fallback: redirect to messaging page
-                window.location.href = `/souls/${username}`;
-            }
-        }
-        
-        async deleteFeedback(feedbackId) {
-            if (!confirm('Are you sure you want to delete this feedback? This action cannot be undone.')) {
-                return;
-            }
-            
-            try {
-                const token = localStorage.getItem('sessionToken');
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/${feedbackId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+            });
+            tbody.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (!confirm('Delete this feedback forever?')) return;
+                    const id = btn.getAttribute('data-id');
+                    const delRes = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/feedback/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (delRes.ok) {
+                        btn.closest('tr').remove();
+                    } else {
+                        alert('Failed to delete feedback.');
                     }
                 });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to delete feedback');
-                }
-                
-                // Remove from local data and re-render
-                this.feedbackData = this.feedbackData.filter(f => f._id !== feedbackId);
-                this.renderFeedback();
-                this.updateStats({ pagination: { total: this.feedbackData.length } });
-                
-            } catch (error) {
-                console.error('Delete feedback error:', error);
-                alert('Failed to delete feedback. Please try again.');
-            }
-        }
-        
-        renderPagination(pagination) {
-            const paginationEl = document.getElementById('feedbackPagination');
-            if (!paginationEl || !pagination) return;
-            
-            const { page, pages, total } = pagination;
-            
-            if (pages <= 1) {
-                paginationEl.innerHTML = '';
-                return;
-            }
-            
-            let paginationHTML = '<div class="pagination-controls">';
-            
-            // Previous button
-            if (page > 1) {
-                paginationHTML += `<button class="btn btn-secondary" onclick="feedbackManager.loadFeedback(${page - 1})">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>`;
-            }
-            
-            // Page info
-            paginationHTML += `<span class="page-info">Page ${page} of ${pages} (${total} total)</span>`;
-            
-            // Next button
-            if (page < pages) {
-                paginationHTML += `<button class="btn btn-secondary" onclick="feedbackManager.loadFeedback(${page + 1})">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>`;
-            }
-            
-            paginationHTML += '</div>';
-            paginationEl.innerHTML = paginationHTML;
-        }
-        
-        showLoading() {
-            const feedbackList = document.getElementById('feedbackList');
-            if (feedbackList) {
-                feedbackList.innerHTML = '<div class="loading">Gathering eternal wisdom...</div>';
-            }
-        }
-        
-        showError(message) {
-            const feedbackList = document.getElementById('feedbackList');
-            if (feedbackList) {
-                feedbackList.innerHTML = `<div class="error">${message}</div>`;
-            }
+            });
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="5" class="error">Failed to load feedback: ${error.message}</td></tr>`;
         }
     }
 })(); 
