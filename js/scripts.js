@@ -267,8 +267,6 @@ window.openMessageModal = async function(username) {
     }
 
     console.log('[MOCK DEBUG] openMessageModal: User IS authenticated. Proceeding to open message modal.');
-    // Ensure DOM elements are ready (they should be if this script runs after DOMContentLoaded)
-    // It seems messageModal was already being initialized in DOMContentLoaded, good.
 
     if (!messageModal || !recipientName || !messageHistory || !messageInput) {
         console.error('[Reintegration] Message modal elements not found for openMessageModal.');
@@ -278,6 +276,7 @@ window.openMessageModal = async function(username) {
     recipientName.textContent = username;
     messageHistory.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
     messageModal.style.display = 'block';
+    console.log('[MOCK DEBUG] messageModal.style.display set to block. Element:', messageModal);
     loadMessages(username);
 }
 
