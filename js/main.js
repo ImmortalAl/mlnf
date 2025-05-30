@@ -131,7 +131,7 @@ class FeedbackSystem {
         };
         try {
             this.showLoading();
-            const response = await fetch('/messages/feedback', {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/feedback`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
