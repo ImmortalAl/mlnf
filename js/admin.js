@@ -497,6 +497,61 @@
         document.getElementById('closeModal').addEventListener('click', () => {
             document.getElementById('userModal').classList.remove('active');
         });
+
+        // Message Modal Listeners
+        const messageModal = document.getElementById('messageModal');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const closeMessageModalBtn = document.getElementById('closeMessageModal');
+        const messageInput = document.getElementById('messageInput');
+
+        if (messageModal && sendMessageBtn && closeMessageModalBtn && messageInput) {
+            closeMessageModalBtn.addEventListener('click', () => {
+                messageModal.classList.remove('active');
+                messageModal.setAttribute('aria-hidden', 'true');
+            });
+
+            sendMessageBtn.addEventListener('click', async () => {
+                const messageContent = messageInput.value.trim();
+                const recipientUsername = document.getElementById('recipientName').dataset.username; // Assuming you'll store username in a data attribute
+                const token = localStorage.getItem('sessionToken');
+
+                if (!messageContent || !recipientUsername) {
+                    alert('Message content and recipient are required.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/reply`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            recipient: recipientUsername, // Or recipientId if your backend expects that
+                            content: messageContent,
+                            // Add originalMessageId if needed for threading, get it from where you store it when opening modal
+                        })
+                    });
+
+                    if (response.ok) {
+                        alert('Message sent successfully!');
+                        messageInput.value = ''; // Clear input
+                        messageModal.classList.remove('active');
+                        messageModal.setAttribute('aria-hidden', 'true');
+                        // Optionally, refresh feedback or messages list
+                    } else {
+                        const errorData = await response.json();
+                        alert(`Failed to send message: ${errorData.message || response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    alert('An error occurred while sending the message.');
+                }
+            });
+        } else {
+            console.warn('Message modal elements not found. Full interactivity might be limited.');
+        }
     }
     
     // Initialize
@@ -556,10 +611,23 @@
             tbody.querySelectorAll('.btn-reply').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const username = btn.getAttribute('data-username');
+                    const userId = btn.getAttribute('data-uid'); // Assuming you have user ID available
+                    console.log('[Admin Panel DEBUG] Reply clicked. Username:', username, 'UserID:', userId);
+                    
+                    // Store recipient info for sending message
+                    const recipientNameElement = document.getElementById('recipientName');
+                    if (recipientNameElement) {
+                        recipientNameElement.textContent = `To: ${username}`;
+                        recipientNameElement.dataset.username = username; // Store for sending
+                        recipientNameElement.dataset.userId = userId; // Store for sending if API needs ID
+                    }
+                    
                     if (window.openMessageModal) {
-                        window.openMessageModal(username);
+                        // Pass the actual user ID if available and needed by openMessageModal
+                        // For now, it seems openMessageModal in scripts.js might just take username or nothing
+                        window.openMessageModal(username, userId); 
                     } else {
-                        alert('Messaging system not available.');
+                        alert('Messaging system not available. Ensure shared components and scripts.js are loaded.');
                     }
                 });
             });

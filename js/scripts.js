@@ -758,11 +758,18 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('[Debug Step] DOMContentLoaded finished. window.openSoulModal available.');
 
     // RE-ACTIVATING PARTICLE CREATION - NOW WITH CONTINUOUS GENERATION
-    // Initial burst of particles
-    for(let i=0; i<10; i++) createParticle(); 
-    // Continuously create new particles
-    setInterval(createParticle, 500); // Create a new particle every 500ms
-    console.log('[Debug Step] Continuous particle creation initiated after DOMContentLoaded.');
+    // Check if we are on the admin page by looking for a unique admin element/class
+    const isAdminPage = document.querySelector('main.admin-container');
+
+    if (!isAdminPage) {
+        // Initial burst of particles
+        for(let i=0; i<10; i++) createParticle(); 
+        // Continuously create new particles
+        setInterval(createParticle, 500); // Create a new particle every 500ms
+        console.log('[Debug Step] Continuous particle creation initiated after DOMContentLoaded for non-admin page.');
+    } else {
+        console.log('[Debug Step] Particle creation skipped for admin page.');
+    }
 
     // MESSAGE MODAL CLOSE LISTENERS
     console.log('[MSG MODAL DEBUG] Attempting to attach close listeners.');
