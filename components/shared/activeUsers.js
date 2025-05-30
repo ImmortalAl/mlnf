@@ -93,13 +93,13 @@ function setupActiveUsersEvents() {
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
             console.log('[activeUsers.js] Removed .active from sidebar and overlay.');
-            
+
             activeUsersSidebar.style.right = ''; // Clear any inline style from opening
             activeUsersOverlay.style.opacity = ''; // Clear any inline style from opening
 
             activeUsersSidebar.classList.add('force-close');
             console.log('[activeUsers.js] Added .force-close to sidebar. Sidebar classes:', activeUsersSidebar.className);
-            
+
             // Force reflow
             activeUsersSidebar.offsetHeight; 
             console.log('[activeUsers.js] Sidebar POST .force-close - Computed right:', getComputedStyle(activeUsersSidebar).right);
@@ -120,7 +120,7 @@ function setupActiveUsersEvents() {
         };
 
         if (closeUsersBtn) {
-            closeUsersBtn.onclick = null; 
+            closeUsersBtn.onclick = null;
             closeUsersBtn.onclick = closeUsersBtnHandler;
             console.log('[activeUsers.js] Close button (X) click handler attached.');
         } else {
@@ -183,7 +183,7 @@ async function populateActiveUsersList() {
                 return `
                 <div class="user-item">
                     <div class="user-avatar-wrapper">
-                        <img src="${avatarUrl}" alt="${displayName}">
+                    <img src="${avatarUrl}" alt="${displayName}">
                         <span class="online-dot ${onlineClass}" title="${onlineText}"></span>
                     </div>
                     <div class="user-info">

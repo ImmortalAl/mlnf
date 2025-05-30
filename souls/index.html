@@ -91,7 +91,7 @@
             <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
             <div class="divider"></div>
             <a href="/pages/auth.html"><i class="fas fa-sign-in-alt"></i> Login / Register</a>
-            <a href="#" id="mobileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
+            <a href="#" id="mobileLogoutBtn" title="Log Out"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
         </div>
     </nav>
 
@@ -165,7 +165,7 @@
                     <a href="/souls/${profile.username || 'anonymous'}" class="profile-card-link-wrapper">
                         <div class="profile-card-header">
                             <div class="avatar-container">
-                                <img src="${(window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png')}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
+                            <img src="${(window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png')}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
                                 <span class="online-indicator ${onlineClass}" title="${onlineStatusText}"></span>
                             </div>
                             <div class="profile-card-info">
@@ -175,7 +175,7 @@
                         </div>
                         <p class="profile-card-bio">${bio}</p>
                     </a>
-                    <button class="btn btn-secondary message-soul-btn" onclick="if(window.MLNF && window.MLNF.openMessageModal) window.MLNF.openMessageModal('${profile.username || 'anonymous'}'); else console.error('messageModal component not ready.');">Message</button>
+                     <button class="btn btn-secondary message-soul-btn" onclick="if(window.MLNF && window.MLNF.openMessageModal) window.MLNF.openMessageModal('${profile.username || 'anonymous'}'); else console.error('messageModal component not ready.');">Message</button>
                 </div>
             `;
             return cardHTML;

@@ -29,6 +29,7 @@
             <ul>
                 <li><a href="#dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
                 <li><a href="#users"><i class="fas fa-users"></i> Soul Management</a></li>
+                <li><a href="#feedback"><i class="fas fa-heart"></i> Eternal Feedback</a></li>
                 <li><a href="#analytics"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
                 <li><a href="/"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
             </ul>
@@ -36,7 +37,7 @@
         <div class="admin-user">
             <span id="adminUsername">Administrator</span>
             <button id="logoutBtn" class="btn btn-outline">
-                <i class="fas fa-sign-out-alt"></i> Transcend
+                <i class="fas fa-sign-out-alt" title="Log Out"></i> Transcend
             </button>
         </div>
     </header>
@@ -142,6 +143,67 @@
             </div>
             
             <div class="pagination" id="usersPagination">
+                <!-- Pagination controls will be generated here -->
+            </div>
+        </section>
+
+        <!-- Feedback Management Section -->
+        <section id="feedback" class="admin-section">
+            <h2 class="section-title">
+                <i class="fas fa-heart"></i> Eternal Feedback
+            </h2>
+            
+            <div class="feedback-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Feedback</h3>
+                        <p class="stat-number" id="totalFeedback">--</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Anonymous</h3>
+                        <p class="stat-number" id="anonymousFeedback">--</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-reply"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Pending Replies</h3>
+                        <p class="stat-number" id="pendingReplies">--</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feedback-controls">
+                <div class="filter-controls">
+                    <select id="filterFeedback">
+                        <option value="all">All Feedback</option>
+                        <option value="anonymous">Anonymous Only</option>
+                        <option value="identified">Identified Users</option>
+                        <option value="recent">Recent (7 days)</option>
+                    </select>
+                    <button id="refreshFeedback" class="btn btn-secondary">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="feedback-list" id="feedbackList">
+                <div class="loading">Gathering eternal wisdom...</div>
+            </div>
+            
+            <div class="pagination" id="feedbackPagination">
                 <!-- Pagination controls will be generated here -->
             </div>
         </section>

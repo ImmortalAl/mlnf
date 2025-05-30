@@ -1,5 +1,16 @@
 # Manifest Liberation, Naturally Free (MLNF)
 
+## 🚧 TODO
+- Implement user feedback system (see proposals below)
+- Consolidate and merge overlapping documentation (README, dev-log, style guides, etc.)
+
+### Feedback System Proposals
+- Simple feedback form: Button opens modal, submits to backend, stores in feedback collection
+- Feedback with categories: Add dropdown for Bug Report, Feature Request, General Feedback, Other
+- Anonymous or authenticated feedback: Auto-fill user info if logged in, allow anonymous otherwise
+- Feedback with status tracking: Admin can mark feedback as Reviewed, In Progress, Resolved, etc.
+- Public roadmap/upvote board: Display feedback/feature requests publicly, allow upvotes/comments
+
 **Important Project Structure Note:**
 - The front-end static site files are located in: `MLNF/front/`
 - The back-end Express.js app is in: `MLNF/back/`

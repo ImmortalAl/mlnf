@@ -51,6 +51,50 @@
         </div>
     </div>
 
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal" aria-hidden="true">
+        <div class="modal-content feedback-modal" role="dialog" aria-labelledby="feedbackTitle">
+            <button class="close-modal" id="closeFeedbackModal" aria-label="Close feedback form">&times;</button>
+            <h3 id="feedbackTitle">
+                <i class="fas fa-heart"></i> Share Your Eternal Wisdom
+            </h3>
+            <p class="feedback-subtitle">Help us shape this sanctuary for all free-thinking souls. Visitors and users welcome!</p>
+            
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="feedbackContent" class="visually-hidden">Your feedback</label>
+                    <textarea 
+                        id="feedbackContent" 
+                        placeholder="Share your thoughts, suggestions, or cosmic insights..." 
+                        required
+                        rows="5"
+                    ></textarea>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="feedbackAnonymous">
+                        <span class="checkmark"></span>
+                        Send anonymously (honest feedback is valued, no judgment)
+                    </label>
+                </div>
+                
+                <div id="feedbackUserInfo" class="user-info-display">
+                    <p><strong>Sending as:</strong> <span id="feedbackUsername">--</span></p>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" id="submitFeedback" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Feedback
+                    </button>
+                    <button type="button" id="cancelFeedback" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <header>
         <div class="logo">
             <a href="/">
@@ -339,6 +383,12 @@
         <div class="footer-bottom">
             <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
             <p>Embrace your infinite potential and connect across eternity.</p>
+            <!-- Primary Placement: Footer Feedback Button -->
+            <div class="footer-feedback">
+                <button class="feedback-btn footer" id="feedbackBtnFooter">
+                    <i class="fas fa-heart"></i> Share Your Feedback
+                </button>
+            </div>
         </div>
     </footer>
 

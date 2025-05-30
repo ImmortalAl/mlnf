@@ -914,3 +914,199 @@ body .floating-buttons button.theme-toggle#themeToggle {
     transform: translateY(-5px); /* Slight lift on hover */
     background: var(--highlight); /* Or a slightly different accent shade */
 }
+
+/* Feedback System Styles */
+.feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.feedback-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.4);
+    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+}
+
+/* Footer Feedback Button */
+.footer-feedback {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.feedback-btn.footer {
+    margin: 0 auto;
+    font-size: 1rem;
+}
+
+/* Feedback Modal Styles */
+.feedback-modal {
+    max-width: 600px;
+    padding: 2rem;
+}
+
+.feedback-modal h3 {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feedback-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.feedback-modal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.feedback-modal textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--background-secondary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.feedback-modal textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.feedback-modal textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* Checkbox Styling */
+.checkbox-group {
+    margin: 1rem 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--background-secondary);
+    transition: all 0.3s ease;
+}
+
+.checkmark::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    opacity: 1;
+}
+
+/* User Info Display */
+.user-info-display {
+    padding: 0.75rem 1rem;
+    background: var(--background-tertiary);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--accent-color);
+}
+
+.user-info-display p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Success/Error States */
+.feedback-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.feedback-error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .feedback-modal {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .feedback-btn.footer {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+    }
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] .feedback-modal textarea {
+    background: var(--background-primary);
+    border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .checkmark {
+    background: var(--background-primary);
+    border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .user-info-display {
+    background: var(--background-primary);
+}
