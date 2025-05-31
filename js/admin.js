@@ -57,11 +57,21 @@
     function setupNavigation() {
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                const target = href.substring(1);
+                
+                // If it's an external link (like "/" for home), allow default behavior
+                if (href === '/' || href.startsWith('http') || href.startsWith('../')) {
+                    console.log('[Admin] Allowing navigation to:', href);
+                    return; // Don't prevent default, let browser handle navigation
+                }
+                
+                // For internal admin sections, prevent default and handle with SPA logic
                 e.preventDefault();
-                const target = link.getAttribute('href').substring(1);
                 
                 if (target === '') {
-                    // Return to main site
+                    // This shouldn't happen now, but kept for safety
+                    window.location.href = '/';
                     return;
                 }
                 
