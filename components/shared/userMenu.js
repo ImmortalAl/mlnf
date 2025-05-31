@@ -50,6 +50,10 @@ function updateUserMenu() {
         <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
         <div class="divider"></div>
         <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+        ${userData.username === 'ImmortalAl' || userData.role === 'admin' ? `
+        <div class="divider"></div>
+        <a href="/admin/"><i class="fas fa-crown"></i> Admin Panel</a>
+        ` : ''}
         <div class="divider"></div>
         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
       `;
@@ -204,13 +208,27 @@ function updateMobileAuthLinks() {
     existingAuthLinks.forEach(l => l.remove());
 
     const token = localStorage.getItem('sessionToken');
+    const cachedUser = localStorage.getItem('user');
     let authLinksHTML = '';
 
     if (token) {
+        let adminLinkHTML = '';
+        if (cachedUser) {
+            try {
+                const userData = JSON.parse(cachedUser);
+                if (userData.username === 'ImmortalAl' || userData.role === 'admin') {
+                    adminLinkHTML = '<a href="/admin/" class="mobile-auth-link"><i class="fas fa-crown"></i> Admin Panel</a>';
+                }
+            } catch (error) {
+                console.error('[userMenu.js] Error parsing user data for mobile admin link:', error);
+            }
+        }
+        
         authLinksHTML = `
             <div class="divider mobile-auth-divider"></div>
             <a href="/profile" id="mobileProfileLink" class="mobile-auth-link"><i class="fas fa-user"></i> My Soul</a>
             <a href="/pages/profile-setup.html" class="mobile-auth-link"><i class="fas fa-cog"></i> Edit Profile</a>
+            ${adminLinkHTML}
             <div class="divider mobile-auth-divider"></div>
             <a href="#" id="mobileLogoutBtn" class="mobile-auth-link"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
         `;
@@ -251,4 +269,4 @@ function updateMobileAuthLinks() {
      // For now, directly attaching here since injectNavigation also calls updateMobileAuthLinks.
 }
 // Make sure setupMobileAuthClickHandlers can be called by navigation.js if it's responsible for main link injection
-window.MLNF.setupMobileAuthClickHandlers = updateMobileAuthLinks; 
+window.MLNF.setupMobileAuthClickHandlers = updateMobileAuthLinks;

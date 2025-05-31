@@ -160,10 +160,12 @@ function displayMessages(messages) {
     }
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUserId = currentUser.id || currentUser._id;
     
     messages.forEach(message => {
         const messageDiv = document.createElement('div');
-        const isSent = message.sender._id === currentUser.id;
+        const senderId = message.sender._id || message.sender.id;
+        const isSent = senderId === currentUserId;
         messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
         
         const timestamp = new Date(message.timestamp).toLocaleTimeString([], { 
