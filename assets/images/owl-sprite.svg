@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40" viewBox="0 0 120 40">
+  <!-- Frame 1: Wings Up -->
+  <g>
+    <ellipse cx="20" cy="24" rx="8" ry="10" fill="#3a2e28" fill-opacity="0.85"/>
+    <ellipse cx="20" cy="10" rx="5" ry="8" fill="#3a2e28" fill-opacity="0.7"/>
+    <circle cx="17" cy="22" r="1.2" fill="#d4af37"/>
+    <circle cx="23" cy="22" r="1.2" fill="#d4af37"/>
+  </g>
+  <!-- Frame 2: Wings Out -->
+  <g transform="translate(40,0)">
+    <ellipse cx="20" cy="24" rx="8" ry="10" fill="#3a2e28" fill-opacity="0.85"/>
+    <ellipse cx="8" cy="24" rx="6" ry="3" fill="#3a2e28" fill-opacity="0.7"/>
+    <ellipse cx="32" cy="24" rx="6" ry="3" fill="#3a2e28" fill-opacity="0.7"/>
+    <circle cx="17" cy="22" r="1.2" fill="#d4af37"/>
+    <circle cx="23" cy="22" r="1.2" fill="#d4af37"/>
+  </g>
+  <!-- Frame 3: Wings Down -->
+  <g transform="translate(80,0)">
+    <ellipse cx="20" cy="24" rx="8" ry="10" fill="#3a2e28" fill-opacity="0.85"/>
+    <ellipse cx="14" cy="36" rx="4" ry="6" fill="#3a2e28" fill-opacity="0.7"/>
+    <ellipse cx="26" cy="36" rx="4" ry="6" fill="#3a2e28" fill-opacity="0.7"/>
+    <circle cx="17" cy="22" r="1.2" fill="#d4af37"/>
+    <circle cx="23" cy="22" r="1.2" fill="#d4af37"/>
+  </g>
+</svg> 

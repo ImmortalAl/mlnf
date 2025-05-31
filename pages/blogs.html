@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chamber of Whispers | MLNF</title>
+    <link rel="stylesheet" href="/css/blogs.css">
+    <link rel="stylesheet" href="/css/owls.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scroll-archive">
+        <h1 class="archive-title">📜 Chamber of Whispers</h1>
+        
+        <div id="blogList" class="scroll-grid"></div>
+        
+        <div id="scroll-observer" class="ancient-loader" style="display:none;">
+            <div class="relic-spinner"></div>
+            <div class="loading-text">Unearthing more scrolls...</div>
+        </div>
+    </div>
+
+    <!-- Owl Sharing Modal -->
+    <div id="sharing-modal" class="parchment-scroll" style="display:none;">
+        <div class="incantation-box">
+            <h3>🦉 Dispatch Wisdom Owl</h3>
+            <div class="owl-messenger">
+                <input type="email" id="owl-email" placeholder="Recipient's earthly address" class="parchment-input">
+                <div class="owl-sprite"></div>
+                <button onclick="sendOwlMessage()" class="owl-button">Release the Messenger</button>
+                <div id="owl-status" class="owl-status"></div>
+                <input type="hidden" id="share-url">
+            </div>
+            <button onclick="closeOwlModal()" class="owl-button" style="margin-top:1rem;">Close</button>
+        </div>
+    </div>
+
+    <script src="/js/owlMessenger.js"></script>
+    <script src="/js/blog.js"></script>
+    <script>
+    function openOwlModal(url) {
+        document.getElementById('sharing-modal').style.display = 'block';
+        document.getElementById('share-url').value = url;
+    }
+    function closeOwlModal() {
+        document.getElementById('sharing-modal').style.display = 'none';
+    }
+    </script>
+</body>
+</html> 

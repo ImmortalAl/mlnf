@@ -17,7 +17,12 @@ const API_BASE_URL = MLNF_CONFIG.API_BASE_URL;
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
 // const closeUsersBtn = document.getElementById('closeUsers'); // Handled by activeUsers.js
 const blogList = document.getElementById('blogList');
-// let onlineUsersInterval; // Handled by activeUsers.js if it implements polling, or not needed if using WebSockets
+const scrollObserver = document.getElementById('scroll-observer');
+
+let currentPage = 1;
+let isLoading = false;
+let hasMore = true;
+const PAGE_LIMIT = 10;
 
 // Check token validity
 function isTokenValid(token) {
@@ -32,60 +37,151 @@ function isTokenValid(token) {
     }
 }
 
-// Fetch blog posts
-async function fetchBlogPosts() {
+// Create excerpt from content
+function createExcerpt(content, maxLength = 150) {
+    const textContent = content.replace(/<[^>]*>/g, ''); // Strip HTML
+    return textContent.length > maxLength 
+        ? textContent.substring(0, maxLength) + '...'
+        : textContent;
+}
+
+// Fetch blog posts with pagination
+async function fetchBlogPosts(page = 1) {
+    if (isLoading || !hasMore) return;
+    
+    isLoading = true;
+    showLoadingCrystal();
+    
     try {
-        const response = await fetch(`${API_BASE_URL}/blogs`, {
+        const response = await fetch(`${API_BASE_URL}/blogs?page=${page}&limit=${PAGE_LIMIT}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
+        
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch blog posts`);
         }
-        const posts = await response.json();
-        blogList.innerHTML = posts.length === 0 ? '<div class="blog-post"><p>No blog posts yet.</p></div>' : '';
-        posts.forEach(post => {
-            const postElement = document.createElement('div');
-            postElement.className = 'blog-post';
-            postElement.id = post._id;
-            // Ensure DOMPurify is available or handle sanitization appropriately
-            postElement.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize : (html) => html)(`
-                <h3>${post.title}</h3>
-                <div class="content">${post.content}</div>
-                <p class="author">— ${post.author.displayName || post.author.username}</p>
-                <p class="date">${new Date(post.createdAt).toLocaleDateString()}</p>
-            `);
-            blogList.appendChild(postElement);
-        });
+        
+        const result = await response.json();
+        const posts = result.docs || result; // Handle both paginated and simple array responses
+        
+        if (posts.length === 0 && currentPage === 1) {
+            blogList.innerHTML = '<div class="blog-post"><p>No scrolls have been written yet. The chamber awaits the first whisper...</p></div>';
+            hasMore = false;
+        } else {
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'blog-post';
+                postElement.id = post._id;
+                
+                const authorAvatar = post.author.avatar || '/assets/images/default-avatar.png';
+                const authorDisplayName = post.author.displayName || post.author.username;
+                const excerpt = createExcerpt(post.content);
+                const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                postElement.innerHTML = `
+                    <div class="scroll-author">
+                        <a href="/profile/${post.author._id}" class="author-avatar">
+                            <img src="${authorAvatar}" alt="${authorDisplayName}'s avatar" onerror="this.src='/assets/images/default-avatar.png'">
+                        </a>
+                        <a href="/profile/${post.author._id}" class="author-name">${authorDisplayName}</a>
+                    </div>
+                    <h3>${post.title}</h3>
+                    <div class="content">${excerpt}</div>
+                    <div class="scroll-footer">
+                        <p class="date">${formattedDate}</p>
+                        <button class="whisper-link" onclick="openOwlModal('${window.location.origin}/blogs/${post._id}')">
+                            🦉 Whisper this scroll to another soul
+                        </button>
+                    </div>
+                `;
+                
+                blogList.appendChild(postElement);
+            });
+            
+            // Check if we have more pages
+            if (result.totalPages && currentPage >= result.totalPages) {
+                hasMore = false;
+            } else if (!result.totalPages && posts.length < PAGE_LIMIT) {
+                hasMore = false;
+            }
+        }
     } catch (error) {
         console.error('Error fetching blog posts:', error);
-        blogList.innerHTML = `<div class="blog-post"><p>Error loading blog posts: ${error.message}</p></div>`;
+        if (currentPage === 1) {
+            blogList.innerHTML = `
+                <div class="blog-post">
+                    <p>Error loading scrolls: ${error.message}</p>
+                    <p>The ancient texts seem to be misplaced. Please try again later.</p>
+                </div>
+            `;
+        }
+        hasMore = false;
+    } finally {
+        hideLoadingCrystal();
+        isLoading = false;
     }
 }
 
-// Create blog post
+function showLoadingCrystal() {
+    if (scrollObserver) {
+        scrollObserver.style.display = 'block';
+        scrollObserver.classList.add('active');
+    }
+}
+
+function hideLoadingCrystal() {
+    if (scrollObserver) {
+        scrollObserver.style.display = 'none';
+        scrollObserver.classList.remove('active');
+    }
+}
+
+// Intersection Observer for infinite scroll
+const observer = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !isLoading && hasMore) {
+        currentPage++;
+        fetchBlogPosts(currentPage);
+    }
+}, { threshold: 1.0 });
+
+if (scrollObserver) {
+    observer.observe(scrollObserver);
+}
+
+// Create blog post (for compatibility with existing forms)
 async function createBlog() {
     const titleInput = document.getElementById('blogTitle');
     const contentInput = document.getElementById('blogContent');
     const errorElement = document.getElementById('blogFormError');
     const token = localStorage.getItem('sessionToken');
 
-    errorElement.style.display = 'none';
+    if (errorElement) errorElement.style.display = 'none';
+    
     if (!isTokenValid(token)) {
-        errorElement.textContent = 'Please log in to share a scroll';
-        errorElement.style.display = 'block';
+        if (errorElement) {
+            errorElement.textContent = 'Please log in to share a scroll';
+            errorElement.style.display = 'block';
+        }
         if (window.MLNF && window.MLNF.openSoulModal) {
             window.MLNF.openSoulModal('login');
         }
         return;
     }
 
-    const title = titleInput.value.trim();
-    const content = contentInput.value.trim();
+    const title = titleInput?.value.trim();
+    const content = contentInput?.value.trim();
+    
     if (!title || !content) {
-        errorElement.textContent = 'Title and content are required';
-        errorElement.style.display = 'block';
+        if (errorElement) {
+            errorElement.textContent = 'Title and content are required';
+            errorElement.style.display = 'block';
+        }
         return;
     }
 
@@ -98,17 +194,28 @@ async function createBlog() {
             },
             body: JSON.stringify({ title, content })
         });
+        
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.error || `HTTP ${response.status}: Failed to post scroll`);
         }
-        titleInput.value = '';
-        contentInput.value = '';
-        fetchBlogPosts(); // Refresh blog list
+        
+        if (titleInput) titleInput.value = '';
+        if (contentInput) contentInput.value = '';
+        
+        // Refresh blog list
+        currentPage = 1;
+        isLoading = false;
+        hasMore = true;
+        blogList.innerHTML = '';
+        fetchBlogPosts(currentPage);
+        
     } catch (error) {
         console.error('Error creating blog:', error);
-        errorElement.textContent = `Failed to post scroll: ${error.message}`;
-        errorElement.style.display = 'block';
+        if (errorElement) {
+            errorElement.textContent = `Failed to post scroll: ${error.message}`;
+            errorElement.style.display = 'block';
+        }
     }
 }
 
@@ -128,7 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
         createBlogButton.onclick = createBlog; 
     }
 
-    fetchBlogPosts();
+    // Initialize blog list
+    currentPage = 1;
+    isLoading = false;
+    hasMore = true;
+    if (blogList) {
+        blogList.innerHTML = '';
+        fetchBlogPosts(currentPage);
+    }
     
     // Initialization for active users sidebar is handled by activeUsers.js and mlnf-core.js
 }); 
