@@ -268,18 +268,33 @@ window.openMessageModal = async function(username) {
 
     console.log('[MOCK DEBUG] openMessageModal: User IS authenticated. Proceeding to open message modal.');
 
-    // Check if messageModal.js component is available
-    if (window.MLNF && window.MLNF.openMessageModal && window.MLNF.initMessageModal) {
+    // Check if messageModal.js component is available and properly initialized
+    if (window.MLNF && window.MLNF.openMessageModal && window.messageModalInitialized) {
         // Use the proper messageModal.js component
         console.log('[MOCK DEBUG] Using messageModal.js component for modal handling.');
-        if (!window.messageModalInitialized) {
-            window.MLNF.initMessageModal();
-            window.messageModalInitialized = true;
-        }
         return window.MLNF.openMessageModal(username);
     }
 
+    // If component exists but isn't initialized yet, try to initialize it
+    if (window.MLNF && window.MLNF.initMessageModal && !window.messageModalInitialized) {
+        console.log('[MOCK DEBUG] MessageModal component exists but not initialized. Attempting initialization...');
+        
+        // Check if elements exist
+        const requiredElements = ['messageModal', 'recipientName', 'messageInput', 'messageHistory', 'sendMessageBtn', 'closeMessageModal'];
+        const missingElements = requiredElements.filter(id => !document.getElementById(id));
+        
+        if (missingElements.length > 0) {
+            console.error('[MOCK DEBUG] Cannot initialize messageModal, missing elements:', missingElements);
+        } else {
+            window.MLNF.initMessageModal();
+            window.messageModalInitialized = true;
+            console.log('[MOCK DEBUG] MessageModal component initialized, now opening modal...');
+            return window.MLNF.openMessageModal(username);
+        }
+    }
+
     // Fallback to old modal system for compatibility
+    console.log('[MOCK DEBUG] Using fallback modal system...');
     if (!messageModal || !recipientName || !messageHistory || !messageInput) {
         console.error('[Reintegration] Message modal elements not found for openMessageModal.');
         alert('Message modal elements are not ready. Please try again later.');
@@ -772,9 +787,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize messageModal component if available
     if (window.MLNF && window.MLNF.initMessageModal && !window.messageModalInitialized) {
-        window.MLNF.initMessageModal();
-        window.messageModalInitialized = true;
-        console.log('[Debug Step] MessageModal component initialized.');
+        console.log('[Debug Step] Attempting to initialize messageModal component...');
+        
+        // Add a small delay to ensure DOM elements are ready
+        setTimeout(() => {
+            // Check if elements exist before initializing
+            const requiredElements = ['messageModal', 'recipientName', 'messageInput', 'messageHistory', 'sendMessageBtn', 'closeMessageModal'];
+            const missingElements = requiredElements.filter(id => !document.getElementById(id));
+            
+            if (missingElements.length > 0) {
+                console.error('[Debug Step] Missing elements for messageModal:', missingElements);
+                return;
+            }
+            
+            console.log('[Debug Step] All required elements found, initializing messageModal...');
+            window.MLNF.initMessageModal();
+            window.messageModalInitialized = true;
+            console.log('[Debug Step] MessageModal component initialized successfully.');
+        }, 100);
+    } else if (!window.MLNF || !window.MLNF.initMessageModal) {
+        console.warn('[Debug Step] MessageModal component not available.');
+    } else if (window.messageModalInitialized) {
+        console.log('[Debug Step] MessageModal component already initialized.');
     }
 
     // RE-ACTIVATING PARTICLE CREATION - NOW WITH CONTINUOUS GENERATION
