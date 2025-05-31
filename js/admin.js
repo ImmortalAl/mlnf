@@ -498,59 +498,64 @@
             document.getElementById('userModal').classList.remove('active');
         });
 
-        // Message Modal Listeners
-        const messageModal = document.getElementById('messageModal');
-        const sendMessageBtn = document.getElementById('sendMessageBtn');
-        const closeMessageModalBtn = document.getElementById('closeMessageModal');
-        const messageInput = document.getElementById('messageInput');
+        // Message Modal Listeners - Only set up if messageModal.js component is not available
+        if (!window.MLNF || !window.MLNF.initMessageModal) {
+            console.log('[Admin] Setting up fallback message modal listeners');
+            const messageModal = document.getElementById('messageModal');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            const closeMessageModalBtn = document.getElementById('closeMessageModal');
+            const messageInput = document.getElementById('messageInput');
 
-        if (messageModal && sendMessageBtn && closeMessageModalBtn && messageInput) {
-            closeMessageModalBtn.addEventListener('click', () => {
-                messageModal.classList.remove('active');
-                messageModal.setAttribute('aria-hidden', 'true');
-            });
+            if (messageModal && sendMessageBtn && closeMessageModalBtn && messageInput) {
+                closeMessageModalBtn.addEventListener('click', () => {
+                    messageModal.classList.remove('active');
+                    messageModal.setAttribute('aria-hidden', 'true');
+                });
 
-            sendMessageBtn.addEventListener('click', async () => {
-                const messageContent = messageInput.value.trim();
-                const recipientUsername = document.getElementById('recipientName').dataset.username; // Assuming you'll store username in a data attribute
-                const token = localStorage.getItem('sessionToken');
+                sendMessageBtn.addEventListener('click', async () => {
+                    const messageContent = messageInput.value.trim();
+                    const recipientUsername = document.getElementById('recipientName').dataset.username; // Assuming you'll store username in a data attribute
+                    const token = localStorage.getItem('sessionToken');
 
-                if (!messageContent || !recipientUsername) {
-                    alert('Message content and recipient are required.');
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/reply`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            recipient: recipientUsername, // Or recipientId if your backend expects that
-                            content: messageContent,
-                            // Add originalMessageId if needed for threading, get it from where you store it when opening modal
-                        })
-                    });
-
-                    if (response.ok) {
-                        alert('Message sent successfully!');
-                        messageInput.value = ''; // Clear input
-                        messageModal.classList.remove('active');
-                        messageModal.setAttribute('aria-hidden', 'true');
-                        // Optionally, refresh feedback or messages list
-                    } else {
-                        const errorData = await response.json();
-                        alert(`Failed to send message: ${errorData.message || response.statusText}`);
+                    if (!messageContent || !recipientUsername) {
+                        alert('Message content and recipient are required.');
+                        return;
                     }
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                    alert('An error occurred while sending the message.');
-                }
-            });
+
+                    try {
+                        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/reply`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                recipient: recipientUsername, // Or recipientId if your backend expects that
+                                content: messageContent,
+                                // Add originalMessageId if needed for threading, get it from where you store it when opening modal
+                            })
+                        });
+
+                        if (response.ok) {
+                            alert('Message sent successfully!');
+                            messageInput.value = ''; // Clear input
+                            messageModal.classList.remove('active');
+                            messageModal.setAttribute('aria-hidden', 'true');
+                            // Optionally, refresh feedback or messages list
+                        } else {
+                            const errorData = await response.json();
+                            alert(`Failed to send message: ${errorData.message || response.statusText}`);
+                        }
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                        alert('An error occurred while sending the message.');
+                    }
+                });
+            } else {
+                console.warn('Message modal elements not found. Full interactivity might be limited.');
+            }
         } else {
-            console.warn('Message modal elements not found. Full interactivity might be limited.');
+            console.log('[Admin] Using messageModal.js component for message modal functionality');
         }
     }
     

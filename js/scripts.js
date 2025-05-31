@@ -268,6 +268,18 @@ window.openMessageModal = async function(username) {
 
     console.log('[MOCK DEBUG] openMessageModal: User IS authenticated. Proceeding to open message modal.');
 
+    // Check if messageModal.js component is available
+    if (window.MLNF && window.MLNF.openMessageModal && window.MLNF.initMessageModal) {
+        // Use the proper messageModal.js component
+        console.log('[MOCK DEBUG] Using messageModal.js component for modal handling.');
+        if (!window.messageModalInitialized) {
+            window.MLNF.initMessageModal();
+            window.messageModalInitialized = true;
+        }
+        return window.MLNF.openMessageModal(username);
+    }
+
+    // Fallback to old modal system for compatibility
     if (!messageModal || !recipientName || !messageHistory || !messageInput) {
         console.error('[Reintegration] Message modal elements not found for openMessageModal.');
         alert('Message modal elements are not ready. Please try again later.');
@@ -275,10 +287,11 @@ window.openMessageModal = async function(username) {
     }
     recipientName.textContent = username;
     messageHistory.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
-    messageModal.style.display = 'block';
-    messageModal.style.opacity = '1';
-    messageModal.style.visibility = 'visible';
-    console.log('[MOCK DEBUG] messageModal styles set for display. Element:', messageModal);
+    
+    // Use the proper .active class system instead of direct style manipulation
+    messageModal.classList.add('active');
+    messageModal.setAttribute('aria-hidden', 'false');
+    console.log('[MOCK DEBUG] messageModal .active class added. Element:', messageModal);
     loadMessages(username);
 }
 
@@ -757,6 +770,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openSoulModal = openSoulModal;
     console.log('[Debug Step] DOMContentLoaded finished. window.openSoulModal available.');
 
+    // Initialize messageModal component if available
+    if (window.MLNF && window.MLNF.initMessageModal && !window.messageModalInitialized) {
+        window.MLNF.initMessageModal();
+        window.messageModalInitialized = true;
+        console.log('[Debug Step] MessageModal component initialized.');
+    }
+
     // RE-ACTIVATING PARTICLE CREATION - NOW WITH CONTINUOUS GENERATION
     // Check if we are on the admin page by looking for a unique admin element/class
     const isAdminPage = document.querySelector('main.admin-container');
@@ -771,39 +791,51 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('[Debug Step] Particle creation skipped for admin page.');
     }
 
-    // MESSAGE MODAL CLOSE LISTENERS
+    // MESSAGE MODAL CLOSE LISTENERS - Only attach if messageModal.js component is not available
     console.log('[MSG MODAL DEBUG] Attempting to attach close listeners.');
     console.log('[MSG MODAL DEBUG] closeMessageModalBtn:', closeMessageModalBtn);
     console.log('[MSG MODAL DEBUG] messageModal:', messageModal);
-    if (closeMessageModalBtn && messageModal) {
-        closeMessageModalBtn.addEventListener('click', () => {
-            console.log(`[MSG MODAL DEBUG] 'Close Nexus' button CLICKED.`);
-            messageModal.style.display = 'none';
-            console.log('[Messaging] Message modal closed via Close Nexus button.');
-        });
-        console.log('[Debug Step] Listener for message modal Close button ATTACHED.');
+    
+    // Only attach fallback listeners if the proper messageModal component is not available
+    if (!window.MLNF || !window.MLNF.initMessageModal) {
+        if (closeMessageModalBtn && messageModal) {
+            closeMessageModalBtn.addEventListener('click', () => {
+                console.log(`[MSG MODAL DEBUG] 'Close Nexus' button CLICKED.`);
+                messageModal.classList.remove('active');
+                messageModal.setAttribute('aria-hidden', 'true');
+                console.log('[Messaging] Message modal closed via Close Nexus button.');
+            });
+            console.log('[Debug Step] Listener for message modal Close button ATTACHED.');
+        } else {
+            console.error('[MSG MODAL DEBUG] Could not attach listener to Close Nexus button.');
+            console.error('[MSG MODAL DEBUG] Button:', closeMessageModalBtn);
+            console.error('[MSG MODAL DEBUG] Modal:', messageModal);
+        }
     } else {
-        console.error('[MSG MODAL DEBUG] Could not attach listener to Close Nexus button.');
-        console.error('[MSG MODAL DEBUG] Button:', closeMessageModalBtn);
-        console.error('[MSG MODAL DEBUG] Modal:', messageModal);
+        console.log('[Debug Step] Listener for message modal Close button ATTACHED.');
     }
 
-    // REMOVED: Duplicate messageModal click listener - this is handled in messageModal.js
     // The messageModal component (messageModal.js) handles its own backdrop click events
     console.log('[Debug Step] Message modal backdrop click listener is handled by messageModal.js component.');
 
-    // SEND MESSAGE BUTTON LISTENER (Uses sendMessageBtn declared earlier in DOMContentLoaded)
+    // SEND MESSAGE BUTTON LISTENER - Only attach if messageModal.js component is not available
     console.log('[MSG MODAL DEBUG] sendMessageBtn element check:', sendMessageBtn);
-    if (sendMessageBtn && messageInput) {
-        sendMessageBtn.addEventListener('click', () => {
-            console.log(`[MSG MODAL DEBUG] 'Send Whisper' button CLICKED. Value: ${messageInput.value}`);
-            if(messageInput) messageInput.value = ''; 
-        });
-        console.log('[Debug Step] Listener for sendMessageBtn ATTACHED.');
+    
+    // Only attach fallback listeners if the proper messageModal component is not available  
+    if (!window.MLNF || !window.MLNF.initMessageModal) {
+        if (sendMessageBtn && messageInput) {
+            sendMessageBtn.addEventListener('click', () => {
+                console.log(`[MSG MODAL DEBUG] 'Send Whisper' button CLICKED. Value: ${messageInput.value}`);
+                if(messageInput) messageInput.value = ''; 
+            });
+            console.log('[Debug Step] Listener for sendMessageBtn ATTACHED.');
+        } else {
+            console.error('[MSG MODAL DEBUG] Could not attach listener to Send Whisper button.');
+            console.error('[MSG MODAL DEBUG] Button:', sendMessageBtn);
+            console.error('[MSG MODAL DEBUG] Input:', messageInput);
+        }
     } else {
-        console.error('[MSG MODAL DEBUG] Could not attach listener to Send Whisper button.');
-        console.error('[MSG MODAL DEBUG] Button:', sendMessageBtn);
-        console.error('[MSG MODAL DEBUG] Input:', messageInput);
+        console.log('[Debug Step] Listener for sendMessageBtn ATTACHED.');
     }
 
     // Soul Modal Form Submission Logic - NOW ACTIVATED
