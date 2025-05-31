@@ -34,28 +34,19 @@ function setupActiveUsersEvents() {
     if (showUsersBtn && activeUsersSidebar && activeUsersOverlay) {
         showUsersBtn.addEventListener('click', () => {
             console.log('[activeUsers.js] showUsersBtn clicked.');
-            console.log('[activeUsers.js] --- BEFORE ACTIVATION ---');
-            if (activeUsersSidebar) {
-                console.log('[activeUsers.js] Sidebar BEFORE - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
-                console.log('[activeUsers.js] Sidebar BEFORE - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
-            }
-            if (activeUsersOverlay) {
-                console.log('[activeUsers.js] Overlay BEFORE - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
-                console.log('[activeUsers.js] Overlay BEFORE - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
-            }
 
-            activeUsersSidebar.classList.add('active');
+            // Force clear any lingering force-close class
+            activeUsersSidebar.classList.remove('force-close');
+            activeUsersSidebar.style.right = ''; // Clear any inline style
+
+            // Make overlay active and show sidebar 
             activeUsersOverlay.classList.add('active');
-            
-            // Force a reflow to ensure class changes are applied before next check
-            if (activeUsersSidebar) { activeUsersSidebar.offsetHeight; }
-            if (activeUsersOverlay) { activeUsersOverlay.offsetHeight; }
+            activeUsersSidebar.classList.add('active');
 
-            console.log('[activeUsers.js] --- AFTER CLASS ADD ---');
-            if (activeUsersSidebar) {
-                console.log('[activeUsers.js] Sidebar AFTER - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
-                console.log('[activeUsers.js] Sidebar AFTER - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
-            }
+            console.log('[activeUsers.js] Applied .active to sidebar and overlay.');
+            console.log('[activeUsers.js] Sidebar AFTER - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
+            console.log('[activeUsers.js] Sidebar AFTER - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
+
             if (activeUsersOverlay) {
                 console.log('[activeUsers.js] Overlay AFTER - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
                 console.log('[activeUsers.js] Overlay AFTER - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
@@ -75,6 +66,12 @@ function setupActiveUsersEvents() {
                     console.log('[activeUsers.js] Overlay TIMEOUT - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
                 }
             }, 30); 
+        });
+
+        // Prevent sidebar clicks from closing the sidebar
+        activeUsersSidebar.addEventListener('click', (event) => {
+            event.stopPropagation();
+            console.log('[activeUsers.js] Sidebar clicked, prevented close.');
         });
 
         // Fix: Always close sidebar on overlay or X click

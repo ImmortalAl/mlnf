@@ -12,12 +12,19 @@ function jwt_decode(token) {
     }
 }
 
+console.log('[blog.js] Script loaded');
+console.log('[blog.js] MLNF_CONFIG:', window.MLNF_CONFIG);
+
 const BLOG_API_BASE_URL = MLNF_CONFIG.API_BASE_URL;
+console.log('[blog.js] BLOG_API_BASE_URL:', BLOG_API_BASE_URL);
+
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
 // const closeUsersBtn = document.getElementById('closeUsers'); // Handled by activeUsers.js
 const blogList = document.getElementById('blogList');
 const scrollObserver = document.getElementById('scroll-observer');
+
+console.log('[blog.js] Elements found - blogList:', !!blogList, 'scrollObserver:', !!scrollObserver);
 
 let currentPage = 1;
 let isLoading = false;
@@ -49,16 +56,27 @@ function createExcerpt(content, maxLength = 150) {
 
 // Fetch blog posts with pagination
 async function fetchBlogPosts(page = 1) {
-    if (isLoading || !hasMore) return;
+    console.log('[blog.js] fetchBlogPosts called with page:', page);
+    console.log('[blog.js] Current state - isLoading:', isLoading, 'hasMore:', hasMore);
+    
+    if (isLoading || !hasMore) {
+        console.log('[blog.js] Skipping fetch - isLoading:', isLoading, 'hasMore:', hasMore);
+        return;
+    }
     
     isLoading = true;
     showLoadingCrystal();
     
+    const fetchUrl = `${BLOG_API_BASE_URL}/blogs?page=${page}&limit=${PAGE_LIMIT}`;
+    console.log('[blog.js] Fetching from URL:', fetchUrl);
+    
     try {
-        const response = await fetch(`${BLOG_API_BASE_URL}/blogs?page=${page}&limit=${PAGE_LIMIT}`, {
+        const response = await fetch(fetchUrl, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
+        
+        console.log('[blog.js] Response received - status:', response.status, 'ok:', response.ok);
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -66,13 +84,19 @@ async function fetchBlogPosts(page = 1) {
         }
         
         const result = await response.json();
+        console.log('[blog.js] Response data:', result);
+        
         const posts = result.docs || result; // Handle both paginated and simple array responses
+        console.log('[blog.js] Posts extracted:', posts.length, 'posts');
         
         if (posts.length === 0 && currentPage === 1) {
+            console.log('[blog.js] No posts found, showing empty message');
             blogList.innerHTML = '<div class="blog-post"><p>No scrolls have been written yet. The chamber awaits the first whisper...</p></div>';
             hasMore = false;
         } else {
+            console.log('[blog.js] Processing', posts.length, 'posts');
             posts.forEach(post => {
+                console.log('[blog.js] Processing post:', post._id, post.title);
                 const postElement = document.createElement('div');
                 postElement.className = 'blog-post';
                 postElement.id = post._id;
@@ -110,17 +134,20 @@ async function fetchBlogPosts(page = 1) {
                 postElement.onclick = () => openBlogModal(post._id);
                 
                 blogList.appendChild(postElement);
+                console.log('[blog.js] Post added to DOM:', post._id);
             });
             
             // Check if we have more pages
             if (result.totalPages && currentPage >= result.totalPages) {
                 hasMore = false;
+                console.log('[blog.js] No more pages available');
             } else if (!result.totalPages && posts.length < PAGE_LIMIT) {
                 hasMore = false;
+                console.log('[blog.js] Fewer posts than limit, assuming no more pages');
             }
         }
     } catch (error) {
-        console.error('Error fetching blog posts:', error);
+        console.error('[blog.js] Error fetching blog posts:', error);
         if (currentPage === 1) {
             blogList.innerHTML = `
                 <div class="blog-post">
@@ -133,6 +160,7 @@ async function fetchBlogPosts(page = 1) {
     } finally {
         hideLoadingCrystal();
         isLoading = false;
+        console.log('[blog.js] fetchBlogPosts completed - isLoading:', isLoading, 'hasMore:', hasMore);
     }
 }
 
@@ -252,30 +280,46 @@ async function fetchBlogPost(postId) {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('[blog.js] DOMContentLoaded event fired');
+    
     const token = localStorage.getItem('sessionToken');
     const blogForm = document.getElementById('blogForm');
+    
+    console.log('[blog.js] Session token:', token ? 'exists' : 'not found');
+    console.log('[blog.js] Blog form element:', !!blogForm);
 
     if (blogForm && isTokenValid(token)) {
         blogForm.style.display = 'block';
+        console.log('[blog.js] Blog form displayed');
     }
     
     const createBlogButton = document.querySelector('.blog-form button');
     if (createBlogButton) {
         createBlogButton.onclick = createBlog; 
+        console.log('[blog.js] Create blog button event attached');
     }
 
     // Initialize blog list
     currentPage = 1;
     isLoading = false;
     hasMore = true;
-    if (blogList) {
-        blogList.innerHTML = '';
+    
+    console.log('[blog.js] Reinitializing blogList element...');
+    const blogListElement = document.getElementById('blogList');
+    console.log('[blog.js] blogList element found:', !!blogListElement);
+    
+    if (blogListElement) {
+        blogListElement.innerHTML = '';
+        console.log('[blog.js] Starting to fetch blog posts...');
         fetchBlogPosts(currentPage);
+    } else {
+        console.error('[blog.js] ERROR: blogList element not found!');
     }
     
     // Check for blog ID in URL hash
     if (window.location.hash) {
         const blogId = window.location.hash.substring(1);
+        console.log('[blog.js] Found blog ID in hash:', blogId);
         // Wait for blogs to load then open modal
         setTimeout(async () => {
             if (blogPosts[blogId]) {
@@ -309,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Initialization for active users sidebar is handled by activeUsers.js and mlnf-core.js
+    console.log('[blog.js] DOMContentLoaded initialization complete');
 }); 
 
 // Modal functions
