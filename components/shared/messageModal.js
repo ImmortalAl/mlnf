@@ -48,9 +48,16 @@ function initMessageModal() {
 }
 
 async function openMessageModal(username) {
+    // Auto-initialize if not already initialized
     if (!messageModal || !recipientNameElement) {
-        console.error('[messageModal.js] Modal elements not found.');
-        return;
+        console.log('[messageModal.js] Component not initialized, attempting auto-initialization...');
+        initMessageModal();
+        
+        // Check again after initialization
+        if (!messageModal || !recipientNameElement) {
+            console.error('[messageModal.js] Modal elements not found after initialization attempt.');
+            return;
+        }
     }
 
     console.log(`[messageModal.js] Opening message modal for ${username}`);
