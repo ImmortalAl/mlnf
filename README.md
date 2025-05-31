@@ -46,7 +46,6 @@ A timeless sanctuary for liberated spirits to manifest truth and freedom.
 ## 🎯 Next Development Priorities
 
 ### 1. Administrative Control Center
-- User management dashboard (`/admin`)
 - Content moderation tools
 - Site analytics and monitoring
 - Role-based access control

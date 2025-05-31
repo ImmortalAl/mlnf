@@ -1,76 +1,50 @@
-/* Styles for blog.html will go here */ 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', system-ui, sans-serif;
+/* Styles for blog.html - Specific to Soul Scrolls page */ 
+
+/* Parchment Theme Variables */
+:root {
+    --parchment: #f9f6ef;
+    --ink: #3a2e28;
+    --gold: #d4af37;
+    --aged-border: #e0d6c3;
+    --shadow: rgba(58, 46, 40, 0.1);
 }
-body {
-    background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+
+/* Blog-specific container */
+.scroll-archive {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
-header {
-    background: var(--gradient-secondary);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid var(--accent);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-}
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-.logo i {
-    color: var(--accent);
-    font-size: 2.2rem;
-    animation: pulseGlow 2s infinite;
-}
-.logo h1 {
-    font-size: 1.8rem;
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-nav ul {
-    display: flex;
-    gap: 1.8rem;
-    list-style: none;
-}
-nav a {
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 0;
-    transition: var(--transition);
-}
-nav a:hover {
-    color: var(--accent);
-}
-main {
-    padding: 3rem 2rem;
-    flex: 1;
-}
-.section-title {
+
+/* Archive Header */
+.archive-title {
+    font-family: 'MedievalSharp', cursive;
     text-align: center;
-    margin-bottom: 3rem;
-}
-.section-title h2 {
     font-size: 2.5rem;
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin: 3rem 0;
+    position: relative;
+    color: var(--ink);
+    letter-spacing: 2px;
 }
+
+.archive-title::after {
+    content: '';
+    display: block;
+    width: 250px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1.5rem auto;
+}
+
+/* Scroll Grid */
+.scroll-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+    padding: 0 1rem;
+}
+
+/* Blog form for new posts */
 .blog-form {
     background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
     border-radius: var(--border-radius);
@@ -81,6 +55,7 @@ main {
     margin-right: auto;
     border-left: 5px solid var(--accent);
 }
+
 .blog-form input, .blog-form textarea {
     width: 100%;
     padding: 0.8rem;
@@ -91,10 +66,12 @@ main {
     color: var(--text);
     font-family: 'Segoe UI', system-ui, sans-serif;
 }
+
 .blog-form textarea {
     resize: vertical;
     min-height: 100px;
 }
+
 .blog-form button {
     padding: 0.8rem 1.5rem;
     background: var(--gradient-accent);
@@ -105,162 +82,409 @@ main {
     cursor: pointer;
     transition: var(--transition);
 }
+
 .blog-form button:hover {
     box-shadow: var(--shadow);
 }
+
 .blog-form .error {
     color: #ff6b6b;
     font-size: 0.9rem;
     margin-top: 0.5rem;
 }
-.blog-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
+
+/* Scroll Card */
 .blog-post {
-    background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    transition: var(--transition);
-    border-left: 5px solid var(--accent);
+    background: var(--parchment);
+    border: 2px solid var(--aged-border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 15px var(--shadow);
+    cursor: pointer;
 }
+
 .blog-post:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(58, 46, 40, 0.2);
 }
-.blog-post h3 {
-    font-size: 1.5rem;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-}
-.blog-post .content {
-    color: #d9ccff;
-    margin-bottom: 1rem;
-}
-.blog-post .author {
-    font-style: italic;
-    color: var(--success);
-    font-size: 0.9rem;
-}
-.blog-post .date {
-    font-size: 0.8rem;
-    color: #aaa;
-}
-.active-users {
-    position: fixed;
-    right: -300px; /* Initially hidden */
-    top: 70px; /* Adjust if header height changes */
-    width: 300px;
-    height: calc(100% - 70px); /* Adjust if header height changes */
-    background: var(--gradient-secondary);
-    padding: 1.5rem;
-    transition: right 0.3s ease;
-    z-index: 200; /* Ensure it's above content but below modal/header overlay */
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-    overflow-y: auto;
-}
-.active-users.active {
+
+/* Scroll Edge Decoration */
+.blog-post::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
     right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, 
+        var(--gold) 0%, 
+        var(--aged-border) 30%, 
+        var(--gold) 70%, 
+        var(--aged-border) 100%
+    );
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
 }
-.active-users-header {
+
+.blog-post:hover::before {
+    opacity: 0.6;
+}
+
+/* Author Section */
+.scroll-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.author-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+    display: block;
+}
+
+.author-avatar:hover {
+    transform: scale(1.1);
+}
+
+.author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.author-name {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    position: relative;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.author-name:hover {
+    color: var(--gold);
+}
+
+.author-name::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.3s ease;
+}
+
+.author-name:hover::after {
+    width: 100%;
+}
+
+/* Content */
+.scroll-title,
+.blog-post h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+    color: var(--ink);
+}
+
+.scroll-excerpt,
+.blog-post .content {
+    color: #64594d;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+}
+
+.scroll-excerpt::after,
+.blog-post .content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2em;
+    background: linear-gradient(to bottom, transparent, var(--parchment) 85%);
+}
+
+/* Footer */
+.scroll-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(255, 94, 120, 0.3); /* Using accent color with alpha */
+    margin-top: 1.5rem;
 }
-.active-users h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-.active-users ul {
-    list-style: none;
-    /* max-height: calc(100% - 100px); /* Adjust if header/other elements change */
-    /* overflow-y: auto; /* Already on .active-users */
-}
-.active-users li {
+
+.scroll-date,
+.blog-post .date {
+    font-size: 0.9rem;
+    color: #8c7b6c;
     display: flex;
     align-items: center;
-    padding: 0.8rem 0;
-    gap: 0.5rem; /* Replaced margin-right on image */
+    gap: 0.5rem;
 }
-.profile-preview img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    /* margin-right: 1rem; */ /* Replaced by gap on parent */
+
+.scroll-date::before,
+.blog-post .date::before {
+    content: '🕯️';
+    font-size: 1.1rem;
 }
-.profile-preview a {
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 500;
+
+.blog-post .author {
+    font-size: 0.95rem;
+    color: #64594d;
+    font-style: italic;
+    margin: 0.5rem 0;
 }
-.profile-preview .status {
-    font-size: 0.8rem;
-    color: #d9ccff; /* A light, readable color */
-}
-.online-dot { /* Already in base-theme.css or styles.css, verify */
-    width: 10px;
-    height: 10px;
-    background: var(--success);
-    border-radius: 50%;
-    margin-left: 0.5rem; /* If needed for spacing */
-}
-.show-users-btn {
-    position: fixed;
-    bottom: 70px; /* Consistent with active-users top */
-    right: 20px;
-    background: var(--secondary);
-    border: none;
-    padding: 0.8rem;
-    border-radius: 50%;
+
+/* Whisper Link */
+.whisper-link {
+    background: none;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
     cursor: pointer;
-    color: var(--text);
-    z-index: 300; /* Above active-users panel when closed */
-    transition: var(--transition);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    display: inline-block;
+    text-decoration: none;
 }
-.show-users-btn:hover {
-    background: var(--accent);
+
+.whisper-link:hover {
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    transform: scale(1.05);
 }
-.close-sidebar { /* General close button style, could be in shared */
+
+/* Loading Spinner */
+.ancient-loader {
+    text-align: center;
+    padding: 3rem 0;
+    margin: 2rem auto;
+}
+
+.ancient-loader.active {
+    display: block !important;
+}
+
+.relic-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--gold);
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    animation: relicSpin 1.2s linear infinite;
+    margin: 0 auto;
+    position: relative;
+}
+
+.relic-spinner::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid rgba(58, 46, 40, 0.2);
+    border-radius: 50%;
+    animation: relicSpin 2s linear infinite reverse;
+}
+
+@keyframes relicSpin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #8c7b6c;
+    margin-top: 1rem;
+    font-style: italic;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+}
+
+/* Parchment Modal Styles */
+.parchment-scroll {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--parchment);
+    padding: 2rem;
+    box-shadow: 0 0 30px var(--shadow);
+    z-index: 1000;
+    max-width: 500px;
+    border: 2px solid var(--aged-border);
+    border-radius: 8px;
+}
+
+.incantation-box {
+    text-align: center;
+}
+
+.incantation-box h3 {
+    margin-top: 0;
+    color: var(--ink);
+}
+
+/* Blog Modal Styles */
+.blog-modal-content {
+    background: var(--parchment);
+    border: 2px solid var(--aged-border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    margin: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.blog-modal-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--aged-border);
+}
+
+.blog-modal-header .scroll-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.blog-modal-header .author-avatar {
+    width: 60px;
+    height: 60px;
+}
+
+.blog-modal-header .author-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+}
+
+.blog-modal-header .date {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #8c7b6c;
+}
+
+#modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    line-height: 1.3;
+}
+
+#modal-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #64594d;
+    margin-bottom: 2rem;
+}
+
+#modal-content p {
+    margin-bottom: 1.2rem;
+}
+
+#modal-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--aged-border);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     background: none;
     border: none;
-    color: var(--text);
-    font-size: 1.5rem;
+    font-size: 2rem;
+    color: #8c7b6c;
     cursor: pointer;
-    position: absolute; /* Contextual positioning */
-    top: 10px;
-    right: 10px;
-    z-index: 250; /* Ensure clickable */
+    transition: color 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
-footer {
-    background: var(--gradient-secondary);
-    text-align: center;
-    padding: 2rem;
-    border-top: 3px solid var(--accent);
+
+.close-modal:hover {
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
 }
-@keyframes pulseGlow {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
-}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    header { /* This might conflict with shared header styles, review */
-        flex-direction: column;
-        padding: 1rem;
+    .scroll-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0;
     }
-    nav ul { /* This might conflict with shared header styles, review */
-        flex-direction: column;
-        gap: 1rem;
+    
+    .archive-title {
+        font-size: 2rem;
     }
-    .blog-post, .blog-form {
+    
+    .blog-post {
         padding: 1.5rem;
     }
-    .active-users { /* Adjust for mobile view if it becomes full screen */
-        width: 100%;
-        top: 0; /* Assuming header is also adjusted or hidden */
-        height: 100%;
+    
+    .blog-form {
+        padding: 1.5rem;
+    }
+    
+    .scroll-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .scroll-archive {
+        padding: 0 0.5rem;
+    }
+    
+    .archive-title {
+        font-size: 1.8rem;
+        margin: 2rem 0;
+    }
+    
+    .blog-post {
+        padding: 1.2rem;
     }
 } 

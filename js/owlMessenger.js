@@ -14,7 +14,7 @@ async function sendOwlMessage() {
   statusEl.textContent = 'Preparing the messenger...';
   startOwlAnimation();
   try {
-    const response = await fetch('/api/send-owl', {
+    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/send-owl`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, url })

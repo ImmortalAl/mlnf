@@ -218,6 +218,93 @@
                 justify-content: center;
             }
         }
+
+        /* Blog Section Styles */
+        .profile-section {
+            margin-top: 3rem;
+        }
+
+        .section-title {
+            color: var(--accent);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .user-blogs-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .blog-preview {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .blog-preview:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .blog-preview-title {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .blog-preview-excerpt {
+            color: var(--text);
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-preview-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .blog-preview-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blog-preview-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .blog-preview-link:hover {
+            color: var(--warning);
+        }
+
+        .no-content-message {
+            text-align: center;
+            padding: 3rem;
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            opacity: 0.8;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -341,6 +428,20 @@
                         <i class="fas fa-users"></i>
                         Explore More Souls
                     </a>
+                </div>
+
+                <!-- User's Blog Posts -->
+                <div id="userBlogsSection" class="profile-section" style="display: none;">
+                    <h3 class="section-title">
+                        <i class="fas fa-scroll"></i>
+                        Soul Scrolls
+                    </h3>
+                    <div id="userBlogsList" class="user-blogs-list">
+                        <!-- Blog posts will be loaded here -->
+                    </div>
+                    <div id="noBlogsMessage" class="no-content-message" style="display: none;">
+                        <p>This soul has not yet shared any scrolls.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -484,6 +585,83 @@
             // Show profile content
             loadingState.style.display = 'none';
             profileContent.style.display = 'block';
+            
+            // Fetch user's blog posts
+            fetchUserBlogs(user._id);
+        }
+
+        // Fetch user's blog posts
+        async function fetchUserBlogs(userId) {
+            try {
+                const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
+                const response = await fetch(`${apiUrl}/blogs?author=${userId}`, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to fetch user blogs');
+                    return;
+                }
+
+                const result = await response.json();
+                const blogs = result.docs || result;
+
+                if (blogs.length > 0) {
+                    displayUserBlogs(blogs);
+                    document.getElementById('userBlogsSection').style.display = 'block';
+                } else {
+                    document.getElementById('noBlogsMessage').style.display = 'block';
+                    document.getElementById('userBlogsSection').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching user blogs:', error);
+            }
+        }
+
+        // Display user's blog posts
+        function displayUserBlogs(blogs) {
+            const blogsList = document.getElementById('userBlogsList');
+            blogsList.innerHTML = '';
+
+            blogs.forEach(blog => {
+                const blogPreview = document.createElement('div');
+                blogPreview.className = 'blog-preview';
+                blogPreview.onclick = () => window.location.href = `/pages/blog.html#${blog._id}`;
+
+                const excerpt = createExcerpt(blog.content, 150);
+                const date = new Date(blog.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                blogPreview.innerHTML = `
+                    <h4 class="blog-preview-title">${blog.title}</h4>
+                    <p class="blog-preview-excerpt">${excerpt}</p>
+                    <div class="blog-preview-meta">
+                        <span class="blog-preview-date">
+                            <i class="fas fa-calendar"></i>
+                            ${date}
+                        </span>
+                        <a href="/pages/blog.html#${blog._id}" class="blog-preview-link">
+                            Read Full Scroll
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                `;
+
+                blogsList.appendChild(blogPreview);
+            });
+        }
+
+        // Create excerpt from content
+        function createExcerpt(content, maxLength = 150) {
+            const textContent = content.replace(/<[^>]*>/g, ''); // Strip HTML
+            return textContent.length > maxLength 
+                ? textContent.substring(0, maxLength) + '...'
+                : textContent;
         }
 
         // Show error state

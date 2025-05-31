@@ -317,18 +317,8 @@
                 publishButton.textContent = 'Eternalizing...';
                 publishButton.disabled = true;
                 
-                // Simulate API call for now
-                setTimeout(() => {
-                    alert('Your eternal wisdom has been shared with the sanctuary!');
-                    document.getElementById('postTitle').value = '';
-                    quill.setText('');
-                    publishButton.textContent = 'Eternalize';
-                    publishButton.disabled = false;
-                }, 1500);
-                
-                // Actual API call would be something like:
-                /*
-                const response = await fetch(`${API_BASE_URL}/posts`, {
+                // Post to blogs API
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -342,19 +332,26 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
+                    const error = await response.json();
+                    throw new Error(error.error || `API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                console.log('Post created:', data);
+                console.log('Blog post created:', data);
                 
+                // Clear form
                 document.getElementById('postTitle').value = '';
                 quill.setText('');
-                */
+                publishButton.textContent = 'Eternalize';
+                publishButton.disabled = false;
+                
+                // Show success and redirect to blog
+                alert('Your eternal wisdom has been shared with the sanctuary!');
+                window.location.href = '/pages/blog.html';
                 
             } catch (error) {
                 console.error('Error publishing post:', error);
-                alert('Failed to publish your eternal thought. Please try again.');
+                alert('Failed to publish your eternal thought: ' + error.message);
                 
                 const publishButton = document.getElementById('publishButton');
                 publishButton.textContent = 'Eternalize';

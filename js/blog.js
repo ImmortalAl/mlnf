@@ -12,7 +12,7 @@ function jwt_decode(token) {
     }
 }
 
-const API_BASE_URL = MLNF_CONFIG.API_BASE_URL;
+const BLOG_API_BASE_URL = MLNF_CONFIG.API_BASE_URL;
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
 // const closeUsersBtn = document.getElementById('closeUsers'); // Handled by activeUsers.js
@@ -23,6 +23,8 @@ let currentPage = 1;
 let isLoading = false;
 let hasMore = true;
 const PAGE_LIMIT = 10;
+let blogPosts = {}; // Store full blog data for modal display
+let currentPostId = null; // Track current post for sharing
 
 // Check token validity
 function isTokenValid(token) {
@@ -53,7 +55,7 @@ async function fetchBlogPosts(page = 1) {
     showLoadingCrystal();
     
     try {
-        const response = await fetch(`${API_BASE_URL}/blogs?page=${page}&limit=${PAGE_LIMIT}`, {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs?page=${page}&limit=${PAGE_LIMIT}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -95,11 +97,17 @@ async function fetchBlogPosts(page = 1) {
                     <div class="content">${excerpt}</div>
                     <div class="scroll-footer">
                         <p class="date">${formattedDate}</p>
-                        <button class="whisper-link" onclick="openOwlModal('${window.location.origin}/blogs/${post._id}')">
+                        <button class="whisper-link" onclick="event.stopPropagation(); openOwlModal('${window.location.origin}/blogs/${post._id}')">
                             🦉 Whisper this scroll to another soul
                         </button>
                     </div>
                 `;
+                
+                // Store full post data
+                blogPosts[post._id] = post;
+                
+                // Make post clickable
+                postElement.onclick = () => openBlogModal(post._id);
                 
                 blogList.appendChild(postElement);
             });
@@ -186,7 +194,7 @@ async function createBlog() {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/blogs`, {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -221,6 +229,27 @@ async function createBlog() {
 
 // Removed fetchOnlineUsers function as activeUsers.js should handle the shared sidebar.
 
+// Fetch a single blog post by ID
+async function fetchBlogPost(postId) {
+    try {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to fetch blog post: ${response.status}`);
+        }
+        
+        const post = await response.json();
+        blogPosts[post._id] = post;
+        return post;
+    } catch (error) {
+        console.error('Error fetching blog post:', error);
+        return null;
+    }
+}
+
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('sessionToken');
@@ -244,5 +273,98 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchBlogPosts(currentPage);
     }
     
+    // Check for blog ID in URL hash
+    if (window.location.hash) {
+        const blogId = window.location.hash.substring(1);
+        // Wait for blogs to load then open modal
+        setTimeout(async () => {
+            if (blogPosts[blogId]) {
+                openBlogModal(blogId);
+            } else {
+                // Try to fetch the specific blog post
+                const post = await fetchBlogPost(blogId);
+                if (post) {
+                    openBlogModal(blogId);
+                }
+            }
+        }, 2000);
+    }
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', async () => {
+        if (window.location.hash) {
+            const blogId = window.location.hash.substring(1);
+            if (blogPosts[blogId]) {
+                openBlogModal(blogId);
+            } else {
+                // Try to fetch the specific blog post
+                const post = await fetchBlogPost(blogId);
+                if (post) {
+                    openBlogModal(blogId);
+                }
+            }
+        } else {
+            closeBlogModal();
+        }
+    });
+    
     // Initialization for active users sidebar is handled by activeUsers.js and mlnf-core.js
+}); 
+
+// Modal functions
+function openBlogModal(postId) {
+    const post = blogPosts[postId];
+    if (!post) return;
+    
+    currentPostId = postId;
+    
+    // Populate modal with post data
+    document.getElementById('modal-author-avatar').src = post.author.avatar || '/assets/images/default-avatar.png';
+    document.getElementById('modal-author-avatar').alt = `${post.author.displayName || post.author.username}'s avatar`;
+    document.getElementById('modal-author-link').href = `/profile/${post.author._id}`;
+    document.getElementById('modal-author-name-link').href = `/profile/${post.author._id}`;
+    document.getElementById('modal-author-name-link').textContent = post.author.displayName || post.author.username;
+    document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    document.getElementById('modal-title').textContent = post.title;
+    document.getElementById('modal-content').innerHTML = DOMPurify.sanitize(post.content);
+    
+    // Show modal
+    const modal = document.getElementById('blog-modal');
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBlogModal() {
+    const modal = document.getElementById('blog-modal');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    currentPostId = null;
+}
+
+function shareCurrentPost() {
+    if (currentPostId) {
+        openOwlModal(`${window.location.origin}/blogs/${currentPostId}`);
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeBlogModal();
+        closeOwlModal();
+    }
+});
+
+// Close modal on background click
+document.addEventListener('click', (e) => {
+    const blogModal = document.getElementById('blog-modal');
+    if (e.target === blogModal) {
+        closeBlogModal();
+    }
 }); 
