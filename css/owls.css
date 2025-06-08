@@ -34,4 +34,75 @@
   margin-top: 1rem;
   text-align: center;
   font-style: italic;
+}
+
+/* Owl Sharing Modal Styles */
+.parchment-scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.incantation-box {
+  background: #f5eedc;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  border: 2px solid #3a2e28;
+  position: relative;
+}
+
+.incantation-box h3 {
+  color: #3a2e28;
+  font-family: 'MedievalSharp', cursive;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.parchment-input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #3a2e28;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.parchment-input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.owl-sprite {
+  margin: 1rem auto;
+  animation: owlFlap 0.5s steps(3) infinite;
+}
+
+.owl-status {
+  color: #3a2e28;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 0.9rem;
+}
+
+/* Animation for owl flying */
+@keyframes owlFly {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.owl-sprite.flying {
+  animation: owlFly 2s ease-in-out infinite;
 } 

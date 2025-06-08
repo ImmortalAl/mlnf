@@ -101,7 +101,7 @@ async function fetchBlogPosts(page = 1) {
                 postElement.className = 'blog-post';
                 postElement.id = post._id;
                 
-                const authorAvatar = post.author.avatar || '/assets/images/default-avatar.png';
+                const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
                 const authorDisplayName = post.author.displayName || post.author.username;
                 const excerpt = createExcerpt(post.content);
                 const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
@@ -113,7 +113,7 @@ async function fetchBlogPosts(page = 1) {
                 postElement.innerHTML = `
                     <div class="scroll-author">
                         <a href="/profile/${post.author._id}" class="author-avatar">
-                            <img src="${authorAvatar}" alt="${authorDisplayName}'s avatar" onerror="this.src='/assets/images/default-avatar.png'">
+                            <img src="${authorAvatar}" alt="${authorDisplayName}'s avatar" onerror="this.src='/assets/images/default.jpg'">
                         </a>
                         <a href="/profile/${post.author._id}" class="author-name">${authorDisplayName}</a>
                     </div>
@@ -121,7 +121,7 @@ async function fetchBlogPosts(page = 1) {
                     <div class="content">${excerpt}</div>
                     <div class="scroll-footer">
                         <p class="date">${formattedDate}</p>
-                        <button class="whisper-link" onclick="event.stopPropagation(); openOwlModal('${window.location.origin}/blogs/${post._id}')">
+                        <button class="whisper-link" onclick="event.stopPropagation(); openOwlModal('${window.location.origin}/pages/blog.html#${post._id}')">
                             🦉 Whisper this scroll to another soul
                         </button>
                     </div>
@@ -364,7 +364,7 @@ function openBlogModal(postId) {
     currentPostId = postId;
     
     // Populate modal with post data
-    document.getElementById('modal-author-avatar').src = post.author.avatar || '/assets/images/default-avatar.png';
+    document.getElementById('modal-author-avatar').src = post.author.avatar || '/assets/images/default.jpg';
     document.getElementById('modal-author-avatar').alt = `${post.author.displayName || post.author.username}'s avatar`;
     document.getElementById('modal-author-link').href = `/profile/${post.author._id}`;
     document.getElementById('modal-author-name-link').href = `/profile/${post.author._id}`;
@@ -394,7 +394,7 @@ function closeBlogModal() {
 
 function shareCurrentPost() {
     if (currentPostId) {
-        openOwlModal(`${window.location.origin}/blogs/${currentPostId}`);
+        openOwlModal(`${window.location.origin}/pages/blog.html#${currentPostId}`);
     }
 }
 
