@@ -169,7 +169,7 @@ async function populateActiveUsersList() {
             userListDiv.innerHTML = fetchedUsers.map(user => {
                 const displayName = user.displayName || user.username || 'Unnamed Soul';
                 const username = user.username || displayName; // Ensure username is available for messaging
-                const avatarUrl = user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '../assets/images/default-avatar.png');
+                const avatarUrl = user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '/assets/images/default.jpg');
                 // Use 'online' field from API directly.
                 const isOnline = user.online === true; 
                 // Use custom status if available, otherwise default

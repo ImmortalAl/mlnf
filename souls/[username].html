@@ -397,7 +397,7 @@
             <!-- Profile Content -->
             <div id="profileContent" style="display: none;">
                 <div class="profile-header">
-                    <img id="profileAvatar" src="../assets/images/default-avatar.png" alt="Profile Avatar" class="profile-avatar">
+                    <img id="profileAvatar" src="../assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar">
                     <h1 id="profileName" class="profile-name">Loading...</h1>
                     <p id="profileUsername" class="profile-username">@loading</p>
                     <div id="profileStatus" class="profile-status" style="display: none;"></div>
@@ -532,7 +532,7 @@
             document.title = `${user.displayName || user.username} - Eternal Soul`;
 
             // Update profile elements
-            profileAvatar.src = user.avatar || '../assets/images/default-avatar.png';
+            profileAvatar.src = user.avatar || '../assets/images/default.jpg';
             profileAvatar.alt = `${user.displayName || user.username}'s avatar`;
             
             profileName.textContent = user.displayName || user.username;

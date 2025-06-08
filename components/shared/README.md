@@ -1,5 +1,8 @@
 # MLNF Shared Components
 
+> **📚 For complete development documentation, see [../../docs/DEVELOPMENT.md](../../docs/DEVELOPMENT.md)**  
+> *This file provides quick reference for developers working directly with components.*
+
 This directory contains the shared components for the MLNF website to ensure consistent navigation, user interface, and authentication across all pages.
 
 ## Components Overview
