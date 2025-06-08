@@ -3,9 +3,14 @@
 ## 🚀 Getting Started
 
 ### **Project Structure**
+
+**⚠️ IMPORTANT: Git Repository Location**  
+The Git repository is located in `MLNF/front/` subdirectory, **NOT** in the root `MLNF/` directory.
+
 ```
-MLNF/
-├── front/                    # Frontend (Git Repository - Netlify)
+MLNF/                         # Project root (NOT the Git repository)
+├── front/                    # Frontend (THIS IS THE GIT REPOSITORY - Netlify)
+│   ├── .git/                 # Git repository files
 │   ├── components/shared/    # Reusable UI components
 │   ├── css/                 # Modular CSS architecture
 │   ├── js/                  # JavaScript modules
@@ -20,6 +25,11 @@ MLNF/
     ├── middleware/          # Authentication & validation
     └── config/              # Configuration files
 ```
+
+**For AI Assistants & Developers:**
+- Always navigate to `front/` directory before running Git commands
+- Working directory should be: `C:\Users\coold\Documents\Sites\MLNF\front`
+- Use `cd front` from the MLNF root directory before Git operations
 
 ### **Environment Setup**
 

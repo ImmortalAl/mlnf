@@ -195,14 +195,32 @@ function initializeModal() {
 4. Update FEATURES.md if roadmap changes
 5. Note any blocking issues for next session
 
-### **Git Workflow**
+### **Git Workflow & Critical Directory Information**
+
+**⚠️ CRITICAL: Git Repository Location**
+- **Git repository is in `MLNF/front/` NOT in `MLNF/` root**
+- **Always navigate to `front/` directory before Git operations**
+- **Working directory should be: `C:\Users\coold\Documents\Sites\MLNF\front`**
+
 ```bash
-# Always work from front/ directory (where .git is located)
+# ALWAYS start with this from MLNF root:
 cd front
+
+# Verify you're in the right location:
+pwd  # Should show: C:\Users\coold\Documents\Sites\MLNF\front
+
+# Then proceed with Git operations:
+git status
 git add .
 git commit -m "type: description"
 git push origin main
 ```
+
+**Common AI Assistant Mistakes to Avoid:**
+1. **Don't run Git commands from MLNF root directory** - Git repo is in front/
+2. **Always check current directory** with `pwd` before Git operations
+3. **Remember: Shell starts in MLNF root, but Git repo is in front/**
+4. **Use `cd front` as first command** in new conversations
 
 ## 🔍 **Debugging & Troubleshooting**
 

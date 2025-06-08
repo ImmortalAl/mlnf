@@ -150,6 +150,54 @@ All notable changes to the MLNF project are documented here, organized by develo
 
 ---
 
+## **[2025-05-30] - Admin Panel & Maintenance**
+### 🛠️ **Backend Cleanup & Documentation Updates**
+
+#### **✅ Completed**
+- **Backend Script Cleanup**: Removed all diagnostic/admin scripts from `back/scripts/`
+  - Deleted: `check-users.js`, `diagnose-users.js`, `fix-user-roles.js`, `make-admin.js`
+  - Reason: Temporary scripts no longer needed after system stabilization
+- **User Model Standardization**: 
+  - Standardized filename to `User.js` (case-sensitive environments)
+  - Updated all imports across codebase for consistency
+- **UI Polish**: Added tooltips to all 'Transcend Session' (Log Out) buttons site-wide
+- **Admin Dashboard**: Polished UI and added tooltips for better user experience
+- **Documentation Updates**: 
+  - Updated `README.md` and `NEXT-SESSION-PROMPT.md`
+  - Removed outdated TODOs and added feedback system proposals
+
+---
+
+## **[Undated Session] - Admin Panel Improvements**
+### 🏛️ **Administrative Interface Enhancement**
+
+#### **✅ Completed**
+- **UI Refinements**: Removed 'Administrative Sanctum' subtitle from admin panel header
+- **Soul Management**: Fully functional user editing and ban capabilities from UI
+- **Dashboard Preparation**: Created framework for analytics sections
+- **Backend Verification**: Confirmed backend systems up to date
+- **Code Deployment**: Frontend changes committed and pushed successfully
+
+---
+
+## **[2024-07-30] - Admin Panel Bug Fixes & Refinements**
+### 🐛 **Critical Bug Resolution & System Stabilization**
+
+#### **✅ Issues Resolved**
+- **Feedback Modal Fix**: Resolved unresponsive feedback reply modal in admin panel
+  - **Root Cause**: Missing event listeners in `front/js/admin.js`
+  - **Solution**: Added proper event listeners and data transfer mechanisms
+- **Particle.js Conflict**: Disabled particle.js background specifically for admin panel
+  - **Implementation**: Conditional check in `front/js/scripts.js`
+  - **Benefit**: Improved admin panel performance and visual clarity
+- **Authentication Issues**: Investigated and addressed "mock login" problems
+  - **Goal**: Ensure live authentication is used in admin panel
+  - **Implementation**: Updated `front/js/scripts.js` to disable mock auth for admin
+- **Script Conflicts**: Prevented main-site scripts from interfering with admin operations
+- **Deployment**: Coordinated git staging, commit, and push for all frontend updates
+
+---
+
 ## **[Early Development Sessions] - Core System Implementation**
 
 ### **Authentication System Development**
