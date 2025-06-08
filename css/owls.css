@@ -40,10 +40,9 @@
 .parchment-scroll {
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
   background: rgba(0, 0, 0, 0.7);
   display: none;
+  place-items: center;
   z-index: 2000;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -51,16 +50,12 @@
 }
 
 .parchment-scroll.active {
-  display: block;
+  display: grid;
   opacity: 1;
   pointer-events: auto;
 }
 
 .incantation-box {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background: #f5eedc;
   padding: 2rem;
   border-radius: 8px;
@@ -70,11 +65,13 @@
   text-align: center;
   border: 2px solid #3a2e28;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .parchment-scroll.active .incantation-box {
   opacity: 1;
+  transform: scale(1);
 }
 
 .incantation-box h3 {
