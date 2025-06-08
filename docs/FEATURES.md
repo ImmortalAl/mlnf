@@ -33,12 +33,48 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 
 ---
 
+## 📝 Soul Scrolls (Personal Blogging System)
+
+### **🎯 IMMEDIATE NEXT SESSION PRIORITY**
+
+#### **Blog Comment System Implementation**
+- [ ] **Comment Database Schema** - Comments collection with post/user association
+- [ ] **Comment API Endpoints** - POST/GET/DELETE for comment CRUD operations
+- [ ] **Comment Frontend Components** - Comment display, form, and interaction UI
+- [ ] **Real-time Comments** - Live comment updates without page refresh
+
+#### **Context-Aware Blog Navigation (December 8, 2024 Requirements)**
+- [ ] **Profile-First Blog Access** - Blogs open directly from user profiles
+- [ ] **No Forced Redirects** - Don't redirect to community Soul Scrolls page when opened from profile
+- [ ] **Community Page Integration** - Blogs accessible from community page when opened from there
+- [ ] **Context-Aware Routing** - Remember navigation context and maintain consistency
+
+**Technical Implementation Plan:**
+```javascript
+// Routing Strategy
+/souls/username/blog/post-id           // From profile context
+/soul-scrolls/post-id?user=username    // From community context
+/soul-scrolls/post-id?from=profile     // Context tracking
+```
+
+### **Core Blogging Features (Planned)**
+- [ ] **Personal Blog Posts** - Individual user blogs (NOT community articles)
+- [ ] **Draft System** - Save drafts functionality  
+- [ ] **Basic Editor** - Simple content creation interface
+- [ ] **Like/Dislike System** - Post appreciation and feedback
+- [ ] **Share Functionality** - Content sharing capabilities (🦉 Owl integration)
+- [ ] **Basic Analytics** - Visitor counters (minimum requirement)
+- [ ] **Mobile Responsive** - Full mobile optimization
+
+---
+
 ## 🚧 Active Development TODOs
 
 ### High Priority
+- [ ] **Soul Scrolls Comment System** - ⭐ **NEXT SESSION FOCUS**
+- [ ] **Context-Aware Blog Navigation** - ⭐ **NEXT SESSION FOCUS**
 - [ ] **User Feedback System** - Simple modal form for bug reports and feature requests
 - [ ] **Real Messaging System** - Replace mock responses with persistent messaging
-- [ ] **Content Moderation Tools** - Admin panel enhancements
 
 ### Medium Priority
 - [ ] **Enhanced Community Features** - User search, interest matching

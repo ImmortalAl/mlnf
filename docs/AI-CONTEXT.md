@@ -37,10 +37,18 @@ C:\Users\coold\Documents\Sites\MLNF\
 - ✅ Modal systems (auth, messaging, admin)
 
 ### **🚀 Next Development Priorities**
-1. **User Feedback System** (see FEATURES.md for detailed proposals)
-2. **Real Messaging System** (replace mock responses with persistent messaging)
-3. **Soul Scrolls (Blogging System)** (personal blog posts for users)
-4. **Enhanced Community Features** (search, discovery, achievements)
+1. **🎯 IMMEDIATE: Soul Scrolls Comment System** (blog commenting functionality)
+2. **🎯 IMMEDIATE: Context-Aware Blog Navigation** (profile vs community routing)
+3. **User Feedback System** (see FEATURES.md for detailed proposals)
+4. **Real Messaging System** (replace mock responses with persistent messaging)
+5. **Enhanced Community Features** (search, discovery, achievements)
+
+#### **Next Session Focus (December 8, 2024)**
+**User Requirements:**
+- Implement commenting on the blogging system
+- Blogs should open from user profiles WITHOUT redirecting to community page
+- But also be accessible from community page if opened from there
+- Context-aware routing system needed
 
 ## 🎨 **Development Philosophy & Preferences**
 

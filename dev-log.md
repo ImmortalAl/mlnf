@@ -78,10 +78,22 @@
 - **Root Directory Organization**: Created `README.md` in project root directing to main repository
 - **Cleanup**: Removed redundant root documentation files after content migration
 
-**Next Session Priorities:**
-1. **User Feedback System**: Multiple implementation proposals ready in FEATURES.md
-2. **Real Messaging System**: Replace mock responses with persistent messaging
-3. **Soul Scrolls Development**: Personal blogging platform implementation
+**Next Session Priorities (December 8, 2024):**
+1. **🎯 IMMEDIATE: Soul Scrolls Comment System** - Implement blog commenting functionality
+2. **🎯 IMMEDIATE: Context-Aware Blog Navigation** - Blogs open from profiles without redirecting to community page, but also accessible from community page
+3. **User Feedback System**: Multiple implementation proposals ready in FEATURES.md
+4. **Real Messaging System**: Replace mock responses with persistent messaging
+
+**User Requirements for Next Session:**
+- Implement commenting on the blogging system
+- Blogs should open from user profiles WITHOUT redirecting to community Soul Scrolls page
+- But also have blogs open from community page if opened from there
+- Need context-aware routing system
+
+**Documentation Updated:**
+- Enhanced FEATURES.md with detailed Soul Scrolls implementation plan
+- Updated AI-CONTEXT.md with immediate priorities
+- Prepared clear roadmap for next AI assistant
 
 ---
 
