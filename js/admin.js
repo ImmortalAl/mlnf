@@ -18,7 +18,7 @@
     async function checkAdminAuth() {
         const token = localStorage.getItem('sessionToken');
         if (!token) {
-            window.location.href = '/pages/auth.html';
+            window.location.href = '/';
             return false;
         }
         
@@ -48,7 +48,7 @@
             }
         } catch (error) {
             console.error('Auth check failed:', error);
-            window.location.href = '/pages/auth.html';
+            window.location.href = '/';
             return false;
         }
     }
@@ -245,9 +245,8 @@
         
         if (searchTerm) {
             filteredUsers = filteredUsers.filter(user => 
-                (user.username && user.username.toLowerCase().includes(searchTerm)) ||
-                (user.displayName && user.displayName.toLowerCase().includes(searchTerm)) ||
-                (user.email && user.email.toLowerCase().includes(searchTerm))
+                user.username.toLowerCase().includes(searchTerm) ||
+                (user.displayName && user.displayName.toLowerCase().includes(searchTerm))
             );
         }
         
@@ -412,7 +411,6 @@
                 <p>Status: ${user.status || 'No status set'}</p>
                 <p>Bio: ${user.bio || 'No bio available'}</p>
                 <p>Joined: ${new Date(user.createdAt).toLocaleDateString()}</p>
-                <p>Email: ${user.email || 'Not provided'}</p>
             </div>
         `;
         
@@ -431,7 +429,6 @@
                 <label>Display Name: <input type="text" id="editDisplayName" value="${user.displayName || ''}"></label><br>
                 <label>Status: <input type="text" id="editStatus" value="${user.status || ''}"></label><br>
                 <label>Bio: <textarea id="editBio">${user.bio || ''}</textarea></label><br>
-                <label>Email: <input type="email" id="editEmail" value="${user.email || ''}"></label><br>
                 <button id="saveUserBtn">Save</button>
             </div>
             <div id="editUserFeedback"></div>
@@ -441,7 +438,6 @@
             const displayName = document.getElementById('editDisplayName').value;
             const status = document.getElementById('editStatus').value;
             const bio = document.getElementById('editBio').value;
-            const email = document.getElementById('editEmail').value;
             const token = localStorage.getItem('sessionToken');
             try {
                 const res = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`, {
@@ -450,7 +446,7 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ displayName, status, bio, email })
+                    body: JSON.stringify({ displayName, status, bio })
                 });
                 if (!res.ok) throw new Error('Failed to update user');
                 document.getElementById('editUserFeedback').textContent = 'Saved!';
@@ -496,7 +492,7 @@
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('sessionToken');
             localStorage.removeItem('currentUser');
-            window.location.href = '/pages/auth.html';
+            window.location.href = '/';
         });
         
         // Search
