@@ -121,7 +121,7 @@ async function fetchBlogPosts(page = 1) {
                     <div class="content">${excerpt}</div>
                     <div class="scroll-footer">
                         <p class="date">${formattedDate}</p>
-                        <button class="whisper-link" onclick="event.stopPropagation(); openOwlModal('${window.location.origin}/pages/blog.html#${post._id}')">
+                        <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
                             🦉 Whisper this scroll to another soul
                         </button>
                     </div>
@@ -400,6 +400,15 @@ function shareCurrentPost() {
     
     closeBlogModal(); // Close blog modal before opening owl modal
     const url = `${window.location.origin}/pages/blog.html#${currentPostId}`;
+    openOwlModal(url);
+}
+
+function sharePost(postId) {
+    currentPostId = postId;
+    const post = blogPosts[postId];
+    if (!post) return;
+    
+    const url = `${window.location.origin}/pages/blog.html#${postId}`;
     openOwlModal(url);
 }
 

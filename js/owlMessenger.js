@@ -26,6 +26,10 @@ async function sendOwlMessage() {
     console.log('[owlMessenger] Response status:', response.status);
     console.log('[owlMessenger] Response ok:', response.ok);
     
+    if (response.status === 404) {
+      throw new Error('FALLBACK_NEEDED');
+    }
+    
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -42,14 +46,40 @@ async function sendOwlMessage() {
     }
   } catch (error) {
     console.error('[owlMessenger] Error:', error);
-    statusEl.textContent = `The owl was hindered: ${error.message}`;
-    statusEl.style.color = '#d44';
+    
+    if (error.message === 'FALLBACK_NEEDED') {
+      provideFallbackSharing(email, url, statusEl);
+    } else {
+      statusEl.textContent = `The owl was hindered: ${error.message}`;
+      statusEl.style.color = '#d44';
+    }
   } finally {
     setTimeout(() => {
       isOwlFlying = false;
       stopOwlAnimation();
-      statusEl.textContent = '';
+      if (!statusEl.textContent.includes('Copy this link')) {
+        statusEl.textContent = '';
+      }
     }, 3000);
+  }
+}
+
+function provideFallbackSharing(email, url, statusEl) {
+  const subject = encodeURIComponent('📜 A Sacred Scroll Awaits Your Gaze');
+  const body = encodeURIComponent(`🦉 An Owl Bears Wisdom\n\nA fellow seeker has shared this ancient knowledge with you:\n${url}\n\n"Wisdom flies on silent wings - guard it well"`);
+  const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+  
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(() => {
+      statusEl.innerHTML = `🦉 The owl's wing is mended! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open email client</a> or<br>Copy this link: <strong>${url}</strong>`;
+      statusEl.style.color = '#3a2e28';
+    }).catch(() => {
+      statusEl.innerHTML = `🦉 The owl needs assistance! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open email client</a> or<br>Share this link: <strong>${url}</strong>`;
+      statusEl.style.color = '#3a2e28';
+    });
+  } else {
+    statusEl.innerHTML = `🦉 The owl needs assistance! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open email client</a> or<br>Share this link: <strong>${url}</strong>`;
+    statusEl.style.color = '#3a2e28';
   }
 }
 
