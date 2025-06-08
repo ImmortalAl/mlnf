@@ -409,7 +409,11 @@ document.addEventListener('keydown', (e) => {
 // Close modal on background click
 document.addEventListener('click', (e) => {
     const blogModal = document.getElementById('blog-modal');
+    const sharingModal = document.getElementById('sharing-modal');
     if (e.target === blogModal) {
         closeBlogModal();
+    }
+    if (e.target === sharingModal) {
+        closeOwlModal();
     }
 }); 

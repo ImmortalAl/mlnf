@@ -159,11 +159,15 @@
     
     <script>
     function openOwlModal(url) {
-        document.getElementById('sharing-modal').style.display = 'block';
-        document.getElementById('share-url').value = url;
+        const modal = document.getElementById('sharing-modal');
+        const shareUrl = document.getElementById('share-url');
+        modal.style.display = 'block';
+        shareUrl.value = url;
     }
+    
     function closeOwlModal() {
-        document.getElementById('sharing-modal').style.display = 'none';
+        const modal = document.getElementById('sharing-modal');
+        modal.style.display = 'none';
     }
     </script>
 </body>
