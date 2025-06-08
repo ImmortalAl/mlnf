@@ -394,6 +394,7 @@ function closeBlogModal() {
 
 function shareCurrentPost() {
     if (currentPostId) {
+        closeBlogModal(); // Close blog modal before opening owl modal
         openOwlModal(`${window.location.origin}/pages/blog.html#${currentPostId}`);
     }
 }

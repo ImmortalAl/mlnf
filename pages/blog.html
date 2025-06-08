@@ -161,13 +161,13 @@
     function openOwlModal(url) {
         const modal = document.getElementById('sharing-modal');
         const shareUrl = document.getElementById('share-url');
-        modal.style.display = 'block';
+        modal.classList.add('active');
         shareUrl.value = url;
     }
     
     function closeOwlModal() {
         const modal = document.getElementById('sharing-modal');
-        modal.style.display = 'none';
+        modal.classList.remove('active');
     }
     </script>
 </body>
