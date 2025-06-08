@@ -393,10 +393,14 @@ function closeBlogModal() {
 }
 
 function shareCurrentPost() {
-    if (currentPostId) {
-        closeBlogModal(); // Close blog modal before opening owl modal
-        openOwlModal(`${window.location.origin}/pages/blog.html#${currentPostId}`);
-    }
+    if (!currentPostId) return;
+    
+    const post = blogPosts[currentPostId];
+    if (!post) return;
+    
+    closeBlogModal(); // Close blog modal before opening owl modal
+    const url = `${window.location.origin}/pages/blog.html#${currentPostId}`;
+    openOwlModal(url);
 }
 
 // Close modal on escape key

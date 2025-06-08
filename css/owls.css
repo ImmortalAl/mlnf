@@ -48,10 +48,13 @@
   justify-content: center;
   align-items: center;
   z-index: 2000; /* Higher than blog modal */
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .parchment-scroll.active {
   display: flex;
+  opacity: 1;
 }
 
 .incantation-box {
@@ -64,14 +67,14 @@
   text-align: center;
   border: 2px solid #3a2e28;
   position: relative;
-  transform: translateY(0);
-  opacity: 1;
+  transform: translateY(-20px);
+  opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.parchment-scroll:not(.active) .incantation-box {
-  transform: translateY(-20px);
-  opacity: 0;
+.parchment-scroll.active .incantation-box {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .incantation-box h3 {
