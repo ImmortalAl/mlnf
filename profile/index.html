@@ -46,149 +46,6 @@
             flex-direction: column;
         }
 
-        header {
-            background: var(--gradient-secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo i {
-            color: var(--accent);
-            font-size: 2.2rem;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        nav {
-            margin-left: auto;
-        }
-
-        nav ul {
-            display: flex;
-            gap: 1.8rem;
-            list-style: none;
-        }
-
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 0;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
-        
-        nav a.active {
-            color: var(--accent);
-        }
-        
-        nav a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--accent);
-            transform: scaleX(1);
-        }
-
-        /* Mobile navigation */
-        .mobile-nav-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            margin-left: auto;
-            margin-right: 1rem;
-            transition: var(--transition);
-            z-index: 1001;
-        }
-        
-        .mobile-nav-toggle:hover {
-            color: var(--accent);
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 1rem;
-            }
-            
-            .mobile-nav-toggle {
-                display: block;
-            }
-            
-            nav {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 80%;
-                max-width: 300px;
-                height: 100vh;
-                background: var(--primary);
-                padding: 5rem 2rem 2rem;
-                transition: all 0.3s ease-in-out;
-                z-index: 1000;
-                box-shadow: -5px 0 20px rgba(0, 0, 0, 0.2);
-            }
-            
-            nav.active {
-                right: 0;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-            
-            .overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                z-index: 999;
-                display: none;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-            
-            .overlay.active {
-                display: block;
-                opacity: 1;
-            }
-            
-            .user-menu {
-                margin-left: auto;
-            }
-        }
-
         main {
             flex: 1;
             max-width: 1200px;
@@ -652,21 +509,25 @@
             </div>
         </div>
     </div>
-    <header id="mainHeader">
+    <header>
         <div class="logo">
-            <i class="fas fa-infinity"></i>
-            <h1>MLNF</h1>
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
+                    </span>
+                    <span class="short-title">MLNF</span>
+                </div>
+            </a>
         </div>
-        <button class="mobile-nav-toggle" id="mobileNavToggle">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
-        <nav id="mainNav">
+        <nav class="main-nav">
             <ul>
-                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a></li>
-                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
-                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
-                <li><a href="/profile" class="active"><i class="fas fa-user"></i> My Soul</a></li>
+                <!-- Populated by navigation.js -->
             </ul>
         </nav>
         <div class="header-controls">
@@ -675,22 +536,21 @@
                 <!-- Populated by userMenu.js when logged out -->
             </div>
         </div>
-        
-        <!-- Mobile Navigation -->
-        <div class="mobile-overlay" id="mobileOverlay"></div>
-        <nav class="mobile-nav" id="mobileNav">
-            <div class="sidebar-header">
-                <h2>Eternal Navigation</h2>
-                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="mobile-nav-list">
-                <!-- Links will be dynamically populated -->
-            </div>
-        </nav>
     </header>
-    <div class="overlay" id="navOverlay"></div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="sidebar-header">
+            <h2>Eternal Navigation</h2>
+            <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-nav-list">
+            <!-- Links will be dynamically populated -->
+        </div>
+    </nav>
 
     <main>
         <div id="loading" class="loading">
@@ -1220,5 +1080,12 @@
             }
         });
     </script>
+
+    <!-- Shared Component Scripts -->
+    <script src="../components/shared/navigation.js"></script>
+    <script src="../components/shared/userMenu.js"></script>
+    <script src="../components/shared/userSidebar.js"></script>
+    <script src="../components/shared/authModal.js"></script>
+    <script src="../components/shared/mlnf-core.js"></script>
 </body>
 </html> 
