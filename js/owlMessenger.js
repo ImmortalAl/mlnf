@@ -30,6 +30,10 @@ async function sendOwlMessage() {
       throw new Error('FALLBACK_NEEDED');
     }
     
+    if (response.status === 500) {
+      throw new Error('FALLBACK_NEEDED');
+    }
+    
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -71,14 +75,14 @@ function provideFallbackSharing(email, url, statusEl) {
   
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(url).then(() => {
-      statusEl.innerHTML = `🦉 The owl's wing is mended! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open email client</a> or<br>Copy this link: <strong>${url}</strong>`;
+      statusEl.innerHTML = `🦉 The owl's message service is resting! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open your email app</a> or<br>Share this link: <strong>${url}</strong>`;
       statusEl.style.color = '#3a2e28';
     }).catch(() => {
-      statusEl.innerHTML = `🦉 The owl needs assistance! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open email client</a> or<br>Share this link: <strong>${url}</strong>`;
+      statusEl.innerHTML = `🦉 The owl's message service is resting! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open your email app</a> or<br>Share this link: <strong>${url}</strong>`;
       statusEl.style.color = '#3a2e28';
     });
   } else {
-    statusEl.innerHTML = `🦉 The owl needs assistance! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open email client</a> or<br>Share this link: <strong>${url}</strong>`;
+    statusEl.innerHTML = `🦉 The owl's message service is resting! <br><a href="${mailtoLink}" style="color: #d4af37; text-decoration: underline;">Open your email app</a> or<br>Share this link: <strong>${url}</strong>`;
     statusEl.style.color = '#3a2e28';
   }
 }
