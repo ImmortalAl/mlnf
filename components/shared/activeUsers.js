@@ -239,6 +239,23 @@ function updateActiveUsersButtonVisibility() {
 
 function initActiveUsers() {
     injectActiveUsersSidebar();
+    
+    // Safety check: ensure overlay isn't stuck active on page load
+    const activeUsersOverlay = document.getElementById('activeUsersOverlay');
+    const activeUsersSidebar = document.getElementById('activeUsers');
+    if (activeUsersOverlay && activeUsersSidebar) {
+        // Remove active classes if present on init
+        activeUsersOverlay.classList.remove('active');
+        activeUsersSidebar.classList.remove('active');
+        activeUsersSidebar.classList.remove('force-close');
+        // Clear any inline styles
+        activeUsersOverlay.style.opacity = '';
+        activeUsersOverlay.style.visibility = '';
+        activeUsersOverlay.style.pointerEvents = '';
+        activeUsersSidebar.style.right = '';
+        console.log('[activeUsers.js] Cleared any stuck states on init');
+    }
+    
     setupActiveUsersEvents();
     updateActiveUsersButtonVisibility(); // Call the new function here
     // Note: Population of user list is called within setupActiveUsersEvents for now

@@ -246,12 +246,14 @@ aside#activeUsers.active-users.force-close {
     background: rgba(0, 0, 0, 0.5); /* Same as user sidebar overlay */
     z-index: 1999; /* Between content and sidebar */
     opacity: 0;
+    visibility: hidden; /* Add visibility to ensure it's truly hidden */
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .active-users-overlay.active {
     opacity: 1 !important; /* Force visible – wins against page-specific overrides */
+    visibility: visible !important; /* Ensure visibility */
     pointer-events: auto;
 }
 

@@ -161,7 +161,7 @@ header {
     border-bottom: 2px solid var(--accent);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 2500;
     min-height: var(--header-height, 70px);
 }
 
@@ -1088,4 +1088,18 @@ body .floating-buttons button.theme-toggle#themeToggle {
 .top-button:hover {
     transform: translateY(-5px); /* Slight lift on hover */
     background: var(--highlight); /* Or a slightly different accent shade */
+}
+
+/* Ensure all interactive elements are clickable */
+a, button, input, textarea, select, .clickable {
+    position: relative;
+    z-index: 1;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Ensure navigation links are always on top */
+nav a {
+    position: relative;
+    z-index: 2501; /* Above header z-index */
 }
