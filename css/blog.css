@@ -356,9 +356,13 @@
     width: 90%;
     max-height: 85vh;
     overflow-y: auto;
+    overflow-x: hidden;
     margin: auto;
     position: relative;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    /* Ensure scrolling works properly */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
 }
 
 .blog-modal-header {
@@ -509,12 +513,6 @@
     color: var(--accent);
 }
 
-/* Ensure comments fit within the modal */
-.blog-modal-content {
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
 /* Style the comments section to match the blog theme */
 .comments-section {
     background: transparent;
@@ -523,7 +521,10 @@
 }
 
 .comments-title {
-    display: none; /* Hide the default title since we have our own */
+    display: block !important; /* Show the comments component title */
+    color: var(--accent) !important;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .comment {
