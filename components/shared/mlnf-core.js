@@ -4,6 +4,20 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[mlnf-core.js] DOM fully loaded and parsed');
 
+  // --- Safety Checks & Cleanup ---
+  // Defensively remove any orphaned modals that might be stuck
+  const cleanupOrphanedModal = (modalId) => {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      console.warn(`[mlnf-core.js] Found an orphaned '${modalId}'. Removing it.`);
+      modal.style.display = 'none'; // Hide immediately
+      if (document.body.contains(modal)) {
+        document.body.removeChild(modal);
+      }
+    }
+  };
+  cleanupOrphanedModal('welcomeModal');
+
   // Initialize user menu FIRST, so its functions are available to other components like navigation
   if (window.MLNF && window.MLNF.initUserMenu) {
     window.MLNF.initUserMenu();

@@ -466,15 +466,20 @@ function isLoggedIn() {
 
 // Welcome Modal for new users
 function showWelcomeModal() {
-    // Check if user has seen the welcome message
+    // Check if the user is logged in
     const hasSeenWelcome = localStorage.getItem('mlnf_has_seen_welcome');
     
     // If user is logged in and hasn't seen the welcome message
     if (isLoggedIn() && !hasSeenWelcome) {
+        // First, check if a modal already exists and remove it, just in case.
+        const existingModal = document.getElementById('welcomeModal');
+        if (existingModal) {
+            document.body.removeChild(existingModal);
+        }
+
         const welcomeModal = document.createElement('div');
         welcomeModal.id = 'welcomeModal';
-        welcomeModal.className = 'modal';
-        welcomeModal.style.display = 'flex';
+        welcomeModal.className = 'modal'; // Use the generic modal class for base styles
         
         welcomeModal.innerHTML = `
             <div class="modal-content welcome-modal-content">
@@ -522,7 +527,13 @@ function showWelcomeModal() {
         `;
         
         document.body.appendChild(welcomeModal);
-        
+
+        // Add the 'active' class to show it with a fade-in transition
+        // Use a short timeout to allow the element to be in the DOM first, ensuring CSS transition works
+        setTimeout(() => {
+            welcomeModal.classList.add('active');
+        }, 50);
+
         // Style for the welcome modal
         const style = document.createElement('style');
         style.textContent = `
@@ -601,23 +612,35 @@ function showWelcomeModal() {
         
         document.head.appendChild(style);
         
-        // Close modal and set flag when user clicks "Get Started"
-        document.getElementById('welcomeGetStarted').addEventListener('click', () => {
-            if (document.getElementById('dontShowAgain').checked) {
+        // A more robust function to close and remove the modal
+        const closeAndDestroyWelcomeModal = () => {
+            const modal = document.getElementById('welcomeModal');
+            if (!modal) return;
+
+            // Check if the "Don't show again" box is checked
+            const dontShowCheckbox = document.getElementById('dontShowAgain');
+            if (dontShowCheckbox && dontShowCheckbox.checked) {
                 localStorage.setItem('mlnf_has_seen_welcome', 'true');
+                console.log('[Welcome Modal] "Don\'t show again" preference saved.');
             }
-            welcomeModal.style.display = 'none';
-            document.body.removeChild(welcomeModal);
-        });
+
+            // Fade out first by removing the active class
+            modal.classList.remove('active');
+
+            // Remove from DOM after transition
+            setTimeout(() => {
+                if (document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                    console.log('[Welcome Modal] Successfully removed from DOM.');
+                }
+            }, 500); // Should match the transition duration in CSS
+        };
+        
+        // Close modal and set flag when user clicks "Get Started"
+        document.getElementById('welcomeGetStarted').addEventListener('click', closeAndDestroyWelcomeModal);
         
         // Close modal when user clicks X button
-        welcomeModal.querySelector('.close-modal').addEventListener('click', () => {
-            if (document.getElementById('dontShowAgain').checked) {
-                localStorage.setItem('mlnf_has_seen_welcome', 'true');
-            }
-            welcomeModal.style.display = 'none';
-            document.body.removeChild(welcomeModal);
-        });
+        welcomeModal.querySelector('.close-modal').addEventListener('click', closeAndDestroyWelcomeModal);
     }
 }
 
@@ -943,6 +966,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         await updateAuthUI(true);
                         setTimeout(() => {
                             closeSoulModal();
+                            // Show the welcome modal to the newly logged-in user
+                            showWelcomeModal();
                              // Optionally, refresh online users if sidebar was open or redirect
                             if (activeUsers && activeUsers.classList.contains('active')) {
                                 fetchOnlineUsers();
@@ -967,10 +992,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         await updateAuthUI(true);
                         setTimeout(() => {
                             closeSoulModal();
-                            // Optionally, refresh online users if sidebar was open or redirect
-                            if (activeUsers && activeUsers.classList.contains('active')) {
-                                fetchOnlineUsers();
-                            }
+                            // Also show welcome modal on successful registration
+                            showWelcomeModal();
                         }, 1500);
                     } else {
                         // Fallback if no token (shouldn't happen with current backend)

@@ -1103,3 +1103,15 @@ nav a {
     position: relative;
     z-index: 2501; /* Above header z-index */
 }
+
+/* Welcome Modal - ensure it cannot block clicks unless active */
+#welcomeModal {
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+#welcomeModal.active {
+    pointer-events: auto;
+    opacity: 1;
+}
