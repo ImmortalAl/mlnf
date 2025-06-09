@@ -596,7 +596,8 @@
     </footer>
 
     <!-- Core MLNF Components -->
-    <script src="../js/mlnf-core.js?v=1.2"></script>
+    <script src="../components/shared/config.js?v=1.2"></script>
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
     <script src="../components/shared/userMenu.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
@@ -612,9 +613,6 @@
             
             // Initialize MLNF core first
             if (window.MLNF) {
-                // Initialize components in the correct order
-                window.MLNF.init();
-                
                 // Initialize individual components
                 if (window.MLNF.Navigation) window.MLNF.Navigation.init();
                 if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();

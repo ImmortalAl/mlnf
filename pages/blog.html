@@ -151,7 +151,8 @@
     </footer>
 
     <!-- Core MLNF Components -->
-    <script src="../js/mlnf-core.js?v=1.2"></script>
+    <script src="../components/shared/config.js?v=1.2"></script>
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
     <script src="../components/shared/userMenu.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
@@ -164,9 +165,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize MLNF core first
             if (window.MLNF) {
-                // Initialize components in the correct order
-                window.MLNF.init();
-                
                 // Initialize individual components
                 if (window.MLNF.Navigation) window.MLNF.Navigation.init();
                 if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();
@@ -177,47 +175,11 @@
             }
 
             // Initialize blog list
-            const blogList = document.getElementById('blogList');
-            if (blogList) {
-                blogList.innerHTML = ''; // Clear any existing content
-                fetchBlogPosts(1); // Start fetching blog posts
+            if (window.MLNF && window.MLNF.BlogList) {
+                window.MLNF.BlogList.init();
+            } else {
+                console.error('Blog list component not loaded');
             }
-
-            // Initialize blog form if user is logged in
-            const blogForm = document.getElementById('blogForm');
-            const token = localStorage.getItem('sessionToken');
-            if (blogForm && isTokenValid(token)) {
-                blogForm.style.display = 'block';
-            }
-
-            // Initialize create blog button
-            const createBlogButton = document.querySelector('.blog-form button');
-            if (createBlogButton) {
-                createBlogButton.onclick = createBlog;
-            }
-
-            // Check for blog ID in URL hash
-            if (window.location.hash) {
-                const blogId = window.location.hash.substring(1);
-                // Wait for blogs to load then open modal
-                setTimeout(() => {
-                    if (blogPosts[blogId]) {
-                        openBlogModal(blogId);
-                    }
-                }, 1000);
-            }
-
-            // Listen for hash changes
-            window.addEventListener('hashchange', () => {
-                if (window.location.hash) {
-                    const blogId = window.location.hash.substring(1);
-                    if (blogPosts[blogId]) {
-                        openBlogModal(blogId);
-                    }
-                } else {
-                    closeBlogModal();
-                }
-            });
         });
     </script>
 </body>
