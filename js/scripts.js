@@ -4,7 +4,6 @@
 // Global-like variables for DOM elements accessed by global functions - assigned in DOMContentLoaded
 let soulModal, soulModalTitle, soulLoginForm, soulModalSubmit, modalFeedback, confirmPasswordField, modalToggleView;
 let activeUsers; // Used by logout()
-let currentRecipientId, currentRecipientUsername;
 
 // HTML snippets for toggling views - define them early
 const switchToRegisterLinkHTML = 'New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>';
