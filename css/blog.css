@@ -109,13 +109,22 @@
     color: inherit;
 }
 
+/* Allow clicks to bubble up to the parent, but prevent text selection */
 .blog-post * {
-    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
+/* Re-enable pointer events and text selection for links and buttons */
 .blog-post a,
 .blog-post button {
     pointer-events: auto;
+    user-select: auto;
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
 }
 
 .blog-post-hover:hover {

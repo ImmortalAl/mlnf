@@ -135,22 +135,30 @@ async function fetchBlogPosts(page = 1) {
                 
                 // Make post clickable with proper event handling
                 const handlePostClick = function(e) {
+                    console.log('[blog.js] Click event triggered on post:', post._id, 'Title:', post.title, 'Author:', post.author.username);
+                    console.log('[blog.js] Click target:', e.target.tagName, e.target.className, e.target);
                     // Don't open modal if clicking on links or buttons
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
+                        console.log('[blog.js] Click on link/button, not opening modal');
                         return;
                     }
+                    console.log('[blog.js] Opening modal for post:', post._id);
                     e.preventDefault();
                     e.stopPropagation();
                     openBlogModal(post._id);
                 };
 
                 // Add both click and touch events
+                console.log('[blog.js] Adding event listeners to post:', post._id, 'Author:', post.author.username);
                 postElement.addEventListener('click', handlePostClick);
                 postElement.addEventListener('touchend', function(e) {
+                    console.log('[blog.js] Touch event triggered on post:', post._id, 'Title:', post.title, 'Author:', post.author.username);
                     // Prevent double-firing on devices that support both touch and click
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
+                        console.log('[blog.js] Touch on link/button, not opening modal');
                         return;
                     }
+                    console.log('[blog.js] Opening modal for post (touch):', post._id);
                     e.preventDefault();
                     e.stopPropagation();
                     openBlogModal(post._id);
