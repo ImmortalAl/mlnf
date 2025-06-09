@@ -601,352 +601,170 @@
     <!-- WebSocket client for real-time messaging -->
     <script src="../components/shared/websocket.js?v=1.2"></script>
 
+    <script src="../components/shared/comments.js?v=1.2"></script>
+    <script src="../js/blog.js?v=1.2"></script>
+    <script src="../js/scripts.js?v=1.2"></script>
+
     <script>
-        // Get username from URL path
-        const pathParts = window.location.pathname.split('/');
-        const username = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
-
-        // DOM elements
-        const loadingState = document.getElementById('loadingState');
-        const errorState = document.getElementById('errorState');
-        const profileContent = document.getElementById('profileContent');
-        const errorMessage = document.getElementById('errorMessage');
-
-        // Profile elements
-        const profileAvatar = document.getElementById('profileAvatar');
-        const profileName = document.getElementById('profileName');
-        const profileUsername = document.getElementById('profileUsername');
-        const profileStatus = document.getElementById('profileStatus');
-        const profileBioSection = document.getElementById('profileBioSection');
-        const profileBio = document.getElementById('profileBio');
-        const joinDate = document.getElementById('joinDate');
-        const onlineStatus = document.getElementById('onlineStatus');
-        const messageBtn = document.getElementById('messageBtn');
-
-        // Fetch and display profile
-        async function fetchProfile() {
-            if (!username || username === 'index.html') {
-                showError('Invalid profile URL');
-                return;
-            }
-
-            try {
-                const token = localStorage.getItem('sessionToken');
-                if (!token) {
-                    showError('Please log in to view profiles');
-                    return;
-                }
-
-                const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
-                if (!apiUrl) {
-                    throw new Error('API configuration missing');
-                }
-
-                const response = await fetch(`${apiUrl}/users/${username}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        showError(`Soul "${username}" not found in our eternal realm`);
-                    } else if (response.status === 401) {
-                        showError('Please log in to view profiles');
-                    } else {
-                        showError('Failed to load profile');
-                    }
-                    return;
-                }
-
-                const user = await response.json();
-                displayProfile(user);
-
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-                showError('Connection to the eternal realm failed');
-            }
-        }
-
-        // Display profile data
-        function displayProfile(user) {
-            // Update page title
-            document.title = `${user.displayName || user.username} - Eternal Soul`;
-
-            // Update profile elements
-            profileAvatar.src = user.avatar || '../assets/images/default.jpg';
-            profileAvatar.alt = `${user.displayName || user.username}'s avatar`;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get username from URL
+            const username = window.location.pathname.split('/').pop().replace('.html', '');
             
-            profileName.textContent = user.displayName || user.username;
-            profileUsername.textContent = `@${user.username}`;
+            // Initialize components
+            window.MLNF.Navigation.init();
+            window.MLNF.UserMenu.init();
+            window.MLNF.ActiveUsers.init();
+            window.MLNF.MessageModal.init();
 
-            // Status
-            if (user.status && user.status.trim()) {
-                profileStatus.textContent = user.status;
-                profileStatus.style.display = 'inline-block';
+            // Initialize comments system for profile
+            const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
+
+            // Initialize blog functionality
+            let currentPostId = null;
+            let blogCommentsSystem = null;
+            let blogPosts = {}; // Store blog data for modal display
+
+            // Fetch user blogs
+            async function fetchUserBlogs() {
+                const userBlogs = document.getElementById('userBlogs');
+                try {
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${username}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch user blogs');
+
+                    const blogs = await response.json();
+                    
+                    if (!blogs.length) {
+                        userBlogs.innerHTML = `
+                            <div class="no-blogs">
+                                <i class="fas fa-scroll"></i>
+                                <p>No eternal scrolls have been written yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    userBlogs.innerHTML = blogs.map(blog => `
+                        <div class="blog-preview" onclick="openBlogModal('${blog._id}')">
+                            <h4>${blog.title}</h4>
+                            <div class="content">${createExcerpt(blog.content)}</div>
+                            <div class="date">
+                                <i class="fas fa-clock"></i>
+                                ${new Date(blog.createdAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Store blog data for modal
+                    blogs.forEach(blog => {
+                        blogPosts[blog._id] = blog;
+                    });
+                } catch (error) {
+                    console.error('Error fetching user blogs:', error);
+                    userBlogs.innerHTML = `
+                        <div class="error-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Failed to load eternal scrolls. The cosmic energies are unstable.</p>
+                        </div>
+                    `;
+                }
             }
 
-            // Bio
-            if (user.bio && user.bio.trim()) {
-                profileBio.textContent = user.bio;
-                profileBioSection.style.display = 'block';
+            // Create excerpt from content
+            function createExcerpt(content, maxLength = 150) {
+                const textContent = content.replace(/<[^>]*>/g, '');
+                return textContent.length > maxLength 
+                    ? textContent.substring(0, maxLength) + '...'
+                    : textContent;
             }
 
-            // Join date
-            if (user.createdAt) {
-                const date = new Date(user.createdAt);
-                joinDate.textContent = date.toLocaleDateString('en-US', {
+            // Open blog modal
+            window.openBlogModal = function(postId) {
+                currentPostId = postId;
+                const modal = document.getElementById('blogModal');
+                const post = blogPosts[postId];
+                
+                if (!post) {
+                    console.error('Blog post not found:', postId);
+                    return;
+                }
+                
+                // Update modal content
+                document.getElementById('modal-title').textContent = post.title;
+                document.getElementById('modal-content').innerHTML = post.content;
+                
+                // Update author info
+                const authorAvatar = post.author.avatar || '../assets/images/default.jpg';
+                const authorDisplayName = post.author.displayName || post.author.username;
+                const authorLink = `/souls/${post.author.username}`;
+                
+                document.getElementById('modal-author-avatar').src = authorAvatar;
+                document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
+                document.getElementById('modal-author-link').href = authorLink;
+                document.getElementById('modal-author-name-link').href = authorLink;
+                document.getElementById('modal-author-name-link').textContent = authorDisplayName;
+                
+                // Update date
+                document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
-            }
-
-            // Online status
-            const statusIcon = onlineStatus.querySelector('i');
-            const statusText = onlineStatus.querySelector('span');
-            if (user.online) {
-                statusIcon.className = 'fas fa-circle';
-                statusIcon.style.color = '#5cb85c'; // Success color
-                statusText.textContent = 'Online';
-            } else {
-                statusIcon.className = 'fas fa-circle';
-                statusIcon.style.color = '#666';
-                statusText.textContent = 'Offline';
-            }
-
-            // Message button
-            messageBtn.addEventListener('click', () => {
-                if (window.MLNF && window.MLNF.openMessageModal) {
-                    window.MLNF.openMessageModal(user.username);
-                } else {
-                    console.error('Message modal not available');
-                }
-            });
-
-            // Show profile content
-            loadingState.style.display = 'none';
-            profileContent.style.display = 'block';
-            
-            // Fetch user's blog posts
-            fetchUserBlogs(user._id);
-        }
-
-        // Fetch user's blog posts
-        async function fetchUserBlogs(userId) {
-            try {
-                const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
-                const response = await fetch(`${apiUrl}/blogs?author=${userId}`, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    console.error('Failed to fetch user blogs');
-                    return;
-                }
-
-                const result = await response.json();
-                const blogs = result.docs || result;
-
-                if (blogs.length > 0) {
-                    displayUserBlogs(blogs);
-                    document.getElementById('userBlogsSection').style.display = 'block';
-                } else {
-                    document.getElementById('noBlogsMessage').style.display = 'block';
-                    document.getElementById('userBlogsSection').style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error fetching user blogs:', error);
-            }
-        }
-
-        // Display user's blog posts
-        function displayUserBlogs(blogs) {
-            const blogsList = document.getElementById('userBlogsList');
-            blogsList.innerHTML = '';
-
-            blogs.forEach(blog => {
-                const blogPreview = document.createElement('div');
-                blogPreview.className = 'blog-preview';
-                blogPreview.onclick = () => openBlogModal(blog._id);
-
-                const excerpt = createExcerpt(blog.content, 150);
-                const date = new Date(blog.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-
-                blogPreview.innerHTML = `
-                    <h4 class="blog-preview-title">${blog.title}</h4>
-                    <p class="blog-preview-excerpt">${excerpt}</p>
-                    <div class="blog-preview-meta">
-                        <span class="blog-preview-date">
-                            <i class="fas fa-calendar"></i>
-                            ${date}
-                        </span>
-                        <a href="/pages/blog.html#${blog._id}" class="blog-preview-link">
-                            Read Full Scroll
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                `;
-
-                blogsList.appendChild(blogPreview);
-            });
-        }
-
-        // Create excerpt from content
-        function createExcerpt(content, maxLength = 150) {
-            const textContent = content.replace(/<[^>]*>/g, ''); // Strip HTML
-            return textContent.length > maxLength 
-                ? textContent.substring(0, maxLength) + '...'
-                : textContent;
-        }
-
-        // Show error state
-        function showError(message) {
-            errorMessage.textContent = message;
-            loadingState.style.display = 'none';
-            errorState.style.display = 'block';
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchProfile();
-        });
-
-        // Initialize components
-        window.MLNF.Navigation.init();
-        window.MLNF.UserMenu.init();
-        window.MLNF.ActiveUsers.init();
-        window.MLNF.MessageModal.init();
-
-        // Initialize comments system
-        const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
-
-        let currentPostId = null;
-        let blogCommentsSystem = null;
-
-        // Fetch user blogs
-        async function fetchUserBlogs() {
-            const userBlogs = document.getElementById('userBlogs');
-            try {
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${username}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) throw new Error('Failed to fetch user blogs');
-
-                const blogs = await response.json();
                 
-                if (!blogs.length) {
-                    userBlogs.innerHTML = `
-                        <div class="no-blogs">
-                            <i class="fas fa-scroll"></i>
-                            <p>No eternal scrolls have been written yet.</p>
-                        </div>
-                    `;
-                    return;
+                // Show modal
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Initialize comments system
+                if (blogCommentsSystem) {
+                    blogCommentsSystem = null;
                 }
+                blogCommentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
+            };
 
-                userBlogs.innerHTML = blogs.map(blog => `
-                    <div class="blog-preview" onclick="openBlogModal('${blog._id}')">
-                        <h4>${blog.title}</h4>
-                        <div class="content">${createExcerpt(blog.content)}</div>
-                        <div class="date">
-                            <i class="fas fa-clock"></i>
-                            ${new Date(blog.createdAt).toLocaleDateString()}
-                        </div>
-                    </div>
-                `).join('');
+            // Close blog modal
+            window.closeBlogModal = function() {
+                const modal = document.getElementById('blogModal');
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                
+                // Clean up comments system
+                if (blogCommentsSystem) {
+                    blogCommentsSystem = null;
+                }
+            };
 
-                // Store blog data for modal
-                blogs.forEach(blog => {
-                    blogPosts[blog._id] = blog;
+            // Share current post
+            window.shareCurrentPost = function() {
+                if (!currentPostId) return;
+                const post = blogPosts[currentPostId];
+                if (!post) return;
+                
+                const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
+                window.MLNF.MessageModal.open(shareUrl);
+            };
+
+            // Initialize message button
+            const messageBtn = document.getElementById('messageBtn');
+            if (messageBtn) {
+                messageBtn.addEventListener('click', () => {
+                    if (window.MLNF && window.MLNF.MessageModal) {
+                        window.MLNF.MessageModal.open(`/souls/${username}`);
+                    } else {
+                        console.error('Message modal not available');
+                    }
                 });
-            } catch (error) {
-                console.error('Error fetching user blogs:', error);
-                userBlogs.innerHTML = `
-                    <div class="error-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Failed to load eternal scrolls. The cosmic energies are unstable.</p>
-                    </div>
-                `;
             }
-        }
 
-        // Open blog modal
-        window.openBlogModal = function(postId) {
-            currentPostId = postId;
-            const modal = document.getElementById('blogModal');
-            const post = blogPosts[postId];
-            
-            if (!post) {
-                console.error('Blog post not found:', postId);
-                return;
-            }
-            
-            // Update modal content
-            document.getElementById('modal-title').textContent = post.title;
-            document.getElementById('modal-content').innerHTML = post.content;
-            
-            // Update author info
-            const authorAvatar = post.author.avatar || '../assets/images/default.jpg';
-            const authorDisplayName = post.author.displayName || post.author.username;
-            const authorLink = `/souls/${post.author.username}`;
-            
-            document.getElementById('modal-author-avatar').src = authorAvatar;
-            document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
-            document.getElementById('modal-author-link').href = authorLink;
-            document.getElementById('modal-author-name-link').href = authorLink;
-            document.getElementById('modal-author-name-link').textContent = authorDisplayName;
-            
-            // Update date
-            document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            // Show modal
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Initialize comments system
-            if (blogCommentsSystem) {
-                blogCommentsSystem = null;
-            }
-            blogCommentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
-        };
-
-        // Close blog modal
-        window.closeBlogModal = function() {
-            const modal = document.getElementById('blogModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
-            
-            // Clean up comments system
-            if (blogCommentsSystem) {
-                blogCommentsSystem = null;
-            }
-        };
-
-        // Share current post
-        window.shareCurrentPost = function() {
-            if (!currentPostId) return;
-            const post = blogPosts[currentPostId];
-            if (!post) return;
-            
-            const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
-            openOwlModal(shareUrl);
-        };
+            // Fetch profile data and blogs
+            fetchProfile();
+            fetchUserBlogs();
+        });
     </script>
 
     <!-- Shared Components -->

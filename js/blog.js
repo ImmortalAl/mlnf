@@ -279,92 +279,15 @@ async function fetchBlogPost(postId) {
     }
 }
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('[blog.js] DOMContentLoaded event fired');
-    
-    const token = localStorage.getItem('sessionToken');
-    const blogForm = document.getElementById('blogForm');
-    
-    console.log('[blog.js] Session token:', token ? 'exists' : 'not found');
-    console.log('[blog.js] Blog form element:', !!blogForm);
-
-    if (blogForm && isTokenValid(token)) {
-        blogForm.style.display = 'block';
-        console.log('[blog.js] Blog form displayed');
-    }
-    
-    const createBlogButton = document.querySelector('.blog-form button');
-    if (createBlogButton) {
-        createBlogButton.onclick = createBlog; 
-        console.log('[blog.js] Create blog button event attached');
-    }
-
-    // Initialize blog list
-    currentPage = 1;
-    isLoading = false;
-    hasMore = true;
-    
-    console.log('[blog.js] Reinitializing blogList element...');
-    const blogListElement = document.getElementById('blogList');
-    console.log('[blog.js] blogList element found:', !!blogListElement);
-    
-    if (blogListElement) {
-        blogListElement.innerHTML = '';
-        console.log('[blog.js] Starting to fetch blog posts...');
-        fetchBlogPosts(currentPage);
-    } else {
-        console.error('[blog.js] ERROR: blogList element not found!');
-    }
-    
-    // Check for blog ID in URL hash
-    if (window.location.hash) {
-        const blogId = window.location.hash.substring(1);
-        console.log('[blog.js] Found blog ID in hash:', blogId);
-        // Wait for blogs to load then open modal
-        setTimeout(async () => {
-            if (blogPosts[blogId]) {
-                openBlogModal(blogId);
-            } else {
-                // Try to fetch the specific blog post
-                const post = await fetchBlogPost(blogId);
-                if (post) {
-                    openBlogModal(blogId);
-                }
-            }
-        }, 2000);
-    }
-    
-    // Listen for hash changes
-    window.addEventListener('hashchange', async () => {
-        if (window.location.hash) {
-            const blogId = window.location.hash.substring(1);
-            if (blogPosts[blogId]) {
-                openBlogModal(blogId);
-            } else {
-                // Try to fetch the specific blog post
-                const post = await fetchBlogPost(blogId);
-                if (post) {
-                    openBlogModal(blogId);
-                }
-            }
-        } else {
-            closeBlogModal();
-        }
-    });
-    
-    // Initialization for active users sidebar is handled by activeUsers.js and mlnf-core.js
-    console.log('[blog.js] DOMContentLoaded initialization complete');
-}); 
-
-// Modal functions
+// Open blog modal
 function openBlogModal(postId) {
+    console.log('[blog.js] Opening modal for post:', postId);
     currentPostId = postId;
-    const modal = document.getElementById('blog-modal');
+    const modal = document.getElementById('blogModal');
     const post = blogPosts[postId];
     
     if (!post) {
-        console.error('Blog post not found:', postId);
+        console.error('[blog.js] Blog post not found:', postId);
         return;
     }
     
@@ -401,8 +324,10 @@ function openBlogModal(postId) {
     commentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
 }
 
+// Close blog modal
 function closeBlogModal() {
-    const modal = document.getElementById('blog-modal');
+    console.log('[blog.js] Closing modal');
+    const modal = document.getElementById('blogModal');
     modal.style.display = 'none';
     document.body.style.overflow = '';
     
@@ -412,42 +337,33 @@ function closeBlogModal() {
     }
 }
 
+// Share current post
 function shareCurrentPost() {
     if (!currentPostId) return;
-    
     const post = blogPosts[currentPostId];
     if (!post) return;
     
-    closeBlogModal(); // Close blog modal before opening owl modal
-    const url = `${window.location.origin}/pages/blog.html#${currentPostId}`;
-    openOwlModal(url);
+    const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
+    window.MLNF.MessageModal.open(shareUrl);
 }
 
+// Share post by ID
 function sharePost(postId) {
-    currentPostId = postId;
     const post = blogPosts[postId];
     if (!post) return;
     
-    const url = `${window.location.origin}/pages/blog.html#${postId}`;
-    openOwlModal(url);
+    const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${postId}`;
+    window.MLNF.MessageModal.open(shareUrl);
 }
 
-// Close modal on escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeBlogModal();
-        closeOwlModal();
-    }
-});
+// Make functions globally available
+window.openBlogModal = openBlogModal;
+window.closeBlogModal = closeBlogModal;
+window.shareCurrentPost = shareCurrentPost;
+window.sharePost = sharePost;
 
-// Close modal on background click
-document.addEventListener('click', (e) => {
-    const blogModal = document.getElementById('blog-modal');
-    const sharingModal = document.getElementById('sharing-modal');
-    if (e.target === blogModal) {
-        closeBlogModal();
-    }
-    if (e.target === sharingModal) {
-        closeOwlModal();
-    }
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[blog.js] Page loaded, initializing...');
+    fetchBlogPosts(1);
 }); 

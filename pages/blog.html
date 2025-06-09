@@ -162,44 +162,59 @@
     <!-- Page Specific Scripts -->
     <script src="../js/owlMessenger.js?v=1.2"></script>
     <script src="../js/blog.js?v=1.2"></script>
-    
+    <script src="../js/scripts.js?v=1.2"></script>
+
     <script>
-    let currentBlogId = null;
-    let commentsSystem = null;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize components
+            window.MLNF.Navigation.init();
+            window.MLNF.UserMenu.init();
+            window.MLNF.ActiveUsers.init();
+            window.MLNF.MessageModal.init();
 
-    function openBlogModal(blogId) {
-        currentBlogId = blogId;
-        const modal = document.getElementById('blog-modal');
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+            // Initialize blog list
+            const blogList = document.getElementById('blogList');
+            if (blogList) {
+                blogList.innerHTML = ''; // Clear any existing content
+                fetchBlogPosts(1); // Start fetching blog posts
+            }
 
-        // Initialize comments system for this blog
-        if (commentsSystem) {
-            commentsSystem = null;
-        }
-        commentsSystem = new MLNF.CommentsSystem('blog', blogId, 'blogComments');
-    }
-    
-    function closeBlogModal() {
-        const modal = document.getElementById('blog-modal');
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-        if (commentsSystem) {
-            commentsSystem = null;
-        }
-    }
+            // Initialize blog form if user is logged in
+            const blogForm = document.getElementById('blogForm');
+            const token = localStorage.getItem('sessionToken');
+            if (blogForm && isTokenValid(token)) {
+                blogForm.style.display = 'block';
+            }
 
-    function openOwlModal(url) {
-        const modal = document.getElementById('sharing-modal');
-        const shareUrl = document.getElementById('share-url');
-        modal.classList.add('active');
-        shareUrl.value = url;
-    }
-    
-    function closeOwlModal() {
-        const modal = document.getElementById('sharing-modal');
-        modal.classList.remove('active');
-    }
+            // Initialize create blog button
+            const createBlogButton = document.querySelector('.blog-form button');
+            if (createBlogButton) {
+                createBlogButton.onclick = createBlog;
+            }
+
+            // Check for blog ID in URL hash
+            if (window.location.hash) {
+                const blogId = window.location.hash.substring(1);
+                // Wait for blogs to load then open modal
+                setTimeout(() => {
+                    if (blogPosts[blogId]) {
+                        openBlogModal(blogId);
+                    }
+                }, 1000);
+            }
+
+            // Listen for hash changes
+            window.addEventListener('hashchange', () => {
+                if (window.location.hash) {
+                    const blogId = window.location.hash.substring(1);
+                    if (blogPosts[blogId]) {
+                        openBlogModal(blogId);
+                    }
+                } else {
+                    closeBlogModal();
+                }
+            });
+        });
     </script>
 </body>
 </html>
