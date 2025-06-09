@@ -139,10 +139,11 @@ async function fetchBlogPosts(page = 1) {
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
                         return;
                     }
-                    e.preventDefault();
-                    e.stopPropagation();
                     openBlogModal(post._id);
                 });
+                
+                // Add hover effect class
+                postElement.classList.add('blog-post-hover');
                 
                 blogList.appendChild(postElement);
                 console.log('[blog.js] Post added to DOM:', post._id);

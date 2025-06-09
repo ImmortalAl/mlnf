@@ -100,13 +100,13 @@
     border-radius: 12px;
     padding: 1.8rem;
     position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     overflow: hidden;
     box-shadow: 0 4px 15px var(--shadow);
     cursor: pointer;
 }
 
-.blog-post:hover {
+.blog-post-hover:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 10px 30px rgba(58, 46, 40, 0.2);
 }
@@ -129,7 +129,7 @@
     transition: opacity 0.3s ease;
 }
 
-.blog-post:hover::before {
+.blog-post-hover:hover::before {
     opacity: 0.6;
 }
 
