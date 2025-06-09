@@ -361,16 +361,21 @@ body.modal-open {
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 10000 !important;
     display: none; /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
     align-items: center;
     justify-content: center;
     /* Prevent the backdrop from being a pain in the ass */
     overflow-y: auto;
     padding: 2rem 1rem;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 /* When modal is shown */
 #blogModal.modal.show {
     display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* Blog Modal Styles */

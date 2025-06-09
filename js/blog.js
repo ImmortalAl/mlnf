@@ -462,6 +462,10 @@ async function openBlogModal(postId) {
     
     // Show the modal
     console.log('[blog.js] Showing modal...');
+    
+    // Remove any inline display style that might be overriding our CSS
+    modal.style.removeProperty('display');
+    
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
     modal.style.zIndex = '10000';
@@ -498,7 +502,17 @@ async function openBlogModal(postId) {
     }
     
     console.log('[blog.js] Body classes:', document.body.className);
-    console.log('[blog.js] Modal should now be visible. Display:', modal.style.display, 'Z-index:', modal.style.zIndex);
+    console.log('[blog.js] Modal classes:', modal.className);
+    
+    // Fallback: If the modal is still not visible after adding the show class, force it
+    if (computedStyle.display === 'none') {
+        console.warn('[blog.js] Modal still hidden after adding show class, forcing display');
+        modal.style.display = 'flex';
+        modal.style.opacity = '1';
+        modal.style.visibility = 'visible';
+    }
+    
+    console.log('[blog.js] Modal should now be visible. Display:', computedStyle.display, 'Z-index:', modal.style.zIndex);
     
     // Initialize comments system
     if (commentsSystem) {
