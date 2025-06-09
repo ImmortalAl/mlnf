@@ -487,4 +487,158 @@
     .blog-post {
         padding: 1.2rem;
     }
+}
+
+/* Blog Comments Styles */
+.blog-comments {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.blog-comments h3 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.blog-comments h3 i {
+    color: var(--accent);
+}
+
+/* Ensure comments fit within the modal */
+.blog-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Style the comments section to match the blog theme */
+.comments-section {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.comments-title {
+    display: none; /* Hide the default title since we have our own */
+}
+
+.comment {
+    background: var(--secondary);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.author-name {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.8;
+}
+
+.comment-content {
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    color: var(--text);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 0.25rem;
+}
+
+.btn-edit:hover, .btn-delete:hover {
+    opacity: 1;
+    color: var(--accent);
+}
+
+.comment-form-container {
+    margin-top: 1.5rem;
+}
+
+.comment-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--secondary);
+    color: var(--text);
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Loading and error states */
+.loading-comments, .error-message, .no-comments {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text);
+    opacity: 0.8;
+}
+
+.loading-comments i, .error-message i, .no-comments i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: var(--accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .comment-meta {
+        width: 100%;
+        justify-content: space-between;
+    }
 } 

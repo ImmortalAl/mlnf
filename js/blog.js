@@ -32,6 +32,7 @@ let hasMore = true;
 const PAGE_LIMIT = 10;
 let blogPosts = {}; // Store full blog data for modal display
 let currentPostId = null; // Track current post for sharing
+let commentsSystem = null; // Track current comments system
 
 // Check token validity
 function isTokenValid(token) {
@@ -358,38 +359,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Modal functions
 function openBlogModal(postId) {
-    const post = blogPosts[postId];
-    if (!post) return;
-    
     currentPostId = postId;
+    const modal = document.getElementById('blog-modal');
+    const post = blogPosts[postId];
     
-    // Populate modal with post data
-    document.getElementById('modal-author-avatar').src = post.author.avatar || '/assets/images/default.jpg';
-    document.getElementById('modal-author-avatar').alt = `${post.author.displayName || post.author.username}'s avatar`;
-    document.getElementById('modal-author-link').href = `/profile/${post.author._id}`;
-    document.getElementById('modal-author-name-link').href = `/profile/${post.author._id}`;
-    document.getElementById('modal-author-name-link').textContent = post.author.displayName || post.author.username;
+    if (!post) {
+        console.error('Blog post not found:', postId);
+        return;
+    }
+    
+    // Update modal content
+    document.getElementById('modal-title').textContent = post.title;
+    document.getElementById('modal-content').innerHTML = post.content;
+    
+    // Update author info
+    const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
+    const authorDisplayName = post.author.displayName || post.author.username;
+    const authorLink = `/souls/${post.author.username}`;
+    
+    document.getElementById('modal-author-avatar').src = authorAvatar;
+    document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
+    document.getElementById('modal-author-link').href = authorLink;
+    document.getElementById('modal-author-name-link').href = authorLink;
+    document.getElementById('modal-author-name-link').textContent = authorDisplayName;
+    
+    // Update date
     document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
-    document.getElementById('modal-title').textContent = post.title;
-    document.getElementById('modal-content').innerHTML = DOMPurify.sanitize(post.content);
     
     // Show modal
-    const modal = document.getElementById('blog-modal');
-    modal.style.display = 'flex';
-    modal.setAttribute('aria-hidden', 'false');
+    modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    
+    // Initialize comments system
+    if (commentsSystem) {
+        commentsSystem = null;
+    }
+    commentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
 }
 
 function closeBlogModal() {
     const modal = document.getElementById('blog-modal');
     modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    currentPostId = null;
+    
+    // Clean up comments system
+    if (commentsSystem) {
+        commentsSystem = null;
+    }
 }
 
 function shareCurrentPost() {

@@ -138,6 +138,11 @@
                     🦉 Whisper this scroll to another soul
                 </button>
             </div>
+            <!-- Comments Section -->
+            <div class="blog-comments">
+                <h3><i class="fas fa-comments"></i> Eternal Echoes</h3>
+                <div id="blogComments"></div>
+            </div>
         </div>
     </div>
 
@@ -152,12 +157,38 @@
     <script src="../components/shared/authModal.js?v=1.2"></script> 
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script> 
+    <script src="../components/shared/comments.js?v=1.2"></script>
 
     <!-- Page Specific Scripts -->
     <script src="../js/owlMessenger.js?v=1.2"></script>
     <script src="../js/blog.js?v=1.2"></script>
     
     <script>
+    let currentBlogId = null;
+    let commentsSystem = null;
+
+    function openBlogModal(blogId) {
+        currentBlogId = blogId;
+        const modal = document.getElementById('blog-modal');
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        // Initialize comments system for this blog
+        if (commentsSystem) {
+            commentsSystem = null;
+        }
+        commentsSystem = new MLNF.CommentsSystem('blog', blogId, 'blogComments');
+    }
+    
+    function closeBlogModal() {
+        const modal = document.getElementById('blog-modal');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        if (commentsSystem) {
+            commentsSystem = null;
+        }
+    }
+
     function openOwlModal(url) {
         const modal = document.getElementById('sharing-modal');
         const shareUrl = document.getElementById('share-url');

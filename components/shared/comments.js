@@ -1,0 +1,253 @@
+// Comments Component
+class CommentsSystem {
+    constructor(targetType, targetId, containerId) {
+        this.targetType = targetType;
+        this.targetId = targetId;
+        this.containerId = containerId;
+        this.container = document.getElementById(containerId);
+        this.comments = [];
+        this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+        this.token = localStorage.getItem('sessionToken');
+        
+        if (!this.container) {
+            console.error(`Comments container #${containerId} not found`);
+            return;
+        }
+        
+        this.init();
+    }
+    
+    async init() {
+        this.createCommentsSection();
+        await this.loadComments();
+        this.attachEventListeners();
+    }
+    
+    createCommentsSection() {
+        this.container.innerHTML = `
+            <div class="comments-section">
+                <h3 class="comments-title">
+                    <i class="fas fa-comments"></i>
+                    Eternal Echoes
+                </h3>
+                <div class="comments-list" id="${this.containerId}-list">
+                    <div class="loading-comments">Summoning eternal echoes...</div>
+                </div>
+                <div class="comment-form-container">
+                    <textarea 
+                        id="${this.containerId}-input" 
+                        class="comment-input" 
+                        placeholder="Share your eternal thoughts..."
+                        rows="3"
+                    ></textarea>
+                    <button id="${this.containerId}-submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Echo
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    async loadComments() {
+        const listContainer = document.getElementById(`${this.containerId}-list`);
+        if (!listContainer) return;
+        
+        try {
+            const response = await fetch(
+                `${window.MLNF_CONFIG.API_BASE_URL}/comments/${this.targetType}/${this.targetId}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${this.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            
+            if (!response.ok) throw new Error('Failed to fetch comments');
+            
+            this.comments = await response.json();
+            this.renderComments();
+        } catch (error) {
+            console.error('Error loading comments:', error);
+            listContainer.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Failed to load eternal echoes. The cosmic energies are unstable.
+                </div>
+            `;
+        }
+    }
+    
+    renderComments() {
+        const listContainer = document.getElementById(`${this.containerId}-list`);
+        if (!listContainer) return;
+        
+        if (!this.comments.length) {
+            listContainer.innerHTML = `
+                <div class="no-comments">
+                    <i class="fas fa-feather"></i>
+                    No eternal echoes yet. Be the first to share your thoughts.
+                </div>
+            `;
+            return;
+        }
+        
+        listContainer.innerHTML = this.comments.map(comment => this.createCommentHTML(comment)).join('');
+    }
+    
+    createCommentHTML(comment) {
+        const isAuthor = this.currentUser._id === comment.author._id;
+        const formattedDate = new Date(comment.createdAt).toLocaleString();
+        const editedText = comment.isEdited ? ' (edited)' : '';
+        
+        return `
+            <div class="comment" id="comment-${comment._id}">
+                <div class="comment-header">
+                    <div class="comment-author">
+                        <img src="${comment.author.avatar || '/assets/images/default.jpg'}" 
+                             alt="${comment.author.displayName || comment.author.username}"
+                             class="author-avatar">
+                        <span class="author-name">${comment.author.displayName || comment.author.username}</span>
+                    </div>
+                    <div class="comment-meta">
+                        <span class="comment-date">${formattedDate}${editedText}</span>
+                        ${isAuthor ? `
+                            <div class="comment-actions">
+                                <button class="btn-edit" data-id="${comment._id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-delete" data-id="${comment._id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="comment-content">${comment.content}</div>
+            </div>
+        `;
+    }
+    
+    attachEventListeners() {
+        const submitBtn = document.getElementById(`${this.containerId}-submit`);
+        const inputField = document.getElementById(`${this.containerId}-input`);
+        const listContainer = document.getElementById(`${this.containerId}-list`);
+        
+        if (submitBtn && inputField) {
+            submitBtn.addEventListener('click', () => this.submitComment(inputField));
+            inputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.submitComment(inputField);
+                }
+            });
+        }
+        
+        if (listContainer) {
+            listContainer.addEventListener('click', (e) => {
+                const target = e.target.closest('button');
+                if (!target) return;
+                
+                const commentId = target.dataset.id;
+                if (target.classList.contains('btn-edit')) {
+                    this.editComment(commentId);
+                } else if (target.classList.contains('btn-delete')) {
+                    this.deleteComment(commentId);
+                }
+            });
+        }
+    }
+    
+    async submitComment(inputField) {
+        const content = inputField.value.trim();
+        if (!content) return;
+        
+        if (!this.token) {
+            alert('Please log in to share your eternal thoughts.');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content,
+                    targetType: this.targetType,
+                    targetId: this.targetId
+                })
+            });
+            
+            if (!response.ok) throw new Error('Failed to post comment');
+            
+            const newComment = await response.json();
+            this.comments.unshift(newComment);
+            this.renderComments();
+            inputField.value = '';
+        } catch (error) {
+            console.error('Error posting comment:', error);
+            alert('Failed to share your eternal thoughts. Please try again.');
+        }
+    }
+    
+    async editComment(commentId) {
+        const comment = this.comments.find(c => c._id === commentId);
+        if (!comment) return;
+        
+        const newContent = prompt('Edit your eternal thought:', comment.content);
+        if (!newContent || newContent === comment.content) return;
+        
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: newContent })
+            });
+            
+            if (!response.ok) throw new Error('Failed to edit comment');
+            
+            const updatedComment = await response.json();
+            const index = this.comments.findIndex(c => c._id === commentId);
+            if (index !== -1) {
+                this.comments[index] = updatedComment;
+                this.renderComments();
+            }
+        } catch (error) {
+            console.error('Error editing comment:', error);
+            alert('Failed to edit your eternal thought. Please try again.');
+        }
+    }
+    
+    async deleteComment(commentId) {
+        if (!confirm('Delete this eternal thought forever?')) return;
+        
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to delete comment');
+            
+            this.comments = this.comments.filter(c => c._id !== commentId);
+            this.renderComments();
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            alert('Failed to delete your eternal thought. Please try again.');
+        }
+    }
+}
+
+// Add to global MLNF object
+window.MLNF = window.MLNF || {};
+window.MLNF.CommentsSystem = CommentsSystem; 

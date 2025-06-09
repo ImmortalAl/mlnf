@@ -107,6 +107,102 @@
             white-space: pre-wrap;
         }
 
+        /* Blog Section Styles */
+        .profile-blogs {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .profile-blogs h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-blogs-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .blog-preview {
+            background: var(--primary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border-left: 3px solid var(--accent);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .blog-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .blog-preview h4 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .blog-preview .content {
+            color: var(--text);
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-preview .date {
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blog-preview .date i {
+            color: var(--accent);
+        }
+
+        .no-blogs {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .no-blogs i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: var(--accent);
+        }
+
+        /* Comments Section Styles */
+        .profile-comments {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .profile-comments h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .profile-actions {
             display: flex;
             gap: 1rem;
@@ -415,8 +511,25 @@
                 </div>
 
                 <div id="profileBioSection" class="profile-bio" style="display: none;">
-                    <h3><i class="fas fa-scroll"></i> Soul Story</h3>
-                    <p id="profileBio"></p>
+                    <h3><i class="fas fa-book-open"></i> Eternal Biography</h3>
+                    <p id="profileBio">Loading biography...</p>
+                </div>
+
+                <!-- Blog Section -->
+                <div class="profile-blogs">
+                    <h3><i class="fas fa-scroll"></i> Eternal Scrolls</h3>
+                    <div id="userBlogs" class="user-blogs-list">
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <p>Summoning eternal scrolls...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="profile-comments">
+                    <h3><i class="fas fa-comments"></i> Eternal Echoes</h3>
+                    <div id="profileComments"></div>
                 </div>
 
                 <div class="profile-actions">
@@ -675,6 +788,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchProfile();
         });
+
+        // Initialize components
+        window.MLNF.Navigation.init();
+        window.MLNF.UserMenu.init();
+        window.MLNF.ActiveUsers.init();
+        window.MLNF.MessageModal.init();
+
+        // Initialize comments system
+        const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
     </script>
 
     <!-- Shared Components -->
@@ -684,5 +806,7 @@
     <script src="../components/shared/authModal.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
+    <script src="../components/shared/comments.js?v=1.2"></script>
+    <script src="../js/blog.js?v=1.2"></script>
 </body>
 </html> 
