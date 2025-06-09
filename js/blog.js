@@ -462,13 +462,42 @@ async function openBlogModal(postId) {
     
     // Show the modal
     console.log('[blog.js] Showing modal...');
-    modal.style.display = 'block';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
     modal.style.zIndex = '10000';
     document.body.classList.add('modal-open');
     
     // Force a reflow to ensure the modal is visible
     modal.offsetHeight;
     
+    // Get computed styles to debug visibility
+    const computedStyle = window.getComputedStyle(modal);
+    const modalContent = modal.querySelector('.blog-modal-content');
+    const contentComputedStyle = modalContent ? window.getComputedStyle(modalContent) : null;
+    
+    console.log('[blog.js] Modal computed styles:', {
+        display: computedStyle.display,
+        position: computedStyle.position,
+        top: computedStyle.top,
+        left: computedStyle.left,
+        width: computedStyle.width,
+        height: computedStyle.height,
+        opacity: computedStyle.opacity,
+        visibility: computedStyle.visibility,
+        zIndex: computedStyle.zIndex
+    });
+    
+    if (contentComputedStyle) {
+        console.log('[blog.js] Modal content computed styles:', {
+            display: contentComputedStyle.display,
+            width: contentComputedStyle.width,
+            height: contentComputedStyle.height,
+            opacity: contentComputedStyle.opacity,
+            visibility: contentComputedStyle.visibility
+        });
+    }
+    
+    console.log('[blog.js] Body classes:', document.body.className);
     console.log('[blog.js] Modal should now be visible. Display:', modal.style.display, 'Z-index:', modal.style.zIndex);
     
     // Initialize comments system
@@ -495,7 +524,8 @@ function closeBlogModal() {
     console.log('[blog.js] Closing modal');
     const modal = document.getElementById('blogModal');
     if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('modal-open');
     }
     
