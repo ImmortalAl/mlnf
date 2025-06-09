@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="../components/shared/styles.css?v=1.2">
     <link rel="stylesheet" href="../css/blog.css?v=1.2">
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/souls-listing.css">
+    <link rel="stylesheet" href="/css/active-users.css">
+    <script src="/components/shared/messageModal.js"></script>
+    <script src="/components/shared/mlnf-core.js"></script>
     <style>
         .profile-container {
             max-width: 800px;
@@ -420,9 +425,12 @@
     <!-- Message Modal -->
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Direct Message to <span id="recipientName"></span></h3>
-            <div class="message-history" id="messageHistory"></div>
-            <div>
+            <h3 id="messageTitle">Soul-to-Soul Connection</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory">
+                <!-- Messages will be dynamically added here -->
+            </div>
+            <div class="message-form">
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
                     <button type="submit" id="sendMessageBtn">Send Whisper</button>
@@ -617,26 +625,21 @@
     <script src="../js/scripts.js?v=1.2"></script>
 
     <script>
-        // This script now runs AFTER all other scripts are loaded and ready.
-        document.addEventListener('DOMContentLoaded', () => {
-            const username = window.location.pathname.split('/').pop().replace('.html', '');
-
-            // Initialize core components that are safe to run now
-            if (window.MLNF) {
-                if (window.MLNF.Navigation) window.MLNF.Navigation.init();
-                if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();
-                if (window.MLNF.ActiveUsers) window.MLNF.ActiveUsers.init();
-                if (window.MLNF.MessageModal) window.MLNF.MessageModal.init();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize message modal first
+            if (window.MLNF && window.MLNF.initMessageModal) {
+                window.MLNF.initMessageModal();
+                console.log('[profile] Message modal initialized');
             } else {
-                console.error('MLNF core not loaded');
+                console.error('[profile] MLNF.initMessageModal not found!');
             }
 
-            // Define a container for profile-specific logic
             const ProfilePage = {
                 blogPosts: {},
                 blogsLoaded: false,
 
                 init: function() {
+                    const username = window.location.pathname.split('/').pop().replace('.html', '');
                     this.fetchProfile(username);
                     this.fetchUserBlogs(username);
                     this.initMessageButton(username);
@@ -766,8 +769,10 @@
                     const messageBtn = document.getElementById('messageBtn');
                     if (messageBtn) {
                         messageBtn.addEventListener('click', () => {
-                            if (window.MLNF && window.MLNF.MessageModal) {
-                                window.MLNF.MessageModal.open(user);
+                            if (window.MLNF && window.MLNF.openMessageModal) {
+                                window.MLNF.openMessageModal(user.username);
+                            } else {
+                                console.error('Message modal component not ready');
                             }
                         });
                     }
