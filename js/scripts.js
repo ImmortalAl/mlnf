@@ -811,17 +811,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // RE-ACTIVATING PARTICLE CREATION - NOW WITH CONTINUOUS GENERATION
-    // Check if we are on the admin page by looking for a unique admin element/class
     const isAdminPage = document.querySelector('main.admin-container');
+    const hasHeroSection = document.querySelector('.hero');
 
-    if (!isAdminPage) {
+    if (!isAdminPage && hasHeroSection) {
         // Initial burst of particles
         for(let i=0; i<10; i++) createParticle(); 
         // Continuously create new particles
         setInterval(createParticle, 500); // Create a new particle every 500ms
-        console.log('[Debug Step] Continuous particle creation initiated after DOMContentLoaded for non-admin page.');
-    } else {
+        console.log('[Debug Step] Continuous particle creation initiated after DOMContentLoaded for hero page.');
+    } else if (isAdminPage) {
         console.log('[Debug Step] Particle creation skipped for admin page.');
+    } else {
+        console.log('[Debug Step] Particle creation skipped - no hero section found.');
     }
 
     // MESSAGE MODAL CLOSE LISTENERS - Only attach if messageModal.js component is not available
