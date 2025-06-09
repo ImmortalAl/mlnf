@@ -64,18 +64,32 @@ class CommentsSystem {
                 }
             );
             
-            if (!response.ok) throw new Error('Failed to fetch comments');
+            if (!response.ok) {
+                if (response.status === 404) {
+                    // Comments endpoint doesn't exist for this type, show empty state
+                    this.comments = [];
+                    this.renderComments();
+                    return;
+                }
+                throw new Error('Failed to fetch comments');
+            }
             
             this.comments = await response.json();
             this.renderComments();
         } catch (error) {
             console.error('Error loading comments:', error);
-            listContainer.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Failed to load eternal echoes. The cosmic energies are unstable.
-                </div>
-            `;
+            if (error.message.includes('404') || error.message.includes('Failed to fetch comments')) {
+                // Show empty state for unsupported comment types
+                this.comments = [];
+                this.renderComments();
+            } else {
+                listContainer.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Failed to load eternal echoes. The cosmic energies are unstable.
+                    </div>
+                `;
+            }
         }
     }
     

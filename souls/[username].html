@@ -622,9 +622,6 @@
                 console.error('MLNF core not loaded');
             }
 
-            // Initialize comments system for profile
-            const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
-
             // Initialize blog functionality
             let currentPostId = null;
             let blogCommentsSystem = null;
@@ -771,20 +768,79 @@
                 });
             }
 
+            // Fetch profile data
+            async function fetchProfile() {
+                try {
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/profile/${username}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            console.log('Profile not found, using username from URL');
+                            updateProfileDisplay(username);
+                            return;
+                        }
+                        throw new Error('Failed to fetch profile');
+                    }
+
+                    const profile = await response.json();
+                    updateProfileDisplay(profile);
+                } catch (error) {
+                    console.error('Error fetching profile:', error);
+                    // Use username as fallback
+                    updateProfileDisplay(username);
+                }
+            }
+
+            // Update profile display with fetched data
+            function updateProfileDisplay(profileData) {
+                // If profileData is just a string (username), create basic profile object
+                if (typeof profileData === 'string') {
+                    profileData = {
+                        username: profileData,
+                        displayName: profileData,
+                        avatar: '../assets/images/default.jpg',
+                        bio: 'An eternal soul exploring the infinite possibilities...'
+                    };
+                }
+
+                // Update profile elements if they exist
+                const profileName = document.getElementById('profileName');
+                const profileAvatar = document.getElementById('profileAvatar');
+                const profileBio = document.getElementById('profileBio');
+
+                if (profileName) {
+                    profileName.textContent = profileData.displayName || profileData.username;
+                }
+                if (profileAvatar) {
+                    profileAvatar.src = profileData.avatar || '../assets/images/default.jpg';
+                    profileAvatar.alt = `${profileData.displayName || profileData.username}'s avatar`;
+                }
+                if (profileBio) {
+                    profileBio.textContent = profileData.bio || 'An eternal soul exploring the infinite possibilities...';
+                }
+            }
+
+            // Initialize comments system for profile (if API supports it)
+            try {
+                const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
+            } catch (error) {
+                console.log('Profile comments not available:', error.message);
+                // Hide comments section if it exists
+                const commentsSection = document.getElementById('profileComments');
+                if (commentsSection) {
+                    commentsSection.style.display = 'none';
+                }
+            }
+
             // Fetch profile data and blogs
             fetchProfile();
             fetchUserBlogs();
         });
     </script>
-
-    <!-- Shared Components -->
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
-    <script src="../components/shared/navigation.js?v=1.2"></script>
-    <script src="../components/shared/userMenu.js?v=1.2"></script>
-    <script src="../components/shared/authModal.js?v=1.2"></script>
-    <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <script src="../components/shared/messageModal.js?v=1.2"></script>
-    <script src="../components/shared/comments.js?v=1.2"></script>
-    <script src="../js/blog.js?v=1.2"></script>
 </body>
 </html> 
