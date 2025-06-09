@@ -227,6 +227,18 @@ function initBlog() {
 
     console.log('[blog.js] Elements found - blogList:', !!blogList, 'scrollObserver:', !!scrollObserver);
 
+    // Safety check: ensure blog modal isn't blocking clicks on page load
+    const blogModal = document.getElementById('blogModal');
+    if (blogModal) {
+        blogModal.classList.remove('show');
+        blogModal.style.display = 'none';
+        blogModal.style.opacity = '0';
+        blogModal.style.visibility = 'hidden';
+        blogModal.style.pointerEvents = 'none';
+        document.body.classList.remove('modal-open');
+        console.log('[blog.js] Cleared any stuck blog modal states on init');
+    }
+
     if (!blogList) {
         console.log('[blog.js] blogList element not found, aborting init.');
         return;
@@ -606,17 +618,57 @@ function sharePost(postId) {
     }
 }
 
-// Make functions globally available
+// Export functions to global scope for compatibility
+window.createBlog = createBlog;
 window.openBlogModal = openBlogModal;
 window.closeBlogModal = closeBlogModal;
-window.shareCurrentPost = shareCurrentPost;
 window.sharePost = sharePost;
+window.shareCurrentPost = shareCurrentPost;
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.DISABLE_BLOG_AUTO_INIT) {
-        console.log('[blog.js] Auto-initialization is disabled.');
+// Auto-initialization disabled for pages like profile where blog is not the main feature
+if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {
+    // Initialize blog functionality when DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('[blog.js] Initializing blog functionality.');
+            initBlog();
+        });
     } else {
         console.log('[blog.js] Initializing blog functionality.');
         initBlog();
     }
-});
+} else {
+    console.log('[blog.js] Auto-initialization is disabled.');
+}
+
+// Debug function to find what's blocking clicks
+window.debugClickBlocker = function() {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const elements = document.elementsFromPoint(centerX, centerY);
+    
+    console.log('[DEBUG] Elements at center of screen (top to bottom):');
+    elements.forEach((el, index) => {
+        const computed = window.getComputedStyle(el);
+        const info = {
+            tag: el.tagName,
+            id: el.id || 'none',
+            class: el.className || 'none',
+            zIndex: computed.zIndex,
+            position: computed.position,
+            display: computed.display,
+            visibility: computed.visibility,
+            pointerEvents: computed.pointerEvents,
+            opacity: computed.opacity
+        };
+        console.log(`[${index}]`, info);
+    });
+};
+
+// Auto-run debug on page load if there are issues
+setTimeout(() => {
+    console.log('[blog.js] Running click blocker debug...');
+    if (window.debugClickBlocker) {
+        window.debugClickBlocker();
+    }
+}, 2000);
