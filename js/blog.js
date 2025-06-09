@@ -134,11 +134,25 @@ async function fetchBlogPosts(page = 1) {
                 blogPosts[post._id] = post;
                 
                 // Make post clickable with proper event handling
-                postElement.addEventListener('click', function(e) {
+                const handlePostClick = function(e) {
                     // Don't open modal if clicking on links or buttons
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
                         return;
                     }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openBlogModal(post._id);
+                };
+
+                // Add both click and touch events
+                postElement.addEventListener('click', handlePostClick);
+                postElement.addEventListener('touchend', function(e) {
+                    // Prevent double-firing on devices that support both touch and click
+                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
                     openBlogModal(post._id);
                 });
                 
