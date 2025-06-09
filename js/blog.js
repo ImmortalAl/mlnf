@@ -285,17 +285,43 @@ async function createBlog() {
 
 // Fetch a single blog post by ID
 async function fetchBlogPost(postId) {
+    console.log('[blog.js] fetchBlogPost called for ID:', postId);
+    
+    // Check if we have it cached
     if (blogPosts[postId] && blogPosts[postId].content) {
+        console.log('[blog.js] Returning cached post:', blogPosts[postId]);
         return blogPosts[postId];
     }
+    
+    // Check if it exists in window.blogPosts (from profile page)
+    if (window.blogPosts && window.blogPosts[postId]) {
+        console.log('[blog.js] Found post in window.blogPosts:', window.blogPosts[postId]);
+        blogPosts[postId] = window.blogPosts[postId];
+        return window.blogPosts[postId];
+    }
+    
+    console.log('[blog.js] Post not cached, fetching from API...');
+    
     try {
-        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}`);
-        if (!response.ok) throw new Error('Failed to fetch blog post');
+        const url = `${BLOG_API_BASE_URL}/blogs/${postId}`;
+        console.log('[blog.js] Fetching from URL:', url);
+        
+        const response = await fetch(url);
+        console.log('[blog.js] API response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('[blog.js] API error response:', errorText);
+            throw new Error(`Failed to fetch blog post: ${response.status}`);
+        }
+        
         const post = await response.json();
+        console.log('[blog.js] API response data:', post);
+        
         blogPosts[post._id] = post;
         return post;
     } catch (error) {
-        console.error('Error fetching post:', error);
+        console.error('[blog.js] Error fetching post:', error);
         return null;
     }
 }
@@ -312,46 +338,100 @@ async function openBlogModal(postId) {
     
     console.log('[blog.js] Opening modal for post:', postId);
     currentPostId = postId;
-    const modal = document.getElementById('blogModal');
-    const post = await fetchBlogPost(postId);
     
-    if (!post || !modal) {
-        console.error('[blog.js] Blog post or modal element not found:', postId);
+    // Get modal element first and check if it exists
+    const modal = document.getElementById('blogModal');
+    if (!modal) {
+        console.error('[blog.js] blogModal element not found in DOM!');
         window._blogModalOpening = false;
+        // Ensure body scroll is not locked
+        document.body.classList.remove('modal-open');
         return;
     }
     
+    console.log('[blog.js] Modal element found:', modal);
+    
+    // Fetch the post data
+    let post;
+    try {
+        post = await fetchBlogPost(postId);
+        console.log('[blog.js] Post data fetched:', post);
+    } catch (error) {
+        console.error('[blog.js] Error fetching post:', error);
+        window._blogModalOpening = false;
+        document.body.classList.remove('modal-open');
+        return;
+    }
+    
+    if (!post) {
+        console.error('[blog.js] No post data returned for ID:', postId);
+        window._blogModalOpening = false;
+        document.body.classList.remove('modal-open');
+        return;
+    }
+    
+    // Check if all required modal elements exist
+    const requiredElements = {
+        'modal-title': document.getElementById('modal-title'),
+        'modal-content': document.getElementById('modal-content'),
+        'modal-author-avatar': document.getElementById('modal-author-avatar'),
+        'modal-author-link': document.getElementById('modal-author-link'),
+        'modal-author-name-link': document.getElementById('modal-author-name-link'),
+        'modal-date': document.getElementById('modal-date')
+    };
+    
+    // Log missing elements
+    const missingElements = [];
+    for (const [id, element] of Object.entries(requiredElements)) {
+        if (!element) {
+            missingElements.push(id);
+        }
+    }
+    
+    if (missingElements.length > 0) {
+        console.error('[blog.js] Missing modal elements:', missingElements);
+        window._blogModalOpening = false;
+        document.body.classList.remove('modal-open');
+        return;
+    }
+    
+    console.log('[blog.js] All modal elements found, updating content...');
+    
     // Update modal content
-    document.getElementById('modal-title').textContent = post.title;
-    document.getElementById('modal-content').innerHTML = post.content;
-    
-    // Update author info
-    const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
-    const authorDisplayName = post.author.displayName || post.author.username;
-    const authorLink = `/souls/${post.author.username}.html`;
-    
-    document.getElementById('modal-author-avatar').src = authorAvatar;
-    document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
-    document.getElementById('modal-author-link').href = authorLink;
-    document.getElementById('modal-author-name-link').href = authorLink;
-    document.getElementById('modal-author-name-link').textContent = authorDisplayName;
-    
-    // Update date
-    document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    try {
+        requiredElements['modal-title'].textContent = post.title;
+        requiredElements['modal-content'].innerHTML = post.content;
+        
+        // Update author info
+        const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
+        const authorDisplayName = post.author.displayName || post.author.username;
+        const authorLink = `/souls/${post.author.username}.html`;
+        
+        requiredElements['modal-author-avatar'].src = authorAvatar;
+        requiredElements['modal-author-avatar'].alt = `${authorDisplayName}'s avatar`;
+        requiredElements['modal-author-link'].href = authorLink;
+        requiredElements['modal-author-name-link'].href = authorLink;
+        requiredElements['modal-author-name-link'].textContent = authorDisplayName;
+        
+        // Update date
+        requiredElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        console.log('[blog.js] Modal content updated successfully');
+    } catch (error) {
+        console.error('[blog.js] Error updating modal content:', error);
+        window._blogModalOpening = false;
+        document.body.classList.remove('modal-open');
+        return;
+    }
 
     // Remove any existing event listeners by using a data attribute
-    if (modal.dataset.listenersAttached === 'true') {
-        // Modal already has listeners, just show it
-        modal.style.display = 'block';
-        document.body.classList.add('modal-open');
-    } else {
-        // First time setup
-        modal.style.display = 'block';
-        document.body.classList.add('modal-open');
+    if (modal.dataset.listenersAttached !== 'true') {
+        // First time setup - add event listeners
+        console.log('[blog.js] Attaching event listeners to modal...');
         
         // Add backdrop click listener
         modal.addEventListener('click', function(e) {
@@ -364,19 +444,32 @@ async function openBlogModal(postId) {
         // Add close button listener
         const closeButton = modal.querySelector('.close-modal');
         if (closeButton) {
-            closeButton.onclick = function(e) {
+            // Remove inline onclick and use addEventListener
+            closeButton.removeAttribute('onclick');
+            closeButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 closeBlogModal();
-            };
+            });
+            console.log('[blog.js] Close button listener attached');
+        } else {
+            console.warn('[blog.js] Close button not found');
         }
         
         // Mark that listeners are attached
         modal.dataset.listenersAttached = 'true';
     }
     
-    // Ensure modal is visible with proper z-index
+    // Show the modal
+    console.log('[blog.js] Showing modal...');
+    modal.style.display = 'block';
     modal.style.zIndex = '10000';
+    document.body.classList.add('modal-open');
+    
+    // Force a reflow to ensure the modal is visible
+    modal.offsetHeight;
+    
+    console.log('[blog.js] Modal should now be visible. Display:', modal.style.display, 'Z-index:', modal.style.zIndex);
     
     // Initialize comments system
     if (commentsSystem) {
@@ -386,7 +479,12 @@ async function openBlogModal(postId) {
     // Small delay to ensure DOM is ready
     setTimeout(() => {
         if (window.MLNF && window.MLNF.CommentsSystem) {
-            commentsSystem = new window.MLNF.CommentsSystem('blog', postId, 'blogComments');
+            try {
+                commentsSystem = new window.MLNF.CommentsSystem('blog', postId, 'blogComments');
+                console.log('[blog.js] Comments system initialized');
+            } catch (error) {
+                console.error('[blog.js] Error initializing comments:', error);
+            }
         }
         window._blogModalOpening = false;
     }, 100);

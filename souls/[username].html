@@ -666,14 +666,38 @@
                     document.getElementById('profileName').textContent = profileData.displayName || profileData.username;
                     document.getElementById('profileUsername').textContent = `@${profileData.username}`;
                     document.getElementById('profileAvatar').src = profileData.avatar || '../assets/images/default.jpg';
+                    
+                    // Handle bio section
                     if (profileData.bio) {
                         document.getElementById('profileBio').textContent = profileData.bio;
                         document.getElementById('profileBioSection').style.display = 'block';
                     }
-                    document.getElementById('joinDate').textContent = new Date(profileData.joinDate).toLocaleDateString();
+                    
+                    // Handle join date - check for different possible field names
+                    const joinDate = profileData.joinDate || profileData.createdAt || profileData.created_at;
+                    if (joinDate) {
+                        document.getElementById('joinDate').textContent = new Date(joinDate).toLocaleDateString();
+                    }
+                    
+                    // Handle status
+                    if (profileData.status) {
+                        const statusElement = document.getElementById('profileStatus');
+                        statusElement.textContent = profileData.status;
+                        statusElement.style.display = 'inline-block';
+                    }
+                    
+                    // Handle online status
+                    const onlineStatusElement = document.getElementById('onlineStatus');
+                    if (profileData.online) {
+                        onlineStatusElement.innerHTML = '<i class="fas fa-circle" style="color: #4ade80;"></i><span>Online</span>';
+                    } else {
+                        onlineStatusElement.innerHTML = '<i class="fas fa-circle" style="color: #6b7280;"></i><span>Offline</span>';
+                    }
 
                     // Init profile comments here
-                    new MLNF.CommentsSystem('profile', profileData.username, 'profileComments');
+                    if (window.MLNF && window.MLNF.CommentsSystem) {
+                        new window.MLNF.CommentsSystem('profile', profileData.username, 'profileComments');
+                    }
                 },
 
                 fetchUserBlogs: async function(user) {
