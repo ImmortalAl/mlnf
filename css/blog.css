@@ -107,14 +107,28 @@
     display: block;
     text-decoration: none;
     color: inherit;
+    /* Mobile touch optimizations */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px;
 }
 
-/* Allow clicks to bubble up to the parent, but prevent text selection */
+/* Allow clicks to bubble up to the parent, but prevent text selection on desktop only */
 .blog-post * {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+}
+
+/* On mobile, allow text selection for better accessibility */
+@media (max-width: 768px) {
+    .blog-post * {
+        user-select: auto;
+        -webkit-user-select: auto;
+        -moz-user-select: auto;
+        -ms-user-select: auto;
+    }
 }
 
 /* Re-enable pointer events and text selection for links and buttons */
@@ -125,6 +139,11 @@
     -webkit-user-select: auto;
     -moz-user-select: auto;
     -ms-user-select: auto;
+    /* Mobile touch optimizations */
+    -webkit-tap-highlight-color: rgba(212, 175, 55, 0.3);
+    touch-action: manipulation;
+    min-height: 44px;
+    min-width: 44px;
 }
 
 .blog-post-hover:hover {

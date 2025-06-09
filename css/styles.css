@@ -5,10 +5,15 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+    /* Optimize for touch devices */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 html {
     scroll-behavior: smooth;
+    /* Ensure smooth scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -19,6 +24,8 @@ body {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    /* Optimize for mobile touch */
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Light theme overrides */
@@ -113,6 +120,11 @@ main {
     -webkit-appearance: none;
     appearance: none;
     user-select: none;
+    /* Mobile touch optimizations */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px; /* Minimum touch target size */
+    min-width: 44px;
 }
 
 .btn-primary {
@@ -237,15 +249,19 @@ nav.main-nav ul {
 nav.main-nav a {
     color: var(--text);
     text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 0.2rem;
     transition: var(--transition);
-    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    min-width: 80px;
+    gap: 0.3rem;
+    position: relative;
+    /* Mobile touch optimizations */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px; /* Minimum touch target size */
+    min-width: 44px;
 }
 
 nav.main-nav a span {
@@ -874,8 +890,24 @@ footer p {
     .short-title {
         display: block !important; /* Show short title */
     }
-    nav.main-nav { /* Hide main desktop navigation */
-        display: none;
+    nav.main-nav { /* Show simplified mobile navigation */
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    nav.main-nav a {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    nav.main-nav a span {
+        font-size: 0.7rem;
+        line-height: 1.1;
+    }
+    nav.main-nav a i {
+        font-size: 1rem;
     }
     /* The .mobile-nav-toggle button (hamburger) is styled in components/shared/styles.css */
     /* and its display:block is handled by a media query there. */
