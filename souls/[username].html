@@ -607,12 +607,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Get username from URL
             const username = window.location.pathname.split('/').pop().replace('.html', '');
-            
-            // Initialize MLNF core first
+
             if (window.MLNF) {
-                // Initialize individual components
                 if (window.MLNF.Navigation) window.MLNF.Navigation.init();
                 if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();
                 if (window.MLNF.ActiveUsers) window.MLNF.ActiveUsers.init();
@@ -621,345 +618,121 @@
                 console.error('MLNF core not loaded');
             }
 
-            // Prevent blog.js from running main blog functionality on profile pages
+            // This flag is read by blog.js to prevent its auto-init logic
             window.DISABLE_BLOG_AUTO_INIT = true;
 
-            // Initialize blog functionality
-            let currentPostId = null;
-            let blogCommentsSystem = null;
-            let blogPosts = {}; // Store blog data for modal display
-            let blogsLoaded = false; // Prevent multiple calls
+            // Define a container for profile-specific logic
+            const ProfilePage = {
+                blogPosts: {},
+                blogsLoaded: false,
 
-            // Fetch profile data
-            async function fetchProfile() {
-                const loadingState = document.getElementById('loadingState');
-                const errorState = document.getElementById('errorState');
-                const profileContent = document.getElementById('profileContent');
-                
-                try {
-                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
+                init: function() {
+                    this.fetchProfile(username);
+                    this.fetchUserBlogs(username);
+                    this.initMessageButton(username);
 
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            console.log('Profile not found, using username from URL');
-                            // Hide loading, show content with basic profile info
-                            loadingState.style.display = 'none';
-                            profileContent.style.display = 'block';
-                            updateProfileDisplay(username);
+                    // Since blog.js is loaded, its functions are globally available.
+                    // We just need to make sure the data they need is loaded.
+                },
+
+                fetchProfile: async function(user) {
+                    // ... (fetch and update profile display logic remains the same)
+                    const loadingState = document.getElementById('loadingState');
+                    const errorState = document.getElementById('errorState');
+                    const profileContent = document.getElementById('profileContent');
+
+                    try {
+                        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${user}`);
+                        if (!response.ok) throw new Error('Failed to fetch profile');
+                        const profile = await response.json();
+                        loadingState.style.display = 'none';
+                        profileContent.style.display = 'block';
+                        this.updateProfileDisplay(profile);
+                    } catch (error) {
+                        console.error('Error fetching profile:', error);
+                        loadingState.style.display = 'none';
+                        errorState.style.display = 'block';
+                    }
+                },
+
+                updateProfileDisplay: function(profileData) {
+                    document.getElementById('profileName').textContent = profileData.displayName || profileData.username;
+                    document.getElementById('profileUsername').textContent = `@${profileData.username}`;
+                    document.getElementById('profileAvatar').src = profileData.avatar || '../assets/images/default.jpg';
+                    if (profileData.bio) {
+                        document.getElementById('profileBio').textContent = profileData.bio;
+                        document.getElementById('profileBioSection').style.display = 'block';
+                    }
+                    document.getElementById('joinDate').textContent = new Date(profileData.joinDate).toLocaleDateString();
+
+                    // Init profile comments here, now that we have the profile ID/username
+                    new MLNF.CommentsSystem('profile', profileData.username, 'profileComments');
+                },
+
+                fetchUserBlogs: async function(user) {
+                    if (this.blogsLoaded) return;
+                    this.blogsLoaded = true;
+
+                    const userBlogsContainer = document.getElementById('userBlogs');
+                    try {
+                        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${user}`);
+                        const blogs = await response.json();
+
+                        if (!blogs || blogs.length === 0) {
+                            userBlogsContainer.innerHTML = `<div class="no-blogs"><p>This soul has not yet penned any scrolls.</p></div>`;
                             return;
                         }
-                        throw new Error('Failed to fetch profile');
-                    }
-
-                    const profile = await response.json();
-                    // Hide loading, show content
-                    loadingState.style.display = 'none';
-                    profileContent.style.display = 'block';
-                    updateProfileDisplay(profile);
-                } catch (error) {
-                    console.error('Error fetching profile:', error);
-                    // Hide loading, show content with fallback data
-                    loadingState.style.display = 'none';
-                    profileContent.style.display = 'block';
-                    updateProfileDisplay(username);
-                }
-            }
-
-            // Update profile display with fetched data
-            function updateProfileDisplay(profileData) {
-                // If profileData is just a string (username), create basic profile object
-                if (typeof profileData === 'string') {
-                    profileData = {
-                        username: profileData,
-                        displayName: profileData,
-                        avatar: '../assets/images/default.jpg',
-                        bio: 'An eternal soul exploring the infinite possibilities...',
-                        joinDate: new Date().toLocaleDateString()
-                    };
-                }
-
-                // Update profile elements if they exist
-                const profileName = document.getElementById('profileName');
-                const profileUsername = document.getElementById('profileUsername');
-                const profileAvatar = document.getElementById('profileAvatar');
-                const profileBio = document.getElementById('profileBio');
-                const profileBioSection = document.getElementById('profileBioSection');
-                const joinDate = document.getElementById('joinDate');
-
-                if (profileName) {
-                    profileName.textContent = profileData.displayName || profileData.username;
-                }
-                if (profileUsername) {
-                    profileUsername.textContent = `@${profileData.username}`;
-                }
-                if (profileAvatar) {
-                    profileAvatar.src = profileData.avatar || '../assets/images/default.jpg';
-                    profileAvatar.alt = `${profileData.displayName || profileData.username}'s avatar`;
-                }
-                if (profileBio && profileBioSection) {
-                    profileBio.textContent = profileData.bio || 'An eternal soul exploring the infinite possibilities...';
-                    profileBioSection.style.display = 'block';
-                }
-                if (joinDate) {
-                    joinDate.textContent = profileData.joinDate ? new Date(profileData.joinDate).toLocaleDateString() : 'Unknown';
-                }
-            }
-
-            // Initialize comments system for profile (if API supports it)
-            try {
-                const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
-            } catch (error) {
-                console.log('Profile comments not available:', error.message);
-                // Hide comments section if it exists
-                const commentsSection = document.getElementById('profileComments');
-                if (commentsSection) {
-                    commentsSection.style.display = 'none';
-                }
-            }
-
-            // Fetch user blogs with better error handling
-            async function fetchUserBlogs() {
-                // Prevent multiple calls
-                if (blogsLoaded) {
-                    console.log('[Blog Debug] Blogs already loaded, skipping...');
-                    return;
-                }
-                
-                const userBlogs = document.getElementById('userBlogs');
-                try {
-                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${username}`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            // User has no blogs, show empty state
-                            userBlogs.innerHTML = `
-                                <div class="no-blogs">
-                                    <i class="fas fa-scroll"></i>
-                                    <p>No eternal scrolls have been written yet.</p>
+                        
+                        // Use the global blogPosts object from blog.js if available, or manage locally
+                        const blogStorage = window.blogPosts || this.blogPosts;
+                        
+                        userBlogsContainer.innerHTML = blogs.map(blog => {
+                            blogStorage[blog._id] = blog; // Store post data for the modal
+                            return `
+                                <div class="blog-preview" data-blog-id="${blog._id}">
+                                    <h4>${blog.title}</h4>
+                                    <div class="content">${this.createExcerpt(blog.content)}</div>
+                                    <div class="date">${new Date(blog.createdAt).toLocaleDateString()}</div>
                                 </div>
                             `;
-                            return;
-                        }
-                        throw new Error('Failed to fetch user blogs');
-                    }
+                        }).join('');
 
-                    const blogs = await response.json();
-                    
-                    if (!blogs.length) {
-                        userBlogs.innerHTML = `
-                            <div class="no-blogs">
-                                <i class="fas fa-scroll"></i>
-                                <p>No eternal scrolls have been written yet.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    userBlogs.innerHTML = blogs.map(blog => `
-                        <div class="blog-preview" data-blog-id="${blog._id}">
-                            <h4>${blog.title}</h4>
-                            <div class="content">${createExcerpt(blog.content)}</div>
-                            <div class="date">
-                                <i class="fas fa-clock"></i>
-                                ${new Date(blog.createdAt).toLocaleDateString()}
-                            </div>
-                        </div>
-                    `).join('');
-
-                    // Store blog data for modal
-                    blogs.forEach(blog => {
-                        blogPosts[blog._id] = blog;
-                    });
-
-                    // Add event delegation for blog clicks
-                    userBlogs.addEventListener('click', function(event) {
-                        const blogPreview = event.target.closest('.blog-preview');
-                        if (blogPreview) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            const blogId = blogPreview.getAttribute('data-blog-id');
-                            if (blogId) {
-                                openBlogModal(blogId);
+                        userBlogsContainer.addEventListener('click', (event) => {
+                            const blogPreview = event.target.closest('.blog-preview');
+                            if (blogPreview && window.openBlogModal) {
+                                const blogId = blogPreview.dataset.blogId;
+                                // The global openBlogModal from blog.js will handle the rest
+                                window.openBlogModal(blogId);
                             }
-                        }
-                    });
+                        });
 
-                    // Mark blogs as loaded
-                    blogsLoaded = true;
-                    console.log('[Blog Debug] Blogs loaded and event listener attached');
-                } catch (error) {
-                    console.error('Error fetching user blogs:', error);
-                    userBlogs.innerHTML = `
-                        <div class="error-state">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Failed to load eternal scrolls. The cosmic energies are unstable.</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // Create excerpt from content
-            function createExcerpt(content, maxLength = 150) {
-                const textContent = content.replace(/<[^>]*>/g, '');
-                return textContent.length > maxLength 
-                    ? textContent.substring(0, maxLength) + '...'
-                    : textContent;
-            }
-
-            // Open blog modal
-            let modalDebounce = false;
-            window.openBlogModal = function(postId) {
-                // Debounce to prevent rapid double-clicks
-                if (modalDebounce) {
-                    console.log('[Modal Debug] Modal opening debounced - ignoring duplicate call');
-                    return;
-                }
-                modalDebounce = true;
-                setTimeout(() => { modalDebounce = false; }, 500); // Reset after 500ms
-                
-                console.log('[Modal Debug] openBlogModal called with postId:', postId);
-                currentPostId = postId;
-                const modal = document.getElementById('blogModal');
-                const post = blogPosts[postId];
-                
-                console.log('[Modal Debug] Modal element:', modal);
-                console.log('[Modal Debug] Post data:', post);
-                
-                if (!modal) {
-                    console.error('[Modal Debug] Modal element not found!');
-                    return;
-                }
-                
-                if (!post) {
-                    console.error('[Modal Debug] Blog post not found:', postId);
-                    return;
-                }
-                
-                // Update modal content
-                document.getElementById('modal-title').textContent = post.title;
-                document.getElementById('modal-content').innerHTML = post.content;
-                
-                // Update author info
-                const authorAvatar = post.author.avatar || '../assets/images/default.jpg';
-                const authorDisplayName = post.author.displayName || post.author.username;
-                const authorLink = `/souls/${post.author.username}.html`;
-                
-                document.getElementById('modal-author-avatar').src = authorAvatar;
-                document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
-                document.getElementById('modal-author-link').href = authorLink;
-                document.getElementById('modal-author-name-link').href = authorLink;
-                document.getElementById('modal-author-name-link').textContent = authorDisplayName;
-                
-                // Update date
-                document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                console.log('[Modal Debug] About to show modal...');
-                
-                // Show modal
-                modal.style.display = 'block';
-                modal.style.visibility = 'visible';
-                modal.style.opacity = '1';
-                document.body.style.overflow = 'hidden';
-                
-                console.log('[Modal Debug] Modal should now be visible. Display:', modal.style.display);
-                
-                // Initialize comments system
-                try {
-                    if (blogCommentsSystem) {
-                        blogCommentsSystem = null;
+                    } catch (error) {
+                        console.error('Error fetching user blogs:', error);
+                        userBlogsContainer.innerHTML = `<div class="error-state"><p>Failed to summon scrolls.</p></div>`;
                     }
-                    blogCommentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
-                    console.log('[Modal Debug] Comments system initialized');
-                } catch (error) {
-                    console.error('[Modal Debug] Error initializing comments:', error);
-                }
-            };
+                },
 
-            // Close blog modal
-            window.closeBlogModal = function() {
-                console.log('[Modal Debug] closeBlogModal called');
-                const modal = document.getElementById('blogModal');
-                
-                if (modal) {
-                    modal.style.display = 'none';
-                    modal.style.visibility = 'hidden';
-                    modal.style.opacity = '0';
-                    console.log('[Modal Debug] Modal hidden');
-                } else {
-                    console.error('[Modal Debug] Modal element not found for closing!');
-                }
-                
-                // Always restore scrolling
-                document.body.style.overflow = '';
-                document.body.style.overflowY = '';
-                console.log('[Modal Debug] Body overflow restored');
-                
-                // Clean up comments system
-                try {
-                    if (blogCommentsSystem) {
-                        blogCommentsSystem = null;
-                        console.log('[Modal Debug] Comments system cleaned up');
+                createExcerpt: function(content, maxLength = 100) {
+                    const textContent = content.replace(/<[^>]*>/g, '');
+                    return textContent.length > maxLength 
+                        ? textContent.substring(0, maxLength) + '...'
+                        : textContent;
+                },
+
+                initMessageButton: function(user) {
+                    const messageBtn = document.getElementById('messageBtn');
+                    if (messageBtn) {
+                        messageBtn.addEventListener('click', () => {
+                            // Assuming MessageModal is initialized and available on MLNF
+                            if (window.MLNF && window.MLNF.MessageModal) {
+                                window.MLNF.MessageModal.open(user);
+                            }
+                        });
                     }
-                } catch (error) {
-                    console.error('[Modal Debug] Error cleaning up comments:', error);
                 }
             };
 
-            // Emergency scrolling restore function
-            window.restoreScrolling = function() {
-                console.log('[Emergency] Restoring page scrolling...');
-                document.body.style.overflow = '';
-                document.body.style.overflowY = '';
-                const modal = document.getElementById('blogModal');
-                if (modal) {
-                    modal.style.display = 'none';
-                }
-                console.log('[Emergency] Scrolling restored');
-            };
-
-            // Share current post
-            window.shareCurrentPost = function() {
-                if (!currentPostId) return;
-                const post = blogPosts[currentPostId];
-                if (!post) return;
-                
-                const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
-                if (window.MLNF && window.MLNF.MessageModal) {
-                    window.MLNF.MessageModal.open(shareUrl);
-                } else {
-                    console.error('Message modal not available');
-                }
-            };
-
-            // Initialize message button
-            const messageBtn = document.getElementById('messageBtn');
-            if (messageBtn) {
-                messageBtn.addEventListener('click', () => {
-                    if (window.MLNF && window.MLNF.MessageModal) {
-                        window.MLNF.MessageModal.open(`/souls/${username}`);
-                    } else {
-                        console.error('Message modal not available');
-                    }
-                });
-            }
-
-            // Fetch profile data and blogs
-            fetchProfile();
-            fetchUserBlogs();
+            ProfilePage.init();
         });
     </script>
 </body>
