@@ -560,6 +560,36 @@
         </div>
     </main>
 
+    <!-- Blog Modal -->
+    <div id="blogModal" class="modal" aria-hidden="true" style="display:none;">
+        <div class="blog-modal-content">
+            <button class="close-modal" onclick="closeBlogModal()" aria-label="Close modal">×</button>
+            <div class="blog-modal-header">
+                <div class="scroll-author">
+                    <a href="#" id="modal-author-link" class="author-avatar">
+                        <img id="modal-author-avatar" src="" alt="">
+                    </a>
+                    <div>
+                        <a href="#" id="modal-author-name-link" class="author-name"></a>
+                        <p id="modal-date" class="date"></p>
+                    </div>
+                </div>
+            </div>
+            <h2 id="modal-title" class="scroll-title"></h2>
+            <div id="modal-content" class="scroll-content"></div>
+            <div class="modal-actions">
+                <button class="whisper-link" onclick="shareCurrentPost()">
+                    🦉 Whisper this scroll to another soul
+                </button>
+            </div>
+            <!-- Comments Section -->
+            <div class="blog-comments">
+                <h3><i class="fas fa-comments"></i> Eternal Echoes</h3>
+                <div id="blogComments"></div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
         <p>Embrace your infinite potential and connect across eternity.</p>
@@ -741,7 +771,7 @@
             blogs.forEach(blog => {
                 const blogPreview = document.createElement('div');
                 blogPreview.className = 'blog-preview';
-                blogPreview.onclick = () => window.location.href = `/pages/blog.html#${blog._id}`;
+                blogPreview.onclick = () => openBlogModal(blog._id);
 
                 const excerpt = createExcerpt(blog.content, 150);
                 const date = new Date(blog.createdAt).toLocaleDateString('en-US', {
@@ -797,6 +827,126 @@
 
         // Initialize comments system
         const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
+
+        let currentPostId = null;
+        let blogCommentsSystem = null;
+
+        // Fetch user blogs
+        async function fetchUserBlogs() {
+            const userBlogs = document.getElementById('userBlogs');
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${username}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch user blogs');
+
+                const blogs = await response.json();
+                
+                if (!blogs.length) {
+                    userBlogs.innerHTML = `
+                        <div class="no-blogs">
+                            <i class="fas fa-scroll"></i>
+                            <p>No eternal scrolls have been written yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                userBlogs.innerHTML = blogs.map(blog => `
+                    <div class="blog-preview" onclick="openBlogModal('${blog._id}')">
+                        <h4>${blog.title}</h4>
+                        <div class="content">${createExcerpt(blog.content)}</div>
+                        <div class="date">
+                            <i class="fas fa-clock"></i>
+                            ${new Date(blog.createdAt).toLocaleDateString()}
+                        </div>
+                    </div>
+                `).join('');
+
+                // Store blog data for modal
+                blogs.forEach(blog => {
+                    blogPosts[blog._id] = blog;
+                });
+            } catch (error) {
+                console.error('Error fetching user blogs:', error);
+                userBlogs.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load eternal scrolls. The cosmic energies are unstable.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Open blog modal
+        window.openBlogModal = function(postId) {
+            currentPostId = postId;
+            const modal = document.getElementById('blogModal');
+            const post = blogPosts[postId];
+            
+            if (!post) {
+                console.error('Blog post not found:', postId);
+                return;
+            }
+            
+            // Update modal content
+            document.getElementById('modal-title').textContent = post.title;
+            document.getElementById('modal-content').innerHTML = post.content;
+            
+            // Update author info
+            const authorAvatar = post.author.avatar || '../assets/images/default.jpg';
+            const authorDisplayName = post.author.displayName || post.author.username;
+            const authorLink = `/souls/${post.author.username}`;
+            
+            document.getElementById('modal-author-avatar').src = authorAvatar;
+            document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
+            document.getElementById('modal-author-link').href = authorLink;
+            document.getElementById('modal-author-name-link').href = authorLink;
+            document.getElementById('modal-author-name-link').textContent = authorDisplayName;
+            
+            // Update date
+            document.getElementById('modal-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Show modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize comments system
+            if (blogCommentsSystem) {
+                blogCommentsSystem = null;
+            }
+            blogCommentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
+        };
+
+        // Close blog modal
+        window.closeBlogModal = function() {
+            const modal = document.getElementById('blogModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            
+            // Clean up comments system
+            if (blogCommentsSystem) {
+                blogCommentsSystem = null;
+            }
+        };
+
+        // Share current post
+        window.shareCurrentPost = function() {
+            if (!currentPostId) return;
+            const post = blogPosts[currentPostId];
+            if (!post) return;
+            
+            const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
+            openOwlModal(shareUrl);
+        };
     </script>
 
     <!-- Shared Components -->
