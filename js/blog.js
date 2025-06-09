@@ -365,5 +365,17 @@ window.sharePost = sharePost;
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[blog.js] Page loaded, initializing...');
-    fetchBlogPosts(1);
+    
+    // Check if this should auto-initialize (only run on actual blog pages)
+    if (window.DISABLE_BLOG_AUTO_INIT) {
+        console.log('[blog.js] Auto-init disabled for this page');
+        return;
+    }
+    
+    // Only initialize if blogList exists (on actual blog pages)
+    if (blogList) {
+        fetchBlogPosts(1);
+    } else {
+        console.log('[blog.js] blogList not found, skipping auto-init');
+    }
 }); 

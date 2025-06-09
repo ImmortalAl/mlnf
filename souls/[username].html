@@ -622,12 +622,107 @@
                 console.error('MLNF core not loaded');
             }
 
+            // Prevent blog.js from running main blog functionality on profile pages
+            window.DISABLE_BLOG_AUTO_INIT = true;
+
             // Initialize blog functionality
             let currentPostId = null;
             let blogCommentsSystem = null;
             let blogPosts = {}; // Store blog data for modal display
 
-            // Fetch user blogs
+            // Fetch profile data
+            async function fetchProfile() {
+                const loadingState = document.getElementById('loadingState');
+                const errorState = document.getElementById('errorState');
+                const profileContent = document.getElementById('profileContent');
+                
+                try {
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/profile/${username}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            console.log('Profile not found, using username from URL');
+                            // Hide loading, show content with basic profile info
+                            loadingState.style.display = 'none';
+                            profileContent.style.display = 'block';
+                            updateProfileDisplay(username);
+                            return;
+                        }
+                        throw new Error('Failed to fetch profile');
+                    }
+
+                    const profile = await response.json();
+                    // Hide loading, show content
+                    loadingState.style.display = 'none';
+                    profileContent.style.display = 'block';
+                    updateProfileDisplay(profile);
+                } catch (error) {
+                    console.error('Error fetching profile:', error);
+                    // Hide loading, show content with fallback data
+                    loadingState.style.display = 'none';
+                    profileContent.style.display = 'block';
+                    updateProfileDisplay(username);
+                }
+            }
+
+            // Update profile display with fetched data
+            function updateProfileDisplay(profileData) {
+                // If profileData is just a string (username), create basic profile object
+                if (typeof profileData === 'string') {
+                    profileData = {
+                        username: profileData,
+                        displayName: profileData,
+                        avatar: '../assets/images/default.jpg',
+                        bio: 'An eternal soul exploring the infinite possibilities...',
+                        joinDate: new Date().toLocaleDateString()
+                    };
+                }
+
+                // Update profile elements if they exist
+                const profileName = document.getElementById('profileName');
+                const profileUsername = document.getElementById('profileUsername');
+                const profileAvatar = document.getElementById('profileAvatar');
+                const profileBio = document.getElementById('profileBio');
+                const profileBioSection = document.getElementById('profileBioSection');
+                const joinDate = document.getElementById('joinDate');
+
+                if (profileName) {
+                    profileName.textContent = profileData.displayName || profileData.username;
+                }
+                if (profileUsername) {
+                    profileUsername.textContent = `@${profileData.username}`;
+                }
+                if (profileAvatar) {
+                    profileAvatar.src = profileData.avatar || '../assets/images/default.jpg';
+                    profileAvatar.alt = `${profileData.displayName || profileData.username}'s avatar`;
+                }
+                if (profileBio && profileBioSection) {
+                    profileBio.textContent = profileData.bio || 'An eternal soul exploring the infinite possibilities...';
+                    profileBioSection.style.display = 'block';
+                }
+                if (joinDate) {
+                    joinDate.textContent = profileData.joinDate ? new Date(profileData.joinDate).toLocaleDateString() : 'Unknown';
+                }
+            }
+
+            // Initialize comments system for profile (if API supports it)
+            try {
+                const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
+            } catch (error) {
+                console.log('Profile comments not available:', error.message);
+                // Hide comments section if it exists
+                const commentsSection = document.getElementById('profileComments');
+                if (commentsSection) {
+                    commentsSection.style.display = 'none';
+                }
+            }
+
+            // Fetch user blogs with better error handling
             async function fetchUserBlogs() {
                 const userBlogs = document.getElementById('userBlogs');
                 try {
@@ -638,7 +733,19 @@
                         }
                     });
 
-                    if (!response.ok) throw new Error('Failed to fetch user blogs');
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            // User has no blogs, show empty state
+                            userBlogs.innerHTML = `
+                                <div class="no-blogs">
+                                    <i class="fas fa-scroll"></i>
+                                    <p>No eternal scrolls have been written yet.</p>
+                                </div>
+                            `;
+                            return;
+                        }
+                        throw new Error('Failed to fetch user blogs');
+                    }
 
                     const blogs = await response.json();
                     
@@ -766,75 +873,6 @@
                         console.error('Message modal not available');
                     }
                 });
-            }
-
-            // Fetch profile data
-            async function fetchProfile() {
-                try {
-                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/profile/${username}`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            console.log('Profile not found, using username from URL');
-                            updateProfileDisplay(username);
-                            return;
-                        }
-                        throw new Error('Failed to fetch profile');
-                    }
-
-                    const profile = await response.json();
-                    updateProfileDisplay(profile);
-                } catch (error) {
-                    console.error('Error fetching profile:', error);
-                    // Use username as fallback
-                    updateProfileDisplay(username);
-                }
-            }
-
-            // Update profile display with fetched data
-            function updateProfileDisplay(profileData) {
-                // If profileData is just a string (username), create basic profile object
-                if (typeof profileData === 'string') {
-                    profileData = {
-                        username: profileData,
-                        displayName: profileData,
-                        avatar: '../assets/images/default.jpg',
-                        bio: 'An eternal soul exploring the infinite possibilities...'
-                    };
-                }
-
-                // Update profile elements if they exist
-                const profileName = document.getElementById('profileName');
-                const profileAvatar = document.getElementById('profileAvatar');
-                const profileBio = document.getElementById('profileBio');
-
-                if (profileName) {
-                    profileName.textContent = profileData.displayName || profileData.username;
-                }
-                if (profileAvatar) {
-                    profileAvatar.src = profileData.avatar || '../assets/images/default.jpg';
-                    profileAvatar.alt = `${profileData.displayName || profileData.username}'s avatar`;
-                }
-                if (profileBio) {
-                    profileBio.textContent = profileData.bio || 'An eternal soul exploring the infinite possibilities...';
-                }
-            }
-
-            // Initialize comments system for profile (if API supports it)
-            try {
-                const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
-            } catch (error) {
-                console.log('Profile comments not available:', error.message);
-                // Hide comments section if it exists
-                const commentsSection = document.getElementById('profileComments');
-                if (commentsSection) {
-                    commentsSection.style.display = 'none';
-                }
             }
 
             // Fetch profile data and blogs
