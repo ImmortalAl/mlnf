@@ -95,22 +95,18 @@
 
 /* Scroll Card */
 .blog-post {
-    background: var(--parchment);
-    border: 2px solid var(--aged-border);
-    border-radius: 12px;
-    padding: 1.8rem;
-    position: relative;
+    background: var(--background-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+    border-left: 4px solid var(--accent);
     transition: all 0.3s ease;
-    overflow: hidden;
-    box-shadow: 0 4px 15px var(--shadow);
     cursor: pointer;
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    /* Mobile touch optimizations */
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    min-height: 44px;
+}
+
+.blog-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 /* Allow clicks to bubble up to the parent, but prevent text selection on desktop only */
@@ -146,31 +142,68 @@
     min-width: 44px;
 }
 
-.blog-post-hover:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(58, 46, 40, 0.2);
+.scroll-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-4);
+    gap: var(--space-4);
+    flex-wrap: wrap;
 }
 
-/* Scroll Edge Decoration */
-.blog-post::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: linear-gradient(90deg, 
-        var(--gold) 0%, 
-        var(--aged-border) 30%, 
-        var(--gold) 70%, 
-        var(--aged-border) 100%
-    );
-    opacity: 0.4;
-    transition: opacity 0.3s ease;
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
 }
 
-.blog-post-hover:hover::before {
-    opacity: 0.6;
+.like-dislike-buttons {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.like-btn, .dislike-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+}
+
+.like-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.like-btn.active {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+.dislike-btn:hover {
+    background: rgba(107, 114, 128, 0.1);
+    border-color: #6b7280;
+    color: #6b7280;
+}
+
+.dislike-btn.active {
+    background: #6b7280;
+    border-color: #6b7280;
+    color: white;
+}
+
+.like-count, .dislike-count {
+    font-weight: 500;
 }
 
 /* Author Section */
@@ -265,13 +298,6 @@
 }
 
 /* Footer */
-.scroll-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1.5rem;
-}
-
 .scroll-date,
 .blog-post .date {
     font-size: 0.9rem;
@@ -557,8 +583,17 @@ body.modal-open {
 
     .scroll-footer {
         flex-direction: column;
-        gap: 1rem;
         align-items: flex-start;
+        gap: var(--space-3);
+    }
+    
+    .post-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .like-dislike-buttons {
+        flex: 1;
     }
 
     .whisper-link {

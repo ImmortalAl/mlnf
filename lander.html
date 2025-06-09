@@ -161,6 +161,7 @@
                         <option value="creative">Creative Expression</option>
                         <option value="knowledge">Knowledge Share</option>
                     </select>
+                    <button id="saveDraftButton" class="btn btn-secondary">Save as Draft</button>
                     <button id="publishButton" class="btn btn-primary">Eternalize</button>
                 </div>
             </div>
@@ -327,7 +328,7 @@
                     body: JSON.stringify({
                         title,
                         content: sanitizedContent,
-                        category
+                        status: 'published'
                     })
                 });
                 
@@ -359,6 +360,67 @@
             }
         }
         
+        async function saveDraft() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = quill.root.innerHTML;
+            const category = document.getElementById('postCategory').value;
+            
+            if (!title) {
+                alert('Please enter a title for your draft');
+                return;
+            }
+            
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                window.MLNF.openSoulModal('login');
+                return;
+            }
+            
+            try {
+                const sanitizedContent = DOMPurify.sanitize(content);
+                
+                const draftButton = document.getElementById('saveDraftButton');
+                draftButton.textContent = 'Saving...';
+                draftButton.disabled = true;
+                
+                // Post to blogs API as draft
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title,
+                        content: sanitizedContent,
+                        status: 'draft'
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Draft saved:', data);
+                
+                draftButton.textContent = 'Save as Draft';
+                draftButton.disabled = false;
+                
+                // Show success message
+                alert('Your draft has been saved! You can continue editing or publish it later.');
+                
+            } catch (error) {
+                console.error('Error saving draft:', error);
+                alert('Failed to save draft: ' + error.message);
+                
+                const draftButton = document.getElementById('saveDraftButton');
+                draftButton.textContent = 'Save as Draft';
+                draftButton.disabled = false;
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', async () => {
             // Initialize components
             initQuillEditor();
@@ -368,6 +430,11 @@
             const publishButton = document.getElementById('publishButton');
             if (publishButton) {
                 publishButton.addEventListener('click', publishPost);
+            }
+            
+            const saveDraftButton = document.getElementById('saveDraftButton');
+            if (saveDraftButton) {
+                saveDraftButton.addEventListener('click', saveDraft);
             }
             
             // Message modal logic is now handled by front/components/shared/messageModal.js

@@ -58,25 +58,33 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 ```
 
 ### **Core Blogging Features (Planned)**
-- [ ] **Personal Blog Posts** - Individual user blogs (NOT community articles)
-- [ ] **Draft System** - Save drafts functionality  
-- [ ] **Basic Editor** - Simple content creation interface
-- [ ] **Like/Dislike System** - Post appreciation and feedback
-- [ ] **Share Functionality** - Content sharing capabilities (🦉 Owl integration)
+- [x] **Personal Blog Posts** - Individual user blogs (NOT community articles)
+- [x] **Draft System** - Save drafts functionality  
+- [x] **Basic Editor** - Simple content creation interface
+- [x] **Like/Dislike System** - Post appreciation and feedback
+- [x] **Share Functionality** - Content sharing capabilities (🦉 Owl integration)
 - [ ] **Basic Analytics** - Visitor counters (minimum requirement)
-- [ ] **Mobile Responsive** - Full mobile optimization
+- [x] **Mobile Responsive** - Full mobile optimization
 
 ---
 
 ## 🚧 Active Development TODOs
 
 ### High Priority
-- [ ] **Soul Scrolls Comment System** - ⭐ **NEXT SESSION FOCUS**
-- [ ] **Context-Aware Blog Navigation** - ⭐ **NEXT SESSION FOCUS**
-- [ ] **User Feedback System** - Simple modal form for bug reports and feature requests
+- [x] **Soul Scrolls Enhancement** - ✅ **COMPLETED**
+  - [x] Implement draft system for blog posts
+  - [x] Add like/dislike functionality
+  - [x] Enhance post interaction features
+- [ ] **Boundless Chronicles (News Section)** - ⭐ **NEXT SESSION FOCUS**
+  - [ ] Modern news feed design
+  - [ ] User-submitted story system
+  - [ ] Category/tag system
+  - [ ] Featured stories section
+  - [ ] Mobile-responsive layout
 - [ ] **Real Messaging System** - Replace mock responses with persistent messaging
 
 ### Medium Priority
+- [ ] **Echoes Unbound (Message Board)** - Moved to medium priority
 - [ ] **Enhanced Community Features** - User search, interest matching
 - [ ] **Achievement System** - Badges and user progression
 - [ ] **WebSocket Integration** - Real-time messaging and notifications
@@ -89,6 +97,25 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 ---
 
 ## ✅ Recently Completed Features
+
+### Soul Scrolls Draft & Like System (2025-06-09)
+- ✅ Implemented complete draft system with save/publish functionality
+- ✅ Added like/dislike buttons with real-time updates
+- ✅ Enhanced blog creation interface at Eternal Hearth (lander.html)
+- ✅ Updated backend API to handle status and interaction tracking
+- ✅ Mobile-responsive design for all new features
+
+### Soul Scrolls System (2025-06-09)
+- ✅ Implemented complete blog post system with context-aware navigation
+- ✅ Added beautiful comment system with real-time updates
+- ✅ Integrated with user profiles and community pages
+- ✅ Mobile-responsive design with intuitive UI
+
+### User Feedback System (2025-06-09)
+- ✅ Implemented user feedback modal
+- ✅ Added bug report and feature request forms
+- ✅ Integrated with admin dashboard
+- ✅ Added user notification system
 
 ### Owl Messaging System (2025-06-08)
 - ✅ Fixed modal positioning and display issues
@@ -146,5 +173,12 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 
 ---
 
-*Last updated: June 8, 2025*
-*Next review: When implementing feedback system* 
+## 📝 Development Notes
+
+### Priority Changes (2025-06-09)
+- Switched development focus from Echoes Unbound to Boundless Chronicles
+- Boundless Chronicles will be implemented first due to its role in community engagement
+- Echoes Unbound moved to medium priority for future implementation
+
+*Last updated: June 9, 2025*
+*Next review: When implementing real messaging system* 

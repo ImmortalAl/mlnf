@@ -124,9 +124,19 @@ async function fetchBlogPosts(page = 1) {
                     <div class="content">${excerpt}</div>
                     <div class="scroll-footer">
                         <p class="date">${formattedDate}</p>
-                        <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
-                            🦉 Whisper this scroll to another soul
-                        </button>
+                        <div class="post-actions">
+                            <div class="like-dislike-buttons">
+                                <button class="like-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); likePost('${post._id}')">
+                                    <i class="fas fa-heart"></i> <span class="like-count">${post.likes ? post.likes.length : 0}</span>
+                                </button>
+                                <button class="dislike-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); dislikePost('${post._id}')">
+                                    <i class="fas fa-heart-broken"></i> <span class="dislike-count">${post.dislikes ? post.dislikes.length : 0}</span>
+                                </button>
+                            </div>
+                            <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
+                                🦉 Whisper this scroll to another soul
+                            </button>
+                        </div>
                     </div>
                 `;
                 
@@ -597,24 +607,101 @@ function shareCurrentPost() {
 // Share post by ID
 function sharePost(postId) {
     currentPostId = postId;
-    const post = blogPosts[postId];
-    if (!post) {
-        console.error(`Post with ID ${postId} not found for sharing.`);
+    shareCurrentPost();
+}
+
+// Like a blog post
+async function likePost(postId) {
+    const token = localStorage.getItem('sessionToken');
+    if (!isTokenValid(token)) {
+        if (window.MLNF && window.MLNF.openSoulModal) {
+            window.MLNF.openSoulModal('login');
+        }
         return;
     }
-    const shareText = `Check out this scroll on MLNF: "${post.title}"`;
-    const shareUrl = `${window.location.origin}/blog.html#${postId}`; // Link to the blog page and potentially the post
-    if (navigator.share) {
-        navigator.share({
-            title: post.title,
-            text: shareText,
-            url: shareUrl,
-        })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
-    } else {
-        // Fallback for browsers that don't support navigator.share
-        prompt("Copy this link to share:", shareUrl);
+
+    try {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}/like`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Failed to like post`);
+        }
+
+        const result = await response.json();
+        updateLikeButtons(postId, result);
+    } catch (error) {
+        console.error('Error liking post:', error);
+        alert('Failed to like post: ' + error.message);
+    }
+}
+
+// Dislike a blog post
+async function dislikePost(postId) {
+    const token = localStorage.getItem('sessionToken');
+    if (!isTokenValid(token)) {
+        if (window.MLNF && window.MLNF.openSoulModal) {
+            window.MLNF.openSoulModal('login');
+        }
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}/dislike`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Failed to dislike post`);
+        }
+
+        const result = await response.json();
+        updateLikeButtons(postId, result);
+    } catch (error) {
+        console.error('Error disliking post:', error);
+        alert('Failed to dislike post: ' + error.message);
+    }
+}
+
+// Update like/dislike button states
+function updateLikeButtons(postId, result) {
+    const postElement = document.getElementById(postId);
+    if (!postElement) return;
+
+    const likeBtn = postElement.querySelector('.like-btn');
+    const dislikeBtn = postElement.querySelector('.dislike-btn');
+    const likeCount = postElement.querySelector('.like-count');
+    const dislikeCount = postElement.querySelector('.dislike-count');
+
+    if (likeCount) likeCount.textContent = result.likes;
+    if (dislikeCount) dislikeCount.textContent = result.dislikes;
+
+    // Update button states
+    if (likeBtn) {
+        if (result.userLiked) {
+            likeBtn.classList.add('active');
+        } else {
+            likeBtn.classList.remove('active');
+        }
+    }
+
+    if (dislikeBtn) {
+        if (result.userDisliked) {
+            dislikeBtn.classList.add('active');
+        } else {
+            dislikeBtn.classList.remove('active');
+        }
     }
 }
 
@@ -624,6 +711,8 @@ window.openBlogModal = openBlogModal;
 window.closeBlogModal = closeBlogModal;
 window.sharePost = sharePost;
 window.shareCurrentPost = shareCurrentPost;
+window.likePost = likePost;
+window.dislikePost = dislikePost;
 
 // Auto-initialization disabled for pages like profile where blog is not the main feature
 if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {
