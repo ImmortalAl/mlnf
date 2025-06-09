@@ -596,6 +596,15 @@
 
     <!-- Core MLNF Components -->
     <script src="../components/shared/config.js?v=1.2"></script>
+    
+    <!-- 
+      Set flag BEFORE blog.js is loaded to prevent its auto-initialization.
+      This is critical for pages that use blog.js functions but are not the main blog page.
+    -->
+    <script>
+        window.DISABLE_BLOG_AUTO_INIT = true;
+    </script>
+    
     <script src="../components/shared/mlnf-core.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
     <script src="../components/shared/userMenu.js?v=1.2"></script>
@@ -606,9 +615,11 @@
     <script src="../js/scripts.js?v=1.2"></script>
 
     <script>
+        // This script now runs AFTER all other scripts are loaded and ready.
         document.addEventListener('DOMContentLoaded', () => {
             const username = window.location.pathname.split('/').pop().replace('.html', '');
 
+            // Initialize core components that are safe to run now
             if (window.MLNF) {
                 if (window.MLNF.Navigation) window.MLNF.Navigation.init();
                 if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();
@@ -617,9 +628,6 @@
             } else {
                 console.error('MLNF core not loaded');
             }
-
-            // This flag is read by blog.js to prevent its auto-init logic
-            window.DISABLE_BLOG_AUTO_INIT = true;
 
             // Define a container for profile-specific logic
             const ProfilePage = {
@@ -630,20 +638,16 @@
                     this.fetchProfile(username);
                     this.fetchUserBlogs(username);
                     this.initMessageButton(username);
-
-                    // Since blog.js is loaded, its functions are globally available.
-                    // We just need to make sure the data they need is loaded.
                 },
 
                 fetchProfile: async function(user) {
-                    // ... (fetch and update profile display logic remains the same)
                     const loadingState = document.getElementById('loadingState');
                     const errorState = document.getElementById('errorState');
                     const profileContent = document.getElementById('profileContent');
 
                     try {
                         const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${user}`);
-                        if (!response.ok) throw new Error('Failed to fetch profile');
+                        if (!response.ok) throw new Error(`Profile not found for ${user}`);
                         const profile = await response.json();
                         loadingState.style.display = 'none';
                         profileContent.style.display = 'block';
@@ -652,6 +656,7 @@
                         console.error('Error fetching profile:', error);
                         loadingState.style.display = 'none';
                         errorState.style.display = 'block';
+                        document.getElementById('errorMessage').textContent = error.message;
                     }
                 },
 
@@ -665,7 +670,7 @@
                     }
                     document.getElementById('joinDate').textContent = new Date(profileData.joinDate).toLocaleDateString();
 
-                    // Init profile comments here, now that we have the profile ID/username
+                    // Init profile comments here
                     new MLNF.CommentsSystem('profile', profileData.username, 'profileComments');
                 },
 
@@ -676,6 +681,7 @@
                     const userBlogsContainer = document.getElementById('userBlogs');
                     try {
                         const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${user}`);
+                        if (!response.ok) throw new Error('Could not fetch blogs');
                         const blogs = await response.json();
 
                         if (!blogs || blogs.length === 0) {
@@ -683,11 +689,11 @@
                             return;
                         }
                         
-                        // Use the global blogPosts object from blog.js if available, or manage locally
-                        const blogStorage = window.blogPosts || this.blogPosts;
+                        // Use the global blogPosts object from blog.js
+                        window.blogPosts = window.blogPosts || {};
                         
                         userBlogsContainer.innerHTML = blogs.map(blog => {
-                            blogStorage[blog._id] = blog; // Store post data for the modal
+                            window.blogPosts[blog._id] = blog; // Store post data for the modal
                             return `
                                 <div class="blog-preview" data-blog-id="${blog._id}">
                                     <h4>${blog.title}</h4>
@@ -701,7 +707,6 @@
                             const blogPreview = event.target.closest('.blog-preview');
                             if (blogPreview && window.openBlogModal) {
                                 const blogId = blogPreview.dataset.blogId;
-                                // The global openBlogModal from blog.js will handle the rest
                                 window.openBlogModal(blogId);
                             }
                         });
@@ -723,7 +728,6 @@
                     const messageBtn = document.getElementById('messageBtn');
                     if (messageBtn) {
                         messageBtn.addEventListener('click', () => {
-                            // Assuming MessageModal is initialized and available on MLNF
                             if (window.MLNF && window.MLNF.MessageModal) {
                                 window.MLNF.MessageModal.open(user);
                             }
@@ -732,6 +736,7 @@
                 }
             };
 
+            // Run the initializer
             ProfilePage.init();
         });
     </script>
