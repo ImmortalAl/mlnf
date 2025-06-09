@@ -628,6 +628,7 @@
             let currentPostId = null;
             let blogCommentsSystem = null;
             let blogPosts = {}; // Store blog data for modal display
+            let blogsLoaded = false; // Prevent multiple calls
 
             // Fetch profile data
             async function fetchProfile() {
@@ -723,6 +724,12 @@
 
             // Fetch user blogs with better error handling
             async function fetchUserBlogs() {
+                // Prevent multiple calls
+                if (blogsLoaded) {
+                    console.log('[Blog Debug] Blogs already loaded, skipping...');
+                    return;
+                }
+                
                 const userBlogs = document.getElementById('userBlogs');
                 try {
                     const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${username}`, {
@@ -759,7 +766,7 @@
                     }
 
                     userBlogs.innerHTML = blogs.map(blog => `
-                        <div class="blog-preview" onclick="openBlogModal('${blog._id}')">
+                        <div class="blog-preview" data-blog-id="${blog._id}">
                             <h4>${blog.title}</h4>
                             <div class="content">${createExcerpt(blog.content)}</div>
                             <div class="date">
@@ -773,6 +780,23 @@
                     blogs.forEach(blog => {
                         blogPosts[blog._id] = blog;
                     });
+
+                    // Add event delegation for blog clicks
+                    userBlogs.addEventListener('click', function(event) {
+                        const blogPreview = event.target.closest('.blog-preview');
+                        if (blogPreview) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            const blogId = blogPreview.getAttribute('data-blog-id');
+                            if (blogId) {
+                                openBlogModal(blogId);
+                            }
+                        }
+                    });
+
+                    // Mark blogs as loaded
+                    blogsLoaded = true;
+                    console.log('[Blog Debug] Blogs loaded and event listener attached');
                 } catch (error) {
                     console.error('Error fetching user blogs:', error);
                     userBlogs.innerHTML = `
@@ -793,7 +817,16 @@
             }
 
             // Open blog modal
+            let modalDebounce = false;
             window.openBlogModal = function(postId) {
+                // Debounce to prevent rapid double-clicks
+                if (modalDebounce) {
+                    console.log('[Modal Debug] Modal opening debounced - ignoring duplicate call');
+                    return;
+                }
+                modalDebounce = true;
+                setTimeout(() => { modalDebounce = false; }, 500); // Reset after 500ms
+                
                 console.log('[Modal Debug] openBlogModal called with postId:', postId);
                 currentPostId = postId;
                 const modal = document.getElementById('blogModal');
