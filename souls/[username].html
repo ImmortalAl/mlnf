@@ -595,12 +595,12 @@
         <p>Embrace your infinite potential and connect across eternity.</p>
     </footer>
 
-    <!-- Config MUST be loaded first -->
-    <script src="../components/shared/config.js?v=1.2"></script>
-
-    <!-- WebSocket client for real-time messaging -->
-    <script src="../components/shared/websocket.js?v=1.2"></script>
-
+    <!-- Core MLNF Components -->
+    <script src="../js/mlnf-core.js?v=1.2"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/userMenu.js?v=1.2"></script>
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/comments.js?v=1.2"></script>
     <script src="../js/blog.js?v=1.2"></script>
     <script src="../js/scripts.js?v=1.2"></script>
@@ -610,11 +610,19 @@
             // Get username from URL
             const username = window.location.pathname.split('/').pop().replace('.html', '');
             
-            // Initialize components
-            window.MLNF.Navigation.init();
-            window.MLNF.UserMenu.init();
-            window.MLNF.ActiveUsers.init();
-            window.MLNF.MessageModal.init();
+            // Initialize MLNF core first
+            if (window.MLNF) {
+                // Initialize components in the correct order
+                window.MLNF.init();
+                
+                // Initialize individual components
+                if (window.MLNF.Navigation) window.MLNF.Navigation.init();
+                if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();
+                if (window.MLNF.ActiveUsers) window.MLNF.ActiveUsers.init();
+                if (window.MLNF.MessageModal) window.MLNF.MessageModal.init();
+            } else {
+                console.error('MLNF core not loaded');
+            }
 
             // Initialize comments system for profile
             const commentsSystem = new MLNF.CommentsSystem('profile', username, 'profileComments');
@@ -746,7 +754,11 @@
                 if (!post) return;
                 
                 const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
-                window.MLNF.MessageModal.open(shareUrl);
+                if (window.MLNF && window.MLNF.MessageModal) {
+                    window.MLNF.MessageModal.open(shareUrl);
+                } else {
+                    console.error('Message modal not available');
+                }
             };
 
             // Initialize message button
