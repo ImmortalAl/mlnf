@@ -358,14 +358,19 @@ body.modal-open {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    display: flex;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10000 !important;
+    display: none; /* Hidden by default */
     align-items: center;
     justify-content: center;
     /* Prevent the backdrop from being a pain in the ass */
     overflow-y: auto;
     padding: 2rem 1rem;
+}
+
+/* When modal is shown */
+#blogModal.modal[style*="display: block"] {
+    display: flex !important;
 }
 
 /* Blog Modal Styles */
@@ -381,14 +386,14 @@ body.modal-open {
     overflow-x: hidden;
     margin: auto;
     position: relative;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     /* Ensure scrolling works properly - George Carlin style fixes! */
     scrollbar-width: thin;
     scrollbar-color: var(--gold) var(--aged-border);
     /* Prevent the modal from being a stubborn little bastard */
     -webkit-overflow-scrolling: touch;
     /* Give it some breathing room */
-    z-index: 1001;
+    z-index: 10001 !important;
 }
 
 .blog-modal-header {
@@ -458,23 +463,27 @@ body.modal-open {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: none;
-    border: none;
+    background: var(--parchment);
+    border: 1px solid var(--aged-border);
     font-size: 2rem;
     color: #8c7b6c;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    z-index: 10002;
+    pointer-events: all;
 }
 
 .close-modal:hover {
     color: var(--gold);
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--gold);
+    transform: scale(1.1);
 }
 
 /* Responsive Design */

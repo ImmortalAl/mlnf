@@ -137,6 +137,8 @@
             border-left: 3px solid var(--accent);
             transition: var(--transition);
             cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .blog-preview:hover {
@@ -703,11 +705,23 @@
                             `;
                         }).join('');
 
+                        // Use event delegation with proper event handling
                         userBlogsContainer.addEventListener('click', (event) => {
+                            // Prevent bubbling up and duplicate events
+                            event.stopPropagation();
+                            
                             const blogPreview = event.target.closest('.blog-preview');
                             if (blogPreview && window.openBlogModal) {
                                 const blogId = blogPreview.dataset.blogId;
-                                window.openBlogModal(blogId);
+                                // Prevent multiple clicks
+                                if (!blogPreview.dataset.clicked) {
+                                    blogPreview.dataset.clicked = 'true';
+                                    window.openBlogModal(blogId);
+                                    // Reset after a short delay
+                                    setTimeout(() => {
+                                        delete blogPreview.dataset.clicked;
+                                    }, 500);
+                                }
                             }
                         });
 

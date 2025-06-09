@@ -253,4 +253,59 @@
 *   The Eternal Souls page is now a clean, user-friendly directory with unified online status and messaging.
 *   The admin panel (Immortal's Sanctum) provides a foundation for robust site management and analytics.
 *   All major changes and session progress are now consistently documented.
-*   The project is well-positioned for further enhancements to Eternal Souls and administrative features. 
+*   The project is well-positioned for further enhancements to Eternal Souls and administrative features.
+
+---
+
+## Session Summary: December 29, 2024 - Blog Modal Fixes for Soul Profiles
+
+**Objective:** Fix clicking and visibility issues with the Eternal Scrolls blog modal on user profile pages (`/souls/{username}`).
+
+**Issues Identified:**
+
+1. **Double-click Events:** Console logs showed `openBlogModal` being called twice for the same post ID
+2. **Event Propagation:** Click events were bubbling up and triggering multiple handlers
+3. **Modal Visibility:** Z-index conflicts and CSS display issues preventing proper modal display
+4. **Event Listener Duplication:** Modal element cloning was creating orphaned event listeners
+
+**Key Changes Implemented:**
+
+1. **JavaScript Fixes (`blog.js`):**
+   - Added duplicate call prevention using `window._blogModalOpening` flag
+   - Removed problematic modal cloning approach that was creating duplicate listeners
+   - Implemented proper event listener management with `data-listenersAttached` attribute
+   - Added explicit z-index setting to ensure modal visibility
+   - Improved error handling with proper flag reset
+   - Added small delay for comments system initialization to ensure DOM readiness
+
+2. **Profile Page Event Handling (`souls/[username].html`):**
+   - Added `event.stopPropagation()` to prevent event bubbling
+   - Implemented click throttling with `data-clicked` attribute to prevent rapid double-clicks
+   - Added `user-select: none` CSS to prevent text selection on blog previews
+
+3. **CSS Improvements (`blog.css`):**
+   - Increased modal z-index to `10000 !important` for backdrop
+   - Increased content z-index to `10001 !important`
+   - Changed backdrop opacity from 0.6 to 0.8 for better visibility
+   - Enhanced close button styling with background and border for better visibility
+   - Added explicit `display: none` by default with proper flex display when shown
+   - Added `pointer-events: all` to close button to ensure clickability
+
+**Technical Details:**
+
+- **Event Management:** Moved from cloning modal elements to reusing the same element with proper listener tracking
+- **Click Prevention:** Multi-layered approach with propagation stopping, click throttling, and user selection prevention
+- **Z-index Hierarchy:** Established clear layering with backdrop at 10000, content at 10001, and close button at 10002
+- **State Management:** Used flags and data attributes to track modal opening state and prevent conflicts
+
+**Files Modified:**
+- `front/js/blog.js` - Complete refactor of modal opening/closing logic
+- `front/souls/[username].html` - Enhanced event handling for blog preview clicks
+- `front/css/blog.css` - Multiple CSS fixes for visibility and interaction
+
+**Overall Impact:**
+- Blog modal now opens reliably without duplicate calls
+- Modal visibility issues resolved with proper z-index hierarchy
+- Click events properly handled without propagation issues
+- User experience significantly improved with smooth modal interactions
+- Foundation laid for future enhancements like context-aware routing 
