@@ -155,11 +155,9 @@
                     <div id="editor"></div>
                 </div>
                 <div class="form-actions">
-                    <select id="postCategory">
-                        <option value="personal">Personal Reflection</option>
-                        <option value="philosophy">Philosophical Insight</option>
-                        <option value="creative">Creative Expression</option>
-                        <option value="knowledge">Knowledge Share</option>
+                    <select id="draftsSelector">
+                        <option value="" disabled selected>Slumbering Scrolls</option>
+                        <!-- Drafts will be populated here -->
                     </select>
                     <button id="saveDraftButton" class="btn btn-secondary">Save as Draft</button>
                     <button id="publishButton" class="btn btn-primary">Eternalize</button>
@@ -293,7 +291,6 @@
         async function publishPost() {
             const title = document.getElementById('postTitle').value.trim();
             const content = quill.root.innerHTML;
-            const category = document.getElementById('postCategory').value;
             
             if (!title) {
                 alert('Please enter a title for your eternal thought');
@@ -318,19 +315,39 @@
                 publishButton.textContent = 'Eternalizing...';
                 publishButton.disabled = true;
                 
-                // Post to blogs API
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        title,
-                        content: sanitizedContent,
-                        status: 'published'
-                    })
-                });
+                const draftsSelector = document.getElementById('draftsSelector');
+                const selectedDraftId = draftsSelector.value;
+                
+                let response;
+                if (selectedDraftId) {
+                    // Update existing draft to published
+                    response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/${selectedDraftId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            title,
+                            content: sanitizedContent,
+                            status: 'published'
+                        })
+                    });
+                } else {
+                    // Create new post
+                    response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            title,
+                            content: sanitizedContent,
+                            status: 'published'
+                        })
+                    });
+                }
                 
                 if (!response.ok) {
                     const error = await response.json();
@@ -341,10 +358,12 @@
                 console.log('Blog post created:', data);
                 
                 // Clear form
-                document.getElementById('postTitle').value = '';
-                quill.setText('');
+                clearForm();
                 publishButton.textContent = 'Eternalize';
                 publishButton.disabled = false;
+                
+                // Refresh drafts list
+                await loadDrafts();
                 
                 // Show success and redirect to blog
                 alert('Your eternal wisdom has been shared with the sanctuary!');
@@ -363,7 +382,6 @@
         async function saveDraft() {
             const title = document.getElementById('postTitle').value.trim();
             const content = quill.root.innerHTML;
-            const category = document.getElementById('postCategory').value;
             
             if (!title) {
                 alert('Please enter a title for your draft');
@@ -383,19 +401,39 @@
                 draftButton.textContent = 'Saving...';
                 draftButton.disabled = true;
                 
-                // Post to blogs API as draft
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        title,
-                        content: sanitizedContent,
-                        status: 'draft'
-                    })
-                });
+                const draftsSelector = document.getElementById('draftsSelector');
+                const selectedDraftId = draftsSelector.value;
+                
+                let response;
+                if (selectedDraftId) {
+                    // Update existing draft
+                    response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/${selectedDraftId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            title,
+                            content: sanitizedContent,
+                            status: 'draft'
+                        })
+                    });
+                } else {
+                    // Create new draft
+                    response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            title,
+                            content: sanitizedContent,
+                            status: 'draft'
+                        })
+                    });
+                }
                 
                 if (!response.ok) {
                     const error = await response.json();
@@ -407,6 +445,10 @@
                 
                 draftButton.textContent = 'Save as Draft';
                 draftButton.disabled = false;
+                
+                // Refresh drafts list and select the saved draft
+                await loadDrafts();
+                draftsSelector.value = data._id;
                 
                 // Show success message
                 alert('Your draft has been saved! You can continue editing or publish it later.');
@@ -421,10 +463,87 @@
             }
         }
         
+        async function loadDrafts() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/my/drafts`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) return;
+                
+                const drafts = await response.json();
+                const draftsSelector = document.getElementById('draftsSelector');
+                
+                // Clear existing options except the first one
+                draftsSelector.innerHTML = '<option value="" disabled selected>Slumbering Scrolls</option>';
+                
+                // Add draft options
+                drafts.forEach(draft => {
+                    const option = document.createElement('option');
+                    option.value = draft._id;
+                    option.textContent = draft.title;
+                    draftsSelector.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading drafts:', error);
+            }
+        }
+        
+        async function loadSelectedDraft() {
+            const draftsSelector = document.getElementById('draftsSelector');
+            const selectedDraftId = draftsSelector.value;
+            
+            if (!selectedDraftId) {
+                // Clear form for new scroll
+                clearForm();
+                return;
+            }
+            
+            const token = localStorage.getItem('sessionToken');
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/${selectedDraftId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    alert('Failed to load draft');
+                    return;
+                }
+                
+                const draft = await response.json();
+                
+                // Populate form with draft data
+                document.getElementById('postTitle').value = draft.title;
+                quill.root.innerHTML = draft.content;
+                
+            } catch (error) {
+                console.error('Error loading draft:', error);
+                alert('Failed to load draft: ' + error.message);
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('postTitle').value = '';
+            quill.setText('');
+            document.getElementById('draftsSelector').value = '';
+        }
+        
         document.addEventListener('DOMContentLoaded', async () => {
             // Initialize components
             initQuillEditor();
             fetchActivities();
+            
+            // Load user's drafts
+            await loadDrafts();
             
             // Setup event listeners
             const publishButton = document.getElementById('publishButton');
@@ -435,6 +554,11 @@
             const saveDraftButton = document.getElementById('saveDraftButton');
             if (saveDraftButton) {
                 saveDraftButton.addEventListener('click', saveDraft);
+            }
+            
+            const draftsSelector = document.getElementById('draftsSelector');
+            if (draftsSelector) {
+                draftsSelector.addEventListener('change', loadSelectedDraft);
             }
             
             // Message modal logic is now handled by front/components/shared/messageModal.js
