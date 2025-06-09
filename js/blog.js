@@ -133,8 +133,16 @@ async function fetchBlogPosts(page = 1) {
                 // Store full post data
                 blogPosts[post._id] = post;
                 
-                // Make post clickable
-                postElement.onclick = () => openBlogModal(post._id);
+                // Make post clickable with proper event handling
+                postElement.addEventListener('click', function(e) {
+                    // Don't open modal if clicking on links or buttons
+                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openBlogModal(post._id);
+                });
                 
                 blogList.appendChild(postElement);
                 console.log('[blog.js] Post added to DOM:', post._id);
@@ -299,8 +307,8 @@ async function openBlogModal(postId) {
     const modal = document.getElementById('blogModal');
     const post = await fetchBlogPost(postId);
     
-    if (!post) {
-        console.error('[blog.js] Blog post not found:', postId);
+    if (!post || !modal) {
+        console.error('[blog.js] Blog post or modal element not found:', postId);
         return;
     }
     
@@ -325,14 +333,32 @@ async function openBlogModal(postId) {
         month: 'long',
         day: 'numeric'
     });
+
+    // Detach any old listeners before attaching new ones
+    const newModal = modal.cloneNode(true);
+    modal.parentNode.replaceChild(newModal, modal);
     
     // Show modal
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    newModal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    
+    // Add a single, more robust click listener to the modal overlay
+    newModal.addEventListener('click', function(e) {
+        // If the click is on the modal backdrop itself (the parent), close the modal.
+        if (e.target === newModal) {
+            closeBlogModal();
+        }
+    });
+
+    // Find the close button within the new modal instance and attach listener
+    const closeButton = newModal.querySelector('.close-modal');
+    if (closeButton) {
+        closeButton.addEventListener('click', closeBlogModal);
+    }
     
     // Initialize comments system
     if (commentsSystem) {
-        commentsSystem = null;
+        commentsSystem = null; // Or some other cleanup logic
     }
     commentsSystem = new MLNF.CommentsSystem('blog', postId, 'blogComments');
 }
@@ -341,8 +367,12 @@ async function openBlogModal(postId) {
 function closeBlogModal() {
     console.log('[blog.js] Closing modal');
     const modal = document.getElementById('blogModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+    }
+    
+    // No need to manually remove listeners now since we clone the modal on open
     
     // Clean up comments system
     if (commentsSystem) {

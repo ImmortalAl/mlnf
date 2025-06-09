@@ -346,6 +346,28 @@
     color: var(--ink);
 }
 
+/* When the modal is open, we don't want the body to scroll. It's rude. */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Blog Modal Backdrop - because every good modal needs a dramatic entrance */
+#blogModal.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Prevent the backdrop from being a pain in the ass */
+    overflow-y: auto;
+    padding: 2rem 1rem;
+}
+
 /* Blog Modal Styles */
 .blog-modal-content {
     background: var(--parchment);
@@ -360,9 +382,13 @@
     margin: auto;
     position: relative;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    /* Ensure scrolling works properly */
+    /* Ensure scrolling works properly - George Carlin style fixes! */
     scrollbar-width: thin;
-    scrollbar-color: var(--accent) transparent;
+    scrollbar-color: var(--gold) var(--aged-border);
+    /* Prevent the modal from being a stubborn little bastard */
+    -webkit-overflow-scrolling: touch;
+    /* Give it some breathing room */
+    z-index: 1001;
 }
 
 .blog-modal-header {
