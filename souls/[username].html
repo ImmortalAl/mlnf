@@ -528,7 +528,6 @@
 
                 <!-- Comments Section -->
                 <div class="profile-comments">
-                    <h3><i class="fas fa-comments"></i> Eternal Echoes</h3>
                     <div id="profileComments"></div>
                 </div>
 
@@ -637,7 +636,7 @@
                 const profileContent = document.getElementById('profileContent');
                 
                 try {
-                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/profile/${username}`, {
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`,
                             'Content-Type': 'application/json'

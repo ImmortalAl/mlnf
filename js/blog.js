@@ -15,16 +15,14 @@ function jwt_decode(token) {
 console.log('[blog.js] Script loaded');
 console.log('[blog.js] MLNF_CONFIG:', window.MLNF_CONFIG);
 
-const BLOG_API_BASE_URL = MLNF_CONFIG.API_BASE_URL;
+const BLOG_API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
 console.log('[blog.js] BLOG_API_BASE_URL:', BLOG_API_BASE_URL);
 
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
 // const closeUsersBtn = document.getElementById('closeUsers'); // Handled by activeUsers.js
-const blogList = document.getElementById('blogList');
-const scrollObserver = document.getElementById('scroll-observer');
-
-console.log('[blog.js] Elements found - blogList:', !!blogList, 'scrollObserver:', !!scrollObserver);
+let blogList = null;
+let scrollObserver = null;
 
 let currentPage = 1;
 let isLoading = false;
@@ -97,6 +95,10 @@ async function fetchBlogPosts(page = 1) {
         } else {
             console.log('[blog.js] Processing', posts.length, 'posts');
             posts.forEach(post => {
+                if (!post.author) {
+                    console.warn('[blog.js] Post has no author, skipping:', post._id);
+                    return;
+                }
                 console.log('[blog.js] Processing post:', post._id, post.title);
                 const postElement = document.createElement('div');
                 postElement.className = 'blog-post';
@@ -113,10 +115,10 @@ async function fetchBlogPosts(page = 1) {
                 
                 postElement.innerHTML = `
                     <div class="scroll-author">
-                        <a href="/profile/${post.author._id}" class="author-avatar">
+                        <a href="/souls/${post.author.username}.html" class="author-avatar">
                             <img src="${authorAvatar}" alt="${authorDisplayName}'s avatar" onerror="this.src='/assets/images/default.jpg'">
                         </a>
-                        <a href="/profile/${post.author._id}" class="author-name">${authorDisplayName}</a>
+                        <a href="/souls/${post.author.username}.html" class="author-name">${authorDisplayName}</a>
                     </div>
                     <h3>${post.title}</h3>
                     <div class="content">${excerpt}</div>
@@ -187,8 +189,23 @@ const observer = new IntersectionObserver(entries => {
     }
 }, { threshold: 1.0 });
 
-if (scrollObserver) {
-    observer.observe(scrollObserver);
+function initBlog() {
+    console.log('[blog.js] initBlog() called');
+    blogList = document.getElementById('blogList');
+    scrollObserver = document.getElementById('scroll-observer');
+
+    console.log('[blog.js] Elements found - blogList:', !!blogList, 'scrollObserver:', !!scrollObserver);
+
+    if (!blogList) {
+        console.log('[blog.js] blogList element not found, aborting init.');
+        return;
+    }
+
+    if (scrollObserver) {
+        observer.observe(scrollObserver);
+    }
+
+    fetchBlogPosts(1);
 }
 
 // Create blog post (for compatibility with existing forms)
@@ -260,31 +277,27 @@ async function createBlog() {
 
 // Fetch a single blog post by ID
 async function fetchBlogPost(postId) {
+    if (blogPosts[postId] && blogPosts[postId].content) {
+        return blogPosts[postId];
+    }
     try {
-        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Failed to fetch blog post: ${response.status}`);
-        }
-        
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}`);
+        if (!response.ok) throw new Error('Failed to fetch blog post');
         const post = await response.json();
         blogPosts[post._id] = post;
         return post;
     } catch (error) {
-        console.error('Error fetching blog post:', error);
+        console.error('Error fetching post:', error);
         return null;
     }
 }
 
 // Open blog modal
-function openBlogModal(postId) {
+async function openBlogModal(postId) {
     console.log('[blog.js] Opening modal for post:', postId);
     currentPostId = postId;
     const modal = document.getElementById('blogModal');
-    const post = blogPosts[postId];
+    const post = await fetchBlogPost(postId);
     
     if (!post) {
         console.error('[blog.js] Blog post not found:', postId);
@@ -298,7 +311,7 @@ function openBlogModal(postId) {
     // Update author info
     const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
     const authorDisplayName = post.author.displayName || post.author.username;
-    const authorLink = `/souls/${post.author.username}`;
+    const authorLink = `/souls/${post.author.username}.html`;
     
     document.getElementById('modal-author-avatar').src = authorAvatar;
     document.getElementById('modal-author-avatar').alt = `${authorDisplayName}'s avatar`;
@@ -339,21 +352,33 @@ function closeBlogModal() {
 
 // Share current post
 function shareCurrentPost() {
-    if (!currentPostId) return;
-    const post = blogPosts[currentPostId];
-    if (!post) return;
-    
-    const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${currentPostId}`;
-    window.MLNF.MessageModal.open(shareUrl);
+    if (currentPostId) {
+        sharePost(currentPostId);
+    }
 }
 
 // Share post by ID
 function sharePost(postId) {
+    currentPostId = postId;
     const post = blogPosts[postId];
-    if (!post) return;
-    
-    const shareUrl = `${window.location.origin}/souls/${post.author.username}#blog-${postId}`;
-    window.MLNF.MessageModal.open(shareUrl);
+    if (!post) {
+        console.error(`Post with ID ${postId} not found for sharing.`);
+        return;
+    }
+    const shareText = `Check out this scroll on MLNF: "${post.title}"`;
+    const shareUrl = `${window.location.origin}/blog.html#${postId}`; // Link to the blog page and potentially the post
+    if (navigator.share) {
+        navigator.share({
+            title: post.title,
+            text: shareText,
+            url: shareUrl,
+        })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    } else {
+        // Fallback for browsers that don't support navigator.share
+        prompt("Copy this link to share:", shareUrl);
+    }
 }
 
 // Make functions globally available
@@ -362,20 +387,11 @@ window.closeBlogModal = closeBlogModal;
 window.shareCurrentPost = shareCurrentPost;
 window.sharePost = sharePost;
 
-// Initialize page
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[blog.js] Page loaded, initializing...');
-    
-    // Check if this should auto-initialize (only run on actual blog pages)
     if (window.DISABLE_BLOG_AUTO_INIT) {
-        console.log('[blog.js] Auto-init disabled for this page');
-        return;
-    }
-    
-    // Only initialize if blogList exists (on actual blog pages)
-    if (blogList) {
-        fetchBlogPosts(1);
+        console.log('[blog.js] Auto-initialization is disabled.');
     } else {
-        console.log('[blog.js] blogList not found, skipping auto-init');
+        console.log('[blog.js] Initializing blog functionality.');
+        initBlog();
     }
-}); 
+});
