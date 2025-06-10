@@ -371,6 +371,17 @@
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
     </footer>
 
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-btn" id="closeCommentsModal">&times;</span>
+            <h3 id="commentsModalTitle">Eternal Echoes</h3>
+            <div id="commentsContainer">
+                <!-- The CommentsSystem will populate this area -->
+            </div>
+        </div>
+    </div>
+
     <!-- Submission Modal -->
     <div id="submissionModal" class="modal">
         <div class="modal-content">
@@ -410,6 +421,7 @@
     <script src="/js/shared/apiClient.js?v=1.2"></script>
     <script src="/components/shared/activeUsers.js?v=1.2"></script>
     <script src="/components/shared/messageModal.js?v=1.2"></script>
+    <script src="/components/shared/comments.js?v=1.2"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             console.log('[NEWS] DOM loaded, initializing...');
@@ -423,6 +435,13 @@
             const openBtn = document.getElementById('openSubmissionModal');
             const closeBtn = document.getElementById('closeSubmissionModal');
             const viewControls = document.querySelector('.view-controls');
+
+            // Comments Modal elements
+            const commentsModal = document.getElementById('commentsModal');
+            const closeCommentsBtn = document.getElementById('closeCommentsModal');
+            const commentsContainer = document.getElementById('commentsContainer');
+            const commentsModalTitle = document.getElementById('commentsModalTitle');
+            let commentsSystem = null;
 
             // Add a protective flag to prevent interference from other scripts
             window.NEWS_PAGE_INITIALIZED = true;
@@ -514,6 +533,7 @@
                 sortedChronicles.forEach((chronicle, index) => {
                     const article = document.createElement('article');
                     article.className = 'chronicle-item';
+                    article.dataset.id = chronicle._id; // Add chronicle ID for interactions
                     
                     const eventDate = new Date(chronicle.eventDate || chronicle.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric', month: 'long', day: 'numeric'
@@ -538,9 +558,9 @@
                             </ul>
                         </div>
                         <div class="chronicle-actions">
-                            <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations || 0})</span></button>
-                            <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges || 0})</span></button>
-                            <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments || 0})</span></button>
+                            <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations || 0})</span></button>
+                            <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges || 0})</span></button>
+                            <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments?.length || 0})</span></button>
                         </div>
                     `;
                     chroniclesFeed.appendChild(article);
@@ -619,6 +639,90 @@
                     }
                 });
             }
+
+            // --- Interaction Logic ---
+            const openCommentsModal = (chronicleId, chronicleTitle) => {
+                if (!commentsModal) return;
+                console.log(`[NEWS] Opening comments for Chronicle: ${chronicleId}`);
+                
+                commentsModalTitle.textContent = `Echoes for: "${chronicleTitle}"`;
+                commentsModal.classList.add('active');
+
+                // Clear previous instance and container
+                if (commentsSystem) commentsSystem = null;
+                commentsContainer.innerHTML = '';
+
+                // Initialize new comments system
+                if (window.MLNF && window.MLNF.CommentsSystem) {
+                    commentsSystem = new window.MLNF.CommentsSystem('news', chronicleId, 'commentsContainer');
+                } else {
+                    console.error('[NEWS] CommentsSystem not found!');
+                    commentsContainer.innerHTML = '<p class="error">Could not load comments component.</p>';
+                }
+            };
+
+            const closeCommentsModal = () => {
+                if (commentsModal) commentsModal.classList.remove('active');
+                commentsContainer.innerHTML = ''; // Clean up
+                commentsSystem = null; // Destroy instance
+            };
+
+            const handleChronicleInteraction = async (action, chronicleId) => {
+                try {
+                    console.log(`[NEWS] Interacting: ${action} on ${chronicleId}`);
+                    const result = await window.apiClient.post(`/chronicles/${chronicleId}/${action}`);
+                    
+                    // Update UI with new counts
+                    const articleElement = document.querySelector(`.chronicle-item[data-id="${chronicleId}"]`);
+                    if (articleElement) {
+                        const validateCount = articleElement.querySelector('.validate .count');
+                        const challengeCount = articleElement.querySelector('.challenge .count');
+                        
+                        if (validateCount) validateCount.textContent = `(${result.validations})`;
+                        if (challengeCount) challengeCount.textContent = `(${result.challenges})`;
+
+                        // Optional: Visual feedback for the user's action
+                        const actionBtn = articleElement.querySelector(`.${action}`);
+                        if(result.userValidated || result.userChallenged) {
+                            actionBtn.classList.add('active');
+                        } else {
+                            actionBtn.classList.remove('active');
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error(`[NEWS] Failed to ${action} chronicle:`, error);
+                    alert(`Action failed: ${error.error || 'Please try again.'}`);
+                }
+            };
+
+            if (chroniclesFeed) {
+                chroniclesFeed.addEventListener('click', (e) => {
+                    const button = e.target.closest('.action-btn');
+                    if (!button) return;
+
+                    const article = e.target.closest('.chronicle-item');
+                    const chronicleId = article.dataset.id;
+                    const action = button.dataset.action;
+                    
+                    if (action === 'validate' || action === 'challenge') {
+                        handleChronicleInteraction(action, chronicleId);
+                    } else if (action === 'comments') {
+                        const title = article.querySelector('.chronicle-title').textContent;
+                        openCommentsModal(chronicleId, title);
+                    }
+                });
+            }
+
+            if (closeCommentsBtn) {
+                closeCommentsBtn.addEventListener('click', closeCommentsModal);
+            }
+
+            window.addEventListener('click', (event) => {
+                if (event.target == commentsModal) {
+                    closeCommentsModal();
+                }
+            });
 
             // --- Initial Load with Delay ---
             // Delay the initial load to let other scripts finish
