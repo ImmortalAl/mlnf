@@ -481,6 +481,8 @@
                         chronicles = data.chronicles;
                     } else if (data && Array.isArray(data.data)) {
                         chronicles = data.data;
+                    } else if (data && Array.isArray(data.docs)) {
+                        chronicles = data.docs;
                     } else {
                         console.warn('[NEWS] Unexpected API response format:', data);
                         chronicles = [];
