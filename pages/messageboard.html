@@ -212,7 +212,9 @@
                 return;
             }
             const isAuthenticated = window.authManager.isLoggedIn();
-            threadList.innerHTML = threads.map(thread => `
+            threadList.innerHTML = threads.map(thread => {
+                const isAuthor = isAuthenticated && window.authManager.getUserId() === thread.author?._id;
+                return `
                 <div class="thread" data-id="${thread._id}">
                     <div class="thread-voting">
                         <button class="vote-btn" data-action="upvote-thread" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
@@ -225,14 +227,23 @@
                             <span>${thread.replies ? thread.replies.length : 0} Replies</span> | 
                             <span>Posted by ${thread.author ? escapeHTML(thread.author.username) : 'Anonymous'}</span>
                         </p>
+                        ${isAuthor ? '<button class="btn btn-secondary btn-sm edit-thread-btn" data-action="edit-thread">Edit</button>' : ''}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         threadList.addEventListener('click', async (e) => {
             const toggleBtn = e.target.closest('[data-action="toggle-replies"]');
             const threadElement = e.target.closest('.thread');
+            const editButton = e.target.closest('.edit-thread-btn');
+
+            if (editButton) {
+                e.stopPropagation(); // Prevent opening the thread view
+                const threadId = editButton.closest('.thread').dataset.id;
+                openComposerForEdit(threadId);
+                return;
+            }
 
             if (threadElement) {
                 // Remove active class from all other threads
@@ -342,11 +353,40 @@
             composerModal.setAttribute('aria-hidden', 'true');
         });
 
+        async function openComposerForEdit(threadId) {
+            try {
+                const thread = await window.apiClient.get(`/threads/${threadId}`);
+                
+                // Set form to edit mode
+                threadForm.dataset.editMode = 'true';
+                threadForm.dataset.editingId = threadId;
+
+                // Populate form fields
+                threadForm.elements.title.value = thread.title;
+                threadForm.elements.category.value = thread.category;
+                threadForm.elements.tags.value = thread.tags.join(', ');
+                quill.root.innerHTML = thread.content;
+
+                // Update modal title and button text
+                document.getElementById('composerTitle').textContent = 'Edit Your Echo';
+                threadForm.querySelector('button[type="submit"]').textContent = 'Update Thread';
+
+                // Show the modal
+                composerModal.classList.add('active');
+                composerModal.setAttribute('aria-hidden', 'false');
+            } catch (error) {
+                alert(`Error: Could not load thread for editing.`);
+            }
+        }
+
         threadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitButton = threadForm.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = 'Posting...';
+
+            const isEditMode = threadForm.dataset.editMode === 'true';
+            const threadId = threadForm.dataset.editingId;
 
             const data = {
                 title: threadForm.elements.title.value,
@@ -363,11 +403,22 @@
             }
 
             try {
-                await window.apiClient.post('/threads', data);
+                if (isEditMode) {
+                    await window.apiClient.put(`/threads/${threadId}`, data);
+                } else {
+                    await window.apiClient.post('/threads', data);
+                }
                 threadForm.reset();
                 quill.setContents([]);
                 composerModal.classList.remove('active');
                 composerModal.setAttribute('aria-hidden', 'true');
+                
+                // Reset form state
+                delete threadForm.dataset.editMode;
+                delete threadForm.dataset.editingId;
+                document.getElementById('composerTitle').textContent = 'Create a New Echo';
+                submitButton.textContent = 'Post Thread';
+                
                 fetchThreads(); // Refresh the thread list
             } catch (error) {
                 alert(`Error: ${error.error || 'Could not post thread.'}`);
