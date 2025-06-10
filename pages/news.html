@@ -589,14 +589,28 @@
                     const formData = new FormData(submissionForm);
                     const data = Object.fromEntries(formData.entries());
                     
-                    // Process sources - handle empty sources gracefully
-                    if (data.sources && data.sources.trim()) {
-                        data.sources = data.sources.split('\n').filter(s => s.trim() !== '');
-                    } else {
-                        data.sources = [];
+                    // Process sources - send as string (backend will split it)
+                    if (!data.sources) {
+                        data.sources = '';
+                    }
+                    // Keep sources as string - backend expects string and will split by newlines
+                    
+                    // Validate eventDate - don't allow future dates beyond current year
+                    const eventDate = new Date(data.eventDate);
+                    const currentYear = new Date().getFullYear();
+                    if (eventDate.getFullYear() > currentYear) {
+                        alert(`Event date cannot be in the future. Please use a date from ${currentYear} or earlier.`);
+                        return;
+                    }
+                    
+                    // Ensure all required fields are present and valid
+                    if (!data.title || !data.content || !data.eventDate) {
+                        alert('Please fill in all required fields (title, content, and event date).');
+                        return;
                     }
                     
                     console.log('[NEWS] Submitting data:', data);
+                    console.log('[NEWS] Sources string:', JSON.stringify(data.sources));
                     
                     try {
                         const token = localStorage.getItem('sessionToken');
