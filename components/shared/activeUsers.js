@@ -202,11 +202,11 @@ async function populateActiveUsersList() {
                 event.stopPropagation(); 
                 event.preventDefault(); 
                 const username = event.currentTarget.dataset.username;
-                console.log(`[activeUsers.js] Message button clicked for ${username}`);
-                if (window.MLNF && window.MLNF.openMessageModal) {
+                
+                if (window.MLNF && typeof window.MLNF.openMessageModal === 'function') {
                     window.MLNF.openMessageModal(username);
                 } else {
-                    console.error(`[activeUsers.js] MLNF.openMessageModal function not found for user ${username}.`);
+                    console.error(`[activeUsers.js] MLNF.openMessageModal function not found.`);
                 }
             });
         });
@@ -230,41 +230,22 @@ function updateActiveUsersButtonVisibility() {
     const token = localStorage.getItem('sessionToken');
     if (token) {
         showUsersBtn.style.display = 'flex'; // Or 'block', match CSS
-        console.log('[activeUsers.js] User logged in, #showUsersBtn is visible.');
     } else {
         showUsersBtn.style.display = 'none';
-        console.log('[activeUsers.js] User logged out, #showUsersBtn is hidden.');
     }
 }
 
 function initActiveUsers() {
     injectActiveUsersSidebar();
-    
-    // Safety check: ensure overlay isn't stuck active on page load
-    const activeUsersOverlay = document.getElementById('activeUsersOverlay');
-    const activeUsersSidebar = document.getElementById('activeUsers');
-    if (activeUsersOverlay && activeUsersSidebar) {
-        // Remove active classes if present on init
-        activeUsersOverlay.classList.remove('active');
-        activeUsersSidebar.classList.remove('active');
-        activeUsersSidebar.classList.remove('force-close');
-        // Clear any inline styles
-        activeUsersOverlay.style.opacity = '';
-        activeUsersOverlay.style.visibility = '';
-        activeUsersOverlay.style.pointerEvents = '';
-        activeUsersSidebar.style.right = '';
-        console.log('[activeUsers.js] Cleared any stuck states on init');
-    }
-    
     setupActiveUsersEvents();
-    updateActiveUsersButtonVisibility(); // Call the new function here
-    // Note: Population of user list is called within setupActiveUsersEvents for now
+    updateActiveUsersButtonVisibility();
+    // Listen for auth changes to update visibility
+    window.addEventListener('authChange', updateActiveUsersButtonVisibility);
 }
 
-// Expose to global MLNF object
+// Expose the init function
 window.MLNF = window.MLNF || {};
 window.MLNF.initActiveUsers = initActiveUsers;
-window.MLNF.updateActiveUsersButtonVisibility = updateActiveUsersButtonVisibility; // Expose if needed by userMenu.js on login/logout
 
 // This component assumes its main HTML structures (#activeUsers sidebar, #showUsersBtn button)
 // are already present in the main HTML file (e.g., index.html).

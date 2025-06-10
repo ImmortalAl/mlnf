@@ -1,91 +1,64 @@
 // mlnf-core.js - Core initialization for MLNF components
 
-// Load and initialize all components
+// Establish the global namespace
+window.MLNF = window.MLNF || {};
+
+// Centralized component initialization
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('[mlnf-core.js] DOM fully loaded and parsed');
+  console.log('[mlnf-core.js] Initializing all MLNF components...');
 
-  // --- Safety Checks & Cleanup ---
-  // Defensively remove any orphaned modals that might be stuck
-  const cleanupOrphanedModal = (modalId) => {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-      console.warn(`[mlnf-core.js] Found an orphaned '${modalId}'. Removing it.`);
-      modal.style.display = 'none'; // Hide immediately
-      if (document.body.contains(modal)) {
-        document.body.removeChild(modal);
-      }
-    }
-  };
-  cleanupOrphanedModal('welcomeModal');
-
-  // Initialize user menu FIRST, so its functions are available to other components like navigation
-  if (window.MLNF && window.MLNF.initUserMenu) {
+  // The order of initialization can be important.
+  // For example, user menu should be initialized before components that might use it.
+  
+  // 1. User Menu
+  if (typeof window.MLNF.initUserMenu === 'function') {
     window.MLNF.initUserMenu();
-    console.log('MLNF User Menu initialized');
   } else {
-    console.warn('MLNF User Menu component not loaded');
+    console.warn('Core component `initUserMenu` not found.');
   }
-
-  // Initialize navigation
-  if (window.MLNF && window.MLNF.initNavigation) {
+  
+  // 2. Navigation
+  if (typeof window.MLNF.initNavigation === 'function') {
     window.MLNF.initNavigation();
-    console.log('MLNF Navigation initialized');
   } else {
-    console.warn('MLNF Navigation component not loaded');
+    console.warn('Core component `initNavigation` not found.');
   }
   
-  // Initialize active users sidebar
-  if (window.MLNF && window.MLNF.initActiveUsers) {
-    window.MLNF.initActiveUsers();
-    console.log('MLNF Active Users Sidebar initialized');
-  } else {
-    console.warn('MLNF Active Users Sidebar component not loaded');
-  }
-  
-  // Initialize auth modal
-  if (window.MLNF && window.MLNF.initAuthModal) {
+  // 3. Auth Modal
+  if (typeof window.MLNF.initAuthModal === 'function') {
     window.MLNF.initAuthModal();
-    console.log('MLNF Auth Modal initialized');
   } else {
-    console.warn('MLNF Auth Modal component not loaded');
+    console.warn('Core component `initAuthModal` not found.');
   }
 
-  // Initialize Hero Particles
-  if (window.MLNF && window.MLNF.initHeroParticles) {
-    window.MLNF.initHeroParticles(350); // Create a new particle roughly every 350ms
-    console.log('MLNF Hero Particles initialized');
-  } else {
-    console.warn('MLNF Hero Particles component not loaded');
-  }
-
-  // Initialize Message Modal
-  if (window.MLNF && window.MLNF.initMessageModal) {
+  // 4. Message Modal
+  if (typeof window.MLNF.initMessageModal === 'function') {
     window.MLNF.initMessageModal();
-    console.log('MLNF Message Modal initialized');
   } else {
-    console.warn('MLNF Message Modal component not loaded');
+    console.warn('Core component `initMessageModal` not found.');
   }
   
-  console.log('MLNF Core components initialized');
+  // 5. Active Users Sidebar (depends on Message Modal)
+  if (typeof window.MLNF.initActiveUsers === 'function') {
+    window.MLNF.initActiveUsers();
+  } else {
+    console.warn('Core component `initActiveUsers` not found.');
+  }
+  
+  // Optional components
+  if (typeof window.MLNF.initHeroParticles === 'function') {
+    window.MLNF.initHeroParticles(350);
+  }
+
+  console.log('[mlnf-core.js] All components initialized.');
 });
 
-// Listen for changes to authentication state
+// Listen for authentication state changes
 window.addEventListener('storage', (event) => {
-  // When session token changes in another tab/window
   if (event.key === 'sessionToken' || event.key === 'user') {
-    console.log('Authentication state changed in another window');
-    
-    // Update UI components
-    if (window.MLNF && window.MLNF.updateUserMenu) {
+    console.log('Auth state changed in another window. Updating UI.');
+    if (typeof window.MLNF.updateUserMenu === 'function') {
       window.MLNF.updateUserMenu();
     }
-    
-    // No longer updating userSidebar as it's removed
-    // if (window.MLNF && window.MLNF.updateUserSidebar) {
-    //   window.MLNF.updateUserSidebar();
-    // }
   }
-});
-
-// Export namespace
-window.MLNF = window.MLNF || {}; 
+}); 
