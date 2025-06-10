@@ -181,6 +181,11 @@ async function fetchBlogPosts(page = 1) {
                 console.log('[blog.js] Post added to DOM:', post._id);
             });
             
+            // DEBUG: Log the final DOM structure
+            console.log("----------- DEBUG: Final blogList innerHTML -----------");
+            console.log(blogList.innerHTML);
+            console.log("----------------------------------------------------");
+            
             // Check if we have more pages
             if (result.totalPages && currentPage >= result.totalPages) {
                 hasMore = false;
