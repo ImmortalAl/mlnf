@@ -231,9 +231,9 @@ section {
 
 /* Individual Columns */
 .lyceum-column {
-    background: rgba(13, 13, 26, 0.8); /* Using a transparent version of --primary */
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    background: rgba(13, 13, 26, 0.3); /* Much more transparent to let cosmic background shine */
+    backdrop-filter: blur(2px) saturate(120%);
+    -webkit-backdrop-filter: blur(2px) saturate(120%);
     border-radius: var(--border-radius);
     border: 1px solid var(--highlight);
     padding: 1.5rem;
