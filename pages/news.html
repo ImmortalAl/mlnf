@@ -8,7 +8,7 @@
     <title>Boundless Chronicles - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../components/shared/styles.css">
+    <link rel="stylesheet" href="/components/shared/styles.css">
     <style>
         :root {
             --primary: #0d0d1a;
@@ -259,44 +259,8 @@
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="logo">
-            <i class="fas fa-infinity"></i>
-            <h1>Manifest Liberation, Naturally Free</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="profiles.html">Eternal Souls</a></li>
-                <li><a href="blog.html">Soul Scrolls</a></li>
-                <li><a href="messageboard.html">Echoes Unbound</a></li>
-                <li><a href="news.html" class="active">Boundless Chronicles</a></li>
-                <li><a href="debate.html">Clash of Immortals</a></li>
-                <li><a href="mindmap.html">Infinite Nexus</a></li>
-                <li><a href="archive.html">Timeless Vault</a></li>
-            </ul>
-        </nav>
-        <div class="user-actions">
-            <div id="user-info" style="display: none;">
-                <div class="user-dropdown">
-                    <button id="user-menu-button" class="user-menu-button">
-                        <i class="fas fa-user-circle"></i>
-                        <span id="user-display-name"></span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div id="user-dropdown-menu" class="dropdown-content">
-                        <a href="../profile/profile.html"><i class="fas fa-user"></i> My Eternal Soul</a>
-                        <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Return to Void</a>
-                    </div>
-                </div>
-            </div>
-            <div id="guest-actions">
-                <button id="login-button" class="auth-button"><i class="fas fa-sign-in-alt"></i> Transcend</button>
-                <button id="signup-button" class="auth-button"><i class="fas fa-user-plus"></i> Forge New Soul</button>
-            </div>
-        </div>
-    </header>
+    <header><nav class="main-nav"><ul></ul></nav></header>
+    <div id="activeUsersSidebar" style="display: none;"></div>
 
     <main>
         <section class="chronicles-header">
@@ -405,15 +369,13 @@
     <!-- Auth Modal container -->
     <div id="auth-modal-container"></div>
 
-    <!-- Simplified, reliable script loading -->
-    <script src="../components/shared/config.js"></script>
-    <script src="../components/shared/navigation.js"></script>
-    <script src="../components/shared/userMenu.js"></script>
-    <script src="../components/shared/authModal.js"></script>
-    <script src="../components/shared/activeUsers.js"></script>
-    <script src="../components/shared/messageModal.js"></script>
-    <script src="../components/shared/mlnf-core.js"></script>
-    <script src="../js/dev-mode.js"></script>
+    <script src="/components/shared/config.js"></script>
+    <script src="/components/shared/navigation.js"></script>
+    <script src="/components/shared/userMenu.js"></script>
+    <script src="/components/shared/authModal.js"></script>
+    <script src="/components/shared/activeUsers.js"></script>
+    <script src="/components/shared/messageModal.js"></script>
+    <script src="/components/shared/mlnf-core.js"></script>
     <script>
         // Self-contained news page with reliable modal functionality
         document.addEventListener('DOMContentLoaded', () => {
