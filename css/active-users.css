@@ -7,7 +7,7 @@
     height: 100vh;
     background: var(--secondary, #1a1a33);
     border-left: 3px solid var(--accent, #ff5e78);
-    z-index: 2000;
+    z-index: 3000;
     padding: 1rem;
     transition: right 0.3s ease;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
