@@ -222,7 +222,7 @@
                     <div class="thread-main">
                         <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
                         <p class="thread-meta">
-                            <span>${thread.replyCount || 0} Replies</span> | 
+                            <span>${thread.replies ? thread.replies.length : 0} Replies</span> | 
                             <span>Posted by ${thread.author ? escapeHTML(thread.author.username) : 'Anonymous'}</span>
                         </p>
                     </div>
