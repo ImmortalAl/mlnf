@@ -684,8 +684,8 @@ function updateLikeButtons(postId, result) {
     const likeCount = postElement.querySelector('.like-count');
     const dislikeCount = postElement.querySelector('.dislike-count');
 
-    if (likeCount) likeCount.textContent = Array.isArray(result.likes) ? result.likes.length : 0;
-    if (dislikeCount) dislikeCount.textContent = Array.isArray(result.dislikes) ? result.dislikes.length : 0;
+    if (likeCount) likeCount.textContent = result.likes;
+    if (dislikeCount) dislikeCount.textContent = result.dislikes;
 
     // Update button states
     if (likeBtn) {

@@ -36,12 +36,24 @@
     margin: 1.5rem auto;
 }
 
-/* Scroll Grid */
+/* Scroll Grid - Responsive Columns */
 .scroll-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: 1fr; /* 1 column on mobile */
     gap: 2.5rem;
     padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .scroll-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+}
+
+@media (min-width: 1024px) {
+    .scroll-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on desktops */
+    }
 }
 
 /* Styles for empty and error messages */
@@ -569,9 +581,7 @@ body.modal-open {
 
 .close-modal:hover {
     color: var(--gold);
-    background: rgba(212, 175, 55, 0.2);
-    border-color: var(--gold);
-    transform: scale(1.1);
+    transform: scale(1.1) rotate(90deg);
 }
 
 /* Responsive Design */
@@ -587,9 +597,7 @@ body.modal-open {
     }
 
     .blog-post {
-        padding: 1.2rem;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
+        padding: 1.25rem;
     }
 
     .blog-form {
