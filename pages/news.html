@@ -423,6 +423,9 @@
             const closeBtn = document.getElementById('closeSubmissionModal');
             const viewControls = document.querySelector('.view-controls');
 
+            // Add a protective flag to prevent interference from other scripts
+            window.NEWS_PAGE_INITIALIZED = true;
+
             // --- Modal Logic ---
             const openModal = () => {
                 console.log('[NEWS] Opening submission modal...');
@@ -458,6 +461,7 @@
 
             // --- Data Fetching Logic ---
             const fetchChronicles = async (view = 'recent') => {
+                console.log(`[NEWS] fetchChronicles called with view: ${view}`);
                 try {
                     console.log(`[NEWS] Fetching chronicles with view: ${view}`);
                     const response = await fetch(`${API_URL}/chronicles`);
@@ -491,6 +495,14 @@
             };
 
             const renderChronicles = (chronicles, view) => {
+                console.log(`[NEWS] renderChronicles called with ${chronicles?.length || 0} items`);
+                
+                // Defensive check - make sure the container still exists
+                if (!chroniclesFeed) {
+                    console.error('[NEWS] chroniclesFeed container was removed from DOM!');
+                    return;
+                }
+
                 chroniclesFeed.innerHTML = ''; 
 
                 // Ensure chronicles is an array before proceeding
@@ -512,7 +524,9 @@
                     return;
                 }
 
-                sortedChronicles.forEach(chronicle => {
+                console.log(`[NEWS] Rendering ${sortedChronicles.length} chronicle items`);
+                
+                sortedChronicles.forEach((chronicle, index) => {
                     const article = document.createElement('article');
                     article.className = 'chronicle-item';
                     
@@ -545,7 +559,10 @@
                         </div>
                     `;
                     chroniclesFeed.appendChild(article);
+                    console.log(`[NEWS] Added chronicle item ${index + 1}/${sortedChronicles.length}`);
                 });
+
+                console.log(`[NEWS] Finished rendering. chroniclesFeed children count: ${chroniclesFeed.children.length}`);
             };
             
             const escapeHTML = (str) => {
@@ -605,8 +622,27 @@
                 });
             }
 
-            // --- Initial Load ---
-            fetchChronicles();
+            // --- Initial Load with Delay ---
+            // Delay the initial load to let other scripts finish
+            console.log('[NEWS] Scheduling initial fetchChronicles...');
+            setTimeout(() => {
+                console.log('[NEWS] Executing delayed initial fetchChronicles...');
+                fetchChronicles();
+                
+                // Add a watcher to detect if content gets cleared
+                let contentCheckInterval = setInterval(() => {
+                    if (chroniclesFeed && chroniclesFeed.children.length === 0 && !chroniclesFeed.innerHTML.includes('No truths')) {
+                        console.warn('[NEWS] chroniclesFeed was cleared unexpectedly! Re-fetching...');
+                        fetchChronicles();
+                    }
+                }, 1000);
+                
+                // Clear the watcher after 10 seconds
+                setTimeout(() => {
+                    clearInterval(contentCheckInterval);
+                    console.log('[NEWS] Stopped content watcher');
+                }, 10000);
+            }, 500); // 500ms delay to let other scripts finish
         });
     </script>
 </body>
