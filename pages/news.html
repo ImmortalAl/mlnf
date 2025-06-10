@@ -386,17 +386,7 @@
         </div>
     </main>
 
-    <!-- Eternal Seekers Sidebar -->
-    <aside class="eternal-seekers" id="eternalSeekers">
-        <div class="seekers-header">
-            <h3>Eternal Seekers</h3>
-            <button id="toggle-seekers" title="Toggle Sidebar"><i class="fas fa-stream"></i></button>
-        </div>
-        <div class="seekers-list" id="seekersList">
-            <!-- Seekers will be populated dynamically -->
-            <p style="color: var(--text-dark);">The ether is quiet...</p>
-        </div>
-    </aside>
+
 
     <footer>
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
@@ -903,15 +893,7 @@
                 openModal();
             }
 
-            // === ETERNAL SEEKERS SIDEBAR ===
-            const seekersToggle = document.getElementById('toggle-seekers');
-            const seekersSidebar = document.getElementById('eternalSeekers');
-            
-            if (seekersToggle && seekersSidebar) {
-                seekersToggle.addEventListener('click', () => {
-                    seekersSidebar.classList.toggle('active');
-                });
-            }
+
         });
     </script>
 </body>
