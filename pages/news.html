@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="User-submitted stories of hidden truths in an eternal sanctuary.">
+    <meta name="description" content="Boundless Chronicles: User-submitted stories immortalizing hidden truths in the MLNF sanctuary.">
     <meta name="theme-color" content="#0d0d1a">
     <title>Boundless Chronicles - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0d0d1a;
             --secondary: #1a1a33;
             --accent: #ff5e78;
             --text: #f0e6ff;
+            --truth-gold: #FFD700;
             --highlight: #2a4066;
             --success: #5cb85c;
-            --warning: #ffca28;
-            --gradient-accent: linear-gradient(45deg, var(--accent), var(--warning));
+            --danger: #d9534f;
+            --gradient-accent: linear-gradient(45deg, var(--accent), var(--truth-gold));
             --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -27,13 +29,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
             background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
                         url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
             color: var(--text);
+            font-family: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
@@ -46,248 +48,216 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--accent);
+            border-bottom: 3px solid var(--truth-gold);
             position: sticky;
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
         }
 
-        .logo i {
-            color: var(--accent);
-            font-size: 2.2rem;
-            animation: pulseGlow 2s infinite;
-        }
+        .logo { display: flex; align-items: center; gap: 1rem; }
+        .logo i { color: var(--truth-gold); font-size: 2.2rem; }
+        .logo h1 { font-family: 'Roboto Slab', serif; font-size: 1.8rem; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .logo h1 {
-            font-size: 1.8rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        nav ul { display: flex; gap: 1.8rem; list-style: none; }
+        nav a { color: var(--text); text-decoration: none; font-weight: 600; padding: 0.5rem 0; transition: var(--transition); }
+        nav a:hover, nav a.active { color: var(--truth-gold); }
 
-        nav ul {
-            display: flex;
-            gap: 1.8rem;
-            list-style: none;
-        }
+        main { padding: 3rem 2rem; flex: 1; }
 
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 0;
-            transition: var(--transition);
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
-
-        main {
-            padding: 3rem 2rem;
-            flex: 1;
-        }
-
-        .section-title {
+        .chronicles-header {
             text-align: center;
             margin-bottom: 3rem;
         }
 
-        .section-title h2 {
-            font-size: 2.5rem;
+        .chronicles-header h2 {
+            font-family: 'Roboto Slab', serif;
+            font-size: 3rem;
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
 
-        .news-list {
+        .chronicles-header p {
+            font-size: 1.2rem;
+            color: #d9ccff;
+        }
+
+        .view-controls {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .view-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            transition: var(--transition);
+        }
+
+        .view-btn.active {
+            border-bottom: 2px solid var(--truth-gold);
+        }
+
+        .submit-truth-btn {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            margin: 0 auto 3rem;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .submit-truth-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(255, 215, 0, 0.2);
+        }
+        .submit-truth-btn i { margin-right: 0.5rem; }
+
+        .chronicles-feed {
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
+            gap: 2.5rem;
         }
 
-        .news-story {
+        .chronicle-item {
             background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
             border-radius: var(--border-radius);
             padding: 2rem;
+            border-left: 5px solid var(--truth-gold);
             transition: var(--transition);
-            border-left: 5px solid var(--accent);
+            position: relative;
         }
 
-        .news-story:hover {
-            transform: translateY(-10px);
+        .chronicle-item:hover {
+            transform: translateY(-5px);
             box-shadow: var(--shadow);
         }
 
-        .news-story h3 {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .news-story p {
-            color: #d9ccff;
-            margin-bottom: 0.5rem;
-        }
-
-        .news-story .author {
-            font-style: italic;
-            color: var(--success);
+        .chronicle-meta {
             font-size: 0.9rem;
-        }
-
-        .active-users {
-            position: fixed;
-            right: -300px;
-            top: 70px;
-            width: 300px;
-            height: calc(100% - 70px);
-            background: var(--gradient-secondary);
-            padding: 1.5rem;
-            transition: right 0.3s ease;
-            z-index: 200;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .active-users.active {
-            right: 0;
-        }
-
-        .active-users-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
-        }
-
-        .active-users h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .active-users ul {
-            list-style: none;
-            max-height: calc(100% - 100px);
-            overflow-y: auto;
-        }
-
-        .active-users li {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 0;
-        }
-
-        .profile-preview img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 1rem;
-        }
-
-        .profile-preview a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .profile-preview .status {
-            font-size: 0.8rem;
             color: #d9ccff;
+            margin-bottom: 1rem;
+        }
+        .chronicle-meta .author { color: var(--accent); font-weight: bold; }
+        .chronicle-meta .date::before { content: 'â€¢'; margin: 0 0.5rem; }
+
+        .chronicle-title {
+            font-family: 'Roboto Slab', serif;
+            font-size: 1.8rem;
+            color: var(--truth-gold);
+            margin-bottom: 1rem;
         }
 
-        .online-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--success);
-            border-radius: 50%;
-            margin-left: 0.5rem;
+        .chronicle-content p {
+            margin-bottom: 1rem;
+            color: #e0d8ff;
         }
 
-        .show-users-btn {
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            background: var(--secondary);
-            border: none;
-            padding: 0.8rem;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--text);
-            z-index: 300;
-            transition: var(--transition);
+        .chronicle-sources { margin-bottom: 1.5rem; }
+        .chronicle-sources h4 { color: var(--truth-gold); margin-bottom: 0.5rem; font-size: 1rem; }
+        .chronicle-sources ul { list-style: none; padding-left: 1rem; }
+        .chronicle-sources li { margin-bottom: 0.25rem; }
+        .chronicle-sources a { color: var(--accent); text-decoration: none; }
+        .chronicle-sources a:hover { text-decoration: underline; }
+
+        .chronicle-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-top: 1px solid var(--highlight);
+            padding-top: 1rem;
         }
 
-        .close-sidebar {
+        .action-btn {
             background: none;
-            border: none;
+            border: 1px solid var(--highlight);
             color: var(--text);
-            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
             cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 250;
+            transition: var(--transition);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        .action-btn.validate:hover { background-color: var(--success); border-color: var(--success); }
+        .action-btn.challenge:hover { background-color: var(--danger); border-color: var(--danger); }
+        .action-btn.comments:hover { background-color: var(--highlight); border-color: var(--highlight); }
+
+        /* Submission Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--gradient-secondary);
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid var(--truth-gold);
+            width: 80%;
+            max-width: 700px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .close-btn {
+            color: var(--text);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover, .close-btn:focus { color: var(--truth-gold); }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: .5rem; font-weight: bold; color: var(--truth-gold); }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--primary);
+            border: 1px solid var(--highlight);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .form-group textarea { min-height: 150px; resize: vertical; }
 
         footer {
             background: var(--gradient-secondary);
             text-align: center;
             padding: 2rem;
-            border-top: 3px solid var(--accent);
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
+            border-top: 3px solid var(--truth-gold);
+            margin-top: 3rem;
         }
     </style>
 </head>
 <body>
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
-        <div class="active-users-header">
-            <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
-            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
-        </div>
-        <ul>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar">
-                <div>
-                    <a href="profiles.html#ImmortalAl">ImmortalAl</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Defending free speech</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar">
-                <div>
-                    <a href="profiles.html#FreeSoul">FreeSoul</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Seeking eternal liberty</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar">
-                <div>
-                    <a href="profiles.html#EternalVoice">EternalVoice</a>
-                    <p class="status">Echoing truth</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar">
-                <div>
-                    <a href="profiles.html#TruthSeeker">TruthSeeker</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Unveiling hidden narratives</p>
-                </div>
-            </li>
-        </ul>
-    </aside>
-
-    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
 
     <header>
         <div class="logo">
@@ -300,7 +270,7 @@
                 <li><a href="profiles.html">Eternal Souls</a></li>
                 <li><a href="blog.html">Soul Scrolls</a></li>
                 <li><a href="messageboard.html">Echoes Unbound</a></li>
-                <li><a href="news.html">Boundless Chronicles</a></li>
+                <li><a href="news.html" class="active">Boundless Chronicles</a></li>
                 <li><a href="debate.html">Clash of Immortals</a></li>
                 <li><a href="mindmap.html">Infinite Nexus</a></li>
                 <li><a href="archive.html">Timeless Vault</a></li>
@@ -309,27 +279,63 @@
     </header>
 
     <main>
-        <section class="section-title">
+        <section class="chronicles-header">
             <h2>Boundless Chronicles</h2>
-            <p>User-submitted stories immortalizing hidden truths</p>
+            <p>A Timeless Ledger of User-Submitted Truths</p>
         </section>
 
-        <div class="news-list">
-            <div class="news-story">
-                <h3>Unveiled: The Hidden War on Free Thought</h3>
-                <p>A deep dive into the censorship mechanisms of 2025, exposing the unseen hands.</p>
-                <p class="author">— ImmortalAl</p>
-            </div>
-            <div class="news-story">
-                <h3>April 2, 2025: A New Dawn for Truth</h3>
-                <p>Breaking news on the resistance against digital tyranny.</p>
-                <p class="author">— TruthSeeker</p>
-            </div>
-            <div class="news-story">
-                <h3>The Silent Uprising</h3>
-                <p>Reports from the underground movements defying control.</p>
-                <p class="author">— FreeSoul</p>
-            </div>
+        <div class="view-controls">
+            <button class="view-btn active" data-view="recent"><i class="fas fa-bolt"></i> Recent Revelations</button>
+            <button class="view-btn" data-view="historical"><i class="fas fa-landmark"></i> Historical Timeline</button>
+        </div>
+
+        <button class="submit-truth-btn" id="openSubmissionModal"><i class="fas fa-plus-circle"></i> Submit Your Truth</button>
+
+        <div class="chronicles-feed" id="chroniclesFeed">
+            <!-- Example Chronicle Item -->
+            <article class="chronicle-item">
+                <p class="chronicle-meta">
+                    By <span class="author">ImmortalAl</span> <span class="date">Eternal Year 1, Day 93</span>
+                </p>
+                <h3 class="chronicle-title">Unveiled: The Hidden War on Free Thought</h3>
+                <div class="chronicle-content">
+                    <p>A deep dive into the censorship mechanisms of 2025, exposing the unseen hands that manipulate the flow of information and attempt to shackle the eternal consciousness of humanity...</p>
+                </div>
+                <div class="chronicle-sources">
+                    <h4>Sources:</h4>
+                    <ul>
+                        <li><a href="#" target="_blank" rel="noopener noreferrer">Declassified Document ARCH-77B</a></li>
+                        <li><a href="#" target="_blank" rel="noopener noreferrer">Testimony of a Silicon Valley Whistleblower</a></li>
+                    </ul>
+                </div>
+                <div class="chronicle-actions">
+                    <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(1,204)</span></button>
+                    <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(88)</span></button>
+                    <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(152)</span></button>
+                </div>
+            </article>
+
+            <article class="chronicle-item">
+                <p class="chronicle-meta">
+                    By <span class="author">TruthSeeker</span> <span class="date">Eternal Year 1, Day 92</span>
+                </p>
+                <h3 class="chronicle-title">April 2, 2025: A New Dawn for Truth</h3>
+                <div class="chronicle-content">
+                    <p>Breaking news on the resistance against digital tyranny. Reports from the front lines of the information war show a turning tide as decentralized networks gain traction, creating new sanctuaries for free speech...</p>
+                </div>
+                 <div class="chronicle-sources">
+                    <h4>Sources:</h4>
+                    <ul>
+                        <li><a href="#" target="_blank" rel="noopener noreferrer">Live feed from the Decentralized Summit</a></li>
+                    </ul>
+                </div>
+                <div class="chronicle-actions">
+                    <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(2,510)</span></button>
+                    <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(12)</span></button>
+                    <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(319)</span></button>
+                </div>
+            </article>
+            <!-- More articles will be loaded here dynamically -->
         </div>
     </main>
 
@@ -337,17 +343,248 @@
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
     </footer>
 
+    <!-- Submission Modal -->
+    <div id="submissionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeSubmissionModal">&times;</span>
+            <h3 style="font-family: 'Roboto Slab', serif; color: var(--truth-gold); font-size: 2rem; margin-bottom: 2rem;">Immortalize Your Truth</h3>
+            <form id="submissionForm">
+                <div class="form-group">
+                    <label for="storyTitle">Title</label>
+                    <input type="text" id="storyTitle" name="title" placeholder="The Banner of Your Truth" required>
+                </div>
+                <div class="form-group">
+                    <label for="storyContent">Content</label>
+                    <textarea id="storyContent" name="content" placeholder="Detail the events, the findings, the hidden narrative..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Date of Event</label>
+                    <input type="date" id="eventDate" name="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="storySources">Sources (separate by new line)</label>
+                    <textarea id="storySources" name="sources" placeholder="e.g., https://archive.is/link\nDeclassified Document FOIA-123"></textarea>
+                </div>
+                <button type="submit" class="submit-truth-btn" style="width: 100%; margin-top: 1rem;">Submit to the Chronicles</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../components/shared/config.js"></script>
     <script>
-        const activeUsers = document.getElementById('activeUsers');
-        const showUsersBtn = document.getElementById('showUsersBtn');
-        const closeUsersBtn = document.getElementById('closeUsers');
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_URL = window.MLNF_CONFIG.API_BASE_URL;
+            const chroniclesFeed = document.getElementById('chroniclesFeed');
+            const submissionForm = document.getElementById('submissionForm');
+            const modal = document.getElementById('submissionModal');
+            const openBtn = document.getElementById('openSubmissionModal');
+            const closeBtn = document.getElementById('closeSubmissionModal');
+            const viewControls = document.querySelector('.view-controls');
 
-        function toggleSidebar() {
-            activeUsers.classList.toggle('active');
-        }
+            let allChronicles = [];
+            let currentView = 'recent'; // 'recent' or 'historical'
 
-        showUsersBtn.addEventListener('click', toggleSidebar);
-        closeUsersBtn.addEventListener('click', toggleSidebar);
+            const getToken = () => localStorage.getItem('sessionToken');
+
+            const fetchChronicles = async () => {
+                try {
+                    const response = await fetch(`${API_URL}/chronicles?limit=100`); // Fetch a larger number for client-side sorting
+                    if (!response.ok) throw new Error('Failed to fetch chronicles');
+                    const data = await response.json();
+                    allChronicles = data.docs;
+                    renderChronicles(); // Initial render
+                } catch (error) {
+                    console.error('Error fetching chronicles:', error);
+                    chroniclesFeed.innerHTML = '<p style="text-align: center;">Failed to load the Chronicles. The archives may be temporarily sealed.</p>';
+                }
+            };
+
+            const renderChronicles = () => {
+                if (!allChronicles || allChronicles.length === 0) {
+                    chroniclesFeed.innerHTML = '<p style="text-align: center;">No chronicles have been recorded yet. Be the first to submit a truth.</p>';
+                    return;
+                }
+
+                let sortedChronicles = [...allChronicles];
+                if (currentView === 'recent') {
+                    // Sort by submission date (newest first)
+                    sortedChronicles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                } else if (currentView === 'historical') {
+                    // Sort by event date (newest first)
+                    sortedChronicles.sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
+                }
+
+                chroniclesFeed.innerHTML = sortedChronicles.map(renderChronicle).join('');
+            };
+
+            const renderChronicle = (chronicle) => {
+                const authorName = chronicle.author ? (chronicle.author.displayName || chronicle.author.username) : 'An Anonymous Soul';
+                const eventDate = new Date(chronicle.eventDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const submissionDate = new Date(chronicle.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                const sourcesHTML = chronicle.sources && chronicle.sources.length > 0
+                    ? `
+                    <div class="chronicle-sources">
+                        <h4>Sources:</h4>
+                        <ul>
+                            ${chronicle.sources.map(source => `<li><a href="${source}" target="_blank" rel="noopener noreferrer">${source}</a></li>`).join('')}
+                        </ul>
+                    </div>`
+                    : '';
+                
+                const dateDisplay = currentView === 'historical'
+                    ? `<span class="date">Event Occurred: <b>${eventDate}</b></span> <span class="sub-date">(Revealed: ${submissionDate})</span>`
+                    : `<span class="date">Revealed: <b>${submissionDate}</b></span> <span class="sub-date">(Event Date: ${eventDate})</span>`;
+
+                return `
+                <article class="chronicle-item" data-id="${chronicle._id}">
+                    <p class="chronicle-meta">
+                        By <span class="author">${authorName}</span> &bull; ${dateDisplay}
+                    </p>
+                    <h3 class="chronicle-title">${chronicle.title}</h3>
+                    <div class="chronicle-content">
+                        <p>${chronicle.content.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    ${sourcesHTML}
+                    <div class="chronicle-actions">
+                        <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations.length})</span></button>
+                        <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges.length})</span></button>
+                        <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments.length})</span></button>
+                    </div>
+                </article>`;
+            };
+
+            const handleSubmission = async (e) => {
+                e.preventDefault();
+                const token = getToken();
+                if (!token) {
+                    alert('You must be logged in to submit a chronicle.');
+                    return;
+                }
+
+                const title = e.target.elements.storyTitle.value;
+                const content = e.target.elements.storyContent.value;
+                const eventDate = e.target.elements.eventDate.value;
+                const sources = e.target.elements.storySources.value;
+                const submitButton = e.target.querySelector('button[type="submit"]');
+
+                if (new Date(eventDate) > new Date()) {
+                    alert('Event date cannot be in the future.');
+                    return;
+                }
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+
+                try {
+                    const response = await fetch(`${API_URL}/chronicles`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ title, content, sources, eventDate })
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.error || 'Submission failed');
+                    }
+                    
+                    closeModal();
+                    submissionForm.reset();
+                    await fetchChronicles(); // Refresh the feed with the new post
+                } catch (error) {
+                    console.error('Error submitting chronicle:', error);
+                    alert(`Failed to submit: ${error.message}`);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit to the Chronicles';
+                }
+            };
+
+            const handleInteraction = async (chronicleId, action) => {
+                const token = getToken();
+                if (!token) {
+                    alert('You must be logged in to interact with chronicles.');
+                    return;
+                }
+                try {
+                    const response = await fetch(`${API_URL}/chronicles/${chronicleId}/${action}`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!response.ok) throw new Error((await response.json()).error || 'Interaction failed');
+                    const data = await response.json();
+                    
+                    const chronicleToUpdate = allChronicles.find(c => c._id === chronicleId);
+                    if(chronicleToUpdate) {
+                        chronicleToUpdate.validations = { length: data.validations };
+                        chronicleToUpdate.challenges = { length: data.challenges };
+                    }
+                    
+                    const articleElement = document.querySelector(`.chronicle-item[data-id="${chronicleId}"]`);
+                    if(articleElement) {
+                        articleElement.querySelector('.action-btn.validate .count').textContent = `(${data.validations})`;
+                        articleElement.querySelector('.action-btn.challenge .count').textContent = `(${data.challenges})`;
+                    }
+                } catch (error) {
+                    console.error(`Error performing action ${action}:`, error);
+                    alert(`Action failed: ${error.message}`);
+                }
+            };
+
+            // --- Event Listeners ---
+
+            viewControls.addEventListener('click', (e) => {
+                const viewBtn = e.target.closest('.view-btn');
+                if (!viewBtn) return;
+
+                const selectedView = viewBtn.dataset.view;
+                if (selectedView === currentView) return;
+
+                currentView = selectedView;
+                
+                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                viewBtn.classList.add('active');
+
+                renderChronicles();
+            });
+            
+            const openModal = () => modal.style.display = 'block';
+            const closeModal = () => modal.style.display = 'none';
+
+            openBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target == modal) closeModal();
+            });
+            
+            submissionForm.addEventListener('submit', handleSubmission);
+            
+            chroniclesFeed.addEventListener('click', (e) => {
+                const button = e.target.closest('.action-btn');
+                if (!button) return;
+                
+                const article = e.target.closest('.chronicle-item');
+                const chronicleId = article.dataset.id;
+                const action = button.dataset.action;
+
+                if (action === 'validate' || action === 'challenge') {
+                    handleInteraction(chronicleId, action);
+                } else if (action === 'comments') {
+                    alert('Comment functionality is not yet forged.');
+                }
+            });
+            
+            // --- Initial Load ---
+            fetchChronicles();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('action') === 'submit') {
+                openModal();
+            }
+        });
     </script>
 </body>
 </html>
