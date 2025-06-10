@@ -41,20 +41,16 @@
     
     <!-- Message Modal -->
     <div id="messageModal" class="modal" aria-hidden="true">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Eternal Whisper</h3>
-                <p id="recipientName">To: Username</p>
-                <button id="closeMessageModal" class="close-modal" aria-label="Close message modal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="messageHistory" class="message-history"></div>
-            <div class="message-input-container">
-                <textarea id="messageInput" placeholder="Type your eternal whisper..." rows="3"></textarea>
-                <button id="sendMessageBtn" class="send-message-btn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
             </div>
         </div>
     </div>
