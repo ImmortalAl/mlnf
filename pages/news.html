@@ -421,14 +421,68 @@
             const closeBtn = document.getElementById('closeSubmissionModal');
             const viewControls = document.querySelector('.view-controls');
 
-            // Auth and Seekers are initialized by mlnf-core.js
-            // We can access them via the global MLNF object if needed, or just let them run.
-            // For example: const auth = window.MLNF.AuthManager;
+            // The auth modal and other components are initialized by mlnf-core.js
+            // We can access the auth functions via window.MLNF.openSoulModal, etc.
 
             let allChronicles = [];
             let currentView = 'recent'; // 'recent' or 'historical'
 
             const getToken = () => localStorage.getItem('sessionToken');
+
+            // Set up auth buttons to use the existing soul modal
+            const loginButton = document.getElementById('login-button');
+            const signupButton = document.getElementById('signup-button');
+            
+            if (loginButton) {
+                loginButton.addEventListener('click', () => {
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('login');
+                    }
+                });
+            }
+            
+            if (signupButton) {
+                signupButton.addEventListener('click', () => {
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('register');
+                    }
+                });
+            }
+
+            // Check and display user login status
+            const updateUserDisplay = () => {
+                const token = getToken();
+                const userInfo = document.getElementById('user-info');
+                const guestActions = document.getElementById('guest-actions');
+                const userDisplayName = document.getElementById('user-display-name');
+                
+                if (token) {
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    const displayName = user.displayName || user.username || 'Anonymous Soul';
+                    
+                    if (userDisplayName) userDisplayName.textContent = displayName;
+                    if (userInfo) userInfo.style.display = 'block';
+                    if (guestActions) guestActions.style.display = 'none';
+                } else {
+                    if (userInfo) userInfo.style.display = 'none';
+                    if (guestActions) guestActions.style.display = 'block';
+                }
+            };
+
+            // Set up logout functionality
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('sessionToken');
+                    localStorage.removeItem('user');
+                    updateUserDisplay();
+                    window.location.reload();
+                });
+            }
+
+            // Initial user display update
+            updateUserDisplay();
 
             const fetchChronicles = async () => {
                 try {
