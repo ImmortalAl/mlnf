@@ -41,6 +41,11 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: padding-right 0.4s ease-in-out;
+        }
+
+        body.sidebar-active {
+            padding-right: 300px;
         }
 
         header {
@@ -249,6 +254,47 @@
         }
         .form-group textarea { min-height: 150px; resize: vertical; }
 
+        /* Eternal Seekers Sidebar */
+        .eternal-seekers {
+            width: 300px;
+            background: var(--gradient-secondary);
+            border-left: 3px solid var(--truth-gold);
+            padding: 1rem 1.5rem;
+            position: fixed;
+            right: -300px;
+            top: 91px;
+            bottom: 0;
+            z-index: 900;
+            overflow-y: auto;
+            transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        body.sidebar-active .eternal-seekers {
+            right: 0;
+        }
+
+        .seekers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .seekers-header h3 {
+            font-family: 'Roboto Slab', serif;
+            color: var(--truth-gold);
+            font-size: 1.5rem;
+        }
+
+        #toggle-seekers {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 901;
+        }
+
         footer {
             background: var(--gradient-secondary);
             text-align: center;
@@ -312,50 +358,7 @@
         <button class="submit-truth-btn" id="openSubmissionModal"><i class="fas fa-plus-circle"></i> Submit Your Truth</button>
 
         <div class="chronicles-feed" id="chroniclesFeed">
-            <!-- Example Chronicle Item -->
-            <article class="chronicle-item">
-                <p class="chronicle-meta">
-                    By <span class="author">ImmortalAl</span> <span class="date">Eternal Year 1, Day 93</span>
-                </p>
-                <h3 class="chronicle-title">Unveiled: The Hidden War on Free Thought</h3>
-                <div class="chronicle-content">
-                    <p>A deep dive into the censorship mechanisms of 2025, exposing the unseen hands that manipulate the flow of information and attempt to shackle the eternal consciousness of humanity...</p>
-                </div>
-                <div class="chronicle-sources">
-                    <h4>Sources:</h4>
-                    <ul>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Declassified Document ARCH-77B</a></li>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Testimony of a Silicon Valley Whistleblower</a></li>
-                    </ul>
-                </div>
-                <div class="chronicle-actions">
-                    <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(1,204)</span></button>
-                    <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(88)</span></button>
-                    <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(152)</span></button>
-                </div>
-            </article>
-
-            <article class="chronicle-item">
-                <p class="chronicle-meta">
-                    By <span class="author">TruthSeeker</span> <span class="date">Eternal Year 1, Day 92</span>
-                </p>
-                <h3 class="chronicle-title">April 2, 2025: A New Dawn for Truth</h3>
-                <div class="chronicle-content">
-                    <p>Breaking news on the resistance against digital tyranny. Reports from the front lines of the information war show a turning tide as decentralized networks gain traction, creating new sanctuaries for free speech...</p>
-                </div>
-                 <div class="chronicle-sources">
-                    <h4>Sources:</h4>
-                    <ul>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Live feed from the Decentralized Summit</a></li>
-                    </ul>
-                </div>
-                <div class="chronicle-actions">
-                    <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(2,510)</span></button>
-                    <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(12)</span></button>
-                    <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(319)</span></button>
-                </div>
-            </article>
-            <!-- More articles will be loaded here dynamically -->
+            <!-- Chronicles will be loaded dynamically -->
         </div>
     </main>
 
@@ -423,6 +426,19 @@
             
             // Initialize seekers manager
             const seekers = new SeekersManager();
+
+            // Toggle sidebar
+            const toggleButton = document.getElementById('toggle-seekers');
+            const sidebar = document.getElementById('eternalSeekers');
+
+            toggleButton.addEventListener('click', () => {
+                document.body.classList.toggle('sidebar-active');
+            });
+
+            // Keep sidebar active by default on desktop
+            if (window.innerWidth > 768) {
+                document.body.classList.add('sidebar-active');
+            }
 
             let allChronicles = [];
             let currentView = 'recent'; // 'recent' or 'historical'
@@ -501,6 +517,7 @@
                 e.preventDefault();
                 const token = getToken();
                 if (!token) {
+                    auth.showLogin();
                     alert('You must be logged in to submit a chronicle.');
                     return;
                 }
@@ -535,7 +552,7 @@
                         throw new Error(errData.error || 'Submission failed');
                     }
                     
-                    closeModal();
+                    modal.style.display = 'none';
                     submissionForm.reset();
                     await fetchChronicles(); // Refresh the feed with the new post
                 } catch (error) {
@@ -550,6 +567,7 @@
             const handleInteraction = async (chronicleId, action) => {
                 const token = getToken();
                 if (!token) {
+                    auth.showLogin();
                     alert('You must be logged in to interact with chronicles.');
                     return;
                 }
@@ -560,12 +578,6 @@
                     });
                     if (!response.ok) throw new Error((await response.json()).error || 'Interaction failed');
                     const data = await response.json();
-                    
-                    const chronicleToUpdate = allChronicles.find(c => c._id === chronicleId);
-                    if(chronicleToUpdate) {
-                        chronicleToUpdate.validations = { length: data.validations };
-                        chronicleToUpdate.challenges = { length: data.challenges };
-                    }
                     
                     const articleElement = document.querySelector(`.chronicle-item[data-id="${chronicleId}"]`);
                     if(articleElement) {
@@ -598,7 +610,15 @@
             const openModal = () => modal.style.display = 'block';
             const closeModal = () => modal.style.display = 'none';
 
-            openBtn.addEventListener('click', openModal);
+            openBtn.addEventListener('click', () => {
+                const token = getToken();
+                if (!token) {
+                    auth.showLogin();
+                    alert('Please log in to submit a truth.');
+                } else {
+                    openModal();
+                }
+            });
             closeBtn.addEventListener('click', closeModal);
             window.addEventListener('click', (event) => {
                 if (event.target == modal) closeModal();
@@ -626,9 +646,15 @@
             
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('action') === 'submit') {
-                openModal();
+                const token = getToken();
+                if (token) {
+                    openModal();
+                } else {
+                    auth.showLogin();
+                    alert('Please log in to submit a truth.');
+                }
             }
         });
     </script>
 </body>
-</html>
+</html> 
