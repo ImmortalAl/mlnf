@@ -461,6 +461,55 @@ npm run dev  # Development mode with nodemon
 - Database sharding for large user base
 - Microservices architecture for feature modules
 
+## Core Frontend Components
+
+This section outlines the key JavaScript modules that form the backbone of the MLNF frontend application. Adhering to these standards is crucial for maintaining a stable and scalable codebase.
+
+### NEW: `apiClient.js` - Centralized API Communication
+
+To prevent recurring issues with authentication and data formatting, all backend communication is now handled by a centralized API client located at `/front/js/shared/apiClient.js`.
+
+**Purpose:**
+- **Standardize Requests:** Provides a single, unified way to make `GET` and `POST` requests.
+- **Automate Authentication:** Automatically attaches the `Authorization: Bearer <token>` header to all outgoing requests.
+- **Centralize Error Handling:** Provides consistent error logging and can be configured to automatically trigger login modals on `401 Unauthorized` responses.
+- **Simplify Code:** Drastically reduces boilerplate code on individual pages.
+
+**Usage Example:**
+
+Instead of using a manual `fetch` call like this:
+
+```javascript
+// Old, manual way (DO NOT USE)
+const token = localStorage.getItem('sessionToken');
+const response = await fetch('https://mlnf-auth.onrender.com/api/chronicles', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(data),
+});
+```
+
+You should now use the global `apiClient`:
+
+```javascript
+// New, correct way
+try {
+    const data = { title: 'A New Truth', content: '...' };
+    const result = await window.apiClient.post('/chronicles', data);
+    console.log('Success!', result);
+} catch (error) {
+    console.error('API Error:', error);
+    alert(`Operation failed: ${error.error}`);
+}
+```
+
+**Rule:** All new features or pages that need to communicate with the backend **must** use this `apiClient`. Existing pages should be refactored to use it whenever they are modified.
+
+### `authModal.js`
+
 ---
 
 *Complete technical architecture documentation for MLNF platform* 

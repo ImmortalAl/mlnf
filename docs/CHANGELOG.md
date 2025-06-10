@@ -319,4 +319,23 @@ All notable changes to the MLNF project are documented here, organized by develo
 ---
 
 *Complete development history and milestone tracking for MLNF platform*  
-*Last updated: Documentation consolidation phase* 
+*Last updated: Documentation consolidation phase*
+
+## [Version 1.2.0] - YYYY-MM-DD
+
+### 🚀 Features & Architectural Improvements
+- **Centralized API Client (`apiClient.js`):** Implemented a new, site-wide API client to standardize all backend communication. This client automatically handles auth tokens, headers, and provides consistent error handling, preventing a wide range of common bugs.
+- **Standardized Component Model:** Refactored the News page (`news.html`) to use the new `apiClient`, establishing it as the gold-standard template for future page development and refactoring.
+
+### 🐛 Bug Fixes
+- **Chronicle Submission Fixed:** Resolved a critical `500 Internal Server Error` that occurred when submitting new chronicles. The issue was a data format mismatch where the frontend sent a `sources` array while the backend expected a string.
+- **API Response Handling:** Improved the `news.html` page to correctly parse paginated API responses (using the `docs` array), fixing an issue where new content would not appear.
+- **Modal Functionality:** Corrected multiple modal issues on `news.html`, including the "Submit Your Truth" button and "Eternal Seekers" sidebar modals, which previously failed to open.
+- **Disappearing Content:** Addressed a race condition on the news page where content would load and then be immediately cleared by other scripts.
+
+### 🔧 Developer Experience
+- **Automated Push Scripts:** Created `qpush.bat` and `quick-push.ps1` to dramatically simplify and speed up the process of pushing changes to the repository.
+- **Enhanced Debugging:** Added extensive, detailed logging to the chronicle submission process, enabling rapid diagnosis of the server-side 500 error.
+
+## [Version 1.1.0] - 2024-05-15
+// ... existing code ... 

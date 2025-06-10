@@ -1,0 +1,108 @@
+// MLNF API Client
+// A centralized module for handling all communication with the backend API.
+
+const getAuthToken = () => {
+    return localStorage.getItem('sessionToken');
+};
+
+const apiClient = {
+    /**
+     * The base URL for all API requests.
+     */
+    baseURL: window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api',
+
+    /**
+     * Performs a GET request.
+     * @param {string} endpoint - The API endpoint to hit (e.g., '/chronicles').
+     * @returns {Promise<any>} The JSON response from the server.
+     */
+    async get(endpoint) {
+        return this.request('GET', endpoint);
+    },
+
+    /**
+     * Performs a POST request.
+     * @param {string} endpoint - The API endpoint to hit.
+     * @param {object} body - The data to send in the request body.
+     * @returns {Promise<any>} The JSON response from the server.
+     */
+    async post(endpoint, body) {
+        return this.request('POST', endpoint, body);
+    },
+    
+    /**
+     * The core request handling function.
+     * @param {string} method - The HTTP method (GET, POST, etc.).
+     * @param {string} endpoint - The API endpoint.
+     * @param {object} [body] - The request body for POST/PUT requests.
+     * @returns {Promise<any>} The JSON response from the server.
+     */
+    async request(method, endpoint, body = null) {
+        const url = `${this.baseURL}${endpoint}`;
+        const token = getAuthToken();
+
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+        });
+
+        if (token) {
+            headers.append('Authorization', `Bearer ${token}`);
+        }
+
+        const config = {
+            method,
+            headers,
+        };
+
+        if (body) {
+            config.body = JSON.stringify(body);
+        }
+        
+        console.log(`[API Client] -> ${method} ${url}`, body || '');
+
+        try {
+            const response = await fetch(url, config);
+
+            // Handle cases where the response is not OK
+            if (!response.ok) {
+                let errorData;
+                try {
+                    // Try to parse the error response from the server
+                    errorData = await response.json();
+                    console.error(`[API Client] Error Response (${response.status}):`, errorData);
+                } catch (e) {
+                    // If the error response isn't valid JSON
+                    errorData = { error: `HTTP error! Status: ${response.status}`, details: await response.text() };
+                     console.error(`[API Client] Non-JSON Error Response (${response.status}):`, errorData.details);
+                }
+                
+                // Specific handling for 401 Unauthorized
+                if (response.status === 401 && window.authManager) {
+                     console.warn('[API Client] Unauthorized access detected. Requesting login.');
+                     window.authManager.showLogin();
+                }
+
+                // Reject the promise with the structured error
+                return Promise.reject(errorData);
+            }
+
+            // For 204 No Content, there's no body to parse
+            if (response.status === 204) {
+                 console.log(`[API Client] <- ${method} ${url} (204 No Content)`);
+                return null;
+            }
+
+            const data = await response.json();
+            console.log(`[API Client] <- ${method} ${url} (Success)`, data);
+            return data;
+
+        } catch (error) {
+            console.error('[API Client] Network or request failed:', error);
+            // Re-throw the error to be caught by the calling function
+            throw error;
+        }
+    }
+};
+
+// Make it globally available or handle as a module
+window.apiClient = apiClient; 

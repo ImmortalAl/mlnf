@@ -407,6 +407,7 @@
     <script src="/components/shared/navigation.js?v=1.2"></script>
     <script src="/components/shared/userMenu.js?v=1.2"></script>
     <script src="/components/shared/authModal.js?v=1.2"></script>
+    <script src="/js/shared/apiClient.js?v=1.2"></script>
     <script src="/components/shared/activeUsers.js?v=1.2"></script>
     <script src="/components/shared/messageModal.js?v=1.2"></script>
     <script>
@@ -463,36 +464,18 @@
             const fetchChronicles = async (view = 'recent') => {
                 console.log(`[NEWS] fetchChronicles called with view: ${view}`);
                 try {
-                    console.log(`[NEWS] Fetching chronicles with view: ${view}`);
-                    const response = await fetch(`${API_URL}/chronicles`);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
+                    const data = await window.apiClient.get('/chronicles');
                     console.log('[NEWS] API response:', data);
                     
-                    // Handle different API response formats
-                    let chronicles;
-                    if (Array.isArray(data)) {
-                        chronicles = data;
-                    } else if (data && Array.isArray(data.chronicles)) {
-                        chronicles = data.chronicles;
-                    } else if (data && Array.isArray(data.data)) {
-                        chronicles = data.data;
-                    } else if (data && Array.isArray(data.docs)) {
-                        chronicles = data.docs;
-                    } else {
-                        console.warn('[NEWS] Unexpected API response format:', data);
-                        chronicles = [];
-                    }
+                    // The API client standardizes the response, but we still handle the shape of the data.
+                    const chronicles = data.docs || data.chronicles || data.data || (Array.isArray(data) ? data : []);
                     
                     console.log(`[NEWS] Processed chronicles array with ${chronicles.length} items`);
                     renderChronicles(chronicles, view);
                 } catch (error) {
                     console.error('Error fetching chronicles:', error);
-                    chroniclesFeed.innerHTML = '<p class="error">Failed to load chronicles. Please try again later.</p>';
+                    const errorMessage = error.error || 'Failed to load chronicles. Please try again later.';
+                    chroniclesFeed.innerHTML = `<p class="error">${escapeHTML(errorMessage)}</p>`;
                 }
             };
 
@@ -589,83 +572,40 @@
                     const formData = new FormData(submissionForm);
                     const data = Object.fromEntries(formData.entries());
                     
-                    // Process sources - send as string (backend will split it)
-                    if (!data.sources) {
-                        data.sources = '';
-                    }
-                    // Keep sources as string - backend expects string and will split by newlines
-                    
-                    // Validate eventDate - don't allow future dates beyond current year
-                    const eventDate = new Date(data.eventDate);
-                    const currentYear = new Date().getFullYear();
-                    if (eventDate.getFullYear() > currentYear) {
-                        alert(`Event date cannot be in the future. Please use a date from ${currentYear} or earlier.`);
-                        return;
-                    }
-                    
-                    // Ensure all required fields are present and valid
+                    // --- Field Validation ---
                     if (!data.title || !data.content || !data.eventDate) {
                         alert('Please fill in all required fields (title, content, and event date).');
                         return;
                     }
+
+                    const eventDate = new Date(data.eventDate);
+                    const currentYear = new Date().getFullYear();
+                    if (eventDate.getFullYear() > currentYear + 1) { // Allow for near future events
+                        alert(`Event date cannot be that far in the future. Please use a date from ${currentYear} or ${currentYear + 1}.`);
+                        return;
+                    }
                     
-                    console.log('[NEWS] Submitting data:', data);
-                    console.log('[NEWS] Sources string:', JSON.stringify(data.sources));
-                    
+                    // Keep sources as string for the backend
+                    if (!data.sources) {
+                        data.sources = '';
+                    }
+
+                    console.log('[NEWS] Submitting with apiClient:', data);
+
                     try {
-                        const token = localStorage.getItem('sessionToken');
-                        console.log('[NEWS] Token found:', !!token);
+                        const result = await window.apiClient.post('/chronicles', data);
                         
-                        if (!token) {
-                            alert('Please log in to submit a chronicle.');
-                            return;
-                        }
+                        console.log('[NEWS] Submission successful!', result);
+                        alert('Chronicle submitted successfully!');
                         
-                        console.log('[NEWS] Making POST request to:', `${API_URL}/chronicles`);
-                        const response = await fetch(`${API_URL}/chronicles`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify(data),
-                        });
+                        closeModal();
+                        fetchChronicles(document.querySelector('.view-btn.active').dataset.view);
+                        submissionForm.reset();
 
-                        console.log('[NEWS] Response status:', response.status);
-                        console.log('[NEWS] Response headers:', Object.fromEntries(response.headers.entries()));
-
-                        if (response.ok) {
-                            console.log('[NEWS] Submission successful!');
-                            const result = await response.json();
-                            console.log('[NEWS] Success response:', result);
-                            
-                            closeModal();
-                            fetchChronicles(document.querySelector('.view-btn.active').dataset.view);
-                            submissionForm.reset();
-                            alert('Chronicle submitted successfully!');
-                        } else {
-                            console.error('[NEWS] Submission failed with status:', response.status);
-                            try {
-                                const errorText = await response.text();
-                                console.error('[NEWS] Error response body:', errorText);
-                                
-                                let errorMessage;
-                                try {
-                                    const errorJson = JSON.parse(errorText);
-                                    errorMessage = errorJson.message || errorJson.error || 'Unknown error';
-                                } catch {
-                                    errorMessage = errorText || `Server error (${response.status})`;
-                                }
-                                
-                                alert(`Submission failed: ${errorMessage}`);
-                            } catch (parseError) {
-                                console.error('[NEWS] Could not parse error response:', parseError);
-                                alert(`Submission failed with status ${response.status}`);
-                            }
-                        }
                     } catch (error) {
-                        console.error('[NEWS] Network/request error:', error);
-                        alert(`Network error: ${error.message}. Please check your connection and try again.`);
+                        console.error('[NEWS] Submission failed:', error);
+                        const errorMessage = error.error || 'An unexpected error occurred.';
+                        alert(`Submission failed: ${errorMessage}`);
                     }
                 });
             }
