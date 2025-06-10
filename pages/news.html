@@ -405,15 +405,16 @@
     <!-- Auth Modal container -->
     <div id="auth-modal-container"></div>
 
-    <!-- Load order is critical -->
+    <!-- Simplified, reliable script loading -->
     <script src="../components/shared/config.js"></script>
-    <script src="../components/shared/authModal.js"></script>
-    <script src="../components/shared/seekers.js"></script>
-    <script src="../components/shared/mlnf-core.js"></script> <!-- Core initializer -->
-
     <script>
+        // Self-contained news page with reliable modal functionality
         document.addEventListener('DOMContentLoaded', () => {
-            const API_URL = window.MLNF_CONFIG.API_BASE_URL;
+            console.log('[NEWS] DOM loaded, initializing...');
+            
+            const API_URL = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+            console.log('[NEWS] API URL:', API_URL);
+            
             const chroniclesFeed = document.getElementById('chroniclesFeed');
             const submissionForm = document.getElementById('submissionForm');
             const modal = document.getElementById('submissionModal');
@@ -421,35 +422,182 @@
             const closeBtn = document.getElementById('closeSubmissionModal');
             const viewControls = document.querySelector('.view-controls');
 
-            // The auth modal and other components are initialized by mlnf-core.js
-            // We can access the auth functions via window.MLNF.openSoulModal, etc.
-
             let allChronicles = [];
-            let currentView = 'recent'; // 'recent' or 'historical'
+            let currentView = 'recent';
 
             const getToken = () => localStorage.getItem('sessionToken');
 
-            // Set up auth buttons to use the existing soul modal
-            const loginButton = document.getElementById('login-button');
-            const signupButton = document.getElementById('signup-button');
-            
-            if (loginButton) {
-                loginButton.addEventListener('click', () => {
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('login');
-                    }
-                });
-            }
-            
-            if (signupButton) {
-                signupButton.addEventListener('click', () => {
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('register');
-                    }
-                });
-            }
+            // === MODAL FUNCTIONALITY ===
+            const openModal = () => {
+                console.log('[NEWS] Opening submission modal...');
+                if (modal) {
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                    console.log('[NEWS] Modal opened');
+                } else {
+                    console.error('[NEWS] Modal element not found!');
+                }
+            };
 
-            // Check and display user login status
+            const closeModal = () => {
+                console.log('[NEWS] Closing submission modal...');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    console.log('[NEWS] Modal closed');
+                }
+            };
+
+            // === AUTH FUNCTIONALITY ===
+            // Simple auth modal creation (self-contained)
+            const createAuthModal = () => {
+                const authModalHTML = `
+                    <div id="authModal" class="modal" style="z-index: 3000;">
+                        <div class="modal-content">
+                            <span class="close-btn" id="closeAuthModal">&times;</span>
+                            <h3 id="authModalTitle" style="font-family: 'Roboto Slab', serif; color: var(--truth-gold); font-size: 2rem; margin-bottom: 2rem;">Enter the Sanctuary</h3>
+                            <form id="authForm">
+                                <div class="form-group">
+                                    <label for="authUsername">Username</label>
+                                    <input type="text" id="authUsername" name="username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="authPassword">Password</label>
+                                    <input type="password" id="authPassword" name="password" required>
+                                </div>
+                                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                                    <label for="authConfirmPassword">Confirm Password</label>
+                                    <input type="password" id="authConfirmPassword" name="confirmPassword">
+                                </div>
+                                <button type="submit" class="submit-truth-btn" id="authSubmit" style="width: 100%; margin-top: 1rem;">Transcend</button>
+                            </form>
+                            <div id="authFeedback" style="margin-top: 1rem; text-align: center;"></div>
+                            <p style="text-align: center; margin-top: 1rem;">
+                                <a href="#" id="authToggle">New to the Sanctuary? Sign up here</a>
+                            </p>
+                        </div>
+                    </div>
+                `;
+                
+                const authContainer = document.getElementById('auth-modal-container');
+                if (authContainer) {
+                    authContainer.innerHTML = authModalHTML;
+                    setupAuthModal();
+                }
+            };
+
+            const setupAuthModal = () => {
+                const authModal = document.getElementById('authModal');
+                const authForm = document.getElementById('authForm');
+                const authTitle = document.getElementById('authModalTitle');
+                const authSubmit = document.getElementById('authSubmit');
+                const authToggle = document.getElementById('authToggle');
+                const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+                const authFeedback = document.getElementById('authFeedback');
+                const closeAuthBtn = document.getElementById('closeAuthModal');
+
+                let isLogin = true;
+
+                const toggleAuthMode = () => {
+                    isLogin = !isLogin;
+                    if (isLogin) {
+                        authTitle.textContent = 'Enter the Sanctuary';
+                        authSubmit.textContent = 'Transcend';
+                        authToggle.textContent = 'New to the Sanctuary? Sign up here';
+                        confirmPasswordGroup.style.display = 'none';
+                    } else {
+                        authTitle.textContent = 'Claim Your Immortality';
+                        authSubmit.textContent = 'Begin Your Eternity';
+                        authToggle.textContent = 'Already immortal? Login here';
+                        confirmPasswordGroup.style.display = 'block';
+                    }
+                    authFeedback.textContent = '';
+                };
+
+                const openAuthModal = () => {
+                    if (authModal) {
+                        authModal.style.display = 'block';
+                        document.body.style.overflow = 'hidden';
+                    }
+                };
+
+                const closeAuthModal = () => {
+                    if (authModal) {
+                        authModal.style.display = 'none';
+                        document.body.style.overflow = '';
+                        authForm.reset();
+                        authFeedback.textContent = '';
+                    }
+                };
+
+                // Event listeners
+                if (authToggle) authToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleAuthMode();
+                });
+
+                if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthModal);
+
+                if (authModal) authModal.addEventListener('click', (e) => {
+                    if (e.target === authModal) closeAuthModal();
+                });
+
+                if (authForm) authForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('authUsername').value;
+                    const password = document.getElementById('authPassword').value;
+                    const confirmPassword = document.getElementById('authConfirmPassword').value;
+
+                    if (!isLogin && password !== confirmPassword) {
+                        authFeedback.textContent = 'Passwords do not match';
+                        authFeedback.style.color = 'var(--danger)';
+                        return;
+                    }
+
+                    const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+                    authSubmit.disabled = true;
+                    authSubmit.textContent = isLogin ? 'Transcending...' : 'Forging...';
+
+                    try {
+                        const response = await fetch(API_URL + endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.token) {
+                            localStorage.setItem('sessionToken', data.token);
+                            if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
+                            
+                            authFeedback.textContent = 'Success! Welcome to the Sanctuary.';
+                            authFeedback.style.color = 'var(--success)';
+                            
+                            setTimeout(() => {
+                                closeAuthModal();
+                                updateUserDisplay();
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            authFeedback.textContent = data.message || 'Authentication failed';
+                            authFeedback.style.color = 'var(--danger)';
+                        }
+                    } catch (error) {
+                        console.error('Auth error:', error);
+                        authFeedback.textContent = 'Connection error. Please try again.';
+                        authFeedback.style.color = 'var(--danger)';
+                    } finally {
+                        authSubmit.disabled = false;
+                        authSubmit.textContent = isLogin ? 'Transcend' : 'Begin Your Eternity';
+                    }
+                });
+
+                // Expose auth functions globally
+                window.openAuthModal = openAuthModal;
+            };
+
+            // === USER DISPLAY MANAGEMENT ===
             const updateUserDisplay = () => {
                 const token = getToken();
                 const userInfo = document.getElementById('user-info');
@@ -457,19 +605,64 @@
                 const userDisplayName = document.getElementById('user-display-name');
                 
                 if (token) {
-                    const user = JSON.parse(localStorage.getItem('user') || '{}');
-                    const displayName = user.displayName || user.username || 'Anonymous Soul';
-                    
-                    if (userDisplayName) userDisplayName.textContent = displayName;
-                    if (userInfo) userInfo.style.display = 'block';
-                    if (guestActions) guestActions.style.display = 'none';
+                    try {
+                        const user = JSON.parse(localStorage.getItem('user') || '{}');
+                        const displayName = user.displayName || user.username || 'Anonymous Soul';
+                        
+                        if (userDisplayName) userDisplayName.textContent = displayName;
+                        if (userInfo) userInfo.style.display = 'block';
+                        if (guestActions) guestActions.style.display = 'none';
+                    } catch (error) {
+                        console.error('Error parsing user data:', error);
+                        if (userInfo) userInfo.style.display = 'none';
+                        if (guestActions) guestActions.style.display = 'block';
+                    }
                 } else {
                     if (userInfo) userInfo.style.display = 'none';
                     if (guestActions) guestActions.style.display = 'block';
                 }
             };
 
-            // Set up logout functionality
+            // === EVENT LISTENERS ===
+            // Modal controls
+            if (openBtn) {
+                openBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('[NEWS] Submit Truth button clicked');
+                    openModal();
+                });
+                console.log('[NEWS] Submit button event listener attached');
+            } else {
+                console.error('[NEWS] Submit button not found!');
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeModal);
+            }
+
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+
+            // Auth buttons
+            const loginButton = document.getElementById('login-button');
+            const signupButton = document.getElementById('signup-button');
+            
+            if (loginButton) {
+                loginButton.addEventListener('click', () => {
+                    if (window.openAuthModal) window.openAuthModal();
+                });
+            }
+            
+            if (signupButton) {
+                signupButton.addEventListener('click', () => {
+                    if (window.openAuthModal) window.openAuthModal();
+                });
+            }
+
+            // Logout functionality
             const logoutButton = document.getElementById('logout-button');
             if (logoutButton) {
                 logoutButton.addEventListener('click', (e) => {
@@ -477,13 +670,11 @@
                     localStorage.removeItem('sessionToken');
                     localStorage.removeItem('user');
                     updateUserDisplay();
-                    window.location.reload();
+                    location.reload();
                 });
             }
 
-            // Initial user display update
-            updateUserDisplay();
-
+            // === CHRONICLES FUNCTIONALITY ===
             const fetchChronicles = async () => {
                 try {
                     const response = await fetch(`${API_URL}/chronicles?limit=100`); // Fetch a larger number for client-side sorting
@@ -633,8 +824,7 @@
                 }
             };
 
-            // --- Event Listeners ---
-
+            // === VIEW FUNCTIONALITY ===
             viewControls.addEventListener('click', (e) => {
                 const viewBtn = e.target.closest('.view-btn');
                 if (!viewBtn) return;
@@ -648,15 +838,6 @@
                 viewBtn.classList.add('active');
 
                 renderChronicles();
-            });
-            
-            const openModal = () => modal.style.display = 'block';
-            const closeModal = () => modal.style.display = 'none';
-
-            openBtn.addEventListener('click', openModal);
-            closeBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', (event) => {
-                if (event.target == modal) closeModal();
             });
             
             submissionForm.addEventListener('submit', handleSubmission);
@@ -676,7 +857,9 @@
                 }
             });
             
-            // --- Initial Load ---
+            // === INITIAL LOAD ===
+            createAuthModal(); // Initialize the auth modal
+            updateUserDisplay(); // Set initial user state
             fetchChronicles();
             
             const urlParams = new URLSearchParams(window.location.search);
