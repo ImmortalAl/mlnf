@@ -42,7 +42,6 @@
     grid-template-columns: 1fr; /* 1 column on mobile */
     gap: 2.5rem;
     padding: 0 1rem;
-    border: 5px solid red; /* DEBUG: To visualize the grid container */
 }
 
 @media (min-width: 768px) {
@@ -130,7 +129,6 @@
     border-left: 4px solid var(--accent);
     transition: all 0.3s ease;
     cursor: pointer;
-    border: 3px solid lime; /* DEBUG: To visualize grid items */
 }
 
 .blog-post:hover {

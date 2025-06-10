@@ -227,7 +227,6 @@ section {
     gap: 1.5rem;
     flex-grow: 1;
     overflow: hidden; /* Prevent container overflow */
-    border: 5px solid red; /* DEBUG: To visualize the grid container */
 }
 
 /* Individual Columns */
@@ -239,7 +238,6 @@ section {
     border: 1px solid var(--highlight);
     padding: 1.5rem;
     overflow-y: auto; /* Enable scrolling within columns */
-    border: 3px solid lime; /* DEBUG: To visualize grid items */
 }
 
 #lyceum-categories h3, #lyceum-threads h3, #lyceum-active-thread h3 {
