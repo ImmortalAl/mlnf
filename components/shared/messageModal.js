@@ -99,6 +99,10 @@ async function openMessageModal(username) {
     }, 300); // Delay to prevent immediate closing from button click propagation
 }
 
+// Expose the function to the global scope for other components
+window.MLNF = window.MLNF || {};
+window.MLNF.openMessageModal = openMessageModal;
+
 function closeMessageModal() {
     if (!messageModal) {
         console.error('[messageModal.js] Modal element not found.');
@@ -297,10 +301,4 @@ function escapeHTML(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
-
-// Expose to global MLNF object
-window.MLNF = window.MLNF || {};
-window.MLNF.initMessageModal = initMessageModal;
-window.MLNF.openMessageModal = openMessageModal;
-window.MLNF.closeMessageModal = closeMessageModal; 
+} 
