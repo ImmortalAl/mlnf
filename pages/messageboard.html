@@ -90,45 +90,87 @@
     </header>
 
     <main class="messageboard-container">
-        <section class="messageboard-header">
-            <h2>Echoes Unbound</h2>
-            <p>The eternal forum for ideas, debates, and revelations.</p>
-        </section>
-
-        <section class="thread-composer" id="threadComposer" style="display: none;">
-            <h3>Create a New Echo</h3>
-            <form id="threadForm">
-                <div class="form-group">
-                    <label for="threadTitle">Title</label>
-                    <input type="text" id="threadTitle" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="threadCategory">Category</label>
-                    <select id="threadCategory" name="category" required>
-                        <option value="Ideas">Ideas</option>
-                        <option value="Debates">Debates</option>
-                        <option value="Trades">Trades</option>
-                        <option value="Events">Events</option>
-                        <option value="Governance">Governance</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="threadTags">Tags (comma-separated)</label>
-                    <input type="text" id="threadTags" name="tags">
-                </div>
-                <div id="editor"></div>
-                <button type="submit" class="btn btn-primary">Post Thread</button>
-            </form>
-        </section>
-
-        <section class="threads">
-            <h3>Threads</h3>
-            <div id="threadList" class="thread-list">
-                <!-- Threads will be loaded here -->
+        <div class="lyceum-header">
+            <div class="lyceum-header-content">
+                <h2>Echoes Unbound</h2>
+                <p>The eternal forum for ideas, debates, and revelations.</p>
             </div>
-        </section>
+            <div class="lyceum-header-actions">
+                <button class="btn btn-primary" id="newThreadBtn"><i class="fas fa-plus-circle"></i> New Echo</button>
+            </div>
+        </div>
+
+        <div class="lyceum-grid">
+            <!-- Column 1: Categories -->
+            <aside class="lyceum-column" id="lyceum-categories">
+                <h3>Categories</h3>
+                <nav>
+                    <ul>
+                        <li><a href="#" data-category="all" class="active">All Echoes</a></li>
+                        <li><a href="#" data-category="Ideas">Ideas</a></li>
+                        <li><a href="#" data-category="Debates">Debates</a></li>
+                        <li><a href="#" data-category="Trades">Trades</a></li>
+                        <li><a href="#" data-category="Events">Events</a></li>
+                        <li><a href="#" data-category="Governance">Governance</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Column 2: Thread List -->
+            <section class="lyceum-column" id="lyceum-threads">
+                <div id="threadList" class="thread-list">
+                    <!-- Threads will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Column 3: Active Thread View -->
+            <section class="lyceum-column" id="lyceum-active-thread" style="display: none;">
+                <!-- Selected thread and replies will be loaded here -->
+            </section>
+        </div>
     </main>
 
+    <!-- Hidden Composer Modal -->
+    <div id="threadComposerModal" class="modal" aria-hidden="true">
+        <div class="modal-content-lg" role="dialog" aria-labelledby="composerTitle">
+            <div class="modal-header">
+                <h3 id="composerTitle">Create a New Echo</h3>
+                <button id="closeComposer" class="close-modal" aria-label="Close composer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="threadForm">
+                    <div class="form-group">
+                        <label for="threadTitle">Title</label>
+                        <input type="text" id="threadTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="threadCategory">Category</label>
+                        <select id="threadCategory" name="category" required>
+                            <option value="Ideas">Ideas</option>
+                            <option value="Debates">Debates</option>
+                            <option value="Trades">Trades</option>
+                            <option value="Events">Events</option>
+                            <option value="Governance">Governance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="threadTags">Tags (comma-separated)</label>
+                        <input type="text" id="threadTags" name="tags">
+                    </div>
+                    <div class="form-group">
+                        <label>Content</label>
+                        <div id="editor"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Post Thread</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
     <!-- Core MLNF Components -->
     <script src="../components/shared/config.js?v=1.2"></script>
     <script src="../js/shared/apiClient.js?v=1.2"></script>
@@ -177,51 +219,103 @@
             const isAuthenticated = window.authManager.isLoggedIn();
             threadList.innerHTML = threads.map(thread => `
                 <div class="thread" data-id="${thread._id}">
-                    <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
-                    <p class="thread-meta">By ${thread.author ? escapeHTML(thread.author.username) : 'Anonymous'}</p>
-                    <div class="thread-content">${DOMPurify.sanitize(thread.content)}</div>
-                    <div class="thread-actions">
-                        <button data-action="toggle-replies">Replies (${thread.replyCount || 0})</button>
-                        ${isAuthenticated ? `<button data-action="show-reply-form">Reply</button>` : ''}
+                    <div class="thread-voting">
+                        <button class="vote-btn" data-action="upvote-thread" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
+                        <span class="vote-count">${thread.score || 0}</span>
+                        <button class="vote-btn" data-action="downvote-thread" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
                     </div>
-                    <div class="replies-container" style="display: none;"></div>
+                    <div class="thread-main">
+                        <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
+                        <p class="thread-meta">
+                            <span>${thread.replyCount || 0} Replies</span> | 
+                            <span>Posted by ${thread.author ? escapeHTML(thread.author.username) : 'Anonymous'}</span>
+                        </p>
+                    </div>
                 </div>
             `).join('');
         }
 
         threadList.addEventListener('click', async (e) => {
             const toggleBtn = e.target.closest('[data-action="toggle-replies"]');
-            
-            if (toggleBtn) {
-                const threadElement = toggleBtn.closest('.thread');
-                const repliesContainer = threadElement.querySelector('.replies-container');
-                const threadId = threadElement.dataset.id;
-                
-                const isLoaded = repliesContainer.dataset.loaded === 'true';
-                const isVisible = repliesContainer.style.display === 'block';
+            const threadElement = e.target.closest('.thread');
 
-                if (isVisible) {
-                    repliesContainer.style.display = 'none';
-                } else {
-                    if (!isLoaded) {
-                        await fetchAndRenderReplies(threadId, repliesContainer);
-                    }
-                    repliesContainer.style.display = 'block';
-                }
+            if (threadElement) {
+                // Remove active class from all other threads
+                document.querySelectorAll('.thread.active').forEach(th => th.classList.remove('active'));
+                // Add active class to the clicked thread
+                threadElement.classList.add('active');
+                
+                // Show and load the active thread column
+                const activeThreadContainer = document.getElementById('lyceum-active-thread');
+                activeThreadContainer.style.display = 'block';
+                await loadAndDisplayActiveThread(threadElement.dataset.id, activeThreadContainer);
             }
+            
+            // Note: The old reply toggling logic is now part of loadAndDisplayActiveThread
         });
 
-        async function fetchAndRenderReplies(threadId, container) {
-            container.innerHTML = '<p class="thread-meta">Summoning replies...</p>';
+        async function loadAndDisplayActiveThread(threadId, container) {
+            container.innerHTML = '<p class="thread-meta">Summoning eternal echo...</p>';
             try {
+                // In a real scenario, we might fetch the full thread object here
+                // For now, we'll just re-use the fetch replies logic
                 const response = await window.apiClient.get(`/threads/${threadId}/replies`);
                 const replies = response.replies || response;
-                renderReplies(replies, container);
-                container.dataset.loaded = 'true';
+                
+                // A proper implementation would fetch thread title/content as well
+                const threadTitle = document.querySelector(`.thread[data-id="${threadId}"] .thread-title`).textContent;
+
+                container.innerHTML = `
+                    <h3>${escapeHTML(threadTitle)}</h3>
+                    <div class="replies-container">
+                        ${renderReplies(replies, container)}
+                    </div>
+                    <div class="reply-form-container" id="mainReplyFormContainer"></div>
+                `;
+                
+                if (window.authManager.isLoggedIn()) {
+                    createReplyForm(container.querySelector('#mainReplyFormContainer'), threadId);
+                }
+
             } catch (error) {
                 container.innerHTML = '<p class="error">Failed to summon replies.</p>';
             }
         }
+
+        function createReplyForm(container, threadId) {
+            container.innerHTML = `
+                <h4>Your Reply</h4>
+                <div id="replyEditor-${threadId}"></div>
+                <button class="btn btn-primary btn-sm" data-action="submit-reply" data-thread-id="${threadId}">Submit Reply</button>
+            `;
+            new Quill(`#replyEditor-${threadId}`, {
+                theme: 'snow',
+                placeholder: 'Add your echo to the discourse...',
+                modules: { toolbar: [['bold', 'italic', 'underline'], ['link', 'blockquote']] }
+            });
+        }
+
+        document.getElementById('lyceum-active-thread').addEventListener('click', async (e) => {
+            if (e.target.matches('[data-action="submit-reply"]')) {
+                const threadId = e.target.dataset.threadId;
+                const editorContainer = document.getElementById(`replyEditor-${threadId}`);
+                const quill = Quill.find(editorContainer);
+                const content = quill.root.innerHTML;
+
+                if (!content || content === '<p><br></p>') {
+                    return alert('Reply content is required.');
+                }
+                
+                try {
+                    await window.apiClient.post(`/threads/${threadId}/replies`, { content });
+                    quill.setContents([]);
+                    // Reload the active thread view to show the new reply
+                    await loadAndDisplayActiveThread(threadId, document.getElementById('lyceum-active-thread'));
+                } catch(error) {
+                    alert(`Error: ${error.error || 'Could not post reply.'}`);
+                }
+            }
+        });
 
         function renderReplies(replies, container) {
             if (!replies || replies.length === 0) {
@@ -231,14 +325,33 @@
 
             container.innerHTML = replies.map(reply => `
                 <div class="reply" data-id="${reply._id}">
-                    <p class="thread-meta">
-                        <strong>${escapeHTML(reply.author ? reply.author.username : 'Anonymous')}</strong> replied:
-                    </p>
-                    <div class="reply-content">${DOMPurify.sanitize(reply.content)}</div>
+                    <div class="thread-voting reply-voting">
+                        <button class="vote-btn" data-action="upvote-reply" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
+                        <span class="vote-count">${reply.score || 0}</span>
+                        <button class="vote-btn" data-action="downvote-reply" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
+                    </div>
+                    <div class="reply-main">
+                        <p class="thread-meta">
+                            <strong>${escapeHTML(reply.author ? reply.author.username : 'Anonymous')}</strong> replied:
+                        </p>
+                        <div class="reply-content">${DOMPurify.sanitize(reply.content)}</div>
+                    </div>
                 </div>
             `).join('');
         }
 
+        // Modal opening/closing logic for the new composer
+        const composerModal = document.getElementById('threadComposerModal');
+        document.getElementById('newThreadBtn').addEventListener('click', () => {
+            composerModal.classList.add('active');
+            composerModal.setAttribute('aria-hidden', 'false');
+        });
+
+        document.getElementById('closeComposer').addEventListener('click', () => {
+            composerModal.classList.remove('active');
+            composerModal.setAttribute('aria-hidden', 'true');
+        });
+        
         threadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {

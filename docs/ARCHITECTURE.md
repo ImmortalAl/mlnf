@@ -449,13 +449,11 @@ npm run dev  # Development mode with nodemon
 ## 🚀 **Scalability Considerations**
 
 ### **Current Limitations**
-- Session storage in localStorage (not ideal for multi-tab)
-- No WebSocket implementation for real-time features
+
 - Frontend state management is basic
 - No caching layer implemented
 
 ### **Future Enhancements**
-- WebSocket integration for real-time messaging
 - Redis caching layer
 - CDN for static assets
 - Database sharding for large user base

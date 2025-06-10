@@ -27,9 +27,7 @@ MLNF/                         # Project root (NOT the Git repository)
 ```
 
 **For AI Assistants & Developers:**
-- Always navigate to `front/` directory before running Git commands
-- Working directory should be: `C:\Users\coold\Documents\Sites\MLNF\front`
-- Use `cd front` from the MLNF root directory before Git operations
+Use the script for pushing to Git
 
 ### **Environment Setup**
 

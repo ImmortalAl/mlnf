@@ -36,19 +36,6 @@ C:\Users\coold\Documents\Sites\MLNF\
 - ✅ Responsive design across all devices
 - ✅ Modal systems (auth, messaging, admin)
 
-### **🚀 Next Development Priorities**
-1. **🎯 IMMEDIATE: Soul Scrolls Comment System** (blog commenting functionality)
-2. **🎯 IMMEDIATE: Context-Aware Blog Navigation** (profile vs community routing)
-3. **User Feedback System** (see FEATURES.md for detailed proposals)
-4. **Real Messaging System** (replace mock responses with persistent messaging)
-5. **Enhanced Community Features** (search, discovery, achievements)
-
-#### **Next Session Focus (December 8, 2024)**
-**User Requirements:**
-- Implement commenting on the blogging system
-- Blogs should open from user profiles WITHOUT redirecting to community page
-- But also be accessible from community page if opened from there
-- Context-aware routing system needed
 
 ## 🎨 **Development Philosophy & Preferences**
 
@@ -166,7 +153,6 @@ function initializeModal() {
 ## 🚨 **Known Issues & Considerations**
 
 ### **Current Limitations**
-- **Messaging System**: Shows mock responses, needs WebSocket implementation
 - **Email Service**: Owl messaging works with fallback, can be enhanced with full SMTP config
 - **Admin Role Detection**: Currently by username, could use database field
 - **Search Functionality**: Not implemented in user directory
@@ -185,10 +171,9 @@ function initializeModal() {
 ## 📝 **Development Workflow**
 
 ### **Starting a Session**
-1. Review `dev-log.md` for recent changes
+1. Review `development-log.md` for recent changes
 2. Check git status: `cd front && git status`
 3. Review current issues in FEATURES.md
-4. Set up development environment (live server)
 
 ### **During Development**
 - Follow established code patterns
@@ -199,7 +184,7 @@ function initializeModal() {
 ### **Ending a Session**  
 1. Test all changes thoroughly
 2. Commit with descriptive messages
-3. Update `dev-log.md` with session summary
+3. Update `CHANGELOG.md` with session summary
 4. Update FEATURES.md if roadmap changes
 5. Note any blocking issues for next session
 
@@ -245,24 +230,9 @@ git push origin main
 - Netlify deployment logs for frontend issues
 - MongoDB Atlas for database operations
 
-## 🎯 **Feature Development Guidelines**
 
-### **User Feedback System** (Next Priority)
-- Start with simple modal form
-- Backend endpoint for feedback storage  
-- Consider categories (Bug, Feature, General)
-- Optional: Status tracking, public roadmap
+### **Real Messaging System** 
 
-### **Soul Scrolls (Blogging System)** (High Priority)
-- Personal blogs for individual users (NOT community articles)
-- Draft system desired
-- Comments, likes/dislikes, sharing
-- Basic analytics (visitor counter necessary)
-- Mobile-friendly editor
-
-### **Real Messaging System** (High Priority)
-- Replace mock responses with persistent storage
-- WebSocket for real-time delivery
 - Conversation threading and history
 - File/image sharing capabilities
 
@@ -275,7 +245,7 @@ git push origin main
 - Maintain professional code quality standards
 
 ### **Documentation Requirements**
-- Update `dev-log.md` after significant changes
+- Update `development_log.md` after significant changes
 - Keep FEATURES.md roadmap current
 - Update this file if architecture changes
 - Note any breaking changes or migrations needed
@@ -299,7 +269,6 @@ git push origin main
 - ✅ API endpoints functional
 - ✅ Database connections stable
 - ✅ Authentication system working
-- ✅ Email system with graceful fallback
 - ✅ Auto-deployment from GitHub
 
 ### **Frontend Status**

@@ -3,7 +3,7 @@
 (function() {
     window.MLNF = window.MLNF || {};
 
-    let messageModal, recipientNameElement, messageInputElement, messageHistoryElement, sendMessageBtnElement, closeMessageModalBtnElement;
+let messageModal, recipientNameElement, messageInputElement, messageHistoryElement, sendMessageBtnElement, closeMessageModalBtnElement;
     let currentBackdropListener = null;
     let currentRecipientUsername = null;
     let typingTimeout = null;
@@ -86,9 +86,9 @@
         }
     }
 
-    function initMessageModal() {
-        console.log('[messageModal.js] Initializing...');
-        messageModal = document.getElementById('messageModal');
+function initMessageModal() {
+    console.log('[messageModal.js] Initializing...');
+    messageModal = document.getElementById('messageModal');
         recipientNameElement = document.getElementById('recipientName'); 
         messageInputElement = document.getElementById('messageInput'); 
         messageHistoryElement = document.getElementById('messageHistory');
@@ -97,80 +97,80 @@
 
         if (!messageModal || !closeMessageModalBtnElement) {
             console.warn('[messageModal.js] Core modal elements not found. Modal may not function correctly.');
-            return;
-        }
+        return;
+    }
 
         closeMessageModalBtnElement.addEventListener('click', close);
 
-        if (sendMessageBtnElement) {
-            sendMessageBtnElement.addEventListener('click', handleSendMessage);
-        }
-
-        if (messageInputElement) {
-            messageInputElement.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                }
-            });
-            messageInputElement.addEventListener('input', handleTyping);
-        }
-        isInitialized = true;
-        console.log('[messageModal.js] Initialized.');
+    if (sendMessageBtnElement) {
+        sendMessageBtnElement.addEventListener('click', handleSendMessage);
     }
 
-    async function openMessageModal(username) {
+    if (messageInputElement) {
+        messageInputElement.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+        messageInputElement.addEventListener('input', handleTyping);
+    }
+        isInitialized = true;
+    console.log('[messageModal.js] Initialized.');
+}
+
+async function openMessageModal(username) {
         if (!messageModal) {
             // Let's auto-init if needed, this makes it more robust
-            initMessageModal();
+        initMessageModal();
             if(!messageModal) {
                  console.error('[messageModal.js] Modal not found even after auto-init.');
-                 return;
-            }
+            return;
         }
+    }
 
-        console.log(`[messageModal.js] Opening message modal for ${username}`);
+    console.log(`[messageModal.js] Opening message modal for ${username}`);
 
-        currentRecipientUsername = username;
+    currentRecipientUsername = username;
         if(recipientNameElement) recipientNameElement.textContent = `To: ${username}`;
         if(messageHistoryElement) messageHistoryElement.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
-        
-        messageModal.classList.add('active');
-        messageModal.setAttribute('aria-hidden', 'false');
+    
+    messageModal.classList.add('active');
+    messageModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
 
-        if (messageInputElement) {
-            setTimeout(() => messageInputElement.focus(), 100);
-        }
+    if (messageInputElement) {
+        setTimeout(() => messageInputElement.focus(), 100);
+    }
 
-        await loadConversation(username);
-        
-        setTimeout(() => {
-            if (currentBackdropListener) {
-                messageModal.removeEventListener('click', currentBackdropListener);
+    await loadConversation(username);
+    
+    setTimeout(() => {
+        if (currentBackdropListener) {
+            messageModal.removeEventListener('click', currentBackdropListener);
+        }
+        currentBackdropListener = (event) => {
+            if (event.target === messageModal) {
+                closeMessageModal();
             }
-            currentBackdropListener = (event) => {
-                if (event.target === messageModal) {
-                    closeMessageModal();
-                }
-            };
-            messageModal.addEventListener('click', currentBackdropListener);
+        };
+        messageModal.addEventListener('click', currentBackdropListener);
         }, 300);
     }
 
     function handleTyping() {
         if (!currentRecipientUsername || !window.MLNF || !window.MLNF.websocket) return;
         if (typingTimeout) clearTimeout(typingTimeout);
-        const currentUser = JSON.parse(localStorage.getItem('user'));
-        if (currentUser) {
-            window.MLNF.websocket.sendTypingIndicator(currentRecipientUsername, true);
-            typingTimeout = setTimeout(() => {
-                window.MLNF.websocket.sendTypingIndicator(currentRecipientUsername, false);
-            }, 2000);
-        }
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    if (currentUser) {
+        window.MLNF.websocket.sendTypingIndicator(currentRecipientUsername, true);
+        typingTimeout = setTimeout(() => {
+            window.MLNF.websocket.sendTypingIndicator(currentRecipientUsername, false);
+        }, 2000);
     }
+}
 
-    // Expose to global MLNF object
-    window.MLNF.initMessageModal = initMessageModal;
+// Expose to global MLNF object
+window.MLNF.initMessageModal = initMessageModal;
     window.MLNF.openMessageModal = openMessageModal; // Still useful to expose for direct calls if needed
 })(); 

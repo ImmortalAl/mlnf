@@ -37,18 +37,6 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 
 ### **🎯 IMMEDIATE NEXT SESSION PRIORITY**
 
-#### **Blog Comment System Implementation**
-- [ ] **Comment Database Schema** - Comments collection with post/user association
-- [ ] **Comment API Endpoints** - POST/GET/DELETE for comment CRUD operations
-- [ ] **Comment Frontend Components** - Comment display, form, and interaction UI
-- [ ] **Real-time Comments** - Live comment updates without page refresh
-
-#### **Context-Aware Blog Navigation (December 8, 2024 Requirements)**
-- [ ] **Profile-First Blog Access** - Blogs open directly from user profiles
-- [ ] **No Forced Redirects** - Don't redirect to community Soul Scrolls page when opened from profile
-- [ ] **Community Page Integration** - Blogs accessible from community page when opened from there
-- [ ] **Context-Aware Routing** - Remember navigation context and maintain consistency
-
 **Technical Implementation Plan:**
 ```javascript
 // Routing Strategy
@@ -57,42 +45,14 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 /soul-scrolls/post-id?from=profile     // Context tracking
 ```
 
-### **Core Blogging Features (Planned)**
-- [x] **Personal Blog Posts** - Individual user blogs (NOT community articles)
-- [x] **Draft System** - Save drafts functionality  
-- [x] **Basic Editor** - Simple content creation interface
-- [x] **Like/Dislike System** - Post appreciation and feedback
-- [x] **Share Functionality** - Content sharing capabilities (🦉 Owl integration)
-- [ ] **Basic Analytics** - Visitor counters (minimum requirement)
-- [x] **Mobile Responsive** - Full mobile optimization
-
----
-
 ## 🚧 Active Development TODOs
-
-### High Priority
-- [x] **Soul Scrolls Enhancement** - ✅ **COMPLETED**
-  - [x] Implement draft system for blog posts
-  - [x] Add like/dislike functionality
-  - [x] Enhance post interaction features
-- [ ] **Boundless Chronicles (News Section)** - ⭐ **NEXT SESSION FOCUS**
-  - [ ] Modern news feed design
-  - [ ] User-submitted story system
-  - [ ] Category/tag system
-  - [ ] Featured stories section
-  - [ ] Mobile-responsive layout
-- [ ] **Real Messaging System** - Replace mock responses with persistent messaging
 
 ### Medium Priority
 - [ ] **Echoes Unbound (Message Board)** - Moved to medium priority
 - [ ] **Enhanced Community Features** - User search, interest matching
-- [ ] **Achievement System** - Badges and user progression
-- [ ] **WebSocket Integration** - Real-time messaging and notifications
 - [ ] **Community Chatroom System** - Real-time chat with multiple channels
-  - Private messaging between users
   - Channel-based group chats
   - Message persistence and history
-  - User presence indicators
   - File sharing capabilities
   - Emoji and reaction support
   - Integration with existing message board
