@@ -345,22 +345,36 @@
         
         threadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const submitButton = threadForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Posting...';
+
             const data = {
                 title: threadForm.elements.title.value,
                 category: threadForm.elements.category.value,
                 tags: threadForm.elements.tags.value.split(',').map(t => t.trim()).filter(Boolean),
                 content: quill.root.innerHTML
             };
+
             if (!data.title || !data.content || data.content === '<p><br></p>') {
-                return alert('Title and content are required.');
+                alert('Title and content are required.');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Post Thread';
+                return;
             }
+
             try {
                 await window.apiClient.post('/threads', data);
                 threadForm.reset();
                 quill.setContents([]);
-                fetchThreads();
+                composerModal.classList.remove('active');
+                composerModal.setAttribute('aria-hidden', 'true');
+                fetchThreads(); // Refresh the thread list
             } catch (error) {
                 alert(`Error: ${error.error || 'Could not post thread.'}`);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Post Thread';
             }
         });
 
