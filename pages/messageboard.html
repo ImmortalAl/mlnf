@@ -189,6 +189,56 @@
             `).join('');
         }
 
+        threadList.addEventListener('click', async (e) => {
+            const toggleBtn = e.target.closest('[data-action="toggle-replies"]');
+            
+            if (toggleBtn) {
+                const threadElement = toggleBtn.closest('.thread');
+                const repliesContainer = threadElement.querySelector('.replies-container');
+                const threadId = threadElement.dataset.id;
+                
+                const isLoaded = repliesContainer.dataset.loaded === 'true';
+                const isVisible = repliesContainer.style.display === 'block';
+
+                if (isVisible) {
+                    repliesContainer.style.display = 'none';
+                } else {
+                    if (!isLoaded) {
+                        await fetchAndRenderReplies(threadId, repliesContainer);
+                    }
+                    repliesContainer.style.display = 'block';
+                }
+            }
+        });
+
+        async function fetchAndRenderReplies(threadId, container) {
+            container.innerHTML = '<p class="thread-meta">Summoning replies...</p>';
+            try {
+                const response = await window.apiClient.get(`/threads/${threadId}/replies`);
+                const replies = response.replies || response;
+                renderReplies(replies, container);
+                container.dataset.loaded = 'true';
+            } catch (error) {
+                container.innerHTML = '<p class="error">Failed to summon replies.</p>';
+            }
+        }
+
+        function renderReplies(replies, container) {
+            if (!replies || replies.length === 0) {
+                container.innerHTML = '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
+                return;
+            }
+
+            container.innerHTML = replies.map(reply => `
+                <div class="reply" data-id="${reply._id}">
+                    <p class="thread-meta">
+                        <strong>${escapeHTML(reply.author ? reply.author.username : 'Anonymous')}</strong> replied:
+                    </p>
+                    <div class="reply-content">${DOMPurify.sanitize(reply.content)}</div>
+                </div>
+            `).join('');
+        }
+
         threadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
