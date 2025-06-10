@@ -405,9 +405,12 @@
     <!-- Auth Modal container -->
     <div id="auth-modal-container"></div>
 
+    <!-- Load order is critical -->
     <script src="../components/shared/config.js"></script>
     <script src="../components/shared/authModal.js"></script>
     <script src="../components/shared/seekers.js"></script>
+    <script src="../components/shared/mlnf-core.js"></script> <!-- Core initializer -->
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const API_URL = window.MLNF_CONFIG.API_BASE_URL;
@@ -418,11 +421,9 @@
             const closeBtn = document.getElementById('closeSubmissionModal');
             const viewControls = document.querySelector('.view-controls');
 
-            // Initialize auth manager
-            const auth = new AuthManager();
-            
-            // Initialize seekers manager
-            const seekers = new SeekersManager();
+            // Auth and Seekers are initialized by mlnf-core.js
+            // We can access them via the global MLNF object if needed, or just let them run.
+            // For example: const auth = window.MLNF.AuthManager;
 
             let allChronicles = [];
             let currentView = 'recent'; // 'recent' or 'historical'
