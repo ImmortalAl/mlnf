@@ -218,6 +218,12 @@
             background-color: rgba(0,0,0,0.7);
             backdrop-filter: blur(5px);
         }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         .modal-content {
             background: var(--gradient-secondary);
@@ -228,6 +234,18 @@
             max-width: 700px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+            animation: modal-fade-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modal-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .close-btn {
@@ -275,9 +293,12 @@
     <!-- Message Modal -->
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Direct Message</h3>
-            <div class="message-history" id="messageHistory"></div>
-            <div>
+            <h3 id="messageTitle">Soul-to-Soul Connection</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory">
+                <!-- Messages will be dynamically added here -->
+            </div>
+            <div class="message-form">
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
                     <button type="submit" id="sendMessageBtn">Send Whisper</button>
@@ -342,54 +363,9 @@
         <button class="submit-truth-btn" id="openSubmissionModal"><i class="fas fa-plus-circle"></i> Submit Your Truth</button>
 
         <div class="chronicles-feed" id="chroniclesFeed">
-            <!-- Example Chronicle Item -->
-            <article class="chronicle-item">
-                <p class="chronicle-meta">
-                    By <span class="author">ImmortalAl</span> <span class="date">Eternal Year 1, Day 93</span>
-                </p>
-                <h3 class="chronicle-title">Unveiled: The Hidden War on Free Thought</h3>
-                <div class="chronicle-content">
-                    <p>A deep dive into the censorship mechanisms of 2025, exposing the unseen hands that manipulate the flow of information and attempt to shackle the eternal consciousness of humanity...</p>
-                </div>
-                <div class="chronicle-sources">
-                    <h4>Sources:</h4>
-                    <ul>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Declassified Document ARCH-77B</a></li>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Testimony of a Silicon Valley Whistleblower</a></li>
-                    </ul>
-                </div>
-                <div class="chronicle-actions">
-                    <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(1,204)</span></button>
-                    <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(88)</span></button>
-                    <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(152)</span></button>
-                </div>
-            </article>
-
-            <article class="chronicle-item">
-                <p class="chronicle-meta">
-                    By <span class="author">TruthSeeker</span> <span class="date">Eternal Year 1, Day 92</span>
-                </p>
-                <h3 class="chronicle-title">April 2, 2025: A New Dawn for Truth</h3>
-                <div class="chronicle-content">
-                    <p>Breaking news on the resistance against digital tyranny. Reports from the front lines of the information war show a turning tide as decentralized networks gain traction, creating new sanctuaries for free speech...</p>
-                </div>
-                 <div class="chronicle-sources">
-                    <h4>Sources:</h4>
-                    <ul>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Live feed from the Decentralized Summit</a></li>
-                    </ul>
-                </div>
-                <div class="chronicle-actions">
-                    <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(2,510)</span></button>
-                    <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(12)</span></button>
-                    <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(319)</span></button>
-                </div>
-            </article>
-            <!-- More articles will be loaded here dynamically -->
+            <!-- Articles will be loaded here dynamically -->
         </div>
     </main>
-
-
 
     <footer>
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
@@ -434,7 +410,6 @@
     <script src="/components/shared/activeUsers.js?v=1.2"></script>
     <script src="/components/shared/messageModal.js?v=1.2"></script>
     <script>
-        // Self-contained news page with reliable modal functionality
         document.addEventListener('DOMContentLoaded', () => {
             console.log('[NEWS] DOM loaded, initializing...');
             
@@ -448,456 +423,191 @@
             const closeBtn = document.getElementById('closeSubmissionModal');
             const viewControls = document.querySelector('.view-controls');
 
-            let allChronicles = [];
-            let currentView = 'recent';
-
-            const getToken = () => localStorage.getItem('sessionToken');
-
-            // === MODAL FUNCTIONALITY ===
+            // --- Modal Logic ---
             const openModal = () => {
                 console.log('[NEWS] Opening submission modal...');
                 if (modal) {
-                    modal.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
-                    console.log('[NEWS] Modal opened');
+                    modal.classList.add('active');
+                    console.log('[NEWS] Modal .active class added');
                 } else {
-                    console.error('[NEWS] Modal element not found!');
+                    console.error('[NEWS] Submission modal element not found!');
                 }
             };
 
             const closeModal = () => {
-                console.log('[NEWS] Closing submission modal...');
                 if (modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                    console.log('[NEWS] Modal closed');
+                    modal.classList.remove('active');
                 }
             };
 
-            // === AUTH FUNCTIONALITY ===
-            // Simple auth modal creation (self-contained)
-            const createAuthModal = () => {
-                const authModalHTML = `
-                    <div id="authModal" class="modal" style="z-index: 3000;">
-                        <div class="modal-content">
-                            <span class="close-btn" id="closeAuthModal">&times;</span>
-                            <h3 id="authModalTitle" style="font-family: 'Roboto Slab', serif; color: var(--truth-gold); font-size: 2rem; margin-bottom: 2rem;">Enter the Sanctuary</h3>
-                            <form id="authForm">
-                                <div class="form-group">
-                                    <label for="authUsername">Username</label>
-                                    <input type="text" id="authUsername" name="username" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="authPassword">Password</label>
-                                    <input type="password" id="authPassword" name="password" required>
-                                </div>
-                                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
-                                    <label for="authConfirmPassword">Confirm Password</label>
-                                    <input type="password" id="authConfirmPassword" name="confirmPassword">
-                                </div>
-                                <button type="submit" class="submit-truth-btn" id="authSubmit" style="width: 100%; margin-top: 1rem;">Transcend</button>
-                            </form>
-                            <div id="authFeedback" style="margin-top: 1rem; text-align: center;"></div>
-                            <p style="text-align: center; margin-top: 1rem;">
-                                <a href="#" id="authToggle">New to the Sanctuary? Sign up here</a>
-                            </p>
-                        </div>
-                    </div>
-                `;
-                
-                const authContainer = document.getElementById('auth-modal-container');
-                if (authContainer) {
-                    authContainer.innerHTML = authModalHTML;
-                    setupAuthModal();
-                }
-            };
-
-            const setupAuthModal = () => {
-                const authModal = document.getElementById('authModal');
-                const authForm = document.getElementById('authForm');
-                const authTitle = document.getElementById('authModalTitle');
-                const authSubmit = document.getElementById('authSubmit');
-                const authToggle = document.getElementById('authToggle');
-                const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
-                const authFeedback = document.getElementById('authFeedback');
-                const closeAuthBtn = document.getElementById('closeAuthModal');
-
-                let isLogin = true;
-
-                const toggleAuthMode = () => {
-                    isLogin = !isLogin;
-                    if (isLogin) {
-                        authTitle.textContent = 'Enter the Sanctuary';
-                        authSubmit.textContent = 'Transcend';
-                        authToggle.textContent = 'New to the Sanctuary? Sign up here';
-                        confirmPasswordGroup.style.display = 'none';
-                    } else {
-                        authTitle.textContent = 'Claim Your Immortality';
-                        authSubmit.textContent = 'Begin Your Eternity';
-                        authToggle.textContent = 'Already immortal? Login here';
-                        confirmPasswordGroup.style.display = 'block';
-                    }
-                    authFeedback.textContent = '';
-                };
-
-                const openAuthModal = () => {
-                    if (authModal) {
-                        authModal.style.display = 'block';
-                        document.body.style.overflow = 'hidden';
-                    }
-                };
-
-                const closeAuthModal = () => {
-                    if (authModal) {
-                        authModal.style.display = 'none';
-                        document.body.style.overflow = '';
-                        authForm.reset();
-                        authFeedback.textContent = '';
-                    }
-                };
-
-                // Event listeners
-                if (authToggle) authToggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    toggleAuthMode();
-                });
-
-                if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthModal);
-
-                if (authModal) authModal.addEventListener('click', (e) => {
-                    if (e.target === authModal) closeAuthModal();
-                });
-
-                if (authForm) authForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const username = document.getElementById('authUsername').value;
-                    const password = document.getElementById('authPassword').value;
-                    const confirmPassword = document.getElementById('authConfirmPassword').value;
-
-                    if (!isLogin && password !== confirmPassword) {
-                        authFeedback.textContent = 'Passwords do not match';
-                        authFeedback.style.color = 'var(--danger)';
-                        return;
-                    }
-
-                    const endpoint = isLogin ? '/auth/login' : '/auth/signup';
-                    authSubmit.disabled = true;
-                    authSubmit.textContent = isLogin ? 'Transcending...' : 'Forging...';
-
-                    try {
-                        const response = await fetch(API_URL + endpoint, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ username, password })
-                        });
-
-                        const data = await response.json();
-
-                        if (response.ok && data.token) {
-                            localStorage.setItem('sessionToken', data.token);
-                            if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
-                            
-                            authFeedback.textContent = 'Success! Welcome to the Sanctuary.';
-                            authFeedback.style.color = 'var(--success)';
-                            
-                            setTimeout(() => {
-                                closeAuthModal();
-                                updateUserDisplay();
-                                location.reload();
-                            }, 1500);
-                        } else {
-                            authFeedback.textContent = data.message || 'Authentication failed';
-                            authFeedback.style.color = 'var(--danger)';
-                        }
-                    } catch (error) {
-                        console.error('Auth error:', error);
-                        authFeedback.textContent = 'Connection error. Please try again.';
-                        authFeedback.style.color = 'var(--danger)';
-                    } finally {
-                        authSubmit.disabled = false;
-                        authSubmit.textContent = isLogin ? 'Transcend' : 'Begin Your Eternity';
-                    }
-                });
-
-                // Expose auth functions globally
-                window.openAuthModal = openAuthModal;
-            };
-
-            // === USER DISPLAY MANAGEMENT ===
-            const updateUserDisplay = () => {
-                const token = getToken();
-                const userInfo = document.getElementById('user-info');
-                const guestActions = document.getElementById('guest-actions');
-                const userDisplayName = document.getElementById('user-display-name');
-                
-                if (token) {
-                    try {
-                        const user = JSON.parse(localStorage.getItem('user') || '{}');
-                        const displayName = user.displayName || user.username || 'Anonymous Soul';
-                        
-                        if (userDisplayName) userDisplayName.textContent = displayName;
-                        if (userInfo) userInfo.style.display = 'block';
-                        if (guestActions) guestActions.style.display = 'none';
-                    } catch (error) {
-                        console.error('Error parsing user data:', error);
-                        if (userInfo) userInfo.style.display = 'none';
-                        if (guestActions) guestActions.style.display = 'block';
-                    }
-                } else {
-                    if (userInfo) userInfo.style.display = 'none';
-                    if (guestActions) guestActions.style.display = 'block';
-                }
-            };
-
-            // === EVENT LISTENERS ===
-            // Modal controls
             if (openBtn) {
-                openBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('[NEWS] Submit Truth button clicked');
-                    openModal();
-                });
+                openBtn.addEventListener('click', openModal);
                 console.log('[NEWS] Submit button event listener attached');
-            } else {
-                console.error('[NEWS] Submit button not found!');
             }
 
             if (closeBtn) {
                 closeBtn.addEventListener('click', closeModal);
             }
 
-            if (modal) {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) closeModal();
-                });
-            }
+            window.addEventListener('click', (event) => {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+            // --- End Modal Logic ---
 
-            // Auth buttons
-            const loginButton = document.getElementById('login-button');
-            const signupButton = document.getElementById('signup-button');
-            
-            if (loginButton) {
-                loginButton.addEventListener('click', () => {
-                    if (window.openAuthModal) window.openAuthModal();
-                });
-            }
-            
-            if (signupButton) {
-                signupButton.addEventListener('click', () => {
-                    if (window.openAuthModal) window.openAuthModal();
-                });
-            }
-
-            // Logout functionality
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    localStorage.removeItem('sessionToken');
-                    localStorage.removeItem('user');
-                    updateUserDisplay();
-                    location.reload();
-                });
-            }
-
-            // === CHRONICLES FUNCTIONALITY ===
-            const fetchChronicles = async () => {
+            // --- Data Fetching Logic ---
+            const fetchChronicles = async (view = 'recent') => {
                 try {
-                    const response = await fetch(`${API_URL}/chronicles?limit=100`); // Fetch a larger number for client-side sorting
-                    if (!response.ok) throw new Error('Failed to fetch chronicles');
+                    console.log(`[NEWS] Fetching chronicles with view: ${view}`);
+                    const response = await fetch(`${API_URL}/chronicles`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
                     const data = await response.json();
-                    allChronicles = data.docs;
-                    renderChronicles(); // Initial render
+                    console.log('[NEWS] API response:', data);
+                    
+                    // Handle different API response formats
+                    let chronicles;
+                    if (Array.isArray(data)) {
+                        chronicles = data;
+                    } else if (data && Array.isArray(data.chronicles)) {
+                        chronicles = data.chronicles;
+                    } else if (data && Array.isArray(data.data)) {
+                        chronicles = data.data;
+                    } else {
+                        console.warn('[NEWS] Unexpected API response format:', data);
+                        chronicles = [];
+                    }
+                    
+                    console.log(`[NEWS] Processed chronicles array with ${chronicles.length} items`);
+                    renderChronicles(chronicles, view);
                 } catch (error) {
                     console.error('Error fetching chronicles:', error);
-                    // Keep the sample articles visible instead of showing error
-                    console.log('[NEWS] Keeping sample articles due to fetch error');
-                    // Don't clear the feed, just log the error
-                    // chroniclesFeed.innerHTML = '<p style="text-align: center;">Failed to load the Chronicles. The archives may be temporarily sealed.</p>';
+                    chroniclesFeed.innerHTML = '<p class="error">Failed to load chronicles. Please try again later.</p>';
                 }
             };
 
-            const renderChronicles = () => {
-                if (!allChronicles || allChronicles.length === 0) {
-                    chroniclesFeed.innerHTML = '<p style="text-align: center;">No chronicles have been recorded yet. Be the first to submit a truth.</p>';
+            const renderChronicles = (chronicles, view) => {
+                chroniclesFeed.innerHTML = ''; 
+
+                // Ensure chronicles is an array before proceeding
+                if (!chronicles || !Array.isArray(chronicles)) {
+                    console.warn('Chronicles data is not an array:', chronicles);
+                    chroniclesFeed.innerHTML = '<p>No truths have been submitted to the chronicles yet. Be the first!</p>';
                     return;
                 }
 
-                let sortedChronicles = [...allChronicles];
-                if (currentView === 'recent') {
-                    // Sort by submission date (newest first)
-                    sortedChronicles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                } else if (currentView === 'historical') {
-                    // Sort by event date (newest first)
-                    sortedChronicles.sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
-                }
+                // Sort chronicles based on view
+                const sortedChronicles = chronicles.sort((a, b) => {
+                    const dateA = new Date(a.eventDate || a.createdAt);
+                    const dateB = new Date(b.eventDate || b.createdAt);
+                    return view === 'recent' ? dateB - dateA : dateA - dateB;
+                });
 
-                chroniclesFeed.innerHTML = sortedChronicles.map(renderChronicle).join('');
-            };
-
-            const renderChronicle = (chronicle) => {
-                const authorName = chronicle.author ? (chronicle.author.displayName || chronicle.author.username) : 'An Anonymous Soul';
-                const eventDate = new Date(chronicle.eventDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                const submissionDate = new Date(chronicle.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-                const sourcesHTML = chronicle.sources && chronicle.sources.length > 0
-                    ? `
-                    <div class="chronicle-sources">
-                        <h4>Sources:</h4>
-                        <ul>
-                            ${chronicle.sources.map(source => `<li><a href="${source}" target="_blank" rel="noopener noreferrer">${source}</a></li>`).join('')}
-                        </ul>
-                    </div>`
-                    : '';
-                
-                const dateDisplay = currentView === 'historical'
-                    ? `<span class="date">Event Occurred: <b>${eventDate}</b></span> <span class="sub-date">(Revealed: ${submissionDate})</span>`
-                    : `<span class="date">Revealed: <b>${submissionDate}</b></span> <span class="sub-date">(Event Date: ${eventDate})</span>`;
-
-                return `
-                <article class="chronicle-item" data-id="${chronicle._id}">
-                    <p class="chronicle-meta">
-                        By <span class="author">${authorName}</span> &bull; ${dateDisplay}
-                    </p>
-                    <h3 class="chronicle-title">${chronicle.title}</h3>
-                    <div class="chronicle-content">
-                        <p>${chronicle.content.replace(/\n/g, '<br>')}</p>
-                    </div>
-                    ${sourcesHTML}
-                    <div class="chronicle-actions">
-                        <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations.length})</span></button>
-                        <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges.length})</span></button>
-                        <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments.length})</span></button>
-                    </div>
-                </article>`;
-            };
-
-            const handleSubmission = async (e) => {
-                e.preventDefault();
-                const token = getToken();
-                if (!token) {
-                    alert('You must be logged in to submit a chronicle.');
+                if (sortedChronicles.length === 0) {
+                    chroniclesFeed.innerHTML = '<p>No truths have been submitted to the chronicles yet. Be the first!</p>';
                     return;
                 }
 
-                const title = e.target.elements.storyTitle.value;
-                const content = e.target.elements.storyContent.value;
-                const eventDate = e.target.elements.eventDate.value;
-                const sourcesText = e.target.elements.storySources.value;
-                const sources = sourcesText ? sourcesText.split('\n').map(s => s.trim()).filter(s => s) : [];
-                const submitButton = e.target.querySelector('button[type="submit"]');
-
-                if (new Date(eventDate) > new Date()) {
-                    alert('Event date cannot be in the future.');
-                    return;
-                }
-
-                submitButton.disabled = true;
-                submitButton.textContent = 'Submitting...';
-
-                try {
-                    const response = await fetch(`${API_URL}/chronicles`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ title, content, sources, eventDate })
+                sortedChronicles.forEach(chronicle => {
+                    const article = document.createElement('article');
+                    article.className = 'chronicle-item';
+                    
+                    const eventDate = new Date(chronicle.eventDate || chronicle.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
                     });
 
-                    if (!response.ok) {
-                        const errData = await response.json();
-                        throw new Error(errData.error || 'Submission failed');
-                    }
-                    
-                    closeModal();
-                    submissionForm.reset();
-                    await fetchChronicles(); // Refresh the feed with the new post
-                } catch (error) {
-                    console.error('Error submitting chronicle:', error);
-                    alert(`Failed to submit: ${error.message}`);
-                } finally {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Submit to the Chronicles';
-                }
+                    // Ensure sources is an array
+                    const sources = Array.isArray(chronicle.sources) ? chronicle.sources : [];
+
+                    article.innerHTML = `
+                        <p class="chronicle-meta">
+                            By <span class="author">${escapeHTML(chronicle.author?.username || 'Anonymous')}</span> 
+                            <span class="date">${eventDate}</span>
+                        </p>
+                        <h3 class="chronicle-title">${escapeHTML(chronicle.title)}</h3>
+                        <div class="chronicle-content">
+                            <p>${escapeHTML(chronicle.content)}</p>
+                        </div>
+                        <div class="chronicle-sources">
+                            <h4>Sources:</h4>
+                            <ul>
+                                ${sources.map(s => `<li><a href="${escapeHTML(s)}" target="_blank" rel="noopener noreferrer">${escapeHTML(s)}</a></li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="chronicle-actions">
+                            <button class="action-btn validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations || 0})</span></button>
+                            <button class="action-btn challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges || 0})</span></button>
+                            <button class="action-btn comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments || 0})</span></button>
+                        </div>
+                    `;
+                    chroniclesFeed.appendChild(article);
+                });
+            };
+            
+            const escapeHTML = (str) => {
+                if (!str) return '';
+                return str.replace(/[&<>"']/g, (match) => {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;'
+                    }[match];
+                });
             };
 
-            const handleInteraction = async (chronicleId, action) => {
-                const token = getToken();
-                if (!token) {
-                    alert('You must be logged in to interact with chronicles.');
-                    return;
-                }
-                try {
-                    const response = await fetch(`${API_URL}/chronicles/${chronicleId}/${action}`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (!response.ok) throw new Error((await response.json()).error || 'Interaction failed');
-                    const data = await response.json();
+            // --- Event Listeners ---
+            if (submissionForm) {
+                submissionForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(submissionForm);
+                    const data = Object.fromEntries(formData.entries());
+                    data.sources = data.sources.split('\n').filter(s => s.trim() !== '');
                     
-                    const chronicleToUpdate = allChronicles.find(c => c._id === chronicleId);
-                    if(chronicleToUpdate) {
-                        chronicleToUpdate.validations = { length: data.validations };
-                        chronicleToUpdate.challenges = { length: data.challenges };
+                    try {
+                        const token = localStorage.getItem('sessionToken');
+                        const response = await fetch(`${API_URL}/chronicles`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(data),
+                        });
+
+                        if (response.ok) {
+                            closeModal();
+                            fetchChronicles(document.querySelector('.view-btn.active').dataset.view);
+                            submissionForm.reset();
+                        } else {
+                            const error = await response.json();
+                            alert(`Submission failed: ${error.message}`);
+                        }
+                    } catch (error) {
+                        console.error('Error submitting chronicle:', error);
+                        alert('An unexpected error occurred. Please try again.');
                     }
-                    
-                    const articleElement = document.querySelector(`.chronicle-item[data-id="${chronicleId}"]`);
-                    if(articleElement) {
-                        articleElement.querySelector('.action-btn.validate .count').textContent = `(${data.validations})`;
-                        articleElement.querySelector('.action-btn.challenge .count').textContent = `(${data.challenges})`;
-                    }
-                } catch (error) {
-                    console.error(`Error performing action ${action}:`, error);
-                    alert(`Action failed: ${error.message}`);
-                }
-            };
-
-            // === VIEW FUNCTIONALITY ===
-            viewControls.addEventListener('click', (e) => {
-                const viewBtn = e.target.closest('.view-btn');
-                if (!viewBtn) return;
-
-                const selectedView = viewBtn.dataset.view;
-                if (selectedView === currentView) return;
-
-                currentView = selectedView;
-                
-                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-                viewBtn.classList.add('active');
-
-                renderChronicles();
-            });
-            
-            submissionForm.addEventListener('submit', handleSubmission);
-            
-            chroniclesFeed.addEventListener('click', (e) => {
-                const button = e.target.closest('.action-btn');
-                if (!button) return;
-                
-                const article = e.target.closest('.chronicle-item');
-                const chronicleId = article.dataset.id;
-                const action = button.dataset.action;
-
-                if (action === 'validate' || action === 'challenge') {
-                    handleInteraction(chronicleId, action);
-                } else if (action === 'comments') {
-                    alert('Comment functionality is not yet forged.');
-                }
-            });
-            
-            // === INITIAL LOAD ===
-            createAuthModal(); // Initialize the auth modal
-            updateUserDisplay(); // Set initial user state
-            fetchChronicles();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('action') === 'submit') {
-                openModal();
+                });
             }
 
+            if (viewControls) {
+                viewControls.addEventListener('click', (e) => {
+                    if (e.target.matches('.view-btn')) {
+                        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        fetchChronicles(e.target.dataset.view);
+                    }
+                });
+            }
 
+            // --- Initial Load ---
+            fetchChronicles();
         });
     </script>
 </body>
-</html>
+</html> 
