@@ -257,18 +257,14 @@
         async function loadAndDisplayActiveThread(threadId, container) {
             container.innerHTML = '<p class="thread-meta">Summoning eternal echo...</p>';
             try {
-                // In a real scenario, we might fetch the full thread object here
-                // For now, we'll just re-use the fetch replies logic
-                const response = await window.apiClient.get(`/threads/${threadId}/replies`);
-                const replies = response.replies || response;
+                const threadData = await window.apiClient.get(`/threads/${threadId}`);
                 
-                // A proper implementation would fetch thread title/content as well
-                const threadTitle = document.querySelector(`.thread[data-id="${threadId}"] .thread-title`).textContent;
-
                 container.innerHTML = `
-                    <h3>${escapeHTML(threadTitle)}</h3>
+                    <h3>${escapeHTML(threadData.title)}</h3>
+                    <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
+                    ${threadData.author && threadData.author.signature ? `<div class="signature">${escapeHTML(threadData.author.signature)}</div>` : ''}
                     <div class="replies-container">
-                        ${renderReplies(replies, container)}
+                        ${renderReplies(threadData.replies)}
                     </div>
                     <div class="reply-form-container" id="mainReplyFormContainer"></div>
                 `;
@@ -317,15 +313,13 @@
             }
         });
 
-        function renderReplies(replies, container) {
+        function renderReplies(replies) {
             if (!replies || replies.length === 0) {
-                container.innerHTML = '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
-                return;
+                return '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
             }
-
-            container.innerHTML = replies.map(reply => `
+            return replies.map(reply => `
                 <div class="reply" data-id="${reply._id}">
-                    <div class="thread-voting reply-voting">
+                     <div class="thread-voting reply-voting">
                         <button class="vote-btn" data-action="upvote-reply" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
                         <span class="vote-count">${reply.score || 0}</span>
                         <button class="vote-btn" data-action="downvote-reply" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
@@ -335,6 +329,7 @@
                             <strong>${escapeHTML(reply.author ? reply.author.username : 'Anonymous')}</strong> replied:
                         </p>
                         <div class="reply-content">${DOMPurify.sanitize(reply.content)}</div>
+                        ${reply.author && reply.author.signature ? `<div class="signature">${escapeHTML(reply.author.signature)}</div>` : ''}
                     </div>
                 </div>
             `).join('');

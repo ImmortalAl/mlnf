@@ -111,6 +111,11 @@
             <label for="bio">Bio</label>
             <textarea id="bio" placeholder="Tell us about yourself (optional)" maxlength="500"></textarea>
         </div>
+        <div class="form-group">
+            <label for="signature">Signature</label>
+            <textarea id="signature" placeholder="A concise, one-line signature for your posts (optional)" maxlength="150" rows="2"></textarea>
+            <p class="form-helper">This will appear at the bottom of your posts. Keep it brief and impactful.</p>
+        </div>
         <p id="message" class="error-message"></p>
         <div class="form-actions">
             <button id="saveProfile" class="btn btn-primary">Ascend to Eternity</button>
@@ -130,6 +135,7 @@
                 avatarPreview: document.getElementById('avatarPreview'),
                 status: document.getElementById('status'),
                 bio: document.getElementById('bio'),
+                signature: document.getElementById('signature'),
                 saveProfile: document.getElementById('saveProfile'),
                 message: document.getElementById('message')
             };
@@ -267,6 +273,7 @@
                     elements.avatarPreview.src = user.avatar || '../assets/images/default-avatar.png';
                     elements.status.value = user.status || '';
                     elements.bio.value = user.bio || '';
+                    elements.signature.value = user.signature || '';
                     
                     // Clear loading message
                     elements.message.textContent = '';
@@ -329,6 +336,7 @@
                 const avatar = elements.avatar.value.trim();
                 const status = elements.status.value.trim();
                 const bio = elements.bio.value.trim();
+                const signature = elements.signature.value.trim();
 
                 // Input validation
                 if (!username) {
@@ -361,6 +369,12 @@
                     return;
                 }
 
+                if (signature && signature.length > 150) {
+                    elements.message.className = 'error-message';
+                    elements.message.textContent = 'Signature must be less than 150 characters';
+                    return;
+                }
+
                 // Validate avatar URL if provided
                 if (avatar) {
                     try {
@@ -384,7 +398,8 @@
                     displayName: displayName || 'Not provided',
                     avatar: avatar ? 'Avatar URL provided' : 'No avatar',
                     status: status || 'No status',
-                    bio: bio || 'No bio'
+                    bio: bio || 'No bio',
+                    signature: signature || 'No signature'
                 });
 
                 try {
@@ -401,7 +416,8 @@
                         displayName,
                         avatar,
                         status,
-                        bio
+                        bio,
+                        signature
                     };
                     
                     console.log('Request body:', JSON.stringify(requestBody, null, 2));

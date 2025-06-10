@@ -288,13 +288,14 @@ section {
     border-radius: var(--border-radius-sm);
     margin-bottom: 1rem;
     border: 1px solid var(--highlight);
-    transition: all 0.2s ease;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
 }
 
 .thread:hover {
     background: var(--highlight);
     border-color: var(--accent);
+    transform: translateY(-2px);
 }
 
 .thread.active {
@@ -324,7 +325,8 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 0.2rem;
     color: var(--text-muted);
 }
 
@@ -334,12 +336,13 @@ section {
     color: var(--text-muted);
     cursor: pointer;
     padding: 0.25rem;
-    font-size: 1rem;
-    transition: color 0.2s;
+    font-size: 1.1rem;
+    transition: all 0.2s ease-in-out;
 }
 
 .vote-btn:hover {
     color: var(--accent);
+    transform: scale(1.1);
 }
 
 .vote-btn.active {
@@ -347,8 +350,9 @@ section {
 }
 
 .vote-count {
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
 }
 
 /* Replies Styling */
@@ -364,7 +368,7 @@ section {
     padding: 1rem;
     background: var(--primary-darkest);
     border-radius: var(--border-radius-sm);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .reply-main {
@@ -399,6 +403,42 @@ section {
     line-height: 1.7;
     color: var(--text);
 }
+.thread-content-full p, .thread-content-full blockquote {
+    margin-bottom: 1rem;
+}
+.thread-content-full blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Quill Editor Theming */
+.ql-toolbar.ql-snow, .ql-container.ql-snow {
+    border-color: var(--highlight) !important;
+}
+.ql-toolbar.ql-snow {
+    background: var(--primary);
+    border-top-left-radius: var(--border-radius-sm);
+    border-top-right-radius: var(--border-radius-sm);
+}
+.ql-container.ql-snow {
+    background: var(--primary-darker);
+    border-bottom-left-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
+}
+.ql-editor {
+    color: var(--text);
+}
+.ql-snow .ql-stroke {
+    stroke: var(--text-muted);
+}
+.ql-snow .ql-picker-label {
+    color: var(--text-muted);
+}
+.ql-snow .ql-active .ql-stroke {
+    stroke: var(--accent);
+}
 
 /* Reply Form */
 .reply-form-container {
@@ -406,9 +446,9 @@ section {
     padding-top: 1.5rem;
     border-top: 1px solid var(--highlight);
 }
-
 .reply-editor .ql-editor {
     min-height: 100px;
+    font-size: 0.95rem;
 }
 
 /* Composer Modal */
@@ -416,15 +456,12 @@ section {
     width: 90%;
     max-width: 800px;
 }
-
 #threadComposerModal .form-group label {
     font-weight: 600;
     color: var(--accent);
 }
-
 #threadComposerModal #editor {
     height: 250px;
-    background: var(--primary-darker);
 }
 
 /* Responsive Adjustments */
