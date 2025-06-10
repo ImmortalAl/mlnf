@@ -23,7 +23,15 @@
 <body>
     <!-- Shared Components -->
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
-        <!-- Populated by activeUsers.js -->
+        <div class="sidebar-header">
+            <h2>Eternal Seekers</h2>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close active users panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="userList" class="user-list">
+            <!-- Active users will be populated here -->
+        </div>
     </aside>
     <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
 
