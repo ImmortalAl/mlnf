@@ -203,10 +203,10 @@ async function populateActiveUsersList() {
                 event.preventDefault(); 
                 const username = event.currentTarget.dataset.username;
                 console.log(`[activeUsers.js] Message button clicked for ${username}`);
-                if (window.MLNF && window.MLNF.MessageModal && typeof window.MLNF.MessageModal.open === 'function') {
-                    window.MLNF.MessageModal.open(username);
+                if (window.MLNF && window.MLNF.openMessageModal) {
+                    window.MLNF.openMessageModal(username);
                 } else {
-                    console.error(`[activeUsers.js] MLNF.MessageModal.open function not found for user ${username}.`);
+                    console.error(`[activeUsers.js] MLNF.openMessageModal function not found for user ${username}.`);
                 }
             });
         });

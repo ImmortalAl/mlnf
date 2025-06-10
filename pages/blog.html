@@ -159,27 +159,5 @@
     <script src="../components/shared/comments.js?v=1.2"></script>
     <script src="../js/blog.js?v=1.2"></script>
     <script src="../js/scripts.js?v=1.2"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize MLNF core first
-            if (window.MLNF) {
-                // Initialize individual components
-                if (window.MLNF.Navigation) window.MLNF.Navigation.init();
-                if (window.MLNF.UserMenu) window.MLNF.UserMenu.init();
-                if (window.MLNF.ActiveUsers) window.MLNF.ActiveUsers.init();
-                if (window.MLNF.MessageModal) window.MLNF.MessageModal.init();
-            } else {
-                console.error('MLNF core not loaded');
-            }
-
-            // Initialize blog list
-            if (window.MLNF && window.MLNF.BlogList) {
-                window.MLNF.BlogList.init();
-            } else {
-                console.error('Blog list component not loaded');
-            }
-        });
-    </script>
 </body>
 </html>
