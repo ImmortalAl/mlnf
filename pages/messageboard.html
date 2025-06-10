@@ -191,7 +191,6 @@
         });
 
         window.authManager.subscribe((isLoggedIn, user) => {
-            threadComposer.style.display = isLoggedIn ? 'block' : 'none';
             fetchThreads();
         });
 
