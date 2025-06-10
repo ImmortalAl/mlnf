@@ -195,15 +195,33 @@
             padding: 0.5rem 1rem;
             border-radius: 20px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s ease-in-out;
             font-weight: bold;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        .action-btn.validate:hover { background-color: var(--success); border-color: var(--success); }
-        .action-btn.challenge:hover { background-color: var(--danger); border-color: var(--danger); }
+
+        .action-btn:not(.active):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .action-btn.validate:not(.active):hover { background-color: var(--success-dim); border-color: var(--success); }
+        .action-btn.challenge:not(.active):hover { background-color: var(--danger-dim); border-color: var(--danger); }
         .action-btn.comments:hover { background-color: var(--highlight); border-color: var(--highlight); }
+        
+        .action-btn.active {
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .action-btn.validate.active {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+        .action-btn.challenge.active {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
 
         /* Submission Modal Styles */
         .modal {
@@ -558,8 +576,8 @@
                             </ul>
                         </div>
                         <div class="chronicle-actions">
-                            <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations || 0})</span></button>
-                            <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges || 0})</span></button>
+                            <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations?.length || 0})</span></button>
+                            <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges?.length || 0})</span></button>
                             <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments?.length || 0})</span></button>
                         </div>
                     `;

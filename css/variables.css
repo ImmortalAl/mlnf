@@ -9,6 +9,10 @@
     --warning: #ffca28;
     --danger: #ff4444;
 
+    /* Dimmed/Transparent versions for hovers */
+    --success-dim: rgba(92, 184, 92, 0.2);
+    --danger-dim: rgba(255, 68, 68, 0.2);
+
     /* Gradients */
     --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
     --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
