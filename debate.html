@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Constructive debates on contentious topics in an eternal sanctuary.">
+    <meta name="description" content="Open discussions for unbound spirits in an eternal sanctuary.">
     <meta name="theme-color" content="#0d0d1a">
-    <title>Clash of Immortals - Manifest Liberation, Naturally Free</title>
+    <title>Echoes Unbound - Manifest Liberation, Naturally Free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -101,7 +101,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .debate-list {
+        .threads-list {
             display: flex;
             flex-direction: column;
             gap: 2rem;
@@ -109,7 +109,7 @@
             margin: 0 auto;
         }
 
-        .debate-topic {
+        .thread {
             background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
             border-radius: var(--border-radius);
             padding: 2rem;
@@ -117,128 +117,26 @@
             border-left: 5px solid var(--accent);
         }
 
-        .debate-topic:hover {
+        .thread:hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow);
         }
 
-        .debate-topic h3 {
+        .thread h3 {
             font-size: 1.5rem;
             color: var(--accent);
             margin-bottom: 0.5rem;
         }
 
-        .debate-position {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(255, 94, 120, 0.1);
-            border-left: 4px solid var(--accent);
-            border-radius: var(--border-radius);
-        }
-
-        .debate-position p {
+        .thread p {
             color: #d9ccff;
             margin-bottom: 0.5rem;
         }
 
-        .debate-position .meta {
+        .thread .meta {
             font-size: 0.9rem;
             color: var(--success);
             font-style: italic;
-        }
-
-        .active-users {
-            position: fixed;
-            right: -300px;
-            top: 70px;
-            width: 300px;
-            height: calc(100% - 70px);
-            background: var(--gradient-secondary);
-            padding: 1.5rem;
-            transition: right 0.3s ease;
-            z-index: 200;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .active-users.active {
-            right: 0;
-        }
-
-        .active-users-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 94, 120, 0.3);
-        }
-
-        .active-users h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .active-users ul {
-            list-style: none;
-            max-height: calc(100% - 100px);
-            overflow-y: auto;
-        }
-
-        .active-users li {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 0;
-        }
-
-        .profile-preview img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 1rem;
-        }
-
-        .profile-preview a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .profile-preview .status {
-            font-size: 0.8rem;
-            color: #d9ccff;
-        }
-
-        .online-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--success);
-            border-radius: 50%;
-            margin-left: 0.5rem;
-        }
-
-        .show-users-btn {
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            background: var(--secondary);
-            border: none;
-            padding: 0.8rem;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--text);
-            z-index: 300;
-            transition: var(--transition);
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 250;
         }
 
         footer {
@@ -255,48 +153,6 @@
     </style>
 </head>
 <body>
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
-        <div class="active-users-header">
-            <h3>Eternal Seekers <span class="online-dot" aria-hidden="true"></span></h3>
-            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
-        </div>
-        <ul>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=ImmortalAl" alt="ImmortalAl's avatar">
-                <div>
-                    <a href="profiles.html#ImmortalAl">ImmortalAl</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Defending free speech</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=FreeSoul" alt="FreeSoul's avatar">
-                <div>
-                    <a href="profiles.html#FreeSoul">FreeSoul</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Seeking eternal liberty</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=EternalVoice" alt="EternalVoice's avatar">
-                <div>
-                    <a href="profiles.html#EternalVoice">EternalVoice</a>
-                    <p class="status">Echoing truth</p>
-                </div>
-            </li>
-            <li class="profile-preview">
-                <img src="https://i.pravatar.cc/40?u=TruthSeeker" alt="TruthSeeker's avatar">
-                <div>
-                    <a href="profiles.html#TruthSeeker">TruthSeeker</a>
-                    <span class="online-dot"></span>
-                    <p class="status">Unveiling hidden narratives</p>
-                </div>
-            </li>
-        </ul>
-    </aside>
-
-    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-
     <header>
         <div class="logo">
             <i class="fas fa-infinity"></i>
@@ -318,32 +174,25 @@
 
     <main>
         <section class="section-title">
-            <h2>Clash of Immortals</h2>
-            <p>Constructive debates where eternal minds forge truth</p>
+            <h2>Echoes Unbound</h2>
+            <p>Weave your thoughts into the eternal tapestry of free discussion</p>
         </section>
 
-        <div class="debate-list">
-            <div class="debate-topic">
-                <h3>Resolved: Freedom is an eternal right</h3>
-                <div class="debate-position">
-                    <p>"Freedom transcends time; it’s woven into existence." — ImmortalAl</p>
-                    <p class="meta">12 Votes</p>
-                </div>
-                <div class="debate-position">
-                    <p>"Freedom is a fleeting illusion, bound by power." — EternalVoice</p>
-                    <p class="meta">8 Votes</p>
-                </div>
+        <div class="threads-list">
+            <div class="thread">
+                <h3>Is Privacy Dead?</h3>
+                <p>"In 2025, every click is watched�how do we fight back?"</p>
+                <p class="meta">� ImmortalAl (12 replies)</p>
             </div>
-            <div class="debate-topic">
-                <h3>Resolved: Truth can survive censorship</h3>
-                <p class="debate-position">
-                    <p>"Truth endures beyond suppression; it’s eternal." — TruthSeeker</p>
-                    <p class="meta">15 Votes</p>
-                </p>
-                <div class="debate-position">
-                    <p>"Censorship buries truth beneath lies." — FreeSoul</p>
-                    <p class="meta">10 Votes</p>
-                </div>
+            <div class="thread">
+                <h3>The Power of Collective Truth</h3>
+                <p>"Can we crowdsource our way to freedom?"</p>
+                <p class="meta">� TruthSeeker (8 replies)</p>
+            </div>
+            <div class="thread">
+                <h3>Echoes of Resistance</h3>
+                <p>"How do we keep our voices alive against silencing?"</p>
+                <p class="meta">� FreeSoul (5 replies)</p>
             </div>
         </div>
     </main>
@@ -351,18 +200,5 @@
     <footer>
         <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
     </footer>
-
-    <script>
-        const activeUsers = document.getElementById('activeUsers');
-        const showUsersBtn = document.getElementById('showUsersBtn');
-        const closeUsersBtn = document.getElementById('closeUsers');
-
-        function toggleSidebar() {
-            activeUsers.classList.toggle('active');
-        }
-
-        showUsersBtn.addEventListener('click', toggleSidebar);
-        closeUsersBtn.addEventListener('click', toggleSidebar);
-    </script>
 </body>
 </html>
