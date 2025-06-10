@@ -100,7 +100,7 @@
             return;
         }
 
-        closeMessageModalBtnElement.addEventListener('click', closeMessageModal);
+        closeMessageModalBtnElement.addEventListener('click', close);
 
         if (sendMessageBtnElement) {
             sendMessageBtnElement.addEventListener('click', handleSendMessage);
