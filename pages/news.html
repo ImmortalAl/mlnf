@@ -584,12 +584,30 @@
             if (submissionForm) {
                 submissionForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    console.log('[NEWS] Form submission started...');
+                    
                     const formData = new FormData(submissionForm);
                     const data = Object.fromEntries(formData.entries());
-                    data.sources = data.sources.split('\n').filter(s => s.trim() !== '');
+                    
+                    // Process sources - handle empty sources gracefully
+                    if (data.sources && data.sources.trim()) {
+                        data.sources = data.sources.split('\n').filter(s => s.trim() !== '');
+                    } else {
+                        data.sources = [];
+                    }
+                    
+                    console.log('[NEWS] Submitting data:', data);
                     
                     try {
                         const token = localStorage.getItem('sessionToken');
+                        console.log('[NEWS] Token found:', !!token);
+                        
+                        if (!token) {
+                            alert('Please log in to submit a chronicle.');
+                            return;
+                        }
+                        
+                        console.log('[NEWS] Making POST request to:', `${API_URL}/chronicles`);
                         const response = await fetch(`${API_URL}/chronicles`, {
                             method: 'POST',
                             headers: {
@@ -599,17 +617,41 @@
                             body: JSON.stringify(data),
                         });
 
+                        console.log('[NEWS] Response status:', response.status);
+                        console.log('[NEWS] Response headers:', Object.fromEntries(response.headers.entries()));
+
                         if (response.ok) {
+                            console.log('[NEWS] Submission successful!');
+                            const result = await response.json();
+                            console.log('[NEWS] Success response:', result);
+                            
                             closeModal();
                             fetchChronicles(document.querySelector('.view-btn.active').dataset.view);
                             submissionForm.reset();
+                            alert('Chronicle submitted successfully!');
                         } else {
-                            const error = await response.json();
-                            alert(`Submission failed: ${error.message}`);
+                            console.error('[NEWS] Submission failed with status:', response.status);
+                            try {
+                                const errorText = await response.text();
+                                console.error('[NEWS] Error response body:', errorText);
+                                
+                                let errorMessage;
+                                try {
+                                    const errorJson = JSON.parse(errorText);
+                                    errorMessage = errorJson.message || errorJson.error || 'Unknown error';
+                                } catch {
+                                    errorMessage = errorText || `Server error (${response.status})`;
+                                }
+                                
+                                alert(`Submission failed: ${errorMessage}`);
+                            } catch (parseError) {
+                                console.error('[NEWS] Could not parse error response:', parseError);
+                                alert(`Submission failed with status ${response.status}`);
+                            }
                         }
                     } catch (error) {
-                        console.error('Error submitting chronicle:', error);
-                        alert('An unexpected error occurred. Please try again.');
+                        console.error('[NEWS] Network/request error:', error);
+                        alert(`Network error: ${error.message}. Please check your connection and try again.`);
                     }
                 });
             }
