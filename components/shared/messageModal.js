@@ -115,6 +115,7 @@
             });
             messageInputElement.addEventListener('input', handleTyping);
         }
+        isInitialized = true;
         console.log('[messageModal.js] Initialized.');
     }
 
