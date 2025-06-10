@@ -264,7 +264,7 @@
                     <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
                     ${threadData.author && threadData.author.signature ? `<div class="signature">${escapeHTML(threadData.author.signature)}</div>` : ''}
                     <div class="replies-container">
-                        ${renderReplies(threadData.replies)}
+                        ${renderReplies(threadData.replies, threadId)}
                     </div>
                     <div class="reply-form-container" id="mainReplyFormContainer"></div>
                 `;
@@ -313,7 +313,7 @@
             }
         });
 
-        function renderReplies(replies) {
+        function renderReplies(replies, threadId) {
             if (!replies || replies.length === 0) {
                 return '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
             }
@@ -324,7 +324,7 @@
                         <span class="vote-count">${reply.score || 0}</span>
                         <button class="vote-btn" data-action="downvote-reply" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
                     </div>
-                    <div class="reply-main">
+                    <div class="reply-main" data-thread-id="${threadId}">
                         <p class="thread-meta">
                             <strong>${escapeHTML(reply.author ? reply.author.username : 'Anonymous')}</strong> replied:
                         </p>
@@ -371,6 +371,50 @@
         function escapeHTML(str) {
             return str ? str.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match])) : '';
         }
+
+        // Event delegation for voting
+        document.querySelector('.lyceum-grid').addEventListener('click', async (e) => {
+            const voteBtn = e.target.closest('.vote-btn');
+            if (!voteBtn) return;
+
+            if (!window.authManager.isLoggedIn()) {
+                return alert('You must be logged in to vote.');
+            }
+
+            const action = voteBtn.dataset.action;
+            const isReply = voteBtn.closest('.reply');
+            const element = isReply || voteBtn.closest('.thread');
+            const id = element.dataset.id;
+            
+            let voteType, endpoint;
+
+            if (action.includes('upvote')) {
+                voteType = 'upvote';
+            } else if (action.includes('downvote')) {
+                voteType = 'downvote';
+            } else {
+                return;
+            }
+
+            endpoint = isReply 
+                ? `/threads/${element.closest('.reply-main').dataset.threadId}/replies/${id}/vote` 
+                : `/threads/${id}/vote`;
+            
+            try {
+                const response = await window.apiClient.post(endpoint, { vote: voteType });
+                
+                // Update UI with new score
+                const voteCountElement = element.querySelector('.vote-count');
+                voteCountElement.textContent = response.newScore;
+
+                // Update active button state
+                element.querySelectorAll('.vote-btn.active').forEach(btn => btn.classList.remove('active'));
+                voteBtn.classList.add('active');
+
+            } catch (error) {
+                alert(`Error: ${error.error || 'Could not cast vote.'}`);
+            }
+        });
     });
     </script>
 </body>
