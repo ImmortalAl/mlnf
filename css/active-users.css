@@ -247,14 +247,16 @@ aside#activeUsers.active-users.force-close {
     z-index: 1999; /* Between content and sidebar */
     opacity: 0;
     visibility: hidden; /* Add visibility to ensure it's truly hidden */
-    pointer-events: none;
+    pointer-events: none !important; /* Force no pointer events when hidden */
     transition: opacity 0.3s ease, visibility 0.3s ease;
+    display: none; /* Default to hidden */
 }
 
 .active-users-overlay.active {
     opacity: 1 !important; /* Force visible – wins against page-specific overrides */
     visibility: visible !important; /* Ensure visibility */
-    pointer-events: auto;
+    pointer-events: auto !important; /* Allow interactions when active */
+    display: block !important; /* Show when active */
 }
 
 /* Message Modal styles (original lines 170-267) were here. */
