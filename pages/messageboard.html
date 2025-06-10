@@ -43,14 +43,14 @@
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
             <h3 id="messageTitle">Direct Message</h3>
-            <p id="recipientName">To: Username</p>
+                <p id="recipientName">To: Username</p>
             <div class="message-history" id="messageHistory"></div>
             <div>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
                     <button type="submit" id="sendMessageBtn">Send Whisper</button>
                     <button type="button" id="closeMessageModal">Close Nexus</button>
-                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -88,8 +88,8 @@
     <main class="messageboard-container">
         <div class="lyceum-header">
             <div class="lyceum-header-content">
-                <h2>Echoes Unbound</h2>
-                <p>The eternal forum for ideas, debates, and revelations.</p>
+            <h2>Echoes Unbound</h2>
+            <p>The eternal forum for ideas, debates, and revelations.</p>
             </div>
             <div class="lyceum-header-actions">
                 <button class="btn btn-primary" id="newThreadBtn"><i class="fas fa-plus-circle"></i> New Echo</button>
@@ -117,7 +117,7 @@
                 <div id="threadList" class="thread-list">
                     <!-- Threads will be loaded here -->
                 </div>
-            </section>
+        </section>
 
             <!-- Column 3: Active Thread View -->
             <section class="lyceum-column" id="lyceum-active-thread" style="display: none;">
@@ -136,37 +136,37 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="threadForm">
-                    <div class="form-group">
-                        <label for="threadTitle">Title</label>
-                        <input type="text" id="threadTitle" name="title" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="threadCategory">Category</label>
-                        <select id="threadCategory" name="category" required>
-                            <option value="Ideas">Ideas</option>
-                            <option value="Debates">Debates</option>
-                            <option value="Trades">Trades</option>
-                            <option value="Events">Events</option>
-                            <option value="Governance">Governance</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="threadTags">Tags (comma-separated)</label>
-                        <input type="text" id="threadTags" name="tags">
-                    </div>
+            <form id="threadForm">
+                <div class="form-group">
+                    <label for="threadTitle">Title</label>
+                    <input type="text" id="threadTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="threadCategory">Category</label>
+                    <select id="threadCategory" name="category" required>
+                        <option value="Ideas">Ideas</option>
+                        <option value="Debates">Debates</option>
+                        <option value="Trades">Trades</option>
+                        <option value="Events">Events</option>
+                        <option value="Governance">Governance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="threadTags">Tags (comma-separated)</label>
+                    <input type="text" id="threadTags" name="tags">
+                </div>
                     <div class="form-group">
                         <label>Content</label>
-                        <div id="editor"></div>
+                <div id="editor"></div>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Post Thread</button>
+                <button type="submit" class="btn btn-primary">Post Thread</button>
                     </div>
-                </form>
+            </form>
             </div>
         </div>
     </div>
-    
+
     <!-- Core MLNF Components -->
     <script src="../components/shared/config.js?v=1.2"></script>
     <script src="../js/shared/apiClient.js?v=1.2"></script>
@@ -220,7 +220,7 @@
                         <button class="vote-btn" data-action="downvote-thread" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
                     </div>
                     <div class="thread-main">
-                        <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
+                    <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
                         <p class="thread-meta">
                             <span>${thread.replies ? thread.replies.length : 0} Replies</span> | 
                             <span>Posted by ${thread.author ? escapeHTML(thread.author.username) : 'Anonymous'}</span>
@@ -341,7 +341,7 @@
             composerModal.classList.remove('active');
             composerModal.setAttribute('aria-hidden', 'true');
         });
-        
+
         threadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitButton = threadForm.querySelector('button[type="submit"]');

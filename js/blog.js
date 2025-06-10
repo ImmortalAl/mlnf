@@ -90,7 +90,7 @@ async function fetchBlogPosts(page = 1) {
         
         if (posts.length === 0 && currentPage === 1) {
             console.log('[blog.js] No posts found, showing empty message');
-            blogList.innerHTML = '<div class="blog-post"><p>No scrolls have been written yet. The chamber awaits the first whisper...</p></div>';
+            blogList.innerHTML = '<p class="empty-message">No scrolls have been written yet. The chamber awaits the first whisper...</p>';
             hasMore = false;
         } else {
             console.log('[blog.js] Processing', posts.length, 'posts');
@@ -194,7 +194,7 @@ async function fetchBlogPosts(page = 1) {
         console.error('[blog.js] Error fetching blog posts:', error);
         if (currentPage === 1) {
             blogList.innerHTML = `
-                <div class="blog-post">
+                <div class="error-message">
                     <p>Error loading scrolls: ${error.message}</p>
                     <p>The ancient texts seem to be misplaced. Please try again later.</p>
                 </div>

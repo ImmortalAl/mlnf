@@ -44,6 +44,21 @@
     padding: 0 1rem;
 }
 
+/* Styles for empty and error messages */
+.empty-message, .error-message {
+    grid-column: 1 / -1; /* Span all columns */
+    text-align: center;
+    padding: 3rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    margin: 2rem 0;
+    color: var(--text);
+}
+
+.error-message {
+    border-left: 4px solid var(--danger);
+}
+
 /* Blog form for new posts */
 .blog-form {
     background: linear-gradient(135deg, var(--secondary), rgba(26, 26, 51, 0.85));
