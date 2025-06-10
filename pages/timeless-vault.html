@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
+    <link rel="canonical" href="https://mlnf.net/pages/timeless-vault">
+    <title>Timeless Vault - MLNF</title>
+    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../components/shared/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/active-users.css">
+    <!-- Add page-specific styles if needed in the future -->
+    <!-- <link rel="stylesheet" href="../css/timeless-vault.css"> -->
+</head>
+<body>
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div>
+    </aside>
+
+    <div class="floating-buttons">
+        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    </div>
+
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <!-- Message Modal Content is loaded by messageModal.js -->
+    </div>
+
+    <header>
+        <div class="logo">
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
+                    </span>
+                    <span class="short-title">MLNF</span>
+                </div>
+            </a>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="main-nav">
+            <ul>
+                <!-- Populated by navigation.js -->
+            </ul>
+        </nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
+                <!-- Populated by userMenu.js when logged out -->
+            </div>
+        </div>
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <nav class="mobile-nav" id="mobileNav">
+            <div class="sidebar-header">
+                <h2>Eternal Navigation</h2>
+                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-list">
+                <!-- Links will be dynamically populated -->
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Timeless Vault</h1>
+            <p>A repository of enduring wisdom. Content to be revealed.</p>
+        </section>
+        
+        <section class="placeholder-content">
+            <div class="container">
+                <h2>Framework in Place</h2>
+                <p>This page is ready for future development. The core navigation, user authentication, and sidebar components are all wired up and ready to go.</p>
+                <p>When the time comes, the unique features of the Timeless Vault will be built upon this foundation.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Manifest Liberation, Naturally Free | Embracing Infinity</p>
+    </footer>
+    
+    <!-- Shared MLNF Scripts -->
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.2"></script>
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/userMenu.js?v=1.2"></script>
+    <script src="../components/shared/authModal.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <!-- End Shared MLNF Scripts -->
+
+    <!-- Page-specific scripts can be added here -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Core MLNF functionalities are already initialized by the shared scripts.
+            // You can add page-specific logic here.
+            console.log('Timeless Vault page framework loaded.');
+        });
+    </script>
+</body>
+</html> 

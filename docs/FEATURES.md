@@ -88,6 +88,17 @@ EMAIL_FROM=Ancient Scrolls <noreply@mlnf.net>  # Optional sender address
 - [ ] **Enhanced Community Features** - User search, interest matching
 - [ ] **Achievement System** - Badges and user progression
 - [ ] **WebSocket Integration** - Real-time messaging and notifications
+- [ ] **Community Chatroom System** - Real-time chat with multiple channels
+  - Private messaging between users
+  - Channel-based group chats
+  - Message persistence and history
+  - User presence indicators
+  - File sharing capabilities
+  - Emoji and reaction support
+  - Integration with existing message board
+  - End-to-end encryption for private messages
+  - Rate limiting and spam prevention
+  - Message moderation tools
 
 ### Low Priority
 - [ ] **File/Image Sharing** - Support for media in messages
