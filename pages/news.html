@@ -206,7 +206,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 2000;
+            z-index: 5000;
             left: 0;
             top: 0;
             width: 100%;
@@ -407,6 +407,13 @@
 
     <!-- Simplified, reliable script loading -->
     <script src="../components/shared/config.js"></script>
+    <script src="../components/shared/navigation.js"></script>
+    <script src="../components/shared/userMenu.js"></script>
+    <script src="../components/shared/authModal.js"></script>
+    <script src="../components/shared/activeUsers.js"></script>
+    <script src="../components/shared/messageModal.js"></script>
+    <script src="../components/shared/mlnf-core.js"></script>
+    <script src="../js/dev-mode.js"></script>
     <script>
         // Self-contained news page with reliable modal functionality
         document.addEventListener('DOMContentLoaded', () => {
@@ -684,7 +691,10 @@
                     renderChronicles(); // Initial render
                 } catch (error) {
                     console.error('Error fetching chronicles:', error);
-                    chroniclesFeed.innerHTML = '<p style="text-align: center;">Failed to load the Chronicles. The archives may be temporarily sealed.</p>';
+                    // Keep the sample articles visible instead of showing error
+                    console.log('[NEWS] Keeping sample articles due to fetch error');
+                    // Don't clear the feed, just log the error
+                    // chroniclesFeed.innerHTML = '<p style="text-align: center;">Failed to load the Chronicles. The archives may be temporarily sealed.</p>';
                 }
             };
 
@@ -865,6 +875,16 @@
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('action') === 'submit') {
                 openModal();
+            }
+
+            // === ETERNAL SEEKERS SIDEBAR ===
+            const seekersToggle = document.getElementById('toggle-seekers');
+            const seekersSidebar = document.getElementById('eternalSeekers');
+            
+            if (seekersToggle && seekersSidebar) {
+                seekersToggle.addEventListener('click', () => {
+                    seekersSidebar.classList.toggle('active');
+                });
             }
         });
     </script>
