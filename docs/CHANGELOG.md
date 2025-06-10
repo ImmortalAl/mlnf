@@ -368,4 +368,33 @@ All notable changes to the MLNF project are documented here, organized by develo
 - **Enhanced Debugging:** Added extensive, detailed logging to the chronicle submission process, enabling rapid diagnosis of the server-side 500 error.
 
 ## [Version 1.1.0] - 2024-05-15
-// ... existing code ... 
+
+# Changelog
+
+This file documents the development history and session logs for the MLNF project.
+
+---
+
+### **Session: June 10, 2025**
+
+#### **🎯 Goals:**
+-   Deploy backend updates.
+-   Diagnose and fix frontend layout and functionality bugs.
+
+#### **✅ Fixes & Improvements:**
+
+-   **Echoes Unbound (Message Board):**
+    -   Corrected the main page layout to a responsive 3-column grid. Prior to this, it was incorrectly rendering as a 2-column layout.
+
+-   **Soul Scrolls (Blog Page):**
+    -   Fixed a bug that caused incorrect like/dislike counts to be displayed. The backend was sending a number, but the frontend was expecting an array.
+    -   Added defensive code to prevent the layout from breaking when no blog posts are found.
+
+-   **General Frontend:**
+    -   **Cache Busting:** Implemented a versioning system (`?v=1.x`) for CSS and JavaScript files to ensure users always receive the latest updates without having to manually clear their browser cache.
+    -   **Debugging:** Added and removed temporary visual debugging aids (colored borders) to diagnose and confirm layout issues.
+
+#### **📝 Lessons Learned:**
+-   Clarified the importance of using specific UI terms (e.g., "Echoes Unbound" vs. "the page") when reporting bugs to avoid ambiguity and ensure fixes are applied to the correct location.
+
+--- 
