@@ -232,7 +232,7 @@
             }
             const isAuthenticated = window.authManager.isLoggedIn();
             threadList.innerHTML = threads.map(thread => {
-                const isAuthor = isAuthenticated && window.authManager.getUserId() === thread.author?._id;
+                const isAuthor = isAuthenticated && window.authManager.getUser()?._id === thread.author?._id;
                 return `
                 <div class="thread" data-id="${thread._id}">
                     <div class="thread-voting">
