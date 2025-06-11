@@ -31,6 +31,16 @@ const apiClient = {
     },
     
     /**
+     * Performs a PUT request.
+     * @param {string} endpoint - The API endpoint to hit.
+     * @param {object} body - The data to send in the request body.
+     * @returns {Promise<any>} The JSON response from the server.
+     */
+    async put(endpoint, body) {
+        return this.request('PUT', endpoint, body);
+    },
+
+    /**
      * The core request handling function.
      * @param {string} method - The HTTP method (GET, POST, etc.).
      * @param {string} endpoint - The API endpoint.
