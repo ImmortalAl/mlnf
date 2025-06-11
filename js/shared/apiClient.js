@@ -56,9 +56,14 @@ const apiClient = {
         });
 
         // Skip auth headers for GET /threads since it doesn't require authentication
-        if (token && !(method === 'GET' && endpoint === '/threads')) {
+        const skipAuth = method === 'GET' && endpoint === '/threads';
+        if (token && !skipAuth) {
             headers.append('Authorization', `Bearer ${token}`);
         }
+
+        console.log(`[API Client] DEBUG - Token present: ${token ? 'Yes' : 'No'}`);
+        console.log(`[API Client] DEBUG - Skip auth for this request: ${skipAuth}`);
+        console.log(`[API Client] DEBUG - Headers:`, Object.fromEntries(headers.entries()));
 
         const config = {
             method,

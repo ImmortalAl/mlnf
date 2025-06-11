@@ -195,14 +195,33 @@
         });
 
         async function fetchThreads(searchTerm = '') {
+            console.log('[DEBUG] fetchThreads called with searchTerm:', searchTerm);
+            console.log('[DEBUG] User logged in:', window.authManager.isLoggedIn());
+            console.log('[DEBUG] Auth token present:', localStorage.getItem('sessionToken') ? 'Yes' : 'No');
+            
             threadList.innerHTML = '<p>Summoning eternal echoes...</p>';
             try {
                 const endpoint = searchTerm ? `/threads/search?term=${encodeURIComponent(searchTerm)}` : '/threads';
+                console.log('[DEBUG] Making request to endpoint:', endpoint);
+                
                 const response = await window.apiClient.get(endpoint);
+                console.log('[DEBUG] API response received:', response);
+                
                 const threads = response.threads || response;
+                console.log('[DEBUG] Threads to render:', threads);
+                
                 renderThreads(threads);
+                console.log('[DEBUG] Threads rendered successfully');
             } catch (error) {
-                threadList.innerHTML = '<p class="error">Failed to load threads.</p>';
+                console.error('[ERROR] Failed to fetch threads:', error);
+                console.error('[ERROR] Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name,
+                    status: error.status,
+                    response: error
+                });
+                threadList.innerHTML = `<p class="error">Failed to load threads. Error: ${error.error || error.message || 'Unknown error'}</p>`;
             }
         }
 
