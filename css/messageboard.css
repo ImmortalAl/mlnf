@@ -465,14 +465,89 @@ section {
 /* Composer Modal */
 #threadComposerModal .modal-content-lg {
     width: 90%;
-    max-width: 800px;
+    max-width: 700px;
+    padding: 1.5rem;
+    background: var(--secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--highlight);
 }
+
+#threadComposerModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--highlight);
+}
+
+#threadComposerModal .modal-header h3 {
+    margin: 0;
+    color: var(--accent);
+    font-size: 1.4rem;
+}
+
+#threadComposerModal .close-modal {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+#threadComposerModal .close-modal:hover {
+    color: var(--accent);
+}
+
+#threadComposerModal .modal-body {
+    padding: 0;
+}
+
+#threadComposerModal .form-group {
+    margin-bottom: 1rem;
+}
+
 #threadComposerModal .form-group label {
     font-weight: 600;
     color: var(--accent);
+    margin-bottom: 0.4rem;
+    display: block;
+    font-size: 0.9rem;
 }
+
+#threadComposerModal .form-group input,
+#threadComposerModal .form-group select {
+    width: 100%;
+    padding: 0.6rem;
+    background: var(--primary);
+    border: 1px solid var(--highlight);
+    border-radius: var(--border-radius-sm);
+    color: var(--text);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+}
+
+#threadComposerModal .form-group input:focus,
+#threadComposerModal .form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
 #threadComposerModal #editor {
-    height: 250px;
+    height: 200px;
+}
+
+#threadComposerModal .form-actions {
+    margin-top: 1rem;
+    text-align: right;
+}
+
+#threadComposerModal .form-actions .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
 }
 
 /* Responsive Adjustments */
