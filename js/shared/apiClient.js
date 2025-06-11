@@ -55,7 +55,8 @@ const apiClient = {
             'Content-Type': 'application/json',
         });
 
-        if (token) {
+        // Skip auth headers for GET /threads since it doesn't require authentication
+        if (token && !(method === 'GET' && endpoint === '/threads')) {
             headers.append('Authorization', `Bearer ${token}`);
         }
 
