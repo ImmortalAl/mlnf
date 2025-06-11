@@ -470,15 +470,14 @@ section {
     background: var(--secondary);
     border-radius: var(--border-radius);
     border: 1px solid var(--highlight);
+    position: relative; /* For absolute positioning of close button */
 }
 
 #threadComposerModal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--highlight);
+    padding-right: 2rem; /* Make space for close button */
 }
 
 #threadComposerModal .modal-header h3 {
@@ -488,6 +487,9 @@ section {
 }
 
 #threadComposerModal .close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     background: none;
     border: none;
     color: var(--text-muted);
@@ -495,11 +497,13 @@ section {
     cursor: pointer;
     padding: 0.25rem;
     line-height: 1;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
+    z-index: 10;
 }
 
 #threadComposerModal .close-modal:hover {
     color: var(--accent);
+    transform: scale(1.1);
 }
 
 #threadComposerModal .modal-body {

@@ -362,14 +362,31 @@
 
         // Modal opening/closing logic for the new composer
         const composerModal = document.getElementById('threadComposerModal');
+        
+        function closeComposerModal() {
+            composerModal.classList.remove('active');
+            composerModal.setAttribute('aria-hidden', 'true');
+            // Reset form state when closing
+            delete threadForm.dataset.editMode;
+            delete threadForm.dataset.editingId;
+            document.getElementById('composerTitle').textContent = 'Create a New Echo';
+            threadForm.querySelector('button[type="submit"]').textContent = 'Post Thread';
+        }
+        
         document.getElementById('newThreadBtn').addEventListener('click', () => {
             composerModal.classList.add('active');
             composerModal.setAttribute('aria-hidden', 'false');
         });
 
         document.getElementById('closeComposer').addEventListener('click', () => {
-            composerModal.classList.remove('active');
-            composerModal.setAttribute('aria-hidden', 'true');
+            closeComposerModal();
+        });
+
+        // Click outside to close modal
+        composerModal.addEventListener('click', (e) => {
+            if (e.target === composerModal) {
+                closeComposerModal();
+            }
         });
 
         async function openComposerForEdit(threadId) {
@@ -429,14 +446,7 @@
                 }
                 threadForm.reset();
                 quill.setContents([]);
-                composerModal.classList.remove('active');
-                composerModal.setAttribute('aria-hidden', 'true');
-                
-                // Reset form state
-                delete threadForm.dataset.editMode;
-                delete threadForm.dataset.editingId;
-                document.getElementById('composerTitle').textContent = 'Create a New Echo';
-                submitButton.textContent = 'Post Thread';
+                closeComposerModal();
                 
                 fetchThreads(); // Refresh the thread list
             } catch (error) {
