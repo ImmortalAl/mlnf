@@ -10,6 +10,9 @@ node_modules/
 .vscode/
 .idea/
 
+# Backend directory (separate repo on Render)
+back/
+
 # System files
 .DS_Store
 Thumbs.db
