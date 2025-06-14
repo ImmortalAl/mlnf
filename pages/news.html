@@ -186,6 +186,43 @@
             gap: 1.5rem;
             border-top: 1px solid var(--highlight);
             padding-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile responsive fixes */
+        @media (max-width: 768px) {
+            .chronicle-actions {
+                gap: 0.8rem;
+                flex-wrap: wrap;
+            }
+            
+            .action-btn {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+                flex: 1;
+                min-width: 80px;
+                justify-content: center;
+            }
+            
+            .action-btn i {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chronicle-actions {
+                gap: 0.5rem;
+            }
+            
+            .action-btn {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.6rem;
+                min-width: 70px;
+            }
+            
+            .action-btn .count {
+                display: none; /* Hide counts on very small screens */
+            }
         }
 
         .action-btn {
@@ -253,6 +290,58 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             animation: modal-fade-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Mobile modal fixes */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                padding: 1.5rem;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .modal-content h3 {
+                font-size: 1.5rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .form-group input,
+            .form-group textarea {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .submit-truth-btn {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 98%;
+                margin: 2% auto;
+                padding: 1rem;
+            }
+            
+            .modal-content h3 {
+                font-size: 1.3rem !important;
+            }
+            
+            .form-group textarea {
+                min-height: 80px;
+            }
         }
 
         @keyframes modal-fade-in {
