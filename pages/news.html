@@ -427,6 +427,37 @@
         </div>
     </div>
 
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeEditModal">&times;</span>
+            <h3 style="font-family: 'Roboto Slab', serif; color: var(--truth-gold); font-size: 2rem; margin-bottom: 2rem;">Edit Your Truth</h3>
+            <form id="editForm">
+                <input type="hidden" id="editChronicleId">
+                <div class="form-group">
+                    <label for="editTitle">Title</label>
+                    <input type="text" id="editTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="editContent">Content</label>
+                    <textarea id="editContent" name="content" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editEventDate">Date of Event</label>
+                    <input type="date" id="editEventDate" name="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSources">Sources (separate by new line)</label>
+                    <textarea id="editSources" name="sources"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="submit-truth-btn" style="flex: 1;">Update Chronicle</button>
+                    <button type="button" id="deleteChronicle" class="submit-truth-btn" style="flex: 1; background: var(--danger);">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Auth Modal container -->
     <div id="auth-modal-container"></div>
 
@@ -460,6 +491,12 @@
             const commentsContainer = document.getElementById('commentsContainer');
             const commentsModalTitle = document.getElementById('commentsModalTitle');
             let commentsSystem = null;
+
+            // Edit Modal elements
+            const editModal = document.getElementById('editModal');
+            const editForm = document.getElementById('editForm');
+            const closeEditBtn = document.getElementById('closeEditModal');
+            const deleteBtn = document.getElementById('deleteChronicle');
 
             // Add a protective flag to prevent interference from other scripts
             window.NEWS_PAGE_INITIALIZED = true;
@@ -496,6 +533,37 @@
                 }
             });
             // --- End Modal Logic ---
+
+            // --- Edit Modal Logic ---
+            const openEditModal = (chronicleId) => {
+                // Find the chronicle data
+                const chronicle = window.currentChronicles?.find(c => c._id === chronicleId);
+                if (!chronicle) return;
+
+                // Populate form
+                document.getElementById('editChronicleId').value = chronicleId;
+                document.getElementById('editTitle').value = chronicle.title;
+                document.getElementById('editContent').value = chronicle.content;
+                document.getElementById('editEventDate').value = new Date(chronicle.eventDate).toISOString().split('T')[0];
+                document.getElementById('editSources').value = Array.isArray(chronicle.sources) ? chronicle.sources.join('\n') : '';
+
+                editModal.classList.add('active');
+            };
+
+            const closeEditModal = () => {
+                editModal.classList.remove('active');
+            };
+
+            if (closeEditBtn) {
+                closeEditBtn.addEventListener('click', closeEditModal);
+            }
+
+            window.addEventListener('click', (event) => {
+                if (event.target === editModal) {
+                    closeEditModal();
+                }
+            });
+            // --- End Edit Modal Logic ---
 
             // --- Data Fetching Logic ---
             const fetchChronicles = async (view = 'recent') => {
@@ -559,6 +627,11 @@
 
                     // Ensure sources is an array
                     const sources = Array.isArray(chronicle.sources) ? chronicle.sources : [];
+                    
+                    // Check if current user is the author
+                    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                    const isAuthor = currentUser.username === chronicle.author?.username;
+                    const editButton = isAuthor ? `<button class="action-btn edit" data-action="edit" data-id="${chronicle._id}"><i class="fas fa-edit"></i> Edit</button>` : '';
 
                     article.innerHTML = `
                         <p class="chronicle-meta">
@@ -579,10 +652,22 @@
                             <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations?.length || 0})</span></button>
                             <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges?.length || 0})</span></button>
                             <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments?.length || 0})</span></button>
+                            ${editButton}
                         </div>
                     `;
                     chroniclesFeed.appendChild(article);
                     console.log(`[NEWS] Added chronicle item ${index + 1}/${sortedChronicles.length}`);
+                });
+
+                // Store chronicles for edit modal
+                window.currentChronicles = sortedChronicles;
+
+                // Add event listeners for edit buttons
+                chroniclesFeed.addEventListener('click', (event) => {
+                    if (event.target.closest('.action-btn.edit')) {
+                        const chronicleId = event.target.closest('.action-btn.edit').dataset.id;
+                        openEditModal(chronicleId);
+                    }
                 });
 
                 console.log(`[NEWS] Finished rendering. chroniclesFeed children count: ${chroniclesFeed.children.length}`);
@@ -644,6 +729,62 @@
                         console.error('[NEWS] Submission failed:', error);
                         const errorMessage = error.error || 'An unexpected error occurred.';
                         alert(`Submission failed: ${errorMessage}`);
+                    }
+                });
+            }
+
+            // Edit form submission handler
+            if (editForm) {
+                editForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const chronicleId = document.getElementById('editChronicleId').value;
+                    const formData = new FormData(editForm);
+                    const data = Object.fromEntries(formData.entries());
+                    
+                    // Field validation
+                    if (!data.title || !data.content || !data.eventDate) {
+                        alert('Please fill in all required fields.');
+                        return;
+                    }
+
+                    console.log('[NEWS] Updating chronicle:', chronicleId, data);
+
+                    try {
+                        const result = await window.apiClient.put(`/chronicles/${chronicleId}`, data);
+                        console.log('[NEWS] Update successful!', result);
+                        alert('Chronicle updated successfully!');
+                        
+                        closeEditModal();
+                        fetchChronicles(document.querySelector('.view-btn.active').dataset.view);
+                    } catch (error) {
+                        console.error('[NEWS] Update failed:', error);
+                        const errorMessage = error.error || 'Update failed.';
+                        alert(`Update failed: ${errorMessage}`);
+                    }
+                });
+            }
+
+            // Delete button handler
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async () => {
+                    const chronicleId = document.getElementById('editChronicleId').value;
+                    
+                    if (!confirm('Are you sure you want to delete this chronicle? This action cannot be undone.')) {
+                        return;
+                    }
+
+                    try {
+                        await window.apiClient.delete(`/chronicles/${chronicleId}`);
+                        console.log('[NEWS] Delete successful!');
+                        alert('Chronicle deleted successfully!');
+                        
+                        closeEditModal();
+                        fetchChronicles(document.querySelector('.view-btn.active').dataset.view);
+                    } catch (error) {
+                        console.error('[NEWS] Delete failed:', error);
+                        const errorMessage = error.error || 'Delete failed.';
+                        alert(`Delete failed: ${errorMessage}`);
                     }
                 });
             }
