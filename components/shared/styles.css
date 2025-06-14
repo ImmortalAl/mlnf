@@ -239,15 +239,15 @@ header {
 
 /* Mobile Navigation Styles */
 .mobile-nav-toggle {
-    background: none;
-    border: none;
-    color: var(--text, #f0e6ff);
-    font-size: 1.8rem; /* Slightly larger for better tap target */
+    background: red; /* TEMP: Make it visible for debugging */
+    border: 2px solid yellow; /* TEMP: Make it obvious */
+    color: white;
+    font-size: 2rem;
     cursor: pointer;
-    display: none; /* Default to hidden, shown by media query */
-    z-index: 1001; /* Ensure it's above main nav if overlap occurs briefly */
-    padding: 0.25rem; /* Add some padding for easier clicking */
-    line-height: 1; /* Prevent extra space */
+    display: block !important; /* TEMP: Force visible at all sizes */
+    z-index: 1001;
+    padding: 1rem;
+    line-height: 1;
     transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
 }
 
