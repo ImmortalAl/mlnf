@@ -890,25 +890,7 @@ footer p {
     .short-title {
         display: block !important; /* Show short title */
     }
-    nav.main-nav { /* Show simplified mobile navigation */
-        display: flex !important;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        justify-content: center;
-    }
-    nav.main-nav a {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-        min-width: 40px;
-        min-height: 40px;
-    }
-    nav.main-nav a span {
-        font-size: 0.7rem;
-        line-height: 1.1;
-    }
-    nav.main-nav a i {
-        font-size: 1rem;
-    }
+    /* Main nav hidden on mobile - hamburger menu used instead */
     /* The .mobile-nav-toggle button (hamburger) is styled in components/shared/styles.css */
     /* and its display:block is handled by a media query there. */
 }
