@@ -721,7 +721,7 @@ header {
 
 /* Ensure message modal has highest z-index */
 #messageModal {
-    z-index: 2300 !important;
+    z-index: 3100 !important;
 }
 
 #messageModal .message-modal-content {
