@@ -243,6 +243,7 @@ header {
 .mobile-nav {
     position: fixed;
     top: 0;
+    left: 0;
     width: 250px;
     height: 100vh;
     background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.95)));
@@ -254,6 +255,42 @@ header {
     visibility: hidden;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1), visibility 0.3s step-end;
     backdrop-filter: blur(10px);
+}
+
+/* Sidebar header styling */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+}
+
+.sidebar-header h2 {
+    color: var(--text, #f0e6ff);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.close-sidebar {
+    background: rgba(255, 94, 120, 0.1);
+    border: 1px solid var(--accent, #ff5e78);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text, #f0e6ff);
+    cursor: pointer;
+    transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
+    font-size: 1.2rem;
+}
+
+.close-sidebar:hover {
+    background: var(--accent, #ff5e78);
+    color: var(--primary, #0d0d1a);
 }
 
 /* Targeting the header within the mobile nav specifically */
@@ -277,6 +314,8 @@ header {
     flex-direction: column;
     gap: 0.3rem;
     margin-top: 1.5rem;
+    list-style: none;
+    padding: 0;
 }
 
 .mobile-nav-list a {
