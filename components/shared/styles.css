@@ -12,6 +12,8 @@ header {
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(10px);
+    /* TEMP DEBUG: Make header visible */
+    border: 5px solid red;
 }
 
 .logo {
