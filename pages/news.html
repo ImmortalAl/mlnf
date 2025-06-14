@@ -720,7 +720,6 @@
                     // Check if current user is the author
                     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
                     const isAuthor = currentUser.username === chronicle.author?.username;
-                    console.log('[NEWS] Edit check:', { currentUser: currentUser.username, author: chronicle.author?.username, isAuthor });
                     const editButton = isAuthor ? `<button class="action-btn edit" data-action="edit" data-id="${chronicle._id}"><i class="fas fa-edit"></i> Edit</button>` : '';
 
                     article.innerHTML = `

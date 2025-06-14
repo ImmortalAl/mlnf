@@ -151,7 +151,7 @@ async function openMessageModal(username) {
         }
         currentBackdropListener = (event) => {
             if (event.target === messageModal) {
-                closeMessageModal();
+                close();
             }
         };
         messageModal.addEventListener('click', currentBackdropListener);
