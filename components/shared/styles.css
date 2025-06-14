@@ -12,8 +12,6 @@ header {
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(10px);
-    /* TEMP DEBUG: Make header visible */
-    border: 5px solid red;
 }
 
 .logo {
@@ -241,16 +239,22 @@ header {
 
 /* Mobile Navigation Styles */
 .mobile-nav-toggle {
-    background: red; /* TEMP: Make it visible for debugging */
-    border: 2px solid yellow; /* TEMP: Make it obvious */
-    color: white;
-    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--text, #f0e6ff);
+    font-size: 1.8rem;
     cursor: pointer;
-    display: block !important; /* TEMP: Force visible at all sizes */
+    display: none; /* Hidden by default, shown in media query */
     z-index: 1001;
-    padding: 1rem;
+    padding: 0.5rem;
     line-height: 1;
     transition: var(--transition, all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1));
+    border-radius: 4px;
+}
+
+.mobile-nav-toggle:hover {
+    background: rgba(255, 94, 120, 0.1);
+    color: var(--accent, #ff5e78);
 }
 
 .mobile-nav {
