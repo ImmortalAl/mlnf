@@ -900,16 +900,68 @@ body.light-theme .feature-card p {
 /* Footer Styles */
 footer {
     background: var(--gradient-secondary);
-    text-align: center;
     border-top: 3px solid var(--accent);
     padding: 3rem 2rem;
     margin-top: auto; /* Pushes footer to bottom if content is short */
 }
 
-footer p {
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    flex-wrap: wrap;
+}
+
+.footer-column {
+    text-align: center;
+    min-width: 200px;
+}
+
+.footer-column h3 {
+    color: var(--accent);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-column ul li a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    opacity: 0.9;
+}
+
+.footer-column ul li a:hover {
+    color: var(--accent);
+    opacity: 1;
+    transform: translateX(5px);
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    padding-top: 2rem;
+}
+
+.footer-bottom p {
     font-size: 1rem;
     line-height: 1.7;
     opacity: 0.95;
+    margin-bottom: 0.5rem;
 }
 
 .social-links {
@@ -996,6 +1048,20 @@ footer p {
     footer { padding: 2rem 1rem; }
 }
 
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+    
+    .footer-column {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
 @media (max-width: 480px) {
     .hero h1 { font-size: 2rem; }
     .section-title h2 { font-size: 1.8rem; }
@@ -1005,6 +1071,14 @@ footer p {
     #messageModal .auth-modal h3 { font-size: 1.3rem; }
     #messageModal .auth-modal input[type="text"] { padding: 0.7rem; }
     #messageModal .auth-modal button { padding: 0.7rem; font-size: 0.9rem; }
+    
+    footer {
+        padding: 2rem 1rem;
+    }
+    
+    .footer-content {
+        gap: 1.5rem;
+    }
 }
 
 /* Fallback for --accent-rgb if not defined in base-theme.css */
