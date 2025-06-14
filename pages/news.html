@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Boundless Chronicles: User-submitted stories immortalizing hidden truths in the MLNF sanctuary.">
     <meta name="theme-color" content="#0d0d1a">
-    <title>Boundless Chronicles - Manifest Liberation, Naturally Free</title>
+    <title>Boundless Chronicles - Manifest Liberation, Naturally Free (v1.1)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/base-theme.css">
@@ -631,6 +631,7 @@
                     // Check if current user is the author
                     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
                     const isAuthor = currentUser.username === chronicle.author?.username;
+                    console.log('[NEWS] Edit check:', { currentUser: currentUser.username, author: chronicle.author?.username, isAuthor });
                     const editButton = isAuthor ? `<button class="action-btn edit" data-action="edit" data-id="${chronicle._id}"><i class="fas fa-edit"></i> Edit</button>` : '';
 
                     article.innerHTML = `
