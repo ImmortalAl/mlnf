@@ -910,6 +910,101 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     background: radial-gradient(circle, rgba(214, 45, 77, 0.1), transparent 70%);
 }
 
+/* Mobile responsive fixes for message modal */
+@media (max-width: 768px) {
+    #messageModal .message-modal-content {
+        width: 95%;
+        max-width: none;
+        padding: 1.5rem;
+        margin: 1rem;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    
+    #messageModal .message-modal-content h3 {
+        font-size: 1.4rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    #messageModal .message-history {
+        max-height: 200px;
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    #messageModal .message {
+        padding: 0.6rem 0.8rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    #messageModal .message-text {
+        font-size: 0.9rem;
+    }
+    
+    #messageModal .message-modal-content input[type="text"] {
+        padding: 0.7rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    #messageModal .modal-actions {
+        gap: 0.8rem;
+        flex-direction: column;
+    }
+    
+    #messageModal .message-modal-content button {
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
+        flex-grow: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    #messageModal .message-modal-content {
+        width: 98%;
+        padding: 1rem;
+        margin: 0.5rem;
+        max-height: 90vh;
+    }
+    
+    #messageModal .message-modal-content h3 {
+        font-size: 1.2rem !important;
+    }
+    
+    #messageModal .message-history {
+        max-height: 150px;
+        padding: 0.6rem;
+    }
+    
+    #messageModal .message {
+        padding: 0.5rem 0.6rem;
+        max-width: 85%;
+    }
+    
+    #messageModal .message-text {
+        font-size: 0.85rem;
+    }
+    
+    #messageModal .message-time {
+        font-size: 0.7rem;
+    }
+    
+    #messageModal .message-modal-content input[type="text"] {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    #messageModal .message-modal-content button {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    
+    /* Hide decorative spinning background on very small screens for performance */
+    #messageModal .message-modal-content::before {
+        display: none;
+    }
+}
+
 /* Keyframes used by modals in this file */
 @keyframes modalContentAppear {
     from { transform: scale(0.95) translateY(10px); opacity: 0; }
