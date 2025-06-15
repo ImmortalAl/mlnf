@@ -853,6 +853,18 @@ body.light-theme .feature-card p {
         max-height: 90vh;
     }
     
+    /* Position modal higher on small mobile devices to avoid keyboard overlap */
+    .modal {
+        align-items: flex-start;
+        padding-top: 5vh;
+    }
+    
+    /* When keyboard might be open (input/textarea focused), position even higher */
+    .modal.keyboard-open {
+        align-items: flex-start;
+        padding-top: 2vh;
+    }
+    
     .feedback-modal h3 {
         font-size: 1.2rem !important;
     }

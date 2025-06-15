@@ -76,6 +76,9 @@ class FeedbackSystem {
                 this.closeModal();
             }
         });
+        
+        // Add mobile keyboard detection for better modal positioning
+        this.setupMobileKeyboardDetection();
     }
     openModal() {
         if (!this.modal) return;
@@ -94,6 +97,7 @@ class FeedbackSystem {
         if (!this.modal) return;
         this.modal.style.display = 'none';
         this.modal.setAttribute('aria-hidden', 'true');
+        this.modal.classList.remove('keyboard-open');
         document.body.style.overflow = '';
     }
     updateUserInfo() {
@@ -188,6 +192,51 @@ class FeedbackSystem {
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Feedback';
         }
+    }
+    
+    setupMobileKeyboardDetection() {
+        // Only add keyboard detection on mobile devices (screen width <= 480px)
+        if (window.innerWidth > 480) return;
+        
+        // Add focus and blur listeners to form inputs
+        const inputs = this.modal.querySelectorAll('input, textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focusin', () => {
+                // Small delay to ensure keyboard is opening
+                setTimeout(() => {
+                    if (this.modal && this.modal.style.display === 'flex') {
+                        this.modal.classList.add('keyboard-open');
+                    }
+                }, 300);
+            });
+            
+            input.addEventListener('focusout', () => {
+                // Small delay to ensure keyboard is closing
+                setTimeout(() => {
+                    if (this.modal) {
+                        this.modal.classList.remove('keyboard-open');
+                    }
+                }, 300);
+            });
+        });
+        
+        // Also detect viewport height changes (alternative method)
+        let initialViewportHeight = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            if (!this.modal || this.modal.style.display !== 'flex') return;
+            
+            const currentHeight = window.innerHeight;
+            const heightDifference = initialViewportHeight - currentHeight;
+            
+            // If viewport height decreased significantly (likely keyboard opened)
+            if (heightDifference > 150) {
+                this.modal.classList.add('keyboard-open');
+            } else {
+                this.modal.classList.remove('keyboard-open');
+            }
+        });
     }
 }
 window.addEventListener('load', () => {
