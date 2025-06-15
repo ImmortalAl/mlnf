@@ -175,6 +175,16 @@ async function populateActiveUsersList() {
                 const isOnline = user.online === true;
                 const statusMessage = user.status && user.status.trim() !== '' ? user.status : 'Wandering the eternal realms...';
                 
+                // Debug user data
+                console.log(`[ActiveUsers] Processing user:`, {
+                    username: username,
+                    displayName: displayName,
+                    avatar: user.avatar,
+                    online: isOnline,
+                    isVIP: user.isVIP,
+                    role: user.role
+                });
+                
                 // Create unified user display using MLNF Avatar System
                 const userDisplay = window.MLNFAvatars.createUserDisplay({
                     username: username,

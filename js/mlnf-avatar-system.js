@@ -235,12 +235,17 @@ class MLNFAvatarSystem {
      * @returns {string} Avatar URL
      */
     generateAvatarUrl(username = 'Anonymous', size = 40, customUrl = null) {
+        console.log(`[MLNF Avatar] generateAvatarUrl called with:`, { username, size, customUrl });
+        
         if (customUrl) {
+            console.log(`[MLNF Avatar] Using custom URL: ${customUrl}`);
             return customUrl;
         }
         
         const encodedName = encodeURIComponent(username);
-        return `https://ui-avatars.com/api/?name=${encodedName}&background=${this.defaultAvatarConfig.background}&color=${this.defaultAvatarConfig.color}&size=${size}&format=${this.defaultAvatarConfig.format}`;
+        const generatedUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=${this.defaultAvatarConfig.background}&color=${this.defaultAvatarConfig.color}&size=${size}&format=${this.defaultAvatarConfig.format}`;
+        console.log(`[MLNF Avatar] Generated UI-Avatars URL: ${generatedUrl}`);
+        return generatedUrl;
     }
 
     /**
@@ -264,8 +269,14 @@ class MLNFAvatarSystem {
         };
         
         const pixelSize = sizeMap[size] || 36;
+        
+        // Debug logging for avatar URL generation
+        console.log(`[MLNF Avatar] Creating avatar for: ${username}, customUrl: ${customUrl}, size: ${pixelSize}`);
+        
         const avatarUrl = this.generateAvatarUrl(username, pixelSize, customUrl);
-        const fallbackUrl = this.generateAvatarUrl(username, pixelSize);
+        const fallbackUrl = this.generateAvatarUrl(username, pixelSize, null); // Force fallback to UI-Avatars
+        
+        console.log(`[MLNF Avatar] Generated URLs - Primary: ${avatarUrl}, Fallback: ${fallbackUrl}`);
 
         img.src = avatarUrl;
         img.alt = username;
@@ -278,9 +289,16 @@ class MLNFAvatarSystem {
         if (online === false) img.classList.add('mlnf-avatar--offline');
         classes.forEach(cls => img.classList.add(cls));
 
-        // Error handling for avatar loading
+        // Enhanced error handling for avatar loading
         img.onerror = () => {
-            img.src = fallbackUrl;
+            console.warn(`[MLNF Avatar] Primary avatar failed for ${username}, trying fallback: ${fallbackUrl}`);
+            if (img.src !== fallbackUrl) {
+                img.src = fallbackUrl;
+            } else {
+                console.error(`[MLNF Avatar] Both primary and fallback failed for ${username}`);
+                // Last resort: use a default avatar
+                img.src = window.MLNF_CONFIG?.DEFAULT_AVATAR || '/assets/images/default.jpg';
+            }
             img.onerror = null; // Prevent infinite loop
         };
 
@@ -436,6 +454,44 @@ class MLNFAvatarSystem {
     }
 
     /**
+     * Test avatar URL generation for debugging
+     */
+    testAvatarGeneration() {
+        console.log('[MLNF Avatar] Testing avatar URL generation...');
+        
+        const testUsers = [
+            { username: 'TestUser1', avatar: null },
+            { username: 'TestUser2', avatar: 'https://example.com/avatar.jpg' },
+            { username: 'Special Characters!@#', avatar: null }
+        ];
+        
+        testUsers.forEach(user => {
+            const url = this.generateAvatarUrl(user.username, 40, user.avatar);
+            console.log(`[MLNF Avatar] Test - User: ${user.username}, Generated URL: ${url}`);
+        });
+    }
+
+    /**
+     * Test UI-Avatars network connectivity
+     */
+    async testUIAvatarsConnectivity() {
+        console.log('[MLNF Avatar] Testing UI-Avatars connectivity...');
+        
+        const testUrl = 'https://ui-avatars.com/api/?name=Test&background=ff5e78&color=fff&size=40&format=svg';
+        
+        try {
+            const response = await fetch(testUrl, { method: 'HEAD' });
+            console.log(`[MLNF Avatar] UI-Avatars connectivity test - Status: ${response.status}, OK: ${response.ok}`);
+            
+            if (!response.ok) {
+                console.warn('[MLNF Avatar] UI-Avatars service may be unavailable');
+            }
+        } catch (error) {
+            console.error('[MLNF Avatar] UI-Avatars connectivity test failed:', error);
+        }
+    }
+
+    /**
      * Initialize avatar system for existing elements on page
      */
     initializeExistingElements() {
@@ -452,6 +508,12 @@ class MLNFAvatarSystem {
         });
 
         console.log('[MLNF Avatar System] Initialized existing elements');
+        
+        // Run test for debugging
+        this.testAvatarGeneration();
+        
+        // Test network connectivity to UI-Avatars
+        this.testUIAvatarsConnectivity();
     }
 }
 
