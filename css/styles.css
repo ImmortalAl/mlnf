@@ -659,10 +659,19 @@ body.light-theme .debate-position h4 {
 .chronicle-highlight-card {
     cursor: pointer;
     transition: var(--transition);
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .chronicle-highlight-card:hover {
     transform: translateY(-12px) scale(1.04);
+    text-decoration: none;
+    color: inherit;
+}
+
+.chronicle-highlight-card:visited {
+    color: inherit;
 }
 
 /* Prominent title styling for Chronicles highlights */
@@ -696,126 +705,7 @@ body.light-theme .debate-position h4 {
     opacity: 0.8;
 }
 
-/* Chronicles Modal Styling */
-.chronicles-modal-content {
-    max-width: 800px;
-    width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-    background: var(--gradient-secondary);
-    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
-    border-radius: 16px;
-    padding: 0;
-}
-
-.chronicles-modal-header {
-    padding: 2rem 2rem 1rem;
-    border-bottom: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-}
-
-.chronicles-modal-header h3 {
-    font-family: 'Lato', sans-serif;
-    font-size: 2rem;
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 1rem;
-    line-height: 1.3;
-}
-
-/* Legacy modal styles - deprecated in favor of MLNF Avatar System */
-.modal-author-display,
-.modal-author-avatar,
-.modal-author-details,
-.modal-author-username,
-.modal-author-title {
-    /* These styles are maintained for backward compatibility */
-    /* New implementations should use mlnf-user-display components */
-}
-
-.modal-meta-info {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.modal-date {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text);
-    opacity: 0.8;
-    font-size: 0.9rem;
-}
-
-.chronicles-modal-body {
-    padding: 1.5rem 2rem;
-}
-
-.chronicles-modal-body p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-}
-
-.modal-sources {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-}
-
-.modal-sources h4 {
-    color: var(--accent);
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
-.modal-sources ul {
-    list-style: none;
-    padding: 0;
-}
-
-.modal-sources li {
-    margin-bottom: 0.5rem;
-}
-
-.modal-sources a {
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.95rem;
-}
-
-.modal-sources a:hover {
-    text-decoration: underline;
-}
-
-.chronicles-modal-actions {
-    padding: 1rem 2rem 2rem;
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-}
-
-.close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 0.7;
-    transition: var(--transition);
-}
-
-.close-btn:hover {
-    opacity: 1;
-    color: var(--accent);
-}
+/* Chronicles modal styles removed - highlights now link directly to news page */
 
 /* ==========================================
    IMMORTAL AVATAR SYSTEM - Site-wide Component
@@ -1145,6 +1035,297 @@ body.light-theme .mlnf-avatar {
     justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
+}
+
+/* ==========================================
+   PROFILE PREVIEW MODAL SYSTEM
+   ========================================== */
+
+/* Interactive user display hover effects */
+.mlnf-user-display--interactive {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mlnf-user-display--interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.1) 0%,
+        rgba(var(--secondary-rgb, 76, 175, 80), 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.mlnf-user-display--interactive:hover::before {
+    opacity: 1;
+}
+
+.mlnf-user-display--interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-user-display--interactive:hover .mlnf-username {
+    color: var(--accent);
+    text-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+}
+
+.mlnf-user-display--interactive:hover .mlnf-avatar {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+}
+
+/* Profile Preview Modal */
+.mlnf-profile-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mlnf-profile-preview--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mlnf-profile-preview--closing {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.mlnf-profile-preview__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+}
+
+.mlnf-profile-preview__content {
+    position: relative;
+    background: var(--background-elevated);
+    border-radius: 16px;
+    max-width: 480px;
+    width: 90vw;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(var(--accent-rgb, 255, 94, 120), 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.mlnf-profile-preview--visible .mlnf-profile-preview__content {
+    transform: scale(1);
+}
+
+.mlnf-profile-preview__header {
+    position: relative;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.1) 0%,
+        rgba(var(--secondary-rgb, 76, 175, 80), 0.1) 100%);
+    border-bottom: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-profile-preview__loading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.mlnf-loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border-top: 2px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.mlnf-profile-preview__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.mlnf-profile-preview__close:hover {
+    background: var(--accent);
+    color: white;
+    transform: scale(1.1);
+}
+
+.mlnf-profile-preview__body {
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.mlnf-profile-preview__bio {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-profile-preview__bio h4 {
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.mlnf-profile-preview__bio p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.mlnf-profile-preview__stats {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.mlnf-stat {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.1);
+}
+
+.mlnf-stat__value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: 'Cinzel', serif;
+}
+
+.mlnf-stat__label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    font-family: 'Caesar Dressing', serif;
+}
+
+.mlnf-profile-preview__actions {
+    padding: 1.5rem;
+    background: rgba(var(--background-elevated), 0.5);
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    display: flex;
+    gap: 1rem;
+}
+
+.mlnf-profile-preview__actions .mlnf-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.mlnf-btn--primary {
+    background: var(--accent);
+    color: white;
+}
+
+.mlnf-btn--primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+}
+
+.mlnf-btn--accent {
+    background: rgba(var(--secondary-rgb, 76, 175, 80), 0.1);
+    color: var(--secondary);
+    border: 1px solid rgba(var(--secondary-rgb, 76, 175, 80), 0.3);
+}
+
+.mlnf-btn--accent:hover {
+    background: var(--secondary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--secondary-rgb, 76, 175, 80), 0.3);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .mlnf-profile-preview__content {
+        max-width: 95vw;
+        max-height: 90vh;
+    }
+    
+    .mlnf-profile-preview__header,
+    .mlnf-profile-preview__body,
+    .mlnf-profile-preview__actions {
+        padding: 1rem;
+    }
+    
+    .mlnf-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mlnf-profile-preview__actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .mlnf-stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .highlight-meta .date {
@@ -1677,10 +1858,7 @@ footer {
     .highlight-item h4, .debate-position h4 { font-size: 1.5rem; }
     .chronicle-title-prominent { font-size: 1.6rem !important; }
     /* Legacy mobile styles removed - handled by MLNF Avatar System responsive design */
-    .chronicles-modal-content { width: 95%; }
-    .chronicles-modal-header { padding: 1.5rem 1rem 1rem; }
-    .chronicles-modal-body { padding: 1rem; }
-    .chronicles-modal-actions { padding: 1rem; flex-direction: column; }
+    /* Chronicles modal responsive styles removed */
 
     #messageModal .auth-modal { /* Message modal content on smaller screens */
         width: 95%; /* More screen width */
@@ -1713,7 +1891,7 @@ footer {
     .highlight-item h4, .debate-position h4 { font-size: 1.3rem; }
     .chronicle-title-prominent { font-size: 1.4rem !important; }
     /* Legacy mobile styles removed - handled by MLNF Avatar System responsive design */
-    .chronicles-modal-header h3 { font-size: 1.6rem; }
+    /* Chronicles modal responsive styles removed */
 
     #messageModal .auth-modal { padding: 1rem; }
     #messageModal .auth-modal h3 { font-size: 1.3rem; }

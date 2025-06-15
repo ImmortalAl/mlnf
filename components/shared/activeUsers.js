@@ -166,32 +166,47 @@ async function populateActiveUsersList() {
         const fetchedUsers = await response.json();
 
         if (fetchedUsers && fetchedUsers.length > 0) {
-            userListDiv.innerHTML = fetchedUsers.map(user => {
+            // Clear existing content
+            userListDiv.innerHTML = '';
+            
+            fetchedUsers.forEach(user => {
                 const displayName = user.displayName || user.username || 'Unnamed Soul';
-                const username = user.username || displayName; // Ensure username is available for messaging
-                const avatarUrl = user.avatar || (window.MLNF_CONFIG?.DEFAULT_AVATAR || '/assets/images/default.jpg');
-                // Use 'online' field from API directly.
-                const isOnline = user.online === true; 
-                // Use custom status if available, otherwise default
-                const statusMessage = user.status && user.status.trim() !== '' ? user.status : 'Wandering the eternal realms...'; 
-                const onlineClass = isOnline ? 'online' : 'offline';
-                const onlineText = isOnline ? 'Online' : 'Offline';
-
-                return `
-                <div class="user-item">
-                    <div class="user-avatar-wrapper">
-                    <img src="${avatarUrl}" alt="${displayName}">
-                        <span class="online-dot ${onlineClass}" title="${onlineText}"></span>
-                    </div>
-                    <div class="user-info">
-                        <h4>${displayName}</h4>
-                        <span class="status-message">${statusMessage}</span>
-                    </div>
-                    <button class="message-btn" data-username="${username}" aria-label="Message ${displayName}">
-                        <i class="fas fa-comment"></i>
-                    </button>
-                </div>`;
-            }).join('');
+                const username = user.username || displayName;
+                const isOnline = user.online === true;
+                const statusMessage = user.status && user.status.trim() !== '' ? user.status : 'Wandering the eternal realms...';
+                
+                // Create unified user display using MLNF Avatar System
+                const userDisplay = window.MLNFAvatars.createUserDisplay({
+                    username: username,
+                    title: displayName,
+                    status: statusMessage,
+                    avatarSize: 'md',
+                    displaySize: 'sm',
+                    compact: false,
+                    mystical: user.isVIP || user.role === 'admin',
+                    online: isOnline,
+                    customAvatar: user.avatar,
+                    usernameStyle: 'immortal',
+                    enableUnifiedNavigation: true
+                });
+                
+                // Create user item container
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                
+                // Add the unified user display
+                userItem.appendChild(userDisplay);
+                
+                // Add message button
+                const messageBtn = document.createElement('button');
+                messageBtn.className = 'message-btn';
+                messageBtn.setAttribute('data-username', username);
+                messageBtn.setAttribute('aria-label', `Message ${displayName}`);
+                messageBtn.innerHTML = '<i class="fas fa-comment"></i>';
+                
+                userItem.appendChild(messageBtn);
+                userListDiv.appendChild(userItem);
+            });
         } else {
             userListDiv.innerHTML = '<p class="no-users">No souls currently manifest.</p>';
         }

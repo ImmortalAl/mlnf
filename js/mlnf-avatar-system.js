@@ -1,10 +1,222 @@
 /**
  * MLNF Avatar System - Site-wide avatar and user display utilities
- * Version: 1.0
+ * Version: 2.0 - Enhanced with Unified Profile Navigation
  * 
  * This utility provides consistent avatar and user display functionality
- * across the entire MLNF site with immortal-themed styling.
+ * across the entire MLNF site with immortal-themed styling and
+ * unified profile navigation system.
  */
+
+/**
+ * Profile Router - Handles smooth navigation to user profiles
+ */
+class MLNFProfileRouter {
+    static navigateToProfile(username, options = {}) {
+        const { newTab = false, trackInteraction = true } = options;
+        
+        if (trackInteraction) {
+            console.log(`[MLNF] Profile navigation: ${username}`);
+        }
+        
+        const profileUrl = `/souls/${username}`;
+        
+        if (newTab) {
+            window.open(profileUrl, '_blank');
+        } else {
+            window.location.href = profileUrl;
+        }
+    }
+    
+    static createUnifiedClickHandler(username, options = {}) {
+        return (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Handle keyboard shortcuts
+            if (event.shiftKey) {
+                // Shift+Click: Open profile preview modal
+                MLNFProfilePreview.showPreview(username);
+            } else if (event.ctrlKey || event.metaKey) {
+                // Ctrl+Click: Open in new tab
+                this.navigateToProfile(username, { newTab: true });
+            } else {
+                // Regular click: Navigate to profile
+                this.navigateToProfile(username);
+            }
+        };
+    }
+}
+
+/**
+ * Profile Preview Modal - Quick profile previews with immortal theming
+ */
+class MLNFProfilePreview {
+    static currentModal = null;
+    
+    static async showPreview(username) {
+        try {
+            // Close existing modal if open
+            this.closePreview();
+            
+            // Create modal element
+            const modal = this.createModalElement(username);
+            document.body.appendChild(modal);
+            this.currentModal = modal;
+            
+            // Load user data
+            const userData = await this.fetchUserData(username);
+            this.populateModal(modal, userData);
+            
+            // Show modal with animation
+            requestAnimationFrame(() => {
+                modal.classList.add('mlnf-profile-preview--visible');
+            });
+            
+            // Add event listeners
+            this.addModalEventListeners(modal);
+            
+        } catch (error) {
+            console.error('[MLNF] Profile preview error:', error);
+            this.showError('Unable to load profile preview');
+        }
+    }
+    
+    static createModalElement(username) {
+        const modal = document.createElement('div');
+        modal.className = 'mlnf-profile-preview';
+        modal.innerHTML = `
+            <div class="mlnf-profile-preview__backdrop"></div>
+            <div class="mlnf-profile-preview__content">
+                <div class="mlnf-profile-preview__header">
+                    <div class="mlnf-profile-preview__loading">
+                        <div class="mlnf-loading-spinner"></div>
+                        <span class="font-immortal-heading">Loading ${username}'s profile...</span>
+                    </div>
+                    <button class="mlnf-profile-preview__close" aria-label="Close profile preview">
+                        <span>×</span>
+                    </button>
+                </div>
+                <div class="mlnf-profile-preview__body"></div>
+                <div class="mlnf-profile-preview__actions"></div>
+            </div>
+        `;
+        return modal;
+    }
+    
+    static async fetchUserData(username) {
+        // Use existing API pattern from the site
+        const response = await fetch(`https://mlnf-auth.onrender.com/api/users/${username}`);
+        if (!response.ok) {
+            throw new Error(`Profile not found: ${response.status}`);
+        }
+        return await response.json();
+    }
+    
+    static populateModal(modal, userData) {
+        const body = modal.querySelector('.mlnf-profile-preview__body');
+        const actions = modal.querySelector('.mlnf-profile-preview__actions');
+        const loading = modal.querySelector('.mlnf-profile-preview__loading');
+        
+        // Hide loading spinner
+        loading.style.display = 'none';
+        
+        // Create user display with enhanced styling
+        const userDisplay = window.MLNFAvatars.createUserDisplay({
+            username: userData.username,
+            title: userData.title || 'Eternal Soul',
+            status: userData.status || (userData.online ? 'Online now' : 'Eternal wanderer'),
+            avatarSize: 'xl',
+            displaySize: 'xl',
+            mystical: userData.isVIP || userData.role === 'admin',
+            online: userData.online,
+            customAvatar: userData.avatar,
+            usernameStyle: 'mystical'
+        });
+        
+        body.appendChild(userDisplay);
+        
+        // Add bio if available
+        if (userData.bio) {
+            const bioEl = document.createElement('div');
+            bioEl.className = 'mlnf-profile-preview__bio';
+            bioEl.innerHTML = `
+                <h4 class="font-immortal-heading">About ${userData.username}</h4>
+                <p>${userData.bio}</p>
+            `;
+            body.appendChild(bioEl);
+        }
+        
+        // Add stats if available
+        if (userData.stats) {
+            const statsEl = document.createElement('div');
+            statsEl.className = 'mlnf-profile-preview__stats';
+            statsEl.innerHTML = `
+                <div class="mlnf-stats-grid">
+                    <div class="mlnf-stat">
+                        <span class="mlnf-stat__value">${userData.stats.posts || 0}</span>
+                        <span class="mlnf-stat__label">Chronicles</span>
+                    </div>
+                    <div class="mlnf-stat">
+                        <span class="mlnf-stat__value">${userData.stats.comments || 0}</span>
+                        <span class="mlnf-stat__label">Reflections</span>
+                    </div>
+                    <div class="mlnf-stat">
+                        <span class="mlnf-stat__value">${userData.stats.connections || 0}</span>
+                        <span class="mlnf-stat__label">Connections</span>
+                    </div>
+                </div>
+            `;
+            body.appendChild(statsEl);
+        }
+        
+        // Create immortal-themed action buttons
+        actions.innerHTML = `
+            <button class="mlnf-btn mlnf-btn--primary" onclick="MLNFProfileRouter.navigateToProfile('${userData.username}')">
+                <span class="font-immortal-heading">View Full Profile</span>
+            </button>
+            <button class="mlnf-btn mlnf-btn--accent" onclick="window.MLNF.openMessageModal('${userData.username}')">
+                <span class="font-immortal-mystical">Send Message</span>
+            </button>
+        `;
+    }
+    
+    static addModalEventListeners(modal) {
+        // Close button
+        const closeBtn = modal.querySelector('.mlnf-profile-preview__close');
+        closeBtn.addEventListener('click', () => this.closePreview());
+        
+        // Backdrop click
+        const backdrop = modal.querySelector('.mlnf-profile-preview__backdrop');
+        backdrop.addEventListener('click', () => this.closePreview());
+        
+        // Escape key
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                this.closePreview();
+                document.removeEventListener('keydown', handleEscape);
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+    }
+    
+    static closePreview() {
+        if (this.currentModal) {
+            this.currentModal.classList.add('mlnf-profile-preview--closing');
+            setTimeout(() => {
+                if (this.currentModal) {
+                    this.currentModal.remove();
+                    this.currentModal = null;
+                }
+            }, 300);
+        }
+    }
+    
+    static showError(message) {
+        // Simple error notification using existing MLNF notification system
+        console.error('[MLNF Profile Preview]', message);
+        // Could integrate with existing notification system here
+    }
+}
 
 class MLNFAvatarSystem {
     constructor() {
@@ -92,8 +304,9 @@ class MLNFAvatarSystem {
             online = null,
             customAvatar = null,
             usernameStyle = 'immortal', // 'immortal', 'mystical', 'eternal', or 'default'
-            clickable = false,
-            onClick = null
+            clickable = true,
+            onClick = null,
+            enableUnifiedNavigation = true
         } = options;
 
         // Create container
@@ -148,8 +361,30 @@ class MLNFAvatarSystem {
         container.appendChild(avatar);
         container.appendChild(userInfo);
 
-        // Add click handler if provided
-        if (onClick) {
+        // Add unified click handler with enhanced navigation
+        if (enableUnifiedNavigation && clickable) {
+            // Create unified click handler with keyboard shortcuts
+            const unifiedHandler = MLNFProfileRouter.createUnifiedClickHandler(username);
+            container.addEventListener('click', unifiedHandler);
+            
+            // Add accessibility attributes
+            container.setAttribute('role', 'button');
+            container.setAttribute('aria-label', `View profile for ${username}`);
+            container.setAttribute('tabindex', '0');
+            container.style.cursor = 'pointer';
+            
+            // Add keyboard support
+            container.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    unifiedHandler(e);
+                }
+            });
+            
+            // Add immortal hover effect
+            container.classList.add('mlnf-user-display--interactive');
+        } else if (onClick) {
+            // Use custom click handler
             container.addEventListener('click', onClick);
         }
 

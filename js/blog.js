@@ -113,32 +113,52 @@ async function fetchBlogPosts(page = 1) {
                     day: 'numeric'
                 });
                 
-                postElement.innerHTML = `
-                    <div class="scroll-author">
-                        <a href="/souls/${post.author.username}.html" class="author-avatar">
-                            <img src="${authorAvatar}" alt="${authorDisplayName}'s avatar" onerror="this.src='/assets/images/default.jpg'">
-                        </a>
-                        <a href="/souls/${post.author.username}.html" class="author-name">${authorDisplayName}</a>
-                    </div>
-                    <h3>${post.title}</h3>
-                    <div class="content">${excerpt}</div>
-                    <div class="scroll-footer">
-                        <p class="date">${formattedDate}</p>
-                        <div class="post-actions">
-                            <div class="like-dislike-buttons">
-                                <button class="like-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); likePost('${post._id}')">
-                                    <i class="fas fa-heart"></i> <span class="like-count">${post.likes ? post.likes.length : 0}</span>
-                                </button>
-                                <button class="dislike-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); dislikePost('${post._id}')">
-                                    <i class="fas fa-heart-broken"></i> <span class="dislike-count">${post.dislikes ? post.dislikes.length : 0}</span>
-                                </button>
-                            </div>
-                            <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
-                                🦉 Whisper this scroll to another soul
+                // Create unified author display using MLNF Avatar System
+                const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                    username: post.author.username,
+                    title: post.author.title || 'Scroll Author',
+                    avatarSize: 'md',
+                    displaySize: 'sm',
+                    compact: true,
+                    mystical: post.author.isVIP || post.author.role === 'admin',
+                    online: post.author.online,
+                    customAvatar: post.author.avatar,
+                    usernameStyle: 'immortal',
+                    enableUnifiedNavigation: true
+                });
+                
+                // Build post structure with DOM elements
+                const titleEl = document.createElement('h3');
+                titleEl.textContent = post.title;
+                
+                const contentEl = document.createElement('div');
+                contentEl.className = 'content';
+                contentEl.innerHTML = excerpt;
+                
+                const scrollFooter = document.createElement('div');
+                scrollFooter.className = 'scroll-footer';
+                scrollFooter.innerHTML = `
+                    <p class="date">${formattedDate}</p>
+                    <div class="post-actions">
+                        <div class="like-dislike-buttons">
+                            <button class="like-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); likePost('${post._id}')">
+                                <i class="fas fa-heart"></i> <span class="like-count">${post.likes ? post.likes.length : 0}</span>
+                            </button>
+                            <button class="dislike-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); dislikePost('${post._id}')">
+                                <i class="fas fa-heart-broken"></i> <span class="dislike-count">${post.dislikes ? post.dislikes.length : 0}</span>
                             </button>
                         </div>
+                        <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
+                            🦉 Whisper this scroll to another soul
+                        </button>
                     </div>
                 `;
+                
+                // Assemble the post element
+                postElement.appendChild(authorDisplay);
+                postElement.appendChild(titleEl);
+                postElement.appendChild(contentEl);
+                postElement.appendChild(scrollFooter);
                 
                 // Store full post data
                 blogPosts[post._id] = post;
@@ -470,16 +490,49 @@ async function openBlogModal(postId) {
         requiredElements['modal-title'].textContent = post.title;
         requiredElements['modal-content'].innerHTML = post.content;
         
-        // Update author info
-        const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
-        const authorDisplayName = post.author.displayName || post.author.username;
-        const authorLink = `/souls/${post.author.username}.html`;
-        
-        requiredElements['modal-author-avatar'].src = authorAvatar;
-        requiredElements['modal-author-avatar'].alt = `${authorDisplayName}'s avatar`;
-        requiredElements['modal-author-link'].href = authorLink;
-        requiredElements['modal-author-name-link'].href = authorLink;
-        requiredElements['modal-author-name-link'].textContent = authorDisplayName;
+        // Update author info using MLNF Avatar System
+        const modalAuthorContainer = document.querySelector('.modal-author-info');
+        if (modalAuthorContainer) {
+            // Clear existing content
+            modalAuthorContainer.innerHTML = '';
+            
+            // Create unified author display for modal
+            const modalAuthorDisplay = window.MLNFAvatars.createUserDisplay({
+                username: post.author.username,
+                title: post.author.title || 'Scroll Author',
+                status: `Chronicled on ${new Date(post.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })}`,
+                avatarSize: 'lg',
+                displaySize: 'md',
+                mystical: post.author.isVIP || post.author.role === 'admin',
+                online: post.author.online,
+                customAvatar: post.author.avatar,
+                usernameStyle: 'mystical',
+                enableUnifiedNavigation: true
+            });
+            
+            modalAuthorContainer.appendChild(modalAuthorDisplay);
+        } else {
+            // Fallback to existing elements if modal structure is different
+            const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
+            const authorDisplayName = post.author.displayName || post.author.username;
+            const authorLink = `/souls/${post.author.username}.html`;
+            
+            if (requiredElements['modal-author-avatar']) {
+                requiredElements['modal-author-avatar'].src = authorAvatar;
+                requiredElements['modal-author-avatar'].alt = `${authorDisplayName}'s avatar`;
+            }
+            if (requiredElements['modal-author-link']) {
+                requiredElements['modal-author-link'].href = authorLink;
+            }
+            if (requiredElements['modal-author-name-link']) {
+                requiredElements['modal-author-name-link'].href = authorLink;
+                requiredElements['modal-author-name-link'].textContent = authorDisplayName;
+            }
+        }
         
         // Update date
         requiredElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {

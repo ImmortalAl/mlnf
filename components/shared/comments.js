@@ -115,32 +115,56 @@ class CommentsSystem {
         const formattedDate = new Date(comment.createdAt).toLocaleString();
         const editedText = comment.isEdited ? ' (edited)' : '';
         
-        return `
-            <div class="comment" id="comment-${comment._id}">
-                <div class="comment-header">
-                    <div class="comment-author">
-                        <img src="${comment.author.avatar || '/assets/images/default.jpg'}" 
-                             alt="${comment.author.displayName || comment.author.username}"
-                             class="author-avatar">
-                        <span class="author-name">${comment.author.displayName || comment.author.username}</span>
-                    </div>
-                    <div class="comment-meta">
-                        <span class="comment-date">${formattedDate}${editedText}</span>
-                        ${isAuthor ? `
-                            <div class="comment-actions">
-                                <button class="btn-edit" data-id="${comment._id}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn-delete" data-id="${comment._id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-                <div class="comment-content">${comment.content}</div>
-            </div>
-        `;
+        // Create comment container
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+        commentDiv.id = `comment-${comment._id}`;
+        
+        // Create unified author display using MLNF Avatar System
+        const authorDisplay = window.MLNFAvatars.createUserDisplay({
+            username: comment.author.username,
+            title: comment.author.title || 'Eternal Soul',
+            status: `${formattedDate}${editedText}`,
+            avatarSize: 'sm',
+            displaySize: 'xs',
+            compact: true,
+            mystical: comment.author.isVIP || comment.author.role === 'admin',
+            online: comment.author.online,
+            customAvatar: comment.author.avatar,
+            usernameStyle: 'immortal',
+            enableUnifiedNavigation: true
+        });
+        
+        // Create comment header with author display and actions
+        const commentHeader = document.createElement('div');
+        commentHeader.className = 'comment-header';
+        
+        commentHeader.appendChild(authorDisplay);
+        
+        if (isAuthor) {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'comment-actions';
+            actionsDiv.innerHTML = `
+                <button class="btn-edit" data-id="${comment._id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" data-id="${comment._id}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            commentHeader.appendChild(actionsDiv);
+        }
+        
+        // Create comment content
+        const commentContent = document.createElement('div');
+        commentContent.className = 'comment-content';
+        commentContent.innerHTML = comment.content;
+        
+        // Assemble comment
+        commentDiv.appendChild(commentHeader);
+        commentDiv.appendChild(commentContent);
+        
+        return commentDiv.outerHTML;
     }
     
     attachEventListeners() {
