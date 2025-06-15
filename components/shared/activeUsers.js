@@ -153,17 +153,75 @@ async function populateActiveUsersList() {
     userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
     try {
-        // Fetch with cache-busting to ensure fresh data
-        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/online?_cb=${new Date().getTime()}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`Failed to fetch active users: ${response.status} ${response.statusText}`);
+        // Test basic connectivity to API
+        console.log('[activeUsers.js] Testing API connectivity to:', window.MLNF_CONFIG.API_BASE_URL);
+        
+        try {
+            const healthCheck = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/health`, { 
+                method: 'GET',
+                mode: 'cors'
+            });
+            console.log('[activeUsers.js] Health check response:', healthCheck.status, healthCheck.statusText);
+        } catch (healthError) {
+            console.warn('[activeUsers.js] Health check failed:', healthError.message);
         }
-        const fetchedUsers = await response.json();
+        
+        console.log('[activeUsers.js] Attempting to fetch from:', `${window.MLNF_CONFIG.API_BASE_URL}/users/online`);
+        
+        // Try the online users endpoint first
+        let response;
+        let fetchedUsers;
+        
+        try {
+            response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/online?_cb=${new Date().getTime()}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                fetchedUsers = await response.json();
+                console.log('[activeUsers.js] Successfully fetched from /users/online:', fetchedUsers);
+            } else {
+                throw new Error(`Online users endpoint failed: ${response.status}`);
+            }
+        } catch (onlineError) {
+            console.warn('[activeUsers.js] /users/online failed, trying fallback:', onlineError.message);
+            
+            // Fallback to general users endpoint
+            response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users?_cb=${new Date().getTime()}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Fallback users endpoint also failed: ${response.status} ${response.statusText}`);
+            }
+            
+            const allUsers = await response.json();
+            console.log('[activeUsers.js] Fallback /users response:', allUsers);
+            
+            // Filter for online users or take first few users as active
+            if (Array.isArray(allUsers)) {
+                fetchedUsers = allUsers.filter(user => user.online === true).slice(0, 10);
+                if (fetchedUsers.length === 0) {
+                    // If no online users, show recent users
+                    fetchedUsers = allUsers.slice(0, 5);
+                }
+            } else if (allUsers.users && Array.isArray(allUsers.users)) {
+                fetchedUsers = allUsers.users.filter(user => user.online === true).slice(0, 10);
+                if (fetchedUsers.length === 0) {
+                    fetchedUsers = allUsers.users.slice(0, 5);
+                }
+            } else {
+                throw new Error('Unexpected users response format');
+            }
+            
+            console.log('[activeUsers.js] Processed fallback users:', fetchedUsers);
+        }
 
         if (fetchedUsers && fetchedUsers.length > 0) {
             // Clear existing content
@@ -239,8 +297,27 @@ async function populateActiveUsersList() {
 
     } catch (error) {
         console.error('[activeUsers.js] Error populating active users list:', error);
+        console.error('[activeUsers.js] Error details:', {
+            message: error.message,
+            stack: error.stack,
+            apiUrl: window.MLNF_CONFIG?.API_BASE_URL,
+            hasToken: !!token
+        });
+        
         if (userListDiv) { 
-            userListDiv.innerHTML = '<p class="error-users">Could not summon souls. The aether is disturbed.</p>';
+            // Check if it's a network error and provide fallback
+            if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+                console.log('[activeUsers.js] Network error detected, showing fallback message');
+                userListDiv.innerHTML = `
+                    <div class="error-users">
+                        <p>⚡ Connection to the eternal realm is unstable</p>
+                        <p style="font-size: 0.9em; opacity: 0.8;">The souls are temporarily unreachable</p>
+                    </div>
+                `;
+            } else {
+                const errorMessage = 'Could not summon souls. The aether is disturbed.';
+                userListDiv.innerHTML = `<p class="error-users">${errorMessage}</p>`;
+            }
         }
     }
 }
