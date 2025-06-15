@@ -488,6 +488,25 @@ async function openBlogModal(postId) {
             day: 'numeric'
         });
         
+        // Show edit button if user is the author
+        const editBtn = document.getElementById('editPostBtn');
+        const token = localStorage.getItem('sessionToken');
+        if (editBtn && isTokenValid(token)) {
+            try {
+                const decodedToken = jwt_decode(token);
+                if (post.author.username === decodedToken.username || post.author._id === decodedToken.id) {
+                    editBtn.style.display = 'inline-flex';
+                } else {
+                    editBtn.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('[blog.js] Error checking edit permissions:', error);
+                editBtn.style.display = 'none';
+            }
+        } else if (editBtn) {
+            editBtn.style.display = 'none';
+        }
+        
         console.log('[blog.js] Modal content updated successfully');
     } catch (error) {
         console.error('[blog.js] Error updating modal content:', error);
@@ -728,6 +747,151 @@ function updateLikeButtons(postId, result) {
     }
 }
 
+// Edit current post
+function editCurrentPost() {
+    if (currentPostId) {
+        editPost(currentPostId);
+    }
+}
+
+// Edit post by ID
+async function editPost(postId) {
+    const token = localStorage.getItem('sessionToken');
+    if (!isTokenValid(token)) {
+        if (window.MLNF && window.MLNF.openSoulModal) {
+            window.MLNF.openSoulModal('login');
+        }
+        return;
+    }
+
+    // Get the current post data
+    const post = blogPosts[postId];
+    if (!post) {
+        console.error('[blog.js] No post data found for editing:', postId);
+        return;
+    }
+
+    // Check if user is the author
+    const decodedToken = jwt_decode(token);
+    if (post.author.username !== decodedToken.username && post.author._id !== decodedToken.id) {
+        alert('You can only edit your own scrolls.');
+        return;
+    }
+
+    // Create edit form
+    const modalContent = document.getElementById('modal-content');
+    const modalTitle = document.getElementById('modal-title');
+    
+    if (!modalContent || !modalTitle) {
+        console.error('[blog.js] Modal elements not found for editing');
+        return;
+    }
+
+    // Store original content
+    const originalTitle = modalTitle.textContent;
+    const originalContent = modalContent.innerHTML;
+
+    // Create edit form
+    modalTitle.innerHTML = `
+        <input type="text" id="edit-title" value="${post.title}" 
+               style="width: 100%; background: transparent; border: 2px solid var(--gold); 
+                      border-radius: 8px; padding: 0.75rem; font-family: 'Cinzel', serif; 
+                      font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 700; 
+                      color: var(--ink); text-align: center;">
+    `;
+
+    modalContent.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+            <textarea id="edit-content" style="width: 100%; min-height: 300px; 
+                      background: rgba(255, 255, 255, 0.9); border: 2px solid var(--gold); 
+                      border-radius: 12px; padding: 1.5rem; font-family: 'Montserrat', sans-serif; 
+                      font-size: 1.1rem; line-height: 1.6; color: var(--ink); resize: vertical;">${post.content}</textarea>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button onclick="savePostEdit('${postId}')" 
+                    style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); 
+                           color: white; border: none; padding: 0.75rem 1.5rem; 
+                           border-radius: 25px; cursor: pointer; font-weight: 600; 
+                           min-height: 44px; transition: var(--transition-smooth);">
+                ✅ Save Changes
+            </button>
+            <button onclick="cancelPostEdit('${postId}', \`${originalTitle.replace(/`/g, '\\`')}\`, \`${originalContent.replace(/`/g, '\\`')}\`)" 
+                    style="background: transparent; color: var(--ink-light); 
+                           border: 2px solid var(--aged-border); padding: 0.75rem 1.5rem; 
+                           border-radius: 25px; cursor: pointer; font-weight: 600; 
+                           min-height: 44px; transition: var(--transition-smooth);">
+                ❌ Cancel
+            </button>
+        </div>
+    `;
+}
+
+// Save post edit
+async function savePostEdit(postId) {
+    const token = localStorage.getItem('sessionToken');
+    const titleInput = document.getElementById('edit-title');
+    const contentInput = document.getElementById('edit-content');
+    
+    if (!titleInput || !contentInput) {
+        console.error('[blog.js] Edit form elements not found');
+        return;
+    }
+    
+    const newTitle = titleInput.value.trim();
+    const newContent = contentInput.value.trim();
+    
+    if (!newTitle || !newContent) {
+        alert('Title and content are required');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: newTitle, content: newContent })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP ${response.status}: Failed to update scroll`);
+        }
+        
+        const updatedPost = await response.json();
+        
+        // Update cached post data
+        blogPosts[postId] = updatedPost;
+        
+        // Update the modal display
+        document.getElementById('modal-title').textContent = updatedPost.title;
+        document.getElementById('modal-content').innerHTML = updatedPost.content;
+        
+        // Update the post in the blog list if visible
+        const postElement = document.getElementById(postId);
+        if (postElement) {
+            const titleElement = postElement.querySelector('h3');
+            const contentElement = postElement.querySelector('.content');
+            if (titleElement) titleElement.textContent = updatedPost.title;
+            if (contentElement) contentElement.innerHTML = createExcerpt(updatedPost.content);
+        }
+        
+        alert('Scroll updated successfully!');
+        
+    } catch (error) {
+        console.error('[blog.js] Error updating post:', error);
+        alert(`Failed to update scroll: ${error.message}`);
+    }
+}
+
+// Cancel post edit
+function cancelPostEdit(postId, originalTitle, originalContent) {
+    document.getElementById('modal-title').textContent = originalTitle;
+    document.getElementById('modal-content').innerHTML = originalContent;
+}
+
 // Export functions to global scope for compatibility
 window.createBlog = createBlog;
 window.openBlogModal = openBlogModal;
@@ -736,6 +900,10 @@ window.sharePost = sharePost;
 window.shareCurrentPost = shareCurrentPost;
 window.likePost = likePost;
 window.dislikePost = dislikePost;
+window.editCurrentPost = editCurrentPost;
+window.editPost = editPost;
+window.savePostEdit = savePostEdit;
+window.cancelPostEdit = cancelPostEdit;
 
 // Auto-initialization disabled for pages like profile where blog is not the main feature
 if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {

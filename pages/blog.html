@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../components/shared/styles.css?v=1.6">
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <!-- Page specific styles -->
-    <link rel="stylesheet" href="../css/blog.css?v=2.0">
+    <link rel="stylesheet" href="../css/blog.css?v=2.1">
     <link rel="stylesheet" href="../css/owls.css">
 </head>
 <body>
@@ -134,6 +134,9 @@
             <h2 id="modal-title" class="scroll-title"></h2>
             <div id="modal-content" class="scroll-content"></div>
             <div class="modal-actions">
+                <button id="editPostBtn" class="edit-post-btn" onclick="editCurrentPost()" style="display: none;">
+                    ✏️ Edit this scroll
+                </button>
                 <button class="whisper-link" onclick="shareCurrentPost()">
                     🦉 Whisper this scroll to another soul
                 </button>
@@ -157,7 +160,7 @@
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/comments.js?v=1.2"></script>
-    <script src="../js/blog.js?v=1.6"></script>
+    <script src="../js/blog.js?v=1.7"></script>
     <script src="../js/scripts.js?v=1.2"></script>
 </body>
 </html>
