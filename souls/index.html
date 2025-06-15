@@ -148,37 +148,51 @@
         // Logout handler is now globally available as window.MLNF.handleLogout from userMenu.js
         // So, local handleLogout function is removed.
         
-        // Function to create profile cards with image pre-loading
+        // Function to create profile cards using unified avatar system
         function createProfileCard(profile) {
             // Ensure we have default values for everything
             const name = profile.displayName || profile.username || 'Anonymous Soul';
-            const username = profile.username ? `@${profile.username}` : '@anonymous';
-            let avatar = profile.avatar || (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png'); 
+            const username = profile.username || 'anonymous';
             const bio = profile.bio || 'This soul has not shared their story yet.';
             const isOnline = profile.online === true;
-            const onlineClass = isOnline ? 'online' : 'offline';
-            const onlineStatusText = isOnline ? 'Online' : 'Offline';
             
-            // Create profile card with online status indicator
-            const cardHTML = `
-                <div class="profile-card" data-username="${profile.username || 'anonymous'}">
-                    <a href="/souls/${profile.username || 'anonymous'}" class="profile-card-link-wrapper">
-                        <div class="profile-card-header">
-                            <div class="avatar-container">
-                            <img src="${(window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png')}" data-src="${avatar}" alt="${name}" class="profile-card-avatar lazy-avatar skeleton">
-                                <span class="online-indicator ${onlineClass}" title="${onlineStatusText}"></span>
-                            </div>
-                            <div class="profile-card-info">
-                                <h3>${name}</h3>
-                                <p class="username">${username}</p>
-                            </div>
-                        </div>
-                        <p class="profile-card-bio">${bio}</p>
-                    </a>
-                     <button class="btn btn-secondary message-soul-btn" onclick="if(window.MLNF && window.MLNF.openMessageModal) window.MLNF.openMessageModal('${profile.username || 'anonymous'}'); else console.error('messageModal component not ready.');">Message</button>
-                </div>
-            `;
-            return cardHTML;
+            // Create profile card container
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'profile-card';
+            cardDiv.setAttribute('data-username', username);
+            
+            // Create unified user display with enhanced profile styling
+            const userDisplay = window.MLNFAvatars.createUserDisplay({
+                username: username,
+                title: name,
+                status: bio,
+                avatarSize: 'xl',
+                displaySize: 'lg',
+                compact: false,
+                mystical: profile.isVIP || profile.role === 'admin',
+                online: isOnline,
+                customAvatar: profile.avatar,
+                usernameStyle: 'immortal',
+                enableUnifiedNavigation: true
+            });
+            
+            // Create message button
+            const messageBtn = document.createElement('button');
+            messageBtn.className = 'btn btn-secondary message-soul-btn';
+            messageBtn.textContent = 'Message';
+            messageBtn.onclick = () => {
+                if (window.MLNF && window.MLNF.openMessageModal) {
+                    window.MLNF.openMessageModal(username);
+                } else {
+                    console.error('messageModal component not ready.');
+                }
+            };
+            
+            // Assemble card
+            cardDiv.appendChild(userDisplay);
+            cardDiv.appendChild(messageBtn);
+            
+            return cardDiv;
         }
 
         // Rendering function
@@ -192,12 +206,8 @@
             try {
                 const fragment = document.createDocumentFragment();
                 profiles.forEach(profile => {
-                    const cardHTML = createProfileCard(profile);
-                    const tempDiv = document.createElement('div'); // Create a temporary div to parse the HTML string
-                    tempDiv.innerHTML = cardHTML.trim();
-                    if (tempDiv.firstChild) {
-                        fragment.appendChild(tempDiv.firstChild);
-                    }
+                    const cardElement = createProfileCard(profile);
+                    fragment.appendChild(cardElement);
                 });
                 
                 profilesGrid.innerHTML = ''; // Clear existing

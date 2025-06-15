@@ -722,28 +722,54 @@
                     const isAuthor = currentUser.username === chronicle.author?.username;
                     const editButton = isAuthor ? `<button class="action-btn edit" data-action="edit" data-id="${chronicle._id}"><i class="fas fa-edit"></i> Edit</button>` : '';
 
-                    article.innerHTML = `
-                        <p class="chronicle-meta">
-                            By <span class="author">${escapeHTML(chronicle.author?.username || 'Anonymous')}</span> 
-                            <span class="date">${eventDate}</span>
-                        </p>
-                        <h3 class="chronicle-title">${escapeHTML(chronicle.title)}</h3>
-                        <div class="chronicle-content">
-                            <p>${escapeHTML(chronicle.content)}</p>
-                        </div>
-                        <div class="chronicle-sources">
-                            <h4>Sources:</h4>
-                            <ul>
-                                ${sources.map(s => `<li><a href="${escapeHTML(s)}" target="_blank" rel="noopener noreferrer">${escapeHTML(s)}</a></li>`).join('')}
-                            </ul>
-                        </div>
-                        <div class="chronicle-actions">
-                            <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations?.length || 0})</span></button>
-                            <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges?.length || 0})</span></button>
-                            <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments?.length || 0})</span></button>
-                            ${editButton}
-                        </div>
+                    // Create unified author display
+                    const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                        username: chronicle.author?.username || 'Anonymous',
+                        title: 'Chronicle Author',
+                        status: eventDate,
+                        avatarSize: 'md',
+                        displaySize: 'sm',
+                        compact: true,
+                        mystical: chronicle.author?.isVIP || chronicle.author?.role === 'admin',
+                        online: chronicle.author?.online,
+                        customAvatar: chronicle.author?.avatar,
+                        usernameStyle: 'immortal',
+                        enableUnifiedNavigation: true
+                    });
+                    
+                    // Build article content
+                    const title = document.createElement('h3');
+                    title.className = 'chronicle-title';
+                    title.textContent = chronicle.title;
+                    
+                    const content = document.createElement('div');
+                    content.className = 'chronicle-content';
+                    content.innerHTML = `<p>${escapeHTML(chronicle.content)}</p>`;
+                    
+                    const sourcesDiv = document.createElement('div');
+                    sourcesDiv.className = 'chronicle-sources';
+                    sourcesDiv.innerHTML = `
+                        <h4>Sources:</h4>
+                        <ul>
+                            ${sources.map(s => `<li><a href="${escapeHTML(s)}" target="_blank" rel="noopener noreferrer">${escapeHTML(s)}</a></li>`).join('')}
+                        </ul>
                     `;
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'chronicle-actions';
+                    actionsDiv.innerHTML = `
+                        <button class="action-btn validate" data-action="validate"><i class="fas fa-check-circle"></i> Validate <span class="count">(${chronicle.validations?.length || 0})</span></button>
+                        <button class="action-btn challenge" data-action="challenge"><i class="fas fa-times-circle"></i> Challenge <span class="count">(${chronicle.challenges?.length || 0})</span></button>
+                        <button class="action-btn comments" data-action="comments"><i class="fas fa-comments"></i> Comments <span class="count">(${chronicle.comments?.length || 0})</span></button>
+                        ${editButton}
+                    `;
+                    
+                    // Assemble article
+                    article.appendChild(authorDisplay);
+                    article.appendChild(title);
+                    article.appendChild(content);
+                    article.appendChild(sourcesDiv);
+                    article.appendChild(actionsDiv);
                     chroniclesFeed.appendChild(article);
                     console.log(`[NEWS] Added chronicle item ${index + 1}/${sortedChronicles.length}`);
                 });

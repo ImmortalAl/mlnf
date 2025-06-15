@@ -242,14 +242,41 @@
                     </div>
                     <div class="thread-main">
                     <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
+                        <div class="thread-author-info"></div>
                         <p class="thread-meta">
-                            <span>${thread.replies ? thread.replies.length : 0} Replies</span> | 
-                            <span>Posted by ${thread.author ? escapeHTML(thread.author.username) : 'Anonymous'}</span>
+                            <span>${thread.replies ? thread.replies.length : 0} Replies</span>
                         </p>
                         ${isAuthor ? '<button class="btn btn-secondary btn-sm edit-thread-btn" data-action="edit-thread">Edit</button>' : ''}
                     </div>
                 </div>
-            `}).join('');
+            `});
+            
+            // After creating the HTML, add unified user displays
+            setTimeout(() => {
+                threads.forEach((thread, index) => {
+                    const threadElement = threadList.children[index];
+                    if (threadElement && thread.author) {
+                        const authorContainer = threadElement.querySelector('.thread-author-info');
+                        if (authorContainer) {
+                            const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                                username: thread.author.username || 'Anonymous',
+                                title: 'Echo Contributor',
+                                avatarSize: 'sm',
+                                displaySize: 'xs',
+                                compact: true,
+                                mystical: thread.author.isVIP || thread.author.role === 'admin',
+                                online: thread.author.online,
+                                customAvatar: thread.author.avatar,
+                                usernameStyle: 'immortal',
+                                enableUnifiedNavigation: true
+                            });
+                            authorContainer.appendChild(authorDisplay);
+                        }
+                    }
+                });
+            }, 100);
+            
+            return threadsHTML.join('');
         }
 
         threadList.addEventListener('click', async (e) => {
@@ -350,14 +377,40 @@
                         <button class="vote-btn" data-action="downvote-reply" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
                     </div>
                     <div class="reply-main" data-thread-id="${threadId}">
-                        <p class="thread-meta">
-                            <strong>${escapeHTML(reply.author ? reply.author.username : 'Anonymous')}</strong> replied:
-                        </p>
+                        <div class="reply-author-info"></div>
                         <div class="reply-content">${DOMPurify.sanitize(reply.content)}</div>
                         ${reply.author && reply.author.signature ? `<div class="signature">${escapeHTML(reply.author.signature)}</div>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `);
+            
+            // After creating the HTML, add unified user displays for replies
+            setTimeout(() => {
+                replies.forEach((reply, index) => {
+                    const replyElements = document.querySelectorAll('.reply');
+                    const replyElement = replyElements[index];
+                    if (replyElement && reply.author) {
+                        const authorContainer = replyElement.querySelector('.reply-author-info');
+                        if (authorContainer) {
+                            const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                                username: reply.author.username || 'Anonymous',
+                                title: 'Echo Responder',
+                                avatarSize: 'xs',
+                                displaySize: 'xs',
+                                compact: true,
+                                mystical: reply.author.isVIP || reply.author.role === 'admin',
+                                online: reply.author.online,
+                                customAvatar: reply.author.avatar,
+                                usernameStyle: 'immortal',
+                                enableUnifiedNavigation: true
+                            });
+                            authorContainer.appendChild(authorDisplay);
+                        }
+                    }
+                });
+            }, 100);
+            
+            return repliesHTML.join('');
         }
 
         // Modal opening/closing logic for the new composer

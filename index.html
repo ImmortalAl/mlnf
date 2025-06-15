@@ -471,34 +471,68 @@
             const highlightsContainer = document.getElementById('chroniclesHighlights');
             if (!highlightsContainer || chronicles.length === 0) return;
             
-            const chroniclesHTML = chronicles.map(post => {
+            // Clear existing content and build with unified avatar system
+            highlightsContainer.innerHTML = '';
+            
+            chronicles.forEach(post => {
                 const date = new Date(post.eventDate || post.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric', month: 'long', day: 'numeric'
                 });
-                
                 const author = post.author || {};
-                const authorAvatar = author.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=32`;
                 
-                return `
-                    <a href="pages/news.html" class="highlight-item chronicle-highlight-card chronicle-link" data-chronicle-id="${post._id}">
-                        <h4 class="chronicle-title-prominent">${post.title}</h4>
-                        <p class="chronicle-excerpt">${post.content.substring(0, 120)}...</p>
-                        <div class="mlnf-user-display mlnf-user-display--sm mlnf-user-display--compact">
-                            <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="mlnf-avatar mlnf-avatar--sm" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=32'">
-                            <div class="mlnf-user-info">
-                                <span class="mlnf-username mlnf-username--immortal">${author.username || 'Anonymous'}</span>
-                                <span class="mlnf-user-title">Eternal Chronicler</span>
-                            </div>
-                        </div>
-                        <div class="highlight-meta">
-                            <span class="date">${date}</span>
-                            <span class="read-more-indicator">Read full story →</span>
-                        </div>
-                    </a>
+                // Create highlight card container
+                const highlightCard = document.createElement('a');
+                highlightCard.href = 'pages/news.html';
+                highlightCard.className = 'highlight-item chronicle-highlight-card chronicle-link';
+                highlightCard.setAttribute('data-chronicle-id', post._id);
+                
+                // Create title
+                const title = document.createElement('h4');
+                title.className = 'chronicle-title-prominent';
+                title.textContent = post.title;
+                
+                // Create excerpt
+                const excerpt = document.createElement('p');
+                excerpt.className = 'chronicle-excerpt';
+                excerpt.textContent = post.content.substring(0, 120) + '...';
+                
+                // Create unified user display
+                const userDisplay = window.MLNFAvatars.createUserDisplay({
+                    username: author.username || 'Anonymous',
+                    title: 'Eternal Chronicler',
+                    avatarSize: 'sm',
+                    displaySize: 'sm',
+                    compact: true,
+                    mystical: author.isVIP || author.role === 'admin',
+                    online: author.online,
+                    customAvatar: author.avatar,
+                    usernameStyle: 'immortal',
+                    enableUnifiedNavigation: true
+                });
+                
+                // Create meta section
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'highlight-meta';
+                metaDiv.innerHTML = `
+                    <span class="date">${date}</span>
+                    <span class="read-more-indicator">Read full story →</span>
                 `;
-            }).join('');
+                
+                // Assemble highlight card
+                highlightCard.appendChild(title);
+                highlightCard.appendChild(excerpt);
+                highlightCard.appendChild(userDisplay);
+                highlightCard.appendChild(metaDiv);
+                
+                highlightsContainer.appendChild(highlightCard);
+            });
             
-            highlightsContainer.innerHTML = chroniclesHTML + '<a href="pages/news.html" class="btn btn-primary">Read More Stories</a>';
+            // Add "Read More Stories" button
+            const readMoreBtn = document.createElement('a');
+            readMoreBtn.href = 'pages/news.html';
+            readMoreBtn.className = 'btn btn-primary';
+            readMoreBtn.textContent = 'Read More Stories';
+            highlightsContainer.appendChild(readMoreBtn);
             
         } catch (error) {
             console.error('Failed to load chronicles:', error);
