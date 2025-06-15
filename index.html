@@ -19,7 +19,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Fallback local Font Awesome (optional, requires downloading) -->
     <link rel="stylesheet" href="assets/fontawesome.css" type="text/css" media="all" onload="this.media='all'" onerror="console.warn('Local Font Awesome failed to load')">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Immortal:wght@400;700&family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
+    <!-- Immortal-themed fonts for mystical elements -->
+    <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Eater&family=Metal+Mania&family=Griffy&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- 2. MAIN LAYOUT & COMPONENTS -->
@@ -113,7 +115,7 @@
     <main>
         <section class="hero" aria-labelledby="mainHeading">
             <div class="hero-content">
-                <h1 id="mainHeading" class="eternal">Naturally Free Forever</h1>
+                <h1 id="mainHeading" class="eternal font-immortal-heading text-immortal-glow">Naturally Free Forever</h1>
                 <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers. Experience true freedom.</p>
                 <div class="hero-buttons">
                     <a href="#" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
@@ -129,7 +131,7 @@
 
         <section class="features" id="features" aria-labelledby="featuresHeading">
             <div class="section-title">
-                <h2 id="featuresHeading">Our Timeless Arsenal</h2>
+                <h2 id="featuresHeading" class="font-immortal-heading">Our Timeless Arsenal</h2>
                 <p>Instruments of Liberation for Souls Unbound</p>
             </div>
             <div class="features-grid">
@@ -252,7 +254,7 @@
 
         <section class="highlights" id="news" aria-labelledby="newsHeading">
             <div class="section-title">
-                <h2 id="newsHeading">Boundless Chronicles</h2>
+                <h2 id="newsHeading" class="font-immortal-mystical text-immortal-gradient">Boundless Chronicles</h2>
                 <p>Featured Stories from the Eternal Chronicles</p>
             </div>
             <div class="highlight-grid" id="chroniclesHighlights">
@@ -475,6 +477,7 @@
     <script src="js/heroParticles.js?v=1.2"></script>
     <script src="components/shared/mlnf-core.js?v=1.2"></script>
     <script src="components/shared/activeUsers.js?v=1.2"></script>
+    <script src="js/mlnf-avatar-system.js?v=1.0"></script>
     <script src="js/main.js?v=1.2"></script>
     
     <script>
@@ -502,9 +505,12 @@
                     <div class="highlight-item chronicle-highlight-card" data-chronicle-id="${post._id}" data-clickable="true">
                         <h4 class="chronicle-title-prominent">${post.title}</h4>
                         <p class="chronicle-excerpt">${post.content.substring(0, 120)}...</p>
-                        <div class="chronicle-author-display">
-                            <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="author-avatar" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=32'">
-                            <span class="author-username">${author.username || 'Anonymous'}</span>
+                        <div class="mlnf-user-display mlnf-user-display--sm mlnf-user-display--compact">
+                            <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="mlnf-avatar mlnf-avatar--sm" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=32'">
+                            <div class="mlnf-user-info">
+                                <span class="mlnf-username mlnf-username--immortal">${author.username || 'Anonymous'}</span>
+                                <span class="mlnf-user-title">Eternal Chronicler</span>
+                            </div>
                         </div>
                         <div class="highlight-meta">
                             <span class="date">${date}</span>
@@ -561,11 +567,12 @@
             const author = chronicle.author || {};
             const authorAvatar = author.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=40`;
             document.getElementById('chroniclesAuthorInfo').innerHTML = `
-                <div class="modal-author-display">
-                    <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="modal-author-avatar" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=40'">
-                    <div class="modal-author-details">
-                        <span class="modal-author-username">${author.username || 'Anonymous'}</span>
-                        <span class="modal-author-title">Eternal Chronicler</span>
+                <div class="mlnf-user-display mlnf-user-display--lg">
+                    <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="mlnf-avatar mlnf-avatar--lg mlnf-avatar--mystical" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=48'">
+                    <div class="mlnf-user-info">
+                        <span class="mlnf-username mlnf-username--mystical">${author.username || 'Anonymous'}</span>
+                        <span class="mlnf-user-title">Eternal Chronicler</span>
+                        <span class="mlnf-user-status">Keeper of Immortal Truths</span>
                     </div>
                 </div>
             `;

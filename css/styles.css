@@ -680,31 +680,12 @@ body.light-theme .debate-position h4 {
     margin-bottom: 1.5rem !important;
 }
 
-/* Author display styling */
-.chronicle-author-display {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
-    border-radius: 8px;
-    border-left: 3px solid var(--accent);
-}
-
-.author-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
+/* Legacy styles - deprecated in favor of MLNF Avatar System */
+.chronicle-author-display,
+.author-avatar,
 .author-username {
-    font-weight: 600;
-    color: var(--accent);
-    font-size: 0.95rem;
+    /* These styles are maintained for backward compatibility */
+    /* New implementations should use mlnf-user-display, mlnf-avatar, mlnf-username */
 }
 
 /* Read more indicator */
@@ -743,37 +724,14 @@ body.light-theme .debate-position h4 {
     line-height: 1.3;
 }
 
-.modal-author-display {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.modal-author-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    object-fit: cover;
-}
-
-.modal-author-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.modal-author-username {
-    font-weight: 700;
-    color: var(--accent);
-    font-size: 1rem;
-}
-
+/* Legacy modal styles - deprecated in favor of MLNF Avatar System */
+.modal-author-display,
+.modal-author-avatar,
+.modal-author-details,
+.modal-author-username,
 .modal-author-title {
-    font-size: 0.85rem;
-    opacity: 0.8;
-    font-style: italic;
+    /* These styles are maintained for backward compatibility */
+    /* New implementations should use mlnf-user-display components */
 }
 
 .modal-meta-info {
@@ -857,6 +815,318 @@ body.light-theme .debate-position h4 {
 .close-btn:hover {
     opacity: 1;
     color: var(--accent);
+}
+
+/* ==========================================
+   IMMORTAL AVATAR SYSTEM - Site-wide Component
+   ========================================== */
+
+/* Avatar base component */
+.mlnf-avatar {
+    display: inline-block;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    position: relative;
+    background: var(--gradient-accent);
+    border: 2px solid var(--accent);
+    transition: var(--transition);
+    box-shadow: 
+        0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Avatar hover effects */
+.mlnf-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 0 25px rgba(var(--accent-rgb, 255, 94, 120), 0.5),
+        0 0 40px rgba(var(--accent-rgb, 255, 94, 120), 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Avatar size variants */
+.mlnf-avatar--xs { width: 20px; height: 20px; border-width: 1px; }
+.mlnf-avatar--sm { width: 28px; height: 28px; border-width: 1.5px; }
+.mlnf-avatar--md { width: 36px; height: 36px; border-width: 2px; }
+.mlnf-avatar--lg { width: 48px; height: 48px; border-width: 2.5px; }
+.mlnf-avatar--xl { width: 64px; height: 64px; border-width: 3px; }
+.mlnf-avatar--xxl { width: 80px; height: 80px; border-width: 3px; }
+
+/* Avatar with mystical glow effect */
+.mlnf-avatar--mystical {
+    position: relative;
+    animation: mysticalPulse 3s ease-in-out infinite;
+}
+
+.mlnf-avatar--mystical::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        var(--accent),
+        rgba(255, 202, 40, 0.8),
+        var(--accent),
+        rgba(255, 94, 120, 0.6),
+        var(--accent)
+    );
+    z-index: -1;
+    opacity: 0.6;
+    animation: rotate 4s linear infinite;
+}
+
+@keyframes mysticalPulse {
+    0%, 100% { 
+        box-shadow: 
+            0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    50% { 
+        box-shadow: 
+            0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.6),
+            0 0 50px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+            inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Avatar status indicators */
+.mlnf-avatar--online::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 25%;
+    background: #10b981;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.mlnf-avatar--offline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 25%;
+    background: #6b7280;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+}
+
+/* User display component with avatar */
+.mlnf-user-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.05);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.15);
+}
+
+.mlnf-user-display:hover {
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.1);
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    transform: translateY(-1px);
+}
+
+/* User display size variants */
+.mlnf-user-display--xs { padding: 0.25rem; gap: 0.5rem; }
+.mlnf-user-display--sm { padding: 0.375rem; gap: 0.5rem; }
+.mlnf-user-display--md { padding: 0.5rem; gap: 0.75rem; }
+.mlnf-user-display--lg { padding: 0.75rem; gap: 1rem; }
+.mlnf-user-display--xl { padding: 1rem; gap: 1.25rem; }
+
+/* User info section */
+.mlnf-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0; /* Allows text truncation */
+}
+
+.mlnf-username {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 0.95rem;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mlnf-user-title {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-style: italic;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mlnf-user-status {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    color: var(--text);
+}
+
+/* Username size variants */
+.mlnf-user-display--xs .mlnf-username { font-size: 0.8rem; }
+.mlnf-user-display--sm .mlnf-username { font-size: 0.85rem; }
+.mlnf-user-display--md .mlnf-username { font-size: 0.95rem; }
+.mlnf-user-display--lg .mlnf-username { font-size: 1.1rem; }
+.mlnf-user-display--xl .mlnf-username { font-size: 1.25rem; }
+
+.mlnf-user-display--xs .mlnf-user-title { font-size: 0.65rem; }
+.mlnf-user-display--sm .mlnf-user-title { font-size: 0.7rem; }
+.mlnf-user-display--md .mlnf-user-title { font-size: 0.75rem; }
+.mlnf-user-display--lg .mlnf-user-title { font-size: 0.85rem; }
+.mlnf-user-display--xl .mlnf-user-title { font-size: 0.95rem; }
+
+/* Compact user display (horizontal layout) */
+.mlnf-user-display--compact {
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    gap: 0.5rem;
+}
+
+.mlnf-user-display--compact:hover {
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
+}
+
+/* Immortal themed username styling */
+.mlnf-username--immortal {
+    font-family: 'Cinzel', serif;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 600;
+}
+
+.mlnf-username--mystical {
+    font-family: 'Caesar Dressing', serif;
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+    font-weight: 400;
+}
+
+.mlnf-username--eternal {
+    font-family: 'Metal Mania', serif;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+}
+
+/* Light theme adjustments */
+body.light-theme .mlnf-user-display {
+    background: rgba(214, 45, 77, 0.05);
+    border-color: rgba(214, 45, 77, 0.15);
+}
+
+body.light-theme .mlnf-user-display:hover {
+    background: rgba(214, 45, 77, 0.1);
+    border-color: rgba(214, 45, 77, 0.25);
+}
+
+body.light-theme .mlnf-avatar {
+    border-color: var(--accent);
+    box-shadow: 
+        0 0 15px rgba(214, 45, 77, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================
+   IMMORTAL TYPOGRAPHY SYSTEM
+   ========================================== */
+
+/* Immortal font families for different use cases */
+.font-immortal-heading {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.font-immortal-mystical {
+    font-family: 'Caesar Dressing', serif;
+    letter-spacing: 0.03em;
+}
+
+.font-immortal-gothic {
+    font-family: 'Metal Mania', serif;
+    letter-spacing: 0.05em;
+}
+
+.font-immortal-ancient {
+    font-family: 'Griffy', serif;
+    letter-spacing: 0.02em;
+}
+
+/* Special immortal text effects */
+.text-immortal-glow {
+    color: var(--accent);
+    text-shadow: 
+        0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5),
+        0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+        0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.1);
+}
+
+.text-immortal-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.text-immortal-pulse {
+    animation: immortalPulse 2s ease-in-out infinite;
+}
+
+@keyframes immortalPulse {
+    0%, 100% { 
+        text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 
+            0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.8),
+            0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.4);
+        transform: scale(1.02);
+    }
+}
+
+/* Mobile responsive avatar adjustments */
+@media (max-width: 768px) {
+    .mlnf-user-display { gap: 0.5rem; padding: 0.375rem; }
+    .mlnf-avatar--xs { width: 18px; height: 18px; }
+    .mlnf-avatar--sm { width: 24px; height: 24px; }
+    .mlnf-avatar--md { width: 32px; height: 32px; }
+    .mlnf-avatar--lg { width: 40px; height: 40px; }
+    .mlnf-avatar--xl { width: 52px; height: 52px; }
+    .mlnf-avatar--xxl { width: 64px; height: 64px; }
+}
+
+@media (max-width: 480px) {
+    .mlnf-avatar--xs { width: 16px; height: 16px; }
+    .mlnf-avatar--sm { width: 20px; height: 20px; }
+    .mlnf-avatar--md { width: 28px; height: 28px; }
+    .mlnf-avatar--lg { width: 36px; height: 36px; }
+    .mlnf-avatar--xl { width: 44px; height: 44px; }
+    .mlnf-avatar--xxl { width: 56px; height: 56px; }
 }
 
 .highlight-item p,
@@ -1406,8 +1676,7 @@ footer {
     .highlight-item, .debate-position { padding: 1.5rem; }
     .highlight-item h4, .debate-position h4 { font-size: 1.5rem; }
     .chronicle-title-prominent { font-size: 1.6rem !important; }
-    .chronicle-author-display { padding: 0.5rem; gap: 0.5rem; }
-    .author-avatar { width: 28px; height: 28px; }
+    /* Legacy mobile styles removed - handled by MLNF Avatar System responsive design */
     .chronicles-modal-content { width: 95%; }
     .chronicles-modal-header { padding: 1.5rem 1rem 1rem; }
     .chronicles-modal-body { padding: 1rem; }
@@ -1443,8 +1712,7 @@ footer {
     .feature-card h3 { font-size: 1.4rem; }
     .highlight-item h4, .debate-position h4 { font-size: 1.3rem; }
     .chronicle-title-prominent { font-size: 1.4rem !important; }
-    .author-avatar { width: 24px; height: 24px; }
-    .modal-author-avatar { width: 32px; height: 32px; }
+    /* Legacy mobile styles removed - handled by MLNF Avatar System responsive design */
     .chronicles-modal-header h3 { font-size: 1.6rem; }
 
     #messageModal .auth-modal { padding: 1rem; }
