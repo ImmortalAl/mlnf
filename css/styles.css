@@ -853,21 +853,13 @@ body.light-theme .feature-card p {
         max-height: 90vh;
     }
     
-    /* Smart modal positioning for mobile - maintain center alignment */
+    /* Simple solution: Modal flush with top on mobile */
     .modal {
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
-        padding: 1rem;
-    }
-    
-    /* Professional approach: Use transform to move modal up when keyboard opens */
-    .feedback-modal {
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: translateY(0);
-    }
-    
-    .modal.keyboard-open .feedback-modal {
-        transform: translateY(-20vh); /* Move modal up 20% of viewport height */
+        padding-top: 2vh;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
     
     .feedback-modal h3 {
