@@ -158,21 +158,39 @@ async function fetchBlogPosts(page = 1) {
                     openBlogModal(post._id);
                 };
 
-                // Add both click and touch events
+                // Add click event only (remove touchend to prevent scroll conflicts)
                 console.log('[blog.js] Adding event listeners to post:', post._id, 'Author:', post.author.username);
                 postElement.addEventListener('click', handlePostClick);
+                
+                // Add touch handling that doesn't conflict with scrolling
+                let touchStartY = 0;
+                let touchStartTime = 0;
+                
+                postElement.addEventListener('touchstart', function(e) {
+                    touchStartY = e.touches[0].clientY;
+                    touchStartTime = Date.now();
+                }, { passive: true });
+                
                 postElement.addEventListener('touchend', function(e) {
-                    console.log('[blog.js] Touch event triggered on post:', post._id, 'Title:', post.title, 'Author:', post.author.username);
-                    // Prevent double-firing on devices that support both touch and click
-                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
-                        console.log('[blog.js] Touch on link/button, not opening modal');
-                        return;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const touchEndTime = Date.now();
+                    const touchDuration = touchEndTime - touchStartTime;
+                    const touchDistance = Math.abs(touchEndY - touchStartY);
+                    
+                    // Only trigger if it's a tap (short duration, minimal movement)
+                    if (touchDuration < 300 && touchDistance < 10) {
+                        console.log('[blog.js] Touch tap detected on post:', post._id);
+                        // Don't open modal if touching links or buttons
+                        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
+                            console.log('[blog.js] Touch on link/button, not opening modal');
+                            return;
+                        }
+                        console.log('[blog.js] Opening modal for post (touch tap):', post._id);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openBlogModal(post._id);
                     }
-                    console.log('[blog.js] Opening modal for post (touch):', post._id);
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openBlogModal(post._id);
-                });
+                }, { passive: false });
                 
                 // Add hover effect class
                 postElement.classList.add('blog-post-hover');
