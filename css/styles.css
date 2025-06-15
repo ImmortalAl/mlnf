@@ -571,19 +571,292 @@ body.light-theme .feature-card p {
 /* Highlight Item & Debate Position Styling */
 .highlight-item,
 .debate-position {
-    background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
-    padding: 1.8rem;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--accent);
+    background: linear-gradient(135deg, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.12) 0%,
+        rgba(26, 26, 51, 0.8) 50%,
+        rgba(13, 13, 26, 0.9) 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border-left: 6px solid var(--accent);
     transition: var(--transition);
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.1),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
 }
 
 .highlight-item:hover,
 .debate-position:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px) scale(1.03);
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+    box-shadow: 
+        0 16px 40px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+        inset 0 2px 0 rgba(240, 230, 255, 0.2);
+}
+
+/* Add mystical glow effect */
+.highlight-item::before,
+.debate-position::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.05) 0%, 
+        transparent 70%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.highlight-item:hover::before,
+.debate-position:hover::before {
+    opacity: 1;
+}
+
+/* Enhanced heading styling for highlight items */
+.highlight-item h4,
+.debate-position h4 {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    transition: var(--transition);
+}
+
+/* Fallback for browsers that don't support background-clip */
+@supports not (background-clip: text) {
+    .highlight-item h4,
+    .debate-position h4 {
+        color: var(--accent);
+    }
+}
+
+/* Light theme support for headings */
+body.light-theme .highlight-item h4,
+body.light-theme .debate-position h4 {
+    background: linear-gradient(135deg, var(--accent), var(--highlight));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Chronicles highlight card enhancements */
+.chronicle-highlight-card {
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.chronicle-highlight-card:hover {
+    transform: translateY(-12px) scale(1.04);
+}
+
+/* Prominent title styling for Chronicles highlights */
+.chronicle-title-prominent {
+    font-size: 1.9rem !important;
+    margin-bottom: 1.25rem !important;
+    line-height: 1.2 !important;
+}
+
+/* Chronicle excerpt with reduced prominence */
+.chronicle-excerpt {
+    font-size: 1rem !important;
+    opacity: 0.85 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Author display styling */
+.chronicle-author-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+}
+
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.author-username {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 0.95rem;
+}
+
+/* Read more indicator */
+.read-more-indicator {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Chronicles Modal Styling */
+.chronicles-modal-content {
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--gradient-secondary);
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border-radius: 16px;
+    padding: 0;
+}
+
+.chronicles-modal-header {
+    padding: 2rem 2rem 1rem;
+    border-bottom: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.chronicles-modal-header h3 {
+    font-family: 'Lato', sans-serif;
+    font-size: 2rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.modal-author-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.modal-author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    object-fit: cover;
+}
+
+.modal-author-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.modal-author-username {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+.modal-author-title {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.modal-meta-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.modal-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.chronicles-modal-body {
+    padding: 1.5rem 2rem;
+}
+
+.chronicles-modal-body p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.modal-sources {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.modal-sources h4 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.modal-sources ul {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-sources li {
+    margin-bottom: 0.5rem;
+}
+
+.modal-sources a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.modal-sources a:hover {
+    text-decoration: underline;
+}
+
+.chronicles-modal-actions {
+    padding: 1rem 2rem 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.7;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    opacity: 1;
+    color: var(--accent);
 }
 
 .highlight-item p,
@@ -619,6 +892,56 @@ body.light-theme .feature-card p {
 .highlight-meta .read-more:hover {
     color: var(--text);
     transform: translateX(3px);
+}
+
+/* Enhanced Chronicles Section */
+#news {
+    background: linear-gradient(135deg, 
+        rgba(13, 13, 26, 0.95) 0%,
+        rgba(26, 26, 51, 0.9) 50%,
+        rgba(42, 64, 102, 0.8) 100%);
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    border-radius: 20px;
+    padding: 4rem 2rem;
+    margin: 3rem auto;
+    max-width: 1440px;
+    position: relative;
+    overflow: hidden;
+}
+
+#news::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent), 
+        rgba(255, 202, 40, 0.8), 
+        var(--accent), 
+        transparent);
+}
+
+#newsHeading {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(135deg, var(--accent), rgba(255, 202, 40, 0.9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+    position: relative;
+}
+
+#newsHeading::after {
+    content: '📜';
+    position: absolute;
+    right: -3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    opacity: 0.6;
 }
 
 /* Debate Arena Specific Section */
@@ -1081,6 +1404,14 @@ footer {
     .features-grid, .highlight-grid, .debate-preview-grid { gap: 1.5rem; }
     .feature-card { padding: 1.5rem; }
     .highlight-item, .debate-position { padding: 1.5rem; }
+    .highlight-item h4, .debate-position h4 { font-size: 1.5rem; }
+    .chronicle-title-prominent { font-size: 1.6rem !important; }
+    .chronicle-author-display { padding: 0.5rem; gap: 0.5rem; }
+    .author-avatar { width: 28px; height: 28px; }
+    .chronicles-modal-content { width: 95%; }
+    .chronicles-modal-header { padding: 1.5rem 1rem 1rem; }
+    .chronicles-modal-body { padding: 1rem; }
+    .chronicles-modal-actions { padding: 1rem; flex-direction: column; }
 
     #messageModal .auth-modal { /* Message modal content on smaller screens */
         width: 95%; /* More screen width */
@@ -1110,6 +1441,11 @@ footer {
     .hero h1 { font-size: 2rem; }
     .section-title h2 { font-size: 1.8rem; }
     .feature-card h3 { font-size: 1.4rem; }
+    .highlight-item h4, .debate-position h4 { font-size: 1.3rem; }
+    .chronicle-title-prominent { font-size: 1.4rem !important; }
+    .author-avatar { width: 24px; height: 24px; }
+    .modal-author-avatar { width: 32px; height: 32px; }
+    .chronicles-modal-header h3 { font-size: 1.6rem; }
 
     #messageModal .auth-modal { padding: 1rem; }
     #messageModal .auth-modal h3 { font-size: 1.3rem; }

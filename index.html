@@ -352,6 +352,28 @@
         </div>
     </footer>
 
+    <!-- Chronicles Post Modal -->
+    <div id="chroniclesPostModal" class="modal" aria-hidden="true">
+        <div class="modal-content chronicles-modal-content" role="dialog" aria-labelledby="chroniclesPostTitle">
+            <span class="close-btn" id="closeChroniclesModal" aria-label="Close modal">&times;</span>
+            <div class="chronicles-modal-header">
+                <h3 id="chroniclesPostTitle"></h3>
+                <div class="chronicles-author-info" id="chroniclesAuthorInfo"></div>
+                <div class="chronicles-meta" id="chroniclesMeta"></div>
+            </div>
+            <div class="chronicles-modal-body">
+                <div id="chroniclesPostContent"></div>
+                <div id="chroniclesPostSources"></div>
+            </div>
+            <div class="chronicles-modal-actions">
+                <button class="btn btn-outline" id="viewCommentsBtn">
+                    <i class="fas fa-comments"></i> View Comments
+                </button>
+                <a href="pages/news.html" class="btn btn-primary">View All Chronicles</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Feedback Modal (hidden by default) -->
     <div id="feedbackModal" class="modal" aria-hidden="true">
       <form id="feedbackForm" class="feedback-modal" autocomplete="off" tabindex="-1" role="dialog" aria-labelledby="feedbackTitle">
@@ -473,14 +495,20 @@
                     year: 'numeric', month: 'long', day: 'numeric'
                 });
                 
+                const author = post.author || {};
+                const authorAvatar = author.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=32`;
+                
                 return `
-                    <div class="highlight-item">
-                        <h4>${post.title}</h4>
-                        <p>${post.content.substring(0, 150)}...</p>
-                        <p class="author">— ${post.author?.username || 'Anonymous'}</p>
+                    <div class="highlight-item chronicle-highlight-card" data-chronicle-id="${post._id}" data-clickable="true">
+                        <h4 class="chronicle-title-prominent">${post.title}</h4>
+                        <p class="chronicle-excerpt">${post.content.substring(0, 120)}...</p>
+                        <div class="chronicle-author-display">
+                            <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="author-avatar" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=32'">
+                            <span class="author-username">${author.username || 'Anonymous'}</span>
+                        </div>
                         <div class="highlight-meta">
                             <span class="date">${date}</span>
-                            <a href="pages/news.html" class="read-more">Read Full Story →</a>
+                            <span class="read-more-indicator">Click to read →</span>
                         </div>
                     </div>
                 `;
@@ -488,11 +516,115 @@
             
             highlightsContainer.innerHTML = chroniclesHTML + '<a href="pages/news.html" class="btn btn-primary">Read More Stories</a>';
             
+            // Add click event listeners to chronicle cards
+            addChronicleClickListeners();
+            
         } catch (error) {
             console.error('Failed to load chronicles:', error);
             // Keep fallback content
         }
     }
+
+    // Function to add click event listeners to chronicle cards
+    function addChronicleClickListeners() {
+        const chronicleCards = document.querySelectorAll('.chronicle-highlight-card[data-clickable="true"]');
+        
+        chronicleCards.forEach(card => {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', async (e) => {
+                // Prevent default if clicking on a link
+                e.preventDefault();
+                
+                const chronicleId = card.dataset.chronicleId;
+                if (chronicleId) {
+                    await openChronicleModal(chronicleId);
+                }
+            });
+        });
+    }
+
+    // Function to open chronicle modal with full post data
+    async function openChronicleModal(chronicleId) {
+        try {
+            const modal = document.getElementById('chroniclesPostModal');
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/chronicles/${chronicleId}`);
+            
+            if (!response.ok) throw new Error('Failed to fetch chronicle');
+            
+            const chronicle = await response.json();
+            
+            // Populate modal content
+            document.getElementById('chroniclesPostTitle').textContent = chronicle.title;
+            document.getElementById('chroniclesPostContent').innerHTML = `<p>${chronicle.content}</p>`;
+            
+            // Author info with avatar
+            const author = chronicle.author || {};
+            const authorAvatar = author.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=40`;
+            document.getElementById('chroniclesAuthorInfo').innerHTML = `
+                <div class="modal-author-display">
+                    <img src="${authorAvatar}" alt="${author.username || 'Anonymous'}" class="modal-author-avatar" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(author.username || 'Anonymous')}&background=ff5e78&color=fff&size=40'">
+                    <div class="modal-author-details">
+                        <span class="modal-author-username">${author.username || 'Anonymous'}</span>
+                        <span class="modal-author-title">Eternal Chronicler</span>
+                    </div>
+                </div>
+            `;
+            
+            // Meta information
+            const date = new Date(chronicle.eventDate || chronicle.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('chroniclesMeta').innerHTML = `
+                <div class="modal-meta-info">
+                    <span class="modal-date"><i class="fas fa-calendar"></i> ${date}</span>
+                </div>
+            `;
+            
+            // Sources if available
+            if (chronicle.sources && chronicle.sources.length > 0) {
+                document.getElementById('chroniclesPostSources').innerHTML = `
+                    <div class="modal-sources">
+                        <h4>Sources:</h4>
+                        <ul>
+                            ${chronicle.sources.map(source => `<li><a href="${source}" target="_blank" rel="noopener">${source}</a></li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            } else {
+                document.getElementById('chroniclesPostSources').innerHTML = '';
+            }
+            
+            // Show modal
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            
+        } catch (error) {
+            console.error('Failed to open chronicle modal:', error);
+            // Fallback: redirect to news page
+            window.location.href = 'pages/news.html';
+        }
+    }
+
+    // Modal close functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('chroniclesPostModal');
+        const closeBtn = document.getElementById('closeChroniclesModal');
+        
+        if (closeBtn && modal) {
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            });
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
+        }
+    });
     
     // Load on page ready
     document.addEventListener('DOMContentLoaded', loadChroniclesHighlights);
