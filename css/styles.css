@@ -655,6 +655,14 @@ body.light-theme .feature-card p {
     opacity: 0;
     pointer-events: none;
 }
+
+/* Mobile override with higher specificity */
+@media (max-width: 480px) {
+    .modal {
+        align-items: flex-start !important;
+        padding-top: 2vh !important;
+    }
+}
 .modal[aria-hidden="false"] {
     display: flex !important;
     opacity: 1;
