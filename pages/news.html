@@ -722,8 +722,8 @@
                     const isAuthor = currentUser.username === chronicle.author?.username;
                     const editButton = isAuthor ? `<button class="action-btn edit" data-action="edit" data-id="${chronicle._id}"><i class="fas fa-edit"></i> Edit</button>` : '';
 
-                    // Create unified author display
-                    const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                    // Create unified author display (with safety check)
+                    const authorDisplay = window.MLNFAvatars ? window.MLNFAvatars.createUserDisplay({
                         username: chronicle.author?.username || 'Anonymous',
                         title: 'Chronicle Author',
                         status: eventDate,
@@ -735,7 +735,7 @@
                         customAvatar: chronicle.author?.avatar,
                         usernameStyle: 'immortal',
                         enableUnifiedNavigation: true
-                    });
+                    }) : document.createElement('div');
                     
                     // Build article content
                     const title = document.createElement('h3');
@@ -1021,5 +1021,9 @@
             }, 500); // 500ms delay to let other scripts finish
         });
     </script>
+    
+    <!-- Required Scripts for MLNF Avatar System -->
+    <script src="../components/shared/config.js"></script>
+    <script src="../js/mlnf-avatar-system.js"></script>
 </body>
 </html> 

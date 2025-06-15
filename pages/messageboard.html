@@ -253,6 +253,11 @@
             
             // After creating the HTML, add unified user displays
             setTimeout(() => {
+                if (!window.MLNFAvatars) {
+                    console.log('[messageboard] MLNFAvatars not available yet');
+                    return;
+                }
+                
                 threads.forEach((thread, index) => {
                     const threadElement = threadList.children[index];
                     if (threadElement && thread.author) {
@@ -386,6 +391,11 @@
             
             // After creating the HTML, add unified user displays for replies
             setTimeout(() => {
+                if (!window.MLNFAvatars) {
+                    console.log('[messageboard] MLNFAvatars not available for replies yet');
+                    return;
+                }
+                
                 replies.forEach((reply, index) => {
                     const replyElements = document.querySelectorAll('.reply');
                     const replyElement = replyElements[index];
@@ -559,5 +569,9 @@
         });
     });
     </script>
+    
+    <!-- Required Scripts for MLNF Avatar System -->
+    <script src="../components/shared/config.js"></script>
+    <script src="../js/mlnf-avatar-system.js"></script>
 </body>
 </html> 

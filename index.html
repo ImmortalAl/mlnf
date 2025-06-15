@@ -462,6 +462,13 @@
     // Dynamic Chronicles Highlights
     async function loadChroniclesHighlights() {
         try {
+            // Wait for MLNFAvatars to be available
+            if (!window.MLNFAvatars) {
+                console.log('[index.html] Waiting for MLNFAvatars to load...');
+                setTimeout(loadChroniclesHighlights, 200);
+                return;
+            }
+            
             const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/chronicles?limit=2`);
             if (!response.ok) throw new Error('Failed to fetch');
             

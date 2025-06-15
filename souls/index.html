@@ -161,8 +161,8 @@
             cardDiv.className = 'profile-card';
             cardDiv.setAttribute('data-username', username);
             
-            // Create unified user display with enhanced profile styling
-            const userDisplay = window.MLNFAvatars.createUserDisplay({
+            // Create unified user display with enhanced profile styling (with safety check)
+            const userDisplay = window.MLNFAvatars ? window.MLNFAvatars.createUserDisplay({
                 username: username,
                 title: name,
                 status: bio,
@@ -174,7 +174,7 @@
                 customAvatar: profile.avatar,
                 usernameStyle: 'immortal',
                 enableUnifiedNavigation: true
-            });
+            }) : document.createElement('div');
             
             // Create message button
             const messageBtn = document.createElement('button');
@@ -350,6 +350,7 @@
     <script src="../components/shared/userMenu.js?v=1.2"></script> 
     <script src="../components/shared/authModal.js?v=1.2"></script> 
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <script src="../components/shared/messageModal.js?v=1.2"></script> 
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
+    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
 </body>
 </html> 
