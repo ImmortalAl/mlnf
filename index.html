@@ -543,6 +543,7 @@
             
         } catch (error) {
             console.error('Failed to load chronicles:', error);
+            console.error('Error details:', error.message);
             // Keep fallback content
         }
     }

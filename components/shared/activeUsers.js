@@ -178,11 +178,11 @@ async function populateActiveUsersList() {
                 // Create unified user display using MLNF Avatar System
                 const userDisplay = window.MLNFAvatars.createUserDisplay({
                     username: username,
-                    title: displayName,
+                    title: null, // Don't show title to avoid duplicate names
                     status: statusMessage,
                     avatarSize: 'md',
                     displaySize: 'sm',
-                    compact: false,
+                    compact: true, // Use compact mode for sidebar
                     mystical: user.isVIP || user.role === 'admin',
                     online: isOnline,
                     customAvatar: user.avatar,

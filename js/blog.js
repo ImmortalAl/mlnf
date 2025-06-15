@@ -15,7 +15,7 @@ function jwt_decode(token) {
 console.log('[blog.js] Script loaded');
 console.log('[blog.js] MLNF_CONFIG:', window.MLNF_CONFIG);
 
-const BLOG_API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
+const BLOG_API_BASE_URL = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
 console.log('[blog.js] BLOG_API_BASE_URL:', BLOG_API_BASE_URL);
 
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
