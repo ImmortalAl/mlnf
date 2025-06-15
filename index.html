@@ -255,24 +255,12 @@
                 <h2 id="newsHeading">Boundless Chronicles</h2>
                 <p>Featured Stories from the Eternal Chronicles</p>
             </div>
-            <div class="highlight-grid">
+            <div class="highlight-grid" id="chroniclesHighlights">
+                <!-- Dynamic content will load here -->
                 <div class="highlight-item">
-                    <h4>MLNF Platform Launch: A New Era of Digital Freedom</h4>
-                    <p>The sanctuary is open. A space where authentic discourse thrives beyond algorithmic manipulation and censorship. Join the eternal community.</p>
-                    <p class="author">— ImmortalAl</p>
-                    <div class="highlight-meta">
-                        <span class="date">June 15, 2025</span>
-                        <a href="pages/news.html" class="read-more">Read Full Story →</a>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <h4>The Philosophy of Digital Immortality</h4>
-                    <p>Exploring what it means to preserve authentic human expression in a world increasingly dominated by artificial intelligence and corporate control.</p>
-                    <p class="author">— ImmortalAl</p>
-                    <div class="highlight-meta">
-                        <span class="date">June 12, 2025</span>
-                        <a href="pages/news.html" class="read-more">Read Full Story →</a>
-                    </div>
+                    <h4>Loading Chronicles...</h4>
+                    <p>Fetching the latest stories from the eternal archives...</p>
+                    <p class="author">— System</p>
                 </div>
                 <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
             </div>
@@ -466,5 +454,48 @@
     <script src="components/shared/mlnf-core.js?v=1.2"></script>
     <script src="components/shared/activeUsers.js?v=1.2"></script>
     <script src="js/main.js?v=1.2"></script>
+    
+    <script>
+    // Dynamic Chronicles Highlights
+    async function loadChroniclesHighlights() {
+        try {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/chronicles?limit=2`);
+            if (!response.ok) throw new Error('Failed to fetch');
+            
+            const data = await response.json();
+            const chronicles = data.docs || data;
+            
+            const highlightsContainer = document.getElementById('chroniclesHighlights');
+            if (!highlightsContainer || chronicles.length === 0) return;
+            
+            const chroniclesHTML = chronicles.map(post => {
+                const date = new Date(post.eventDate || post.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                
+                return `
+                    <div class="highlight-item">
+                        <h4>${post.title}</h4>
+                        <p>${post.content.substring(0, 150)}...</p>
+                        <p class="author">— ${post.author?.username || 'Anonymous'}</p>
+                        <div class="highlight-meta">
+                            <span class="date">${date}</span>
+                            <a href="pages/news.html" class="read-more">Read Full Story →</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            highlightsContainer.innerHTML = chroniclesHTML + '<a href="pages/news.html" class="btn btn-primary">Read More Stories</a>';
+            
+        } catch (error) {
+            console.error('Failed to load chronicles:', error);
+            // Keep fallback content
+        }
+    }
+    
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', loadChroniclesHighlights);
+    </script>
 </body>
 </html>
