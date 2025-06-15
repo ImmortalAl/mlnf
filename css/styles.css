@@ -853,22 +853,21 @@ body.light-theme .feature-card p {
         max-height: 90vh;
     }
     
-    /* Smart modal positioning for mobile - maintain center alignment but adjust for keyboard */
+    /* Smart modal positioning for mobile - maintain center alignment */
     .modal {
         align-items: center;
         justify-content: center;
         padding: 1rem;
     }
     
-    /* When keyboard is open, adjust positioning with transform instead of changing alignment */
-    .modal.keyboard-open {
-        align-items: flex-start;
-        padding-top: 10vh;
+    /* Professional approach: Use transform to move modal up when keyboard opens */
+    .feedback-modal {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(0);
     }
     
-    /* Smooth transition for keyboard open/close */
-    .modal {
-        transition: padding-top 0.3s ease;
+    .modal.keyboard-open .feedback-modal {
+        transform: translateY(-20vh); /* Move modal up 20% of viewport height */
     }
     
     .feedback-modal h3 {
