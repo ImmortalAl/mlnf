@@ -856,13 +856,13 @@ body.light-theme .feature-card p {
     /* Position modal higher on small mobile devices to avoid keyboard overlap */
     .modal {
         align-items: flex-start;
-        padding-top: 5vh;
+        padding-top: 8vh;
     }
     
     /* When keyboard might be open (input/textarea focused), position even higher */
     .modal.keyboard-open {
         align-items: flex-start;
-        padding-top: 2vh;
+        padding-top: 5vh;
     }
     
     .feedback-modal h3 {
