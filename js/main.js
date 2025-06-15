@@ -198,17 +198,34 @@ class FeedbackSystem {
         // Only add keyboard detection on mobile devices (screen width <= 480px)
         if (window.innerWidth > 480) return;
         
+        // Store initial viewport height when modal opens
+        let initialHeight = window.innerHeight;
+        
         // Add focus and blur listeners to form inputs
         const inputs = this.modal.querySelectorAll('input, textarea');
         
         inputs.forEach(input => {
             input.addEventListener('focusin', () => {
-                // Small delay to ensure keyboard is opening
-                setTimeout(() => {
-                    if (this.modal && this.modal.style.display === 'flex') {
-                        this.modal.classList.add('keyboard-open');
-                    }
-                }, 300);
+                // Store height when input is focused
+                initialHeight = window.innerHeight;
+                
+                // Use Visual Viewport API if available (more reliable)
+                if (window.visualViewport) {
+                    const handleViewportChange = () => {
+                        const heightDiff = initialHeight - window.visualViewport.height;
+                        if (heightDiff > 150 && this.modal && this.modal.style.display === 'flex') {
+                            this.modal.classList.add('keyboard-open');
+                        }
+                    };
+                    window.visualViewport.addEventListener('resize', handleViewportChange);
+                } else {
+                    // Fallback: Use timeout for devices without Visual Viewport API
+                    setTimeout(() => {
+                        if (this.modal && this.modal.style.display === 'flex') {
+                            this.modal.classList.add('keyboard-open');
+                        }
+                    }, 300);
+                }
             });
             
             input.addEventListener('focusout', () => {
@@ -221,22 +238,27 @@ class FeedbackSystem {
             });
         });
         
-        // Also detect viewport height changes (alternative method)
-        let initialViewportHeight = window.innerHeight;
-        
-        window.addEventListener('resize', () => {
+        // Enhanced viewport detection
+        const handleResize = () => {
             if (!this.modal || this.modal.style.display !== 'flex') return;
             
-            const currentHeight = window.innerHeight;
-            const heightDifference = initialViewportHeight - currentHeight;
+            const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            const heightDifference = initialHeight - currentHeight;
             
-            // If viewport height decreased significantly (likely keyboard opened)
+            // More accurate keyboard detection
             if (heightDifference > 150) {
                 this.modal.classList.add('keyboard-open');
-            } else {
+            } else if (heightDifference < 50) {
                 this.modal.classList.remove('keyboard-open');
             }
-        });
+        };
+        
+        // Use Visual Viewport API if available, otherwise fallback to window resize
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleResize);
+        } else {
+            window.addEventListener('resize', handleResize);
+        }
     }
 }
 window.addEventListener('load', () => {

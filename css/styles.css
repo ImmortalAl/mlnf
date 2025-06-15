@@ -853,16 +853,22 @@ body.light-theme .feature-card p {
         max-height: 90vh;
     }
     
-    /* Position modal higher on small mobile devices to avoid keyboard overlap */
+    /* Smart modal positioning for mobile - maintain center alignment but adjust for keyboard */
     .modal {
-        align-items: flex-start;
-        padding-top: 8vh;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
     }
     
-    /* When keyboard might be open (input/textarea focused), position even higher */
+    /* When keyboard is open, adjust positioning with transform instead of changing alignment */
     .modal.keyboard-open {
         align-items: flex-start;
-        padding-top: 5vh;
+        padding-top: 10vh;
+    }
+    
+    /* Smooth transition for keyboard open/close */
+    .modal {
+        transition: padding-top 0.3s ease;
     }
     
     .feedback-modal h3 {
