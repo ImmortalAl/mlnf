@@ -799,11 +799,17 @@ body.light-theme .debate-position h4 {
     height: 30%;
     min-width: 8px;
     min-height: 8px;
-    background: #10b981;
-    border: 2px solid var(--primary, #0d0d1a);
+    background: #10b981 !important;
+    border: 2px solid var(--primary, #0d0d1a) !important;
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
     z-index: 10;
+    display: block !important;
+}
+
+/* Debug: Add temporary border to all online avatars */
+.mlnf-avatar--online {
+    border: 3px solid #10b981 !important;
 }
 
 .mlnf-avatar--offline::after {
