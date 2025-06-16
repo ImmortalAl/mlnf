@@ -958,6 +958,20 @@ window.editPost = editPost;
 window.savePostEdit = savePostEdit;
 window.cancelPostEdit = cancelPostEdit;
 
+// ALWAYS check for auto-open regardless of page type - multiple triggers to ensure it runs
+// Immediate check
+setTimeout(checkAutoOpen, 100);
+
+// DOM ready check
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAutoOpen);
+} else {
+    checkAutoOpen();
+}
+
+// Backup check after window load
+window.addEventListener('load', checkAutoOpen);
+
 // Auto-initialization disabled for pages like profile where blog is not the main feature
 if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {
     // Initialize blog functionality when DOM is loaded
@@ -970,21 +984,8 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
         console.log('[blog.js] Initializing blog functionality.');
         initBlog();
     }
-    
-    // Also check for auto-open on page load regardless of initialization
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', checkAutoOpen);
-    } else {
-        checkAutoOpen();
-    }
 } else {
-    console.log('[blog.js] Auto-initialization is disabled, but still checking for auto-open.');
-    // Still check for auto-open even if main init is disabled
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', checkAutoOpen);
-    } else {
-        checkAutoOpen();
-    }
+    console.log('[blog.js] Auto-initialization is disabled for this page type.');
 }
 
 // Create visual debug panel
@@ -1026,6 +1027,8 @@ function checkAutoOpen() {
     const autoOpenScrollId = sessionStorage.getItem('openScrollId');
     debugLog(`checkAutoOpen called, scrollId: ${autoOpenScrollId}`);
     debugLog(`Current URL pathname: ${window.location.pathname}`);
+    debugLog(`Document readyState: ${document.readyState}`);
+    debugLog(`Page loaded at: ${new Date().toLocaleTimeString()}`);
     
     if (autoOpenScrollId) {
         debugLog(`Found scroll ID to auto-open: ${autoOpenScrollId}`);
@@ -1098,11 +1101,20 @@ function checkAutoOpen() {
         setTimeout(() => attemptAutoOpen(), 2000);
     } else {
         debugLog('No scroll ID found in sessionStorage');
-        // Hide debug panel if no auto-open needed
+        debugLog('Auto-open not needed - normal blog page load');
+        // Keep debug panel visible for a bit longer so user can see it worked
+        setTimeout(() => {
+            const panel = document.getElementById('debugPanel');
+            if (panel) {
+                panel.style.opacity = '0.5';
+                panel.querySelector('h4').textContent = '✅ Auto-open check complete';
+            }
+        }, 3000);
+        // Hide debug panel after showing completion
         setTimeout(() => {
             const panel = document.getElementById('debugPanel');
             if (panel) panel.style.display = 'none';
-        }, 2000);
+        }, 5000);
     }
 }
 
