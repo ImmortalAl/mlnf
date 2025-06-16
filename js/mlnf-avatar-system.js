@@ -318,8 +318,17 @@ class MLNFAvatarSystem {
         
         // Add optional classes
         if (mystical) img.classList.add('mlnf-avatar--mystical');
-        if (online === true) img.classList.add('mlnf-avatar--online');
-        if (online === false) img.classList.add('mlnf-avatar--offline');
+        if (online === true) {
+            img.classList.add('mlnf-avatar--online');
+            console.log(`[MLNF Avatar] Added online class to avatar for ${username}`);
+        }
+        if (online === false) {
+            img.classList.add('mlnf-avatar--offline');
+            console.log(`[MLNF Avatar] Added offline class to avatar for ${username}`);
+        }
+        if (online !== true && online !== false) {
+            console.log(`[MLNF Avatar] No online status for ${username}, online value:`, online);
+        }
         classes.forEach(cls => img.classList.add(cls));
 
         // Enhanced error handling for avatar loading

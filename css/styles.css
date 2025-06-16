@@ -793,26 +793,32 @@ body.light-theme .debate-position h4 {
 .mlnf-avatar--online::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 25%;
-    height: 25%;
+    bottom: -1px;
+    right: -1px;
+    width: 30%;
+    height: 30%;
+    min-width: 8px;
+    min-height: 8px;
     background: #10b981;
-    border: 2px solid var(--primary);
+    border: 2px solid var(--primary, #0d0d1a);
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    z-index: 10;
 }
 
 .mlnf-avatar--offline::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 25%;
-    height: 25%;
+    bottom: -1px;
+    right: -1px;
+    width: 30%;
+    height: 30%;
+    min-width: 8px;
+    min-height: 8px;
     background: #6b7280;
-    border: 2px solid var(--primary);
+    border: 2px solid var(--primary, #0d0d1a);
     border-radius: 50%;
+    z-index: 10;
 }
 
 /* User display component with avatar */
