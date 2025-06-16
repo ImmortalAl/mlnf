@@ -707,9 +707,12 @@ function fallbackCopy(text) {
 
 // Modern notification system
 function showShareNotification(message) {
+    console.log('🎉 Creating share notification:', message);
+    
     // Remove any existing notifications
     const existingNotification = document.querySelector('.share-notification');
     if (existingNotification) {
+        console.log('📝 Removing existing notification');
         existingNotification.remove();
     }
     
@@ -722,11 +725,24 @@ function showShareNotification(message) {
         </div>
     `;
     
+    console.log('✨ Appending notification to body');
     document.body.appendChild(notification);
+    
+    // Force a reflow to ensure the element is rendered
+    notification.offsetHeight;
+    
+    // Make sure it's visible
+    notification.style.display = 'block';
+    notification.style.opacity = '1';
+    notification.style.visibility = 'visible';
+    notification.style.pointerEvents = 'auto';
+    
+    console.log('🎯 Notification should now be visible');
     
     // Auto-remove after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
+            console.log('🧹 Auto-removing notification');
             notification.remove();
         }
     }, 5000);
@@ -986,6 +1002,18 @@ function cancelPostEdit(postId, originalTitle, originalContent) {
     document.getElementById('modal-content').innerHTML = originalContent;
 }
 
+// Test function - remove after debugging
+function testNotification() {
+    console.log('🧪 Testing notification system...');
+    showShareNotification('🧪 Test notification! If you see this, the system works!');
+}
+
+// Auto-test notification on page load for debugging
+setTimeout(() => {
+    console.log('🚀 Auto-testing notification system in 3 seconds...');
+    testNotification();
+}, 3000);
+
 // Export functions to global scope for compatibility
 window.createBlog = createBlog;
 window.openBlogModal = openBlogModal;
@@ -1000,6 +1028,7 @@ window.savePostEdit = savePostEdit;
 window.cancelPostEdit = cancelPostEdit;
 window.copyToClipboard = copyToClipboard;
 window.showShareNotification = showShareNotification;
+window.testNotification = testNotification; // Debug function
 // Legacy compatibility
 window.openOwlModal = openOwlModal;
 window.closeOwlModal = closeOwlModal;

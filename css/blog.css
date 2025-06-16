@@ -99,13 +99,17 @@
 
 /* Modern Share Notification Styles */
 .share-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 10000;
-    max-width: 400px;
-    min-width: 300px;
-    animation: slideInRight 0.3s ease-out;
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 10000 !important;
+    max-width: 400px !important;
+    min-width: 300px !important;
+    animation: slideInRight 0.3s ease-out !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }
 
 .notification-content {
