@@ -1053,16 +1053,19 @@ body.modal-open {
     }
 }
 
-/* Enhanced Blog Modal Backdrop */
+/* Enhanced Blog Modal Backdrop - Immortal Theme */
 #blogModal.modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(26, 26, 51, 0.9));
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: linear-gradient(135deg, 
+        rgba(13, 13, 26, 0.95) 0%, 
+        rgba(26, 26, 51, 0.9) 50%, 
+        rgba(42, 64, 102, 0.85) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     z-index: 10000 !important;
     display: none;
     opacity: 0;
@@ -1075,6 +1078,10 @@ body.modal-open {
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                 visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                 backdrop-filter 0.4s ease;
+    /* Mystical backdrop enhancement */
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 94, 120, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 202, 40, 0.1) 0%, transparent 50%);
 }
 
 @media (max-width: 768px) {
@@ -1140,11 +1147,14 @@ body.modal-open {
     }
 }
 
-/* Enhanced Blog Modal Styles */
+/* Enhanced Blog Modal Styles - Immortal Theme */
 .blog-modal-content {
-    background: linear-gradient(135deg, var(--parchment-light), var(--parchment));
-    border: 3px solid var(--aged-border);
-    border-radius: 20px;
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.98) 0%, 
+        rgba(13, 13, 26, 0.95) 50%, 
+        rgba(42, 64, 102, 0.9) 100%);
+    border: 3px solid rgba(255, 94, 120, 0.3);
+    border-radius: 24px;
     padding: 3rem;
     max-width: 900px;
     width: 95%;
@@ -1153,13 +1163,20 @@ body.modal-open {
     overflow-x: hidden;
     margin: auto;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.1);
+    box-shadow: 
+        0 25px 80px rgba(255, 94, 120, 0.4),
+        0 15px 40px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(255, 94, 120, 0.3),
+        inset 0 2px 0 rgba(240, 230, 255, 0.1),
+        0 0 0 1px rgba(255, 94, 120, 0.2);
     scrollbar-width: thin;
-    scrollbar-color: var(--gold) var(--aged-border);
+    scrollbar-color: var(--accent) rgba(26, 26, 51, 0.5);
     -webkit-overflow-scrolling: touch;
     z-index: 10001 !important;
-    backdrop-filter: blur(10px);
-    border-left: 8px solid var(--gold);
+    backdrop-filter: blur(15px);
+    border-left: 8px solid var(--accent);
+    /* Mystical glow effect */
+    animation: mysticalModalGlow 4s ease-in-out infinite;
 }
 
 .blog-modal-content::before {
@@ -1168,23 +1185,119 @@ body.modal-open {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold-light), var(--gold), var(--gold-light), transparent);
-    border-radius: 20px 20px 0 0;
+    height: 4px;
+    background: var(--gradient-accent);
+    border-radius: 24px 24px 0 0;
+    opacity: 0.8;
+    animation: mysticalFlowTop 3s ease-in-out infinite;
 }
 
-/* Mobile Modal Adjustments */
+.blog-modal-content::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        rgba(255, 94, 120, 0.3) 0%, 
+        rgba(255, 202, 40, 0.2) 25%,
+        rgba(255, 94, 120, 0.3) 50%,
+        rgba(240, 230, 255, 0.1) 75%,
+        rgba(255, 94, 120, 0.3) 100%);
+    border-radius: 26px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    animation: mysticalBorderGlow 6s linear infinite;
+}
+
+.blog-modal-content:hover::after {
+    opacity: 1;
+}
+
+/* Mystical animations */
+@keyframes mysticalModalGlow {
+    0%, 100% { 
+        box-shadow: 
+            0 25px 80px rgba(255, 94, 120, 0.4),
+            0 15px 40px rgba(0, 0, 0, 0.6),
+            0 0 60px rgba(255, 94, 120, 0.3),
+            inset 0 2px 0 rgba(240, 230, 255, 0.1),
+            0 0 0 1px rgba(255, 94, 120, 0.2);
+    }
+    50% { 
+        box-shadow: 
+            0 30px 100px rgba(255, 94, 120, 0.5),
+            0 20px 50px rgba(0, 0, 0, 0.7),
+            0 0 80px rgba(255, 94, 120, 0.4),
+            inset 0 2px 0 rgba(240, 230, 255, 0.15),
+            0 0 0 2px rgba(255, 94, 120, 0.3);
+    }
+}
+
+@keyframes mysticalFlowTop {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes mysticalBorderGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mobile Modal Adjustments - Immortal Theme */
 @media (max-width: 768px) {
     .blog-modal-content {
         width: 98%;
         max-height: 95vh;
         padding: 2rem 1.5rem;
-        border-radius: 16px;
+        border-radius: 20px;
         margin: 1rem auto;
+        border-left-width: 6px;
     }
     
     .blog-modal-content::before {
-        border-radius: 16px 16px 0 0;
+        border-radius: 20px 20px 0 0;
+    }
+    
+    #modal-title {
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+        border-radius: 16px;
+    }
+    
+    #modal-content {
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+        border-radius: 12px;
+    }
+    
+    .blog-modal-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    .blog-modal-header .modal-author-info,
+    .blog-modal-header .scroll-author {
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px;
+        gap: 1.25rem;
+    }
+    
+    .blog-modal-header .author-avatar {
+        width: 64px;
+        height: 64px;
+        border-width: 3px;
+    }
+    
+    .blog-modal-header .author-name {
+        font-size: 1.25rem;
+    }
+    
+    .blog-modal-header .date {
+        font-size: 0.95rem;
     }
 }
 
@@ -1193,51 +1306,46 @@ body.modal-open {
         width: 100%;
         max-height: 100vh;
         padding: 1.5rem 1rem;
-        border-radius: 12px;
+        border-radius: 16px;
         margin: 0;
-        border-left-width: 6px;
+        border-left-width: 4px;
     }
     
     .blog-modal-content::before {
-        border-radius: 12px 12px 0 0;
+        border-radius: 16px 16px 0 0;
     }
-}
-
-.blog-modal-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--aged-border);
-}
-
-.blog-modal-header .scroll-author {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.blog-modal-header .author-avatar {
-    width: 64px;
-    height: 64px;
-    box-shadow: 0 4px 12px var(--shadow);
-}
-
-.blog-modal-header .author-name {
-    font-size: 1.25rem;
-    margin-bottom: 0.3rem;
-    font-weight: 600;
-}
-
-.blog-modal-header .date {
-    margin: 0;
-    font-size: 0.95rem;
-    color: var(--ink-light);
-    font-weight: 500;
-}
-
-@media (max-width: 768px) {
+    
+    #modal-title {
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 12px;
+        border-left-width: 6px;
+    }
+    
+    #modal-content {
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 10px;
+        border-left-width: 4px;
+    }
+    
+    .blog-modal-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
+    
+    .blog-modal-header .modal-author-info,
+    .blog-modal-header .scroll-author {
+        padding: 1rem 1.25rem;
+        border-radius: 10px;
+        gap: 1rem;
+        border-left-width: 4px;
+    }
+    
     .blog-modal-header .author-avatar {
         width: 56px;
         height: 56px;
+        border-width: 3px;
     }
     
     .blog-modal-header .author-name {
@@ -1247,17 +1355,244 @@ body.modal-open {
     .blog-modal-header .date {
         font-size: 0.875rem;
     }
+    
+    .modal-actions {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        gap: 1.5rem;
+    }
+    
+    .modal-actions .whisper-link,
+    .modal-actions .edit-post-btn {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+    }
 }
 
-@media (max-width: 480px) {
-    .blog-modal-header {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
+/* Enhanced Modal Header - Immortal Theme */
+.blog-modal-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid rgba(255, 94, 120, 0.3);
+    position: relative;
+}
+
+.blog-modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--gradient-accent);
+    border-radius: 1px;
+    opacity: 0.8;
+}
+
+/* MLNF Avatar System Integration */
+.blog-modal-header .modal-author-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    padding: 1.5rem 2rem !important;
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(42, 64, 102, 0.9) 100%) !important;
+    border-radius: 16px !important;
+    border: 2px solid rgba(255, 94, 120, 0.3) !important;
+    border-left: 6px solid var(--accent) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.25),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1) !important;
+    transition: var(--transition-smooth) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.blog-modal-header .modal-author-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-accent);
+    opacity: 0.6;
+}
+
+.blog-modal-header .modal-author-info:hover {
+    background: linear-gradient(135deg, 
+        rgba(42, 64, 102, 1) 0%, 
+        rgba(26, 26, 51, 0.98) 100%) !important;
+    border-color: rgba(255, 94, 120, 0.5) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 
+        0 12px 40px rgba(255, 94, 120, 0.3),
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(240, 230, 255, 0.15) !important;
+}
+
+/* Fallback styling for non-MLNF avatar elements */
+.blog-modal-header .scroll-author {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(42, 64, 102, 0.9) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 94, 120, 0.3);
+    border-left: 6px solid var(--accent);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.25),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+}
+
+.blog-modal-header .author-avatar {
+    width: 72px;
+    height: 72px;
+    border: 4px solid var(--accent);
+    border-radius: 50%;
+    box-shadow: 
+        0 6px 20px rgba(255, 94, 120, 0.4),
+        0 0 20px rgba(255, 94, 120, 0.3),
+        inset 0 1px 0 rgba(240, 230, 255, 0.2);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-modal-header .author-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.blog-modal-header .author-avatar:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 
+        0 8px 25px rgba(255, 94, 120, 0.5),
+        0 0 30px rgba(255, 94, 120, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.3);
+}
+
+.blog-modal-header .author-avatar:hover::after {
+    opacity: 0.3;
+}
+
+.blog-modal-header .author-name {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: var(--text);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: var(--transition-smooth);
+    position: relative;
+}
+
+.blog-modal-header .author-name::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-accent);
+    transition: width 0.3s ease;
+    border-radius: 1px;
+}
+
+.blog-modal-header .author-name:hover {
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(255, 94, 120, 0.5);
+}
+
+.blog-modal-header .author-name:hover::after {
+    width: 100%;
+}
+
+.blog-modal-header .date {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    opacity: 0.9;
+    transition: var(--transition-quick);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.blog-modal-header .date::before {
+    content: '🕯️';
+    font-size: 1.1rem;
+    filter: sepia(1) hue-rotate(300deg) saturate(1.5);
+}
+
+.blog-modal-header .date:hover {
+    opacity: 1;
+    color: var(--text);
+}
+
+/* Additional mobile adjustments for immortal theme consistency */
+@media (max-width: 640px) {
+    .blog-modal-header .modal-author-info,
+    .blog-modal-header .scroll-author {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.5rem;
     }
     
     .blog-modal-header .author-avatar {
-        width: 48px;
-        height: 48px;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .blog-modal-content {
+        border-radius: 12px;
+        border-left-width: 3px;
+    }
+    
+    #modal-title {
+        padding: 1rem 1.25rem;
+        border-radius: 10px;
+        letter-spacing: 0.5px;
+    }
+    
+    #modal-content {
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
+    }
+    
+    .blog-modal-header .modal-author-info,
+    .blog-modal-header .scroll-author {
+        padding: 1rem;
+        border-radius: 8px;
+        border-left-width: 3px;
+    }
+    
+    .blog-modal-header .author-avatar {
+        width: 52px;
+        height: 52px;
+        border-width: 2px;
     }
     
     .blog-modal-header .author-name {
@@ -1269,33 +1604,118 @@ body.modal-open {
     }
 }
 
+/* Enhanced Modal Title - Immortal Theme */
 #modal-title {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(1.8rem, 4vw, 2.75rem);
-    color: var(--ink);
-    margin-bottom: 2.5rem;
+    font-family: 'Cinzel', 'Montserrat', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 3rem;
     line-height: 1.2;
     font-weight: 700;
     text-shadow: 
-        0 2px 4px rgba(255, 255, 255, 0.9),
-        0 4px 8px rgba(0, 0, 0, 0.15),
-        0 0 20px rgba(212, 175, 55, 0.3);
+        0 3px 6px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(255, 94, 120, 0.5),
+        0 0 40px rgba(255, 94, 120, 0.3);
     position: relative;
-    padding: 1.5rem 2rem;
+    padding: 2rem 2.5rem;
     background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.95) 0%, 
-        rgba(250, 248, 243, 0.9) 100%);
-    border-radius: 16px;
-    border: 3px solid rgba(255, 94, 120, 0.2);
-    border-left: 8px solid var(--gold);
-    backdrop-filter: blur(12px);
+        rgba(26, 26, 51, 0.98) 0%, 
+        rgba(42, 64, 102, 0.95) 50%,
+        rgba(26, 26, 51, 0.98) 100%);
+    border-radius: 20px;
+    border: 3px solid rgba(255, 94, 120, 0.4);
+    border-left: 8px solid var(--accent);
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 8px 32px rgba(255, 94, 120, 0.15),
-        0 4px 16px rgba(0, 0, 0, 0.1),
-        inset 0 2px 0 rgba(255, 255, 255, 0.8),
-        0 0 0 1px rgba(212, 175, 55, 0.1);
-    letter-spacing: 0.5px;
+        0 12px 40px rgba(255, 94, 120, 0.3),
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        inset 0 2px 0 rgba(240, 230, 255, 0.15),
+        0 0 0 1px rgba(255, 94, 120, 0.2),
+        0 0 60px rgba(255, 94, 120, 0.2);
+    letter-spacing: 1px;
     text-align: center;
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    animation: titleMysticalGlow 6s ease-in-out infinite;
+}
+
+#modal-title::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-accent);
+    border-radius: 20px 20px 0 0;
+    opacity: 0.8;
+    animation: mysticalFlowTop 4s ease-in-out infinite;
+}
+
+#modal-title::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(255, 94, 120, 0.1) 0%, 
+        rgba(255, 202, 40, 0.05) 30%,
+        transparent 70%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: -1;
+    animation: mysticalTitleAura 8s ease-in-out infinite;
+}
+
+#modal-title:hover {
+    background: linear-gradient(135deg, 
+        rgba(42, 64, 102, 1) 0%, 
+        rgba(26, 26, 51, 1) 50%,
+        rgba(42, 64, 102, 1) 100%);
+    transform: translateY(-3px);
+    text-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.7),
+        0 0 30px rgba(255, 94, 120, 0.7),
+        0 0 60px rgba(255, 94, 120, 0.5);
+    box-shadow: 
+        0 20px 60px rgba(255, 94, 120, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.6),
+        inset 0 2px 0 rgba(240, 230, 255, 0.2),
+        0 0 0 2px rgba(255, 94, 120, 0.3),
+        0 0 80px rgba(255, 94, 120, 0.3);
+}
+
+#modal-title:hover::after {
+    opacity: 1;
+}
+
+/* Mystical title animations */
+@keyframes titleMysticalGlow {
+    0%, 100% { 
+        text-shadow: 
+            0 3px 6px rgba(0, 0, 0, 0.6),
+            0 0 20px rgba(255, 94, 120, 0.5),
+            0 0 40px rgba(255, 94, 120, 0.3);
+    }
+    50% { 
+        text-shadow: 
+            0 4px 8px rgba(0, 0, 0, 0.7),
+            0 0 30px rgba(255, 94, 120, 0.7),
+            0 0 60px rgba(255, 94, 120, 0.5);
+    }
+}
+
+@keyframes mysticalTitleAura {
+    0%, 100% { 
+        opacity: 0;
+        transform: scale(1) rotate(0deg);
+    }
+    50% { 
+        opacity: 0.3;
+        transform: scale(1.1) rotate(180deg);
+    }
 }
 
 @media (max-width: 768px) {
@@ -1305,13 +1725,59 @@ body.modal-open {
     }
 }
 
+/* Enhanced Modal Content - Immortal Theme */
 #modal-content {
-    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
     line-height: 1.8;
-    color: var(--ink-light);
-    margin-bottom: 2rem;
+    color: var(--text);
+    margin-bottom: 2.5rem;
     text-align: justify;
     hyphens: auto;
+    position: relative;
+    padding: 2rem 2.5rem;
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(13, 13, 26, 0.9) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 94, 120, 0.25);
+    border-left: 6px solid var(--accent);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.2),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+#modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 94, 120, 0.6) 25%,
+        rgba(255, 202, 40, 0.4) 50%,
+        rgba(255, 94, 120, 0.6) 75%,
+        transparent 100%);
+    border-radius: 16px 16px 0 0;
+    opacity: 0.8;
+}
+
+#modal-content:hover {
+    background: linear-gradient(135deg, 
+        rgba(42, 64, 102, 1) 0%, 
+        rgba(26, 26, 51, 0.98) 100%);
+    border-color: rgba(255, 94, 120, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 12px 40px rgba(255, 94, 120, 0.25),
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(240, 230, 255, 0.15);
 }
 
 @media (max-width: 768px) {
@@ -1323,24 +1789,64 @@ body.modal-open {
 }
 
 #modal-content p {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.4rem;
+    transition: var(--transition-quick);
+}
+
+#modal-content p:hover {
+    color: var(--text);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 #modal-content img {
     max-width: 100%;
     height: auto;
-    border-radius: 8px;
-    margin: 1rem 0;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    border: 2px solid rgba(255, 94, 120, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-smooth);
 }
 
+#modal-content img:hover {
+    border-color: rgba(255, 94, 120, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transform: scale(1.02);
+}
+
+/* Enhanced text selection in modal content */
+#modal-content::selection {
+    background: rgba(255, 94, 120, 0.3);
+    color: var(--text);
+}
+
+#modal-content::-moz-selection {
+    background: rgba(255, 94, 120, 0.3);
+    color: var(--text);
+}
+
+/* Enhanced Modal Actions - Immortal Theme */
 .modal-actions {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 2px solid var(--aged-border);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 2px solid rgba(255, 94, 120, 0.3);
     flex-wrap: wrap;
+    position: relative;
+}
+
+.modal-actions::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: var(--gradient-accent);
+    border-radius: 1px;
+    opacity: 0.8;
 }
 
 @media (max-width: 768px) {
@@ -1365,34 +1871,78 @@ body.modal-open {
     }
 }
 
+/* Enhanced Close Button - Immortal Theme */
 .close-modal {
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
-    background: linear-gradient(135deg, var(--parchment-light), var(--parchment));
-    border: 2px solid var(--aged-border);
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(42, 64, 102, 0.9) 100%);
+    border: 2px solid rgba(255, 94, 120, 0.3);
     font-size: 1.5rem;
-    color: var(--ink-light);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: var(--transition-smooth);
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     z-index: 10002;
     pointer-events: all;
-    box-shadow: 0 4px 12px var(--shadow);
+    box-shadow: 
+        0 6px 20px rgba(255, 94, 120, 0.3),
+        0 3px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
     font-weight: bold;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.close-modal::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--accent);
+    transform: scale(1.15) rotate(90deg);
+    background: linear-gradient(135deg, 
+        rgba(42, 64, 102, 1) 0%, 
+        rgba(26, 26, 51, 0.98) 100%);
+    border-color: rgba(255, 94, 120, 0.5);
+    box-shadow: 
+        0 8px 25px rgba(255, 94, 120, 0.4),
+        0 4px 15px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(240, 230, 255, 0.15),
+        0 0 20px rgba(255, 94, 120, 0.3);
+    text-shadow: 0 0 10px rgba(255, 94, 120, 0.6);
+}
+
+.close-modal:hover::before {
+    opacity: 0.3;
+}
+
+.close-modal:active {
+    transform: scale(1.05) rotate(90deg);
+    transition: var(--transition-quick);
 }
 
 @media (max-width: 768px) {
     .close-modal {
         top: 1rem;
         right: 1rem;
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         font-size: 1.25rem;
     }
 }
@@ -1401,15 +1951,10 @@ body.modal-open {
     .close-modal {
         top: 0.75rem;
         right: 0.75rem;
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         font-size: 1.125rem;
     }
-}
-
-.close-modal:hover {
-    color: var(--gold);
-    transform: scale(1.1) rotate(90deg);
 }
 
 /* Enhanced Responsive Design */
