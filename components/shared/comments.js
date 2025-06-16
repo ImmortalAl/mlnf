@@ -107,10 +107,17 @@ class CommentsSystem {
             return;
         }
         
-        listContainer.innerHTML = this.comments.map(comment => this.createCommentHTML(comment)).join('');
+        // Clear existing content
+        listContainer.innerHTML = '';
+        
+        // Create and append DOM elements directly to preserve event listeners
+        this.comments.forEach(comment => {
+            const commentEl = this.createCommentElement(comment);
+            listContainer.appendChild(commentEl);
+        });
     }
     
-    createCommentHTML(comment) {
+    createCommentElement(comment) {
         const isAuthor = this.currentUser._id === comment.author._id;
         const formattedDate = new Date(comment.createdAt).toLocaleString();
         const editedText = comment.isEdited ? ' (edited)' : '';
@@ -164,7 +171,7 @@ class CommentsSystem {
         commentDiv.appendChild(commentHeader);
         commentDiv.appendChild(commentContent);
         
-        return commentDiv.outerHTML;
+        return commentDiv;
     }
     
     attachEventListeners() {
