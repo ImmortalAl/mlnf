@@ -405,26 +405,33 @@ async function openBlogModal(postId) {
         return;
     }
     
-    // Check if all required modal elements exist
-    const requiredElements = {
+    // Check essential modal elements (only title and content are truly required)
+    const essentialElements = {
         'modal-title': document.getElementById('modal-title'),
-        'modal-content': document.getElementById('modal-content'),
+        'modal-content': document.getElementById('modal-content')
+    };
+    
+    // Check fallback elements (only needed if MLNF Avatar System isn't available)
+    const fallbackElements = {
         'modal-author-avatar': document.getElementById('modal-author-avatar'),
         'modal-author-link': document.getElementById('modal-author-link'),
         'modal-author-name-link': document.getElementById('modal-author-name-link'),
         'modal-date': document.getElementById('modal-date')
     };
     
-    // Log missing elements
-    const missingElements = [];
-    for (const [id, element] of Object.entries(requiredElements)) {
+    // Combine for compatibility
+    const requiredElements = { ...essentialElements, ...fallbackElements };
+    
+    // Log missing essential elements
+    const missingEssential = [];
+    for (const [id, element] of Object.entries(essentialElements)) {
         if (!element) {
-            missingElements.push(id);
+            missingEssential.push(id);
         }
     }
     
-    if (missingElements.length > 0) {
-        console.error('Missing modal elements:', missingElements);
+    if (missingEssential.length > 0) {
+        console.error('Missing essential modal elements:', missingEssential);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
@@ -466,9 +473,13 @@ async function openBlogModal(postId) {
             
             modalAuthorContainer.appendChild(modalAuthorDisplay);
             
-            // Hide fallback container
+            // Hide fallback container and clear its content to prevent any display issues
             if (fallbackContainer) {
                 fallbackContainer.style.display = 'none';
+                // Clear fallback elements to prevent any rendering
+                if (fallbackElements['modal-date']) {
+                    fallbackElements['modal-date'].textContent = '';
+                }
             }
         } else {
             // Fallback to existing elements if MLNF Avatar System is not available
@@ -502,7 +513,7 @@ async function openBlogModal(postId) {
         }
         
         // Update date (only for fallback, MLNF Avatar System handles this internally)
-        if (requiredElements['modal-date'] && (!window.MLNFAvatars || !modalAuthorContainer)) {
+        if (requiredElements['modal-date'] && fallbackContainer && fallbackContainer.style.display !== 'none') {
             requiredElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',

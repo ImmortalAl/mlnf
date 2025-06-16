@@ -1414,6 +1414,19 @@ body.modal-open {
     overflow: hidden !important;
 }
 
+/* Ensure fallback elements are completely hidden when MLNF system is active */
+.blog-modal-header .modal-author-info:not(:empty) ~ .scroll-author {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+.blog-modal-header .modal-author-info:not(:empty) ~ .scroll-author * {
+    display: none !important;
+}
+
 .blog-modal-header .modal-author-info::before {
     content: '';
     position: absolute;
@@ -1439,7 +1452,7 @@ body.modal-open {
 
 /* Fallback styling for non-MLNF avatar elements */
 .blog-modal-header .scroll-author {
-    display: flex;
+    display: none; /* Hidden by default, only shown when MLNF system unavailable */
     align-items: center;
     gap: 1.5rem;
     padding: 1.5rem 2rem;
@@ -1454,6 +1467,11 @@ body.modal-open {
         0 8px 32px rgba(255, 94, 120, 0.25),
         0 4px 16px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(240, 230, 255, 0.1);
+}
+
+/* Only show fallback when explicitly enabled and MLNF container is empty */
+.blog-modal-header .modal-author-info:empty ~ .scroll-author {
+    display: flex;
 }
 
 .blog-modal-header .author-avatar {
