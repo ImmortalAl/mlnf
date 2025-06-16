@@ -1001,10 +1001,10 @@ body.light-theme .mlnf-avatar {
 }
 
 .text-immortal-pulse {
-    animation: immortalPulse 2s ease-in-out infinite;
+    animation: immortalTextPulse 2s ease-in-out infinite;
 }
 
-@keyframes immortalPulse {
+@keyframes immortalTextPulse {
     0%, 100% { 
         text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
         transform: scale(1);

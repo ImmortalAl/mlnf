@@ -162,49 +162,9 @@
     display: inline-block;
 }
 
-.online-indicator {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid var(--secondary);
-    transition: all 0.3s ease;
-}
+/* REMOVED: .online-indicator - replaced by global .online-dot system */
 
-.online-indicator.online {
-    background: radial-gradient(circle at center, #5cb85c, #3d8b3d);
-    box-shadow: 0 0 10px rgba(92, 184, 92, 0.8), 
-                0 0 20px rgba(92, 184, 92, 0.6),
-                0 0 30px rgba(92, 184, 92, 0.4),
-                inset 0 0 8px rgba(255, 255, 255, 0.3);
-    animation: immortalPulse 2s ease-in-out infinite;
-}
-
-@keyframes immortalPulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 10px rgba(92, 184, 92, 0.8), 
-                    0 0 20px rgba(92, 184, 92, 0.6),
-                    0 0 30px rgba(92, 184, 92, 0.4),
-                    inset 0 0 8px rgba(255, 255, 255, 0.3);
-    }
-    50% {
-        transform: scale(1.2);
-        box-shadow: 0 0 15px rgba(92, 184, 92, 1), 
-                    0 0 30px rgba(92, 184, 92, 0.8),
-                    0 0 45px rgba(92, 184, 92, 0.6),
-                    inset 0 0 12px rgba(255, 255, 255, 0.5);
-    }
-}
-
-.online-indicator.offline {
-    background: radial-gradient(circle at center, #6c757d, #495057);
-    box-shadow: 0 0 5px rgba(108, 117, 125, 0.5),
-                inset 0 0 4px rgba(0, 0, 0, 0.3);
-    opacity: 0.7;
-}
+/* REMOVED: Duplicate online indicator styles - now handled globally as .online-dot in styles.css */
 
 .profile-card-info h3 {
     font-size: 1.3rem;
