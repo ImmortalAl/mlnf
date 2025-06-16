@@ -987,26 +987,59 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
     }
 }
 
+// Create visual debug panel
+function createDebugPanel() {
+    const debugPanel = document.createElement('div');
+    debugPanel.id = 'debugPanel';
+    debugPanel.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: 300px;
+        max-height: 400px;
+        background: rgba(0, 0, 0, 0.9);
+        color: #00ff00;
+        font-family: monospace;
+        font-size: 12px;
+        padding: 10px;
+        border: 2px solid #00ff00;
+        border-radius: 5px;
+        z-index: 999999;
+        overflow-y: auto;
+    `;
+    debugPanel.innerHTML = '<h4 style="margin: 0 0 10px 0; color: #ffff00;">🐛 Auto-Open Debug</h4><div id="debugLog"></div>';
+    document.body.appendChild(debugPanel);
+    return debugPanel;
+}
+
+function debugLog(message) {
+    console.log(message);
+    const debugPanel = document.getElementById('debugPanel') || createDebugPanel();
+    const logDiv = debugPanel.querySelector('#debugLog');
+    const timestamp = new Date().toLocaleTimeString();
+    logDiv.innerHTML += `<div>${timestamp}: ${message}</div>`;
+    logDiv.scrollTop = logDiv.scrollHeight;
+}
+
 // Separate function to handle auto-opening from highlights
 function checkAutoOpen() {
     const autoOpenScrollId = sessionStorage.getItem('openScrollId');
-    console.log('[blog.js] checkAutoOpen called, scrollId:', autoOpenScrollId);
-    console.log('[blog.js] Current URL pathname:', window.location.pathname);
-    console.log('[blog.js] sessionStorage openScrollId:', autoOpenScrollId);
+    debugLog(`checkAutoOpen called, scrollId: ${autoOpenScrollId}`);
+    debugLog(`Current URL pathname: ${window.location.pathname}`);
     
     if (autoOpenScrollId) {
-        console.log('[blog.js] Found scroll ID to auto-open:', autoOpenScrollId);
+        debugLog(`Found scroll ID to auto-open: ${autoOpenScrollId}`);
         sessionStorage.removeItem('openScrollId');
         
         // Wait for all systems to be ready
         const attemptAutoOpen = (attempts = 0) => {
-            console.log('[blog.js] Auto-open attempt:', attempts + 1);
-            console.log('[blog.js] MLNFAvatars available:', !!window.MLNFAvatars);
-            console.log('[blog.js] blogPosts keys:', Object.keys(blogPosts));
-            console.log('[blog.js] blogModal element:', !!document.getElementById('blogModal'));
+            debugLog(`Auto-open attempt: ${attempts + 1}`);
+            debugLog(`MLNFAvatars available: ${!!window.MLNFAvatars}`);
+            debugLog(`blogPosts keys: ${Object.keys(blogPosts).length}`);
+            debugLog(`blogModal element: ${!!document.getElementById('blogModal')}`);
             
             if (!window.MLNFAvatars) {
-                console.log('[blog.js] MLNFAvatars not ready, retrying...');
+                debugLog('MLNFAvatars not ready, retrying...');
                 if (attempts < 20) {
                     setTimeout(() => attemptAutoOpen(attempts + 1), 500);
                 }
@@ -1016,29 +1049,46 @@ function checkAutoOpen() {
             // Check if modal exists
             const modal = document.getElementById('blogModal');
             if (!modal) {
-                console.log('[blog.js] Blog modal not found in DOM!');
+                debugLog('Blog modal not found in DOM!');
                 if (attempts < 20) {
                     setTimeout(() => attemptAutoOpen(attempts + 1), 500);
                 }
                 return;
             }
             
-            console.log('[blog.js] All systems ready, attempting to open modal for:', autoOpenScrollId);
+            debugLog(`All systems ready, attempting to open modal for: ${autoOpenScrollId}`);
             
-            // Try to open modal directly
-            openBlogModal(autoOpenScrollId).then(() => {
-                console.log('[blog.js] Modal opened successfully');
-            }).catch(error => {
-                console.error('[blog.js] Error opening modal:', error);
-                // If openBlogModal doesn't return a promise, this won't work, but that's OK
-            });
+            try {
+                // Try to open modal directly
+                openBlogModal(autoOpenScrollId);
+                debugLog('Modal open call executed');
+                
+                // Check if modal is actually visible after a delay
+                setTimeout(() => {
+                    const modalVisible = modal.classList.contains('show');
+                    debugLog(`Modal visible after open: ${modalVisible}`);
+                    if (modalVisible) {
+                        debugLog('✅ SUCCESS: Modal is now visible!');
+                        // Hide debug panel after success
+                        setTimeout(() => {
+                            const panel = document.getElementById('debugPanel');
+                            if (panel) panel.style.display = 'none';
+                        }, 3000);
+                    } else {
+                        debugLog('❌ FAILED: Modal not visible');
+                    }
+                }, 500);
+                
+            } catch (error) {
+                debugLog(`Error opening modal: ${error.message}`);
+            }
             
             // Also try fetching the post if it's not cached
             if (!blogPosts[autoOpenScrollId]) {
-                console.log('[blog.js] Post not in cache, fetching:', autoOpenScrollId);
+                debugLog(`Post not in cache, fetching: ${autoOpenScrollId}`);
                 fetchBlogPost(autoOpenScrollId).then(post => {
                     if (post) {
-                        console.log('[blog.js] Post fetched, trying modal again');
+                        debugLog('Post fetched, trying modal again');
                         openBlogModal(autoOpenScrollId);
                     }
                 });
@@ -1047,7 +1097,12 @@ function checkAutoOpen() {
         
         setTimeout(() => attemptAutoOpen(), 2000);
     } else {
-        console.log('[blog.js] No scroll ID found in sessionStorage');
+        debugLog('No scroll ID found in sessionStorage');
+        // Hide debug panel if no auto-open needed
+        setTimeout(() => {
+            const panel = document.getElementById('debugPanel');
+            if (panel) panel.style.display = 'none';
+        }, 2000);
     }
 }
 
