@@ -318,24 +318,8 @@ class MLNFAvatarSystem {
         
         // Add optional classes
         if (mystical) img.classList.add('mlnf-avatar--mystical');
-        
-        // Debug: Log the online value and its type
-        console.log(`[MLNF Avatar] ${username} - online value:`, online, `(type: ${typeof online})`);
-        
-        if (online === true) {
-            img.classList.add('mlnf-avatar--online');
-            console.log(`[MLNF Avatar] ✅ Added ONLINE class to avatar for ${username}`);
-        } else if (online === false) {
-            img.classList.add('mlnf-avatar--offline');
-            console.log(`[MLNF Avatar] ⚫ Added OFFLINE class to avatar for ${username}`);
-        } else {
-            console.log(`[MLNF Avatar] ❓ No online status for ${username}, online value:`, online, `(${typeof online})`);
-        }
-        
-        // Debug: Log final classes
-        setTimeout(() => {
-            console.log(`[MLNF Avatar] Final classes for ${username}:`, img.className);
-        }, 100);
+        if (online === true) img.classList.add('mlnf-avatar--online');
+        if (online === false) img.classList.add('mlnf-avatar--offline');
         classes.forEach(cls => img.classList.add(cls));
 
         // Enhanced error handling for avatar loading

@@ -791,40 +791,32 @@ body.light-theme .debate-position h4 {
 
 /* Avatar status indicators */
 .mlnf-avatar--online::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 30%;
-    height: 30%;
-    min-width: 8px;
-    min-height: 8px;
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    right: -2px !important;
+    width: 12px !important;
+    height: 12px !important;
     background: #10b981 !important;
-    border: 2px solid var(--primary, #0d0d1a) !important;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-    z-index: 10;
+    border: 2px solid #0d0d1a !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.8) !important;
+    z-index: 1000 !important;
     display: block !important;
 }
 
-/* Debug: Add temporary border to all online avatars */
-.mlnf-avatar--online {
-    border: 3px solid #10b981 !important;
-}
-
 .mlnf-avatar--offline::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 30%;
-    height: 30%;
-    min-width: 8px;
-    min-height: 8px;
-    background: #6b7280;
-    border: 2px solid var(--primary, #0d0d1a);
-    border-radius: 50%;
-    z-index: 10;
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    right: -2px !important;
+    width: 12px !important;
+    height: 12px !important;
+    background: #6b7280 !important;
+    border: 2px solid #0d0d1a !important;
+    border-radius: 50% !important;
+    z-index: 1000 !important;
+    display: block !important;
 }
 
 /* User display component with avatar */
