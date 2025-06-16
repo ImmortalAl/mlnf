@@ -1,3 +1,34 @@
+// IMMEDIATE VISUAL INDICATOR - Show that blog.js is loading
+(function() {
+    const indicator = document.createElement('div');
+    indicator.style.cssText = `
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: red;
+        color: white;
+        padding: 10px;
+        border: 2px solid white;
+        z-index: 999999;
+        font-family: monospace;
+        font-weight: bold;
+    `;
+    indicator.textContent = '🔴 BLOG.JS LOADED';
+    document.documentElement.appendChild(indicator);
+    
+    setTimeout(() => {
+        indicator.style.background = 'green';
+        indicator.textContent = '🟢 BLOG.JS READY';
+        
+        // IMMEDIATE sessionStorage check
+        const scrollId = sessionStorage.getItem('openScrollId');
+        if (scrollId) {
+            indicator.textContent = `🎯 FOUND SCROLL: ${scrollId}`;
+            indicator.style.background = 'blue';
+        }
+    }, 1000);
+})();
+
 // Embedded jwt-decode
 function jwt_decode(token) {
     try {
