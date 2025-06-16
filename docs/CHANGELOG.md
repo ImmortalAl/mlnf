@@ -13,6 +13,81 @@ This file documents the complete development history and session logs for the ML
 
 ---
 
+## **[Current Session - 2025-01-02] - Online Status Indicator System Fix**
+
+### 🔍 **Critical Bug Resolution: Site-wide Online Status Indicators**
+
+#### **🚨 Major Issue Resolved: Online Status Indicators Not Displaying**
+**Problem**: Online status indicators (green pulsing dots) were only working in Active Users Sidebar, but failing across all other site components despite backend data showing users as online.
+
+**Root Cause Analysis**:
+1. **CSS Conflicts**: Duplicate `.online-dot` styles in multiple CSS files causing cascade conflicts
+2. **Missing Backend Data**: API populate queries missing `online` field for author data
+3. **Frontend Caching**: localStorage caching preventing immediate display of updated data
+4. **Loading Order Issues**: Some components not safely checking for MLNFAvatars availability
+
+**Systematic Resolution Process**:
+1. **CSS Conflict Resolution**:
+   - Removed duplicate `.online-dot` styles from `active-users.css` and `sidebar.css`
+   - Fixed keyframe animation conflicts by renaming `immortalPulse` to `immortalTextPulse` for text animations
+   - Removed legacy `.online-indicator` classes from `souls-listing.css`
+   - Centralized all online status styling in global `styles.css`
+
+2. **Backend API Enhancement**:
+   - Updated Chronicles API (`/api/chronicles`) to include `online` field in author population
+   - Updated Blog Posts API (`/api/blogs`) to include `online` field in author population  
+   - Updated News API (`/api/news`) to include `online` field in author population
+   - Ensured consistent data structure across all content APIs
+
+3. **Frontend Cache Management**:
+   - Added cache-busting headers to API client for fresh data retrieval
+   - Implemented progressive cache refresh allowing step-by-step fix deployment
+   - Reduced Souls directory cache time from 5 minutes to 30 seconds for testing
+
+4. **Component Integration Verification**:
+   - Confirmed all components using new MLNF Avatar System with proper safety checks
+   - Updated individual Soul pages to use unified avatar system
+   - Verified cross-site compatibility and loading order
+
+#### **✅ System-wide Fix Achieved**
+**Online Status Indicators Now Working In**:
+- ✅ Active Users Sidebar (confirmed working)
+- ✅ Chronicles Highlights on front page  
+- ✅ Boundless Chronicles news cards
+- ✅ Soul Scrolls blog posts and modals
+- ✅ Souls Directory profile cards
+- ✅ Individual Soul profile pages
+- ✅ All content modals and previews
+
+#### **📁 Files Modified**
+**Frontend**:
+- `css/styles.css` - Fixed keyframe conflicts, centralized online dot styles
+- `css/active-users.css` - Removed duplicate online dot styles and unused classes
+- `css/sidebar.css` - Removed conflicting online status styles
+- `css/souls-listing.css` - Removed legacy online indicator classes
+- `js/shared/apiClient.js` - Added cache-busting headers
+- `souls/index.html` - Enhanced caching strategy for testing
+
+**Backend**:
+- `back/routes/chronicles.js` - Added `online` to all author populate queries
+- `back/routes/blogs.js` - Added `online` to all author populate queries
+- `back/routes/news.js` - Added `online` to all author populate queries
+
+#### **🎯 Development Insights**
+**Key Lessons**:
+- **CSS Cascade Conflicts**: Multiple files defining identical selectors cause unpredictable behavior
+- **Backend Data Consistency**: All content APIs must include consistent user fields
+- **Progressive Deployment**: Step-by-step fixes allowed verification of each component
+- **Caching Awareness**: Frontend caching can mask backend improvements
+
+**Process Improvements**:
+- Implemented systematic CSS conflict detection methodology
+- Established backend API consistency requirements
+- Added cache-busting strategies for immediate testing
+- Enhanced cross-component verification protocols
+
+---
+
 ## **[Current Session - 2025-06-16] - Avatar System & Documentation**
 
 ### 🔍 **Avatar System Architecture & Online Status Debugging**
