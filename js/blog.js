@@ -134,7 +134,7 @@ async function fetchBlogPosts(page = 1) {
                             </button>
                         </div>
                         <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
-                            🦉 Whisper this scroll to another soul
+                            🔗 Share this scroll
                         </button>
                     </div>
                 `;
@@ -633,17 +633,117 @@ function closeBlogModal() {
     window._blogModalOpening = false;
 }
 
-// Share current post
+// Share current post  
 function shareCurrentPost() {
     if (currentPostId) {
         sharePost(currentPostId);
     }
 }
 
-// Share post by ID
+// Share post by ID - Modern clipboard-based sharing
 function sharePost(postId) {
-    currentPostId = postId;
-    shareCurrentPost();
+    const post = blogPosts[postId];
+    if (!post) {
+        console.error('Post not found for sharing:', postId);
+        return;
+    }
+    
+    const currentUrl = window.location.origin + window.location.pathname + '#scroll-' + postId;
+    const shareText = `📜 ${post.title}\n\n"${createExcerpt(post.content, 100)}"\n\nRead the full scroll: ${currentUrl}`;
+    
+    if (navigator.share && /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        // Use native sharing on mobile devices
+        navigator.share({
+            title: `📜 ${post.title}`,
+            text: shareText,
+            url: currentUrl
+        }).catch(err => {
+            console.log('Native sharing failed, using clipboard:', err);
+            copyToClipboard(currentUrl, shareText);
+        });
+    } else {
+        // Use clipboard sharing for desktop
+        copyToClipboard(currentUrl, shareText);
+    }
+}
+
+// Modern clipboard sharing function
+function copyToClipboard(url, shareText) {
+    const textToCopy = shareText || url;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showShareNotification('✨ Scroll link copied to clipboard! Share the wisdom.');
+        }).catch(err => {
+            console.error('Clipboard write failed:', err);
+            fallbackCopy(textToCopy);
+        });
+    } else {
+        fallbackCopy(textToCopy);
+    }
+}
+
+// Fallback copy method for older browsers
+function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showShareNotification('✨ Scroll link copied! Share the wisdom.');
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+        showShareNotification('❌ Copy failed. Please manually copy the URL from your browser.');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Modern notification system
+function showShareNotification(message) {
+    // Remove any existing notifications
+    const existingNotification = document.querySelector('.share-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'share-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Legacy owl modal functions - deprecated but kept for compatibility
+function openOwlModal(url) {
+    console.warn('openOwlModal is deprecated. Use sharePost() instead.');
+    // Fallback to new sharing system
+    copyToClipboard(url);
+}
+
+function closeOwlModal() {
+    const modal = document.getElementById('sharing-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }
 
 // Like a blog post
@@ -898,6 +998,11 @@ window.editCurrentPost = editCurrentPost;
 window.editPost = editPost;
 window.savePostEdit = savePostEdit;
 window.cancelPostEdit = cancelPostEdit;
+window.copyToClipboard = copyToClipboard;
+window.showShareNotification = showShareNotification;
+// Legacy compatibility
+window.openOwlModal = openOwlModal;
+window.closeOwlModal = closeOwlModal;
 
 // ALWAYS check for auto-open regardless of page type - multiple triggers to ensure it runs
 // Immediate check

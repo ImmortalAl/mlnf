@@ -22,7 +22,6 @@
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <!-- Page specific styles -->
     <link rel="stylesheet" href="../css/blog.css?v=2.4">
-    <link rel="stylesheet" href="../css/owls.css">
 </head>
 <body>
     <header>
@@ -104,18 +103,15 @@
         </div>
     </main>
 
-    <!-- Owl Sharing Modal -->
-    <div id="sharing-modal" class="parchment-scroll" onclick="if(event.target === this) closeOwlModal()">
+    <!-- Legacy sharing modal - hidden but kept for compatibility -->
+    <div id="sharing-modal" class="parchment-scroll" style="display: none !important;" onclick="if(event.target === this) closeOwlModal()">
         <div class="incantation-box">
-            <h3>🦉 Dispatch Wisdom Owl</h3>
+            <h3>🔗 Share this Scroll</h3>
             <div class="owl-messenger">
-                <input type="email" id="owl-email" placeholder="Recipient's earthly address" class="parchment-input">
-                <div class="owl-sprite"></div>
-                <button onclick="sendOwlMessage()" class="owl-button">Release the Messenger</button>
-                <div id="owl-status" class="owl-status"></div>
+                <p style="text-align: center; color: var(--ink); margin-bottom: 1rem;">This sharing method has been updated to a more modern approach.</p>
                 <input type="hidden" id="share-url">
             </div>
-            <button onclick="closeOwlModal()" class="owl-button" style="margin-top:1rem;">Close</button>
+            <button onclick="closeOwlModal()" class="owl-button">Close</button>
         </div>
     </div>
 
@@ -145,7 +141,7 @@
                     ✏️ Edit this scroll
                 </button>
                 <button class="whisper-link" onclick="shareCurrentPost()">
-                    🦉 Whisper this scroll to another soul
+                    🔗 Share this scroll
                 </button>
             </div>
             <!-- Comments Section -->
@@ -168,7 +164,7 @@
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/comments.js?v=1.2"></script>
-    <script src="../js/blog.js?v=2.4"></script>
+    <script src="../js/blog.js?v=2.5"></script>
     <script src="../js/scripts.js?v=1.2"></script>
 </body>
 </html>

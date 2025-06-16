@@ -1,18 +1,17 @@
+/* Legacy owl components - deprecated in favor of modern share system */
+/* Kept for backward compatibility but hidden by default */
+
 .owl-sprite {
   width: 40px;
   height: 40px;
   background: url('/assets/images/owl-sprite.svg') 0 0 no-repeat;
-  display: inline-block;
-}
-
-@keyframes owlFlap {
-  0% { background-position: 0 0; }
-  100% { background-position: -120px 0; }
+  display: none; /* Hidden by default */
 }
 
 .owl-messenger {
   position: relative;
   margin: 1.5rem 0;
+  display: none; /* Hidden by default */
 }
 
 .owl-button {
