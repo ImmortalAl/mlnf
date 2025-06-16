@@ -1,5 +1,20 @@
 # MLNF CSS Architecture & Style Guide
 
+## Table of Contents
+
+1. [CSS File Architecture](#-css-file-architecture)
+2. [Design System](#-design-system)
+3. [Component Patterns](#-component-patterns)
+4. [Responsive Design](#-responsive-design)
+5. [Performance Guidelines](#-performance-guidelines)
+6. [Development Checklist](#-development-checklist)
+7. [Common Issues & Solutions](#-common-issues--solutions)
+8. [Page CSS Status Matrix](#-page-css-status-matrix)
+9. [CSS Maintenance](#-css-maintenance)
+10. [Recent Changes](#-recent-changes-2025-06-09)
+
+---
+
 ## 📋 **CSS File Architecture**
 
 ### **Core Stylesheet Loading Order (CRITICAL)**

@@ -1,5 +1,19 @@
 # MLNF AI Development Context & Handoff Guide
 
+## Table of Contents
+
+1. [Project Overview](#-project-overview)
+2. [Current Project Status](#-current-project-status-december-2024)
+3. [Development Philosophy & Preferences](#-development-philosophy--preferences)
+4. [Technical Architecture](#-technical-architecture)
+5. [Common Development Patterns](#-common-development-patterns)
+6. [Known Issues & Considerations](#-known-issues--considerations)
+7. [Development Workflow](#-development-workflow)
+8. [Debugging & Troubleshooting](#-debugging--troubleshooting)
+9. [AI Assistant Guidelines](#-ai-assistant-guidelines)
+
+---
+
 ## 🎯 **Project Overview**
 
 **Manifest Liberation, Naturally Free (MLNF)** is a community platform for free thinkers built with vanilla JavaScript frontend and Express.js/MongoDB backend.

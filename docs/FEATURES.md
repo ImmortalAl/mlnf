@@ -1,5 +1,17 @@
 # MLNF Features & Development Roadmap
 
+## Table of Contents
+
+1. [Owl Messaging System](#-owl-messaging-system)
+2. [Soul Scrolls Personal Blogging System](#-soul-scrolls-personal-blogging-system)
+3. [Active Development TODOs](#-active-development-todos)
+4. [Recently Completed Features](#-recently-completed-features)
+5. [Feature Implementation Guidelines](#-feature-implementation-guidelines)
+6. [Feature Usage Analytics](#-feature-usage-analytics)
+7. [Development Notes](#-development-notes)
+
+---
+
 ## 🦉 Owl Messaging System
 
 ### Current Status: ✅ Functional with Fallback

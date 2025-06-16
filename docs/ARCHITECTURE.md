@@ -1,6 +1,25 @@
 # MLNF Technical Architecture
 
-## 🏗️ **System Overview**
+## Table of Contents
+
+1. [System Overview](#system-overview)
+2. [Frontend Architecture](#frontend-architecture)
+3. [CSS Architecture & Dependency Mapping](#css-architecture--dependency-mapping)
+4. [Avatar System Architecture](#avatar-system-architecture)
+5. [Online Status System Architecture](#online-status-system-architecture)
+6. [Component System & Integration Points](#component-system--integration-points)
+7. [Backend Architecture](#backend-architecture)
+8. [Database Architecture](#database-architecture)
+9. [Real-Time Features](#real-time-features)
+10. [Deployment Architecture](#deployment-architecture)
+11. [Security Architecture](#security-architecture)
+12. [Performance Architecture](#performance-architecture)
+13. [Development Environment](#development-environment)
+14. [Scalability Considerations](#scalability-considerations)
+
+---
+
+## 🏗️ System Overview
 
 MLNF is a full-stack web application built with a **vanilla JavaScript frontend** and **Express.js/MongoDB backend**, designed for scalability and maintainability.
 
@@ -14,6 +33,7 @@ MLNF is a full-stack web application built with a **vanilla JavaScript frontend*
 │ - Static Files  │    │ - JWT Auth       │    │ - Sessions      │
 │ - CSS Modules   │    │ - RESTful API    │    │ - Profiles      │
 │ - Responsive    │    │ - Nodemailer     │    │ - Messages      │
+│ - Avatar System │    │ - Online Status  │    │ - Status Data   │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
@@ -23,6 +43,7 @@ MLNF is a full-stack web application built with a **vanilla JavaScript frontend*
 - **Core**: Vanilla JavaScript (ES6+)
 - **Styling**: Modular CSS with CSS Variables
 - **Icons**: Font Awesome
+- **Avatar System**: Custom MLNF avatar generation
 - **Deployment**: Netlify with custom domain
 - **CDN**: Netlify Edge Network
 
@@ -31,6 +52,7 @@ MLNF is a full-stack web application built with a **vanilla JavaScript frontend*
 - **Framework**: Express.js
 - **Authentication**: JWT (JSON Web Tokens)
 - **Email**: Nodemailer (optional SMTP configuration)
+- **Real-time**: WebSocket integration (planned)
 - **Deployment**: Render with auto-deploy
 
 #### **Database**
@@ -39,7 +61,9 @@ MLNF is a full-stack web application built with a **vanilla JavaScript frontend*
 - **Schema**: Flexible document structure
 - **Backup**: MongoDB Atlas automated backups
 
-## 🌐 **Frontend Architecture**
+---
+
+## 🌐 Frontend Architecture
 
 ### **File Structure**
 ```
@@ -52,27 +76,320 @@ front/
 │       ├── authModal.js     # Login/register modal
 │       ├── activeUsers.js   # Online users sidebar
 │       ├── messageModal.js  # Messaging modal
+│       ├── comments.js      # Comments system
 │       ├── styles.css       # Component styles
 │       └── mlnf-core.js     # Component initialization
 ├── css/
 │   ├── base-theme.css       # CSS variables (theme)
 │   ├── styles.css           # Global layout styles
+│   ├── active-users.css     # Active users specific styles
 │   └── [page].css           # Page-specific styles
 ├── js/
+│   ├── mlnf-avatar-system.js # Avatar system (site-wide)
+│   ├── shared/
+│   │   └── apiClient.js     # Centralized API client
 │   └── [page].js            # Page-specific JavaScript
 ├── pages/                   # Static pages
 ├── souls/                   # Dynamic profile system
 ├── admin/                   # Admin panel
 ├── assets/                  # Static assets
+│   └── images/
+│       ├── default.jpg      # Default avatar fallback
+│       └── owl-sprite.svg   # Owl messaging sprite
+├── favicon.svg              # Immortal-themed favicon
+├── favicon.ico              # Legacy favicon support
 ├── _redirects               # Netlify routing rules
 └── docs/                    # Documentation
 ```
 
-### **Component System**
+### **Component Loading Strategy**
+```html
+<!-- Critical loading order -->
+<script src="../components/shared/config.js"></script>
+<script src="../components/shared/mlnf-core.js"></script>
+<script src="../js/mlnf-avatar-system.js"></script>
+<script src="../components/shared/navigation.js"></script>
+<script src="../components/shared/userMenu.js"></script>
+<script src="../components/shared/authModal.js"></script>
+<script src="../components/shared/activeUsers.js"></script>
+<script src="../components/shared/messageModal.js"></script>
+<script src="../components/shared/comments.js"></script>
+```
 
-#### **Shared Component Pattern**
+---
+
+## 🎨 CSS Architecture & Dependency Mapping
+
+*Critical for understanding which styles are available where*
+
+### **CSS Loading Hierarchy**
+
+#### **Global CSS Files (ALL Pages)**
+```css
+/* 1. Theme Foundation - MUST LOAD FIRST */
+base-theme.css              /* CSS variables, immortal color palette */
+
+/* 2. Global Layout - MUST LOAD SECOND */
+styles.css                  /* Core layout, typography, avatar system, online dots */
+```
+
+#### **Shared Component CSS (MOST Pages)**
+```css
+/* 3. Shared Components */
+components/shared/styles.css /* Modal, navigation, user menu styles */
+```
+
+#### **Feature-Specific CSS (LIMITED Pages)**
+```css
+/* 4. Component-Specific Styles */
+active-users.css            /* Active users sidebar - Only on pages with sidebar */
+blog.css                    /* Blog/Soul Scrolls pages only */
+admin.css                   /* Admin panel only */
+souls-listing.css           /* Souls directory only */
+```
+
+#### **Page-Specific CSS (SINGLE Page)**
+```css
+/* 5. Individual Page Styles */
+[page-name].css             /* Unique to single pages */
+```
+
+### **CSS Dependency Critical Issues**
+
+#### **Online Status Dependencies**
+```css
+/* CRITICAL: Online status dots MUST be in styles.css for site-wide availability */
+.online-dot {
+    /* Core online status styling */
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    /* ... additional styling ... */
+}
+
+.online-dot.online {
+    /* Green pulsing dot for online users */
+    background: radial-gradient(circle at center, #5cb85c, #3d8b3d);
+    animation: immortalPulse 2s ease-in-out infinite;
+    /* ... additional effects ... */
+}
+```
+
+#### **Avatar System Dependencies**
+```css
+/* CRITICAL: Avatar classes MUST be in styles.css for cross-site functionality */
+.mlnf-avatar {
+    /* Base avatar styling */
+}
+
+.mlnf-avatar--online, .mlnf-avatar--offline {
+    /* Status-specific avatar modifications */
+}
+
+.mlnf-user-display {
+    /* User display container styling */
+}
+```
+
+### **CSS Loading Order Per Page Type**
+
+#### **Homepage (`index.html`)**
+```html
+<link rel="stylesheet" href="css/base-theme.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="components/shared/styles.css">
+```
+
+#### **Sub-pages (`pages/*.html`)**
+```html
+<link rel="stylesheet" href="../css/base-theme.css">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../components/shared/styles.css">
+<link rel="stylesheet" href="../css/[page-specific].css">
+```
+
+#### **Profile Pages (`souls/*.html`)**
+```html
+<link rel="stylesheet" href="../css/base-theme.css">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../components/shared/styles.css">
+<link rel="stylesheet" href="../css/blog.css">
+<link rel="stylesheet" href="../css/active-users.css">
+<link rel="stylesheet" href="../css/souls-listing.css">
+```
+
+---
+
+## 🖼️ Avatar System Architecture
+
+*Comprehensive avatar and user display system*
+
+### **System Components**
+
+#### **1. Core Avatar Generation**
 ```javascript
-// Component Structure
+// Located: /js/mlnf-avatar-system.js
+class MLNFAvatarSystem {
+    generateAvatarUrl(username, size, customUrl) {
+        // Unique color generation based on username hash
+        // UI-Avatars.com integration with fallbacks
+        // Custom avatar support
+    }
+    
+    createAvatar(options) {
+        // Create individual avatar img elements
+        // Apply size, mystical effects, online status
+    }
+    
+    createUserDisplay(options) {
+        // Complete user display with avatar + info
+        // Unified navigation integration
+        // Online status indicator support
+    }
+}
+```
+
+#### **2. Unique Color Generation**
+```javascript
+generateUserColors(username) {
+    // Simple hash function for consistent colors
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    // 10 immortal-themed colors
+    const immortalColors = [
+        { bg: 'ff5e78', text: 'fff' }, // Pink/white
+        { bg: 'ffca28', text: '0d0d1a' }, // Gold/dark
+        // ... 8 more colors
+    ];
+    
+    return immortalColors[Math.abs(hash) % immortalColors.length];
+}
+```
+
+#### **3. Integration Points**
+- **Active Users Sidebar**: Real-time user status display
+- **Comments System**: Author displays with online status  
+- **Soul Scrolls (Blog)**: Author bylines with avatars
+- **Souls Directory**: User listings with status indicators
+- **Profile Pages**: Enhanced profile displays
+- **Admin Panel**: User management interfaces
+
+---
+
+## 🟢 Online Status System Architecture
+
+*🚧 In Progress: System architecture is complete but CSS dependencies are being resolved*
+
+### **System Flow**
+
+#### **1. Data Source**
+```javascript
+// Primary API Endpoint (Preferred)
+GET /api/users/online
+Response: [
+    {
+        username: 'user1',
+        online: true,
+        avatar: 'avatar_url',
+        title: 'Eternal Soul',
+        isVIP: false,
+        role: 'user'
+    }
+]
+
+// Fallback API Endpoint
+GET /api/users
+Response: [/* All users, filtered client-side for online: true */]
+```
+
+#### **2. Frontend Processing**
+```javascript
+// Active Users Component (activeUsers.js)
+async fetchOnlineUsers() {
+    try {
+        // Try primary endpoint first
+        const response = await fetch(`${API_BASE}/users/online`);
+        if (!response.ok) {
+            // Fallback to general users endpoint
+            const allUsers = await fetch(`${API_BASE}/users`);
+            return allUsers.filter(user => user.online === true);
+        }
+        return await response.json();
+    } catch (error) {
+        // Graceful degradation
+        console.error('Failed to fetch online users:', error);
+        return [];
+    }
+}
+```
+
+#### **3. Avatar System Integration**
+```javascript
+// Avatar creation with online status
+const userDisplay = window.MLNFAvatars.createUserDisplay({
+    username: user.username,
+    title: user.title || 'Eternal Soul',
+    online: user.online,  // Boolean: true/false/null
+    mystical: user.isVIP || user.role === 'admin'
+});
+
+// Creates DOM structure:
+// <div style="position: relative;">
+//   <img class="mlnf-avatar mlnf-avatar--md" src="...">
+//   <div class="online-dot online"></div>  <!-- If online: true -->
+// </div>
+```
+
+#### **4. CSS Rendering**
+```css
+/* Global styles (styles.css) - Available site-wide */
+.online-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--secondary);
+}
+
+.online-dot.online {
+    background: radial-gradient(circle at center, #5cb85c, #3d8b3d);
+    box-shadow: 0 0 10px rgba(92, 184, 92, 0.8);
+    animation: immortalPulse 2s ease-in-out infinite;
+}
+
+@keyframes immortalPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+```
+
+### **Current Status & Issues**
+
+#### **🚧 In Progress**
+- **Issue**: CSS dependencies were isolated to `active-users.css` instead of global `styles.css`
+- **Solution**: Moved online dot styles to global stylesheet for site-wide availability
+- **Testing**: Cross-page functionality verification in progress
+
+#### **✅ Working Components**
+- API data flow (online status data reaches frontend correctly)
+- JavaScript integration (avatar system receives `online: true/false`)
+- DOM structure creation (`.online-dot` elements are created)
+- CSS styling (pulsing green dots with immortal theme)
+
+---
+
+## 🔧 Component System & Integration Points
+
+*Site-wide component architecture and integration*
+
+### **Shared Component Pattern**
+```javascript
+// Standard component structure
 const ComponentName = {
     init() {
         this.createHTML();
@@ -81,7 +398,12 @@ const ComponentName = {
     },
     
     createHTML() {
-        // Generate component HTML
+        // Generate component HTML using avatar system
+        const userDisplay = window.MLNFAvatars.createUserDisplay({
+            username: this.username,
+            online: this.isOnline,
+            enableUnifiedNavigation: true
+        });
     },
     
     attachEventListeners() {
@@ -99,93 +421,75 @@ window.MLNF = {
 };
 ```
 
-#### **Component Loading Strategy**
-```html
-<!-- Load order is critical -->
-<script src="../components/shared/config.js"></script>
-<script src="../components/shared/navigation.js"></script>
-<script src="../components/shared/userMenu.js"></script>
-<script src="../components/shared/authModal.js"></script>
-<script src="../components/shared/activeUsers.js"></script>
-<script src="../components/shared/messageModal.js"></script>
-<script src="../components/shared/mlnf-core.js"></script> <!-- Last -->
+### **Integration Points Map**
+
+#### **1. Active Users Sidebar**
+- **File**: `components/shared/activeUsers.js`
+- **Integration**: Full avatar system with online status
+- **Usage**: Real-time user list with pulsing green dots
+- **Dependencies**: `styles.css`, `active-users.css`
+
+#### **2. Comments System (Eternal Echoes)**
+- **File**: `components/shared/comments.js`
+- **Integration**: Author displays with clickable profiles
+- **Usage**: Comment author avatars with online status
+- **Dependencies**: `styles.css` for avatar and online dot styling
+
+#### **3. Soul Scrolls (Blog System)**
+- **File**: `js/blog.js`
+- **Integration**: Author bylines and modal displays
+- **Usage**: Blog post authors with avatar and status
+- **Dependencies**: `styles.css`, `blog.css`
+
+#### **4. Souls Directory**
+- **File**: `souls/index.html` + JavaScript
+- **Integration**: User listings with comprehensive displays
+- **Usage**: Profile previews with online indicators
+- **Dependencies**: `styles.css`, `souls-listing.css`
+
+#### **5. Profile Pages**
+- **File**: `souls/[username].html`
+- **Integration**: Enhanced profile headers and comment systems
+- **Usage**: Profile display with real-time status
+- **Dependencies**: `styles.css`, `blog.css`, `souls-listing.css`
+
+### **Cross-Site Feature Requirements**
+
+#### **Avatar System Integration Checklist**
+- [ ] **CSS Dependencies**: Ensure `styles.css` is loaded
+- [ ] **JavaScript Dependencies**: Ensure `mlnf-avatar-system.js` is loaded before usage
+- [ ] **API Integration**: Pass correct `online` boolean values
+- [ ] **DOM Structure**: Create proper container for status dots
+- [ ] **Event Handlers**: Preserve click handlers for profile navigation
+
+#### **Testing Matrix**
+```
+Feature Testing Across Pages:
+├── Homepage (index.html)           # Basic avatar display
+├── Soul Scrolls (pages/blog.html)  # Author displays + comments
+├── Souls Directory (souls/)        # User listings
+├── Profile Pages (souls/[user])    # Profile + comments
+├── Admin Panel (admin/)            # User management
+└── Message Board (pages/)          # User interactions
 ```
 
-### **CSS Architecture**
+---
 
-#### **Loading Hierarchy**
-```css
-/* 1. Theme Foundation */
-@import 'base-theme.css';     /* CSS variables only */
-
-/* 2. Global Layout */
-@import 'styles.css';         /* Core layout, typography */
-
-/* 3. Shared Components */
-@import 'components/shared/styles.css';  /* Modal, nav, etc. */
-
-/* 4. Page-Specific */
-@import '[page-name].css';    /* Page-specific styles */
-```
-
-#### **CSS Variable System**
-```css
-:root {
-    /* Color Palette */
-    --primary: #1a0d33;
-    --secondary: #2d1b4e;
-    --accent: #4a3569;
-    
-    /* Typography */
-    --font-primary: 'Segoe UI', sans-serif;
-    --text-base: 1rem;
-    --leading-normal: 1.5;
-    
-    /* Spacing */
-    --space-4: 1rem;
-    --space-6: 1.5rem;
-    
-    /* Layout */
-    --border-radius: 0.375rem;
-    --shadow: rgba(26, 13, 51, 0.5);
-}
-```
-
-### **Routing System**
-
-#### **Static Pages**
-- Direct file serving via Netlify
-- Traditional multi-page application structure
-
-#### **Dynamic Profile Routes**
-```
-# Netlify _redirects configuration
-/souls/:username    /souls/[username].html    200
-
-# JavaScript URL extraction
-const username = window.location.pathname.split('/').pop();
-```
-
-#### **Profile Resolution Flow**
-```javascript
-// 1. User visits /souls/johndoe
-// 2. Netlify redirects to /souls/[username].html
-// 3. JavaScript extracts 'johndoe' from URL
-// 4. API call to GET /api/users/johndoe
-// 5. Dynamic content rendering
-```
-
-## 🔧 **Backend Architecture**
+## 🔧 Backend Architecture
 
 ### **Express.js Application Structure**
 ```
 back/
 ├── routes/
 │   ├── auth.js              # Authentication endpoints
-│   ├── users.js             # User management
+│   ├── users.js             # User management + online status
+│   ├── blogs.js             # Blog/Soul Scrolls system
+│   ├── comments.js          # Comments/Eternal Echoes
 │   └── owls.js              # Messaging system
 ├── models/
-│   └── User.js              # User data model
+│   ├── User.js              # User data model + online status
+│   ├── Blog.js              # Blog post model
+│   └── Comment.js           # Comment model
 ├── middleware/
 │   ├── auth.js              # JWT verification
 │   └── validation.js        # Input validation
@@ -202,70 +506,61 @@ back/
 ```javascript
 // Authentication
 POST   /api/auth/signup      // User registration
-POST   /api/auth/login       // User login
-POST   /api/auth/logout      // User logout
+POST   /api/auth/login       // User login + set online status
+POST   /api/auth/logout      // User logout + set offline status
 
-// User Management
+// User Management & Online Status
 GET    /api/users/me         // Current user profile
 GET    /api/users/:username  // Public profile by username
 PATCH  /api/users/me         // Update current user
-GET    /api/users            // List users (paginated)
-GET    /api/users/online     // Online users
+GET    /api/users            // List users (paginated) - Fallback
+GET    /api/users/online     // Online users - Primary endpoint
+
+// Content Systems
+GET    /api/blogs           // Blog posts (Soul Scrolls)
+GET    /api/blogs/user/:user // User-specific blog posts
+POST   /api/blogs           // Create blog post
+GET    /api/comments/:type/:id // Comments (Eternal Echoes)
+POST   /api/comments        // Create comment
 
 // Messaging
 POST   /api/owls/whisper     // Send email message
 ```
 
-#### **Request/Response Pattern**
+#### **Online Status API Implementation**
 ```javascript
-// Standard API Response Format
-{
-    "success": true,
-    "data": { /* response data */ },
-    "message": "Operation successful"
-}
+// Primary endpoint - optimized for online users
+router.get('/users/online', async (req, res) => {
+    try {
+        const onlineUsers = await User.find(
+            { online: true },
+            { password: 0, email: 0 } // Exclude sensitive fields
+        ).sort({ username: 1 });
+        
+        res.json(onlineUsers);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch online users' });
+    }
+});
 
-// Error Response Format
-{
-    "success": false,
-    "error": "Error description", 
-    "code": "ERROR_CODE"
-}
+// Fallback endpoint - all users (client filters)
+router.get('/users', async (req, res) => {
+    try {
+        const users = await User.find(
+            {},
+            { password: 0, email: 0 }
+        ).sort({ username: 1 });
+        
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch users' });
+    }
+});
 ```
 
-### **Authentication System**
+---
 
-#### **JWT Implementation**
-```javascript
-// Token Generation
-const token = jwt.sign(
-    { userId: user._id, username: user.username },
-    process.env.JWT_SECRET,
-    { expiresIn: '7d' }
-);
-
-// Token Verification Middleware
-const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    // Verify and decode token
-    // Attach user to request object
-};
-```
-
-#### **Frontend Token Management**
-```javascript
-// Storage
-localStorage.setItem('sessionToken', token);
-localStorage.setItem('user', JSON.stringify(userData));
-
-// API Request Headers
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
-};
-```
-
-## 🗄️ **Database Architecture**
+## 🗄️ Database Architecture
 
 ### **MongoDB Schema Design**
 
@@ -280,46 +575,122 @@ const headers = {
     avatar: String (URL),
     status: String (custom status message),
     bio: String,
-    online: Boolean (default: false),
+    online: Boolean (default: false),        // Real-time status
+    lastSeen: Date,                          // Last activity timestamp
     createdAt: Date,
     updatedAt: Date,
-    isAdmin: Boolean (default: false)
+    isAdmin: Boolean (default: false),
+    isVIP: Boolean (default: false),         // Mystical effects
+    role: String (default: 'user')           // user, admin, moderator
 }
 ```
 
-#### **Indexes**
+#### **Indexes for Performance**
 ```javascript
-// Performance optimization
+// Performance optimization for online status queries
 db.users.createIndex({ "username": 1 }, { unique: true });
 db.users.createIndex({ "email": 1 }, { unique: true });
-db.users.createIndex({ "online": 1 });
+db.users.createIndex({ "online": 1 });                    // Critical for online users
+db.users.createIndex({ "lastSeen": -1 });                 // For activity tracking
 db.users.createIndex({ "createdAt": -1 });
 ```
 
-### **Data Access Patterns**
+---
 
-#### **User Authentication**
+## ⚡ Real-Time Features
+
+*Current and planned real-time functionality*
+
+### **Current Implementation**
+
+#### **Online Status Updates**
+- **Method**: Periodic API polling every 30 seconds
+- **Endpoint**: `GET /api/users/online`
+- **Update Frequency**: Active users sidebar refreshes automatically
+- **Performance**: Optimized with cached responses
+
+#### **User Activity Tracking**
 ```javascript
-// Login flow
-const user = await User.findOne({ username: username });
-const isValid = await bcrypt.compare(password, user.password);
-if (isValid) {
-    // Generate JWT token
-    // Update online status
-    // Return user data and token
+// Backend: Update online status on login
+app.post('/api/auth/login', async (req, res) => {
+    // ... authentication logic ...
+    
+    // Set user as online
+    await User.findByIdAndUpdate(userId, {
+        online: true,
+        lastSeen: new Date()
+    });
+});
+
+// Backend: Set offline on logout
+app.post('/api/auth/logout', async (req, res) => {
+    await User.findByIdAndUpdate(userId, {
+        online: false,
+        lastSeen: new Date()
+    });
+});
+```
+
+### **Planned Real-Time Enhancements**
+
+#### **WebSocket Integration**
+```javascript
+// Planned: Real-time status updates via WebSocket
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 8080 });
+
+// Broadcast online status changes immediately
+function broadcastUserStatus(userId, isOnline) {
+    const message = {
+        type: 'user_status_change',
+        userId: userId,
+        online: isOnline,
+        timestamp: new Date()
+    };
+    
+    // Broadcast to all connected clients
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(message));
+        }
+    });
 }
 ```
 
-#### **Profile Queries**
+#### **Frontend WebSocket Client**
 ```javascript
-// Public profile data (exclude sensitive fields)
-const profile = await User.findOne(
-    { username: username },
-    { password: 0, email: 0 }  // Exclude sensitive fields
-);
+// Planned: Frontend WebSocket integration
+class RealTimeStatusUpdater {
+    constructor() {
+        this.ws = new WebSocket('wss://mlnf-auth.onrender.com/ws');
+        this.setupEventListeners();
+    }
+    
+    setupEventListeners() {
+        this.ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'user_status_change') {
+                this.updateUserStatus(data.userId, data.online);
+            }
+        };
+    }
+    
+    updateUserStatus(userId, isOnline) {
+        // Update avatar displays across the site
+        const avatars = document.querySelectorAll(`[data-user-id="${userId}"]`);
+        avatars.forEach(avatar => {
+            const statusDot = avatar.querySelector('.online-dot');
+            if (statusDot) {
+                statusDot.classList.toggle('online', isOnline);
+            }
+        });
+    }
+}
 ```
 
-## 🚀 **Deployment Architecture**
+---
+
+## 🚀 Deployment Architecture
 
 ### **Frontend Deployment (Netlify)**
 
@@ -347,20 +718,6 @@ const profile = await User.findOne(
 
 ### **Backend Deployment (Render)**
 
-#### **Configuration**
-```yaml
-# render.yaml
-services:
-  - type: web
-    name: mlnf-backend
-    env: node
-    buildCommand: npm install
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-```
-
 #### **Environment Variables**
 ```env
 MONGO_URI=mongodb+srv://...
@@ -380,19 +737,16 @@ EMAIL_PASS=app_password (optional)
 - Connection via connection string
 - IP whitelist for security
 
-#### **Performance Optimization**
-- Database indexes for common queries
-- Connection pooling
-- Query optimization
-- Regular performance monitoring
+---
 
-## 🔒 **Security Architecture**
+## 🔒 Security Architecture
 
 ### **Frontend Security**
 - Input validation and sanitization
 - XSS prevention through proper HTML escaping
 - CSRF protection via JWT tokens
 - Secure token storage considerations
+- Avatar URL validation and sanitization
 
 ### **Backend Security**
 - JWT token authentication
@@ -400,6 +754,7 @@ EMAIL_PASS=app_password (optional)
 - Input validation middleware
 - CORS configuration
 - Rate limiting (can be implemented)
+- Online status manipulation prevention
 
 ### **Database Security**
 - MongoDB Atlas security controls
@@ -407,19 +762,23 @@ EMAIL_PASS=app_password (optional)
 - Network access control
 - Encrypted connections
 
-## 📊 **Performance Architecture**
+---
+
+## 📊 Performance Architecture
 
 ### **Frontend Optimization**
 - Minified CSS and JavaScript (production)
-- Image optimization for avatars
+- Image optimization for avatars (UI-Avatars.com external service)
 - Lazy loading for user lists
 - Browser caching strategies
+- Avatar color generation client-side (reduces server load)
 
 ### **Backend Optimization**
 - Database connection pooling
-- Query optimization with indexes
+- Query optimization with indexes (especially for online status)
 - Response caching opportunities
 - API rate limiting
+- Optimized online users endpoint
 
 ### **Monitoring & Analytics**
 - Frontend: Can integrate analytics service
@@ -427,7 +786,9 @@ EMAIL_PASS=app_password (optional)
 - Database: MongoDB Atlas monitoring dashboard
 - Error tracking: Console logging (can enhance)
 
-## 🔧 **Development Environment**
+---
+
+## 🔧 Development Environment
 
 ### **Local Development Setup**
 ```bash
@@ -446,68 +807,23 @@ npm run dev  # Development mode with nodemon
 - Local MongoDB vs Atlas for development
 - Environment-specific feature flags
 
-## 🚀 **Scalability Considerations**
+---
+
+## 🚀 Scalability Considerations
 
 ### **Current Limitations**
-
 - Frontend state management is basic
 - No caching layer implemented
+- Online status polling every 30 seconds (not real-time)
 
 ### **Future Enhancements**
-- Redis caching layer
-- CDN for static assets
-- Database sharding for large user base
-- Microservices architecture for feature modules
-
-## Core Frontend Components
-
-This section outlines the key JavaScript modules that form the backbone of the MLNF frontend application. Adhering to these standards is crucial for maintaining a stable and scalable codebase.
-
-### NEW: `apiClient.js` - Centralized API Communication
-
-To prevent recurring issues with authentication and data formatting, all backend communication is now handled by a centralized API client located at `/front/js/shared/apiClient.js`.
-
-**Purpose:**
-- **Standardize Requests:** Provides a single, unified way to make `GET` and `POST` requests.
-- **Automate Authentication:** Automatically attaches the `Authorization: Bearer <token>` header to all outgoing requests.
-- **Centralize Error Handling:** Provides consistent error logging and can be configured to automatically trigger login modals on `401 Unauthorized` responses.
-- **Simplify Code:** Drastically reduces boilerplate code on individual pages.
-
-**Usage Example:**
-
-Instead of using a manual `fetch` call like this:
-
-```javascript
-// Old, manual way (DO NOT USE)
-const token = localStorage.getItem('sessionToken');
-const response = await fetch('https://mlnf-auth.onrender.com/api/chronicles', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(data),
-});
-```
-
-You should now use the global `apiClient`:
-
-```javascript
-// New, correct way
-try {
-    const data = { title: 'A New Truth', content: '...' };
-    const result = await window.apiClient.post('/chronicles', data);
-    console.log('Success!', result);
-} catch (error) {
-    console.error('API Error:', error);
-    alert(`Operation failed: ${error.error}`);
-}
-```
-
-**Rule:** All new features or pages that need to communicate with the backend **must** use this `apiClient`. Existing pages should be refactored to use it whenever they are modified.
-
-### `authModal.js`
+- **Redis caching layer** for online status
+- **WebSocket real-time updates** for instant status changes
+- **CDN for static assets** including avatar generation
+- **Database sharding** for large user base
+- **Microservices architecture** for feature modules
+- **Enhanced avatar system** with profile preview caching
 
 ---
 
-*Complete technical architecture documentation for MLNF platform* 
+*Complete technical architecture documentation for MLNF platform with comprehensive CSS dependency mapping and online status system architecture*
