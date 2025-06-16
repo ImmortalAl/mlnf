@@ -640,7 +640,7 @@ function shareCurrentPost() {
     }
 }
 
-// Share post by ID - Modern clipboard-based sharing
+// Share post by ID - Simple link generation
 function sharePost(postId) {
     const post = blogPosts[postId];
     if (!post) {
@@ -648,119 +648,22 @@ function sharePost(postId) {
         return;
     }
     
-    const currentUrl = window.location.origin + window.location.pathname + '#scroll-' + postId;
-    const shareText = `📜 ${post.title}\n\n"${createExcerpt(post.content, 100)}"\n\nRead the full scroll: ${currentUrl}`;
+    const shareUrl = `${window.location.origin}${window.location.pathname}#scroll-${postId}`;
     
-    if (navigator.share && /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)) {
-        // Use native sharing on mobile devices
-        navigator.share({
-            title: `📜 ${post.title}`,
-            text: shareText,
-            url: currentUrl
-        }).catch(err => {
-            console.log('Native sharing failed, using clipboard:', err);
-            copyToClipboard(currentUrl, shareText);
-        });
-    } else {
-        // Use clipboard sharing for desktop
-        copyToClipboard(currentUrl, shareText);
-    }
-}
-
-// Modern clipboard sharing function
-function copyToClipboard(url, shareText) {
-    const textToCopy = shareText || url;
-    
+    // Simple clipboard copy without complex notifications
     if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            showShareNotification('✨ Scroll link copied to clipboard! Share the wisdom.');
-        }).catch(err => {
-            console.error('Clipboard write failed:', err);
-            fallbackCopy(textToCopy);
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('🔗 Link copied to clipboard!');
+        }).catch(() => {
+            prompt('Copy this link to share:', shareUrl);
         });
     } else {
-        fallbackCopy(textToCopy);
+        // Fallback: show the link in a prompt for user to copy
+        prompt('Copy this link to share:', shareUrl);
     }
 }
 
-// Fallback copy method for older browsers
-function fallbackCopy(text) {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-        document.execCommand('copy');
-        showShareNotification('✨ Scroll link copied! Share the wisdom.');
-    } catch (err) {
-        console.error('Fallback copy failed:', err);
-        showShareNotification('❌ Copy failed. Please manually copy the URL from your browser.');
-    }
-    
-    document.body.removeChild(textArea);
-}
 
-// Modern notification system
-function showShareNotification(message) {
-    console.log('🎉 Creating share notification:', message);
-    
-    // Remove any existing notifications
-    const existingNotification = document.querySelector('.share-notification');
-    if (existingNotification) {
-        console.log('📝 Removing existing notification');
-        existingNotification.remove();
-    }
-    
-    const notification = document.createElement('div');
-    notification.className = 'share-notification';
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span class="notification-message">${message}</span>
-            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
-        </div>
-    `;
-    
-    console.log('✨ Appending notification to body');
-    document.body.appendChild(notification);
-    
-    // Force a reflow to ensure the element is rendered
-    notification.offsetHeight;
-    
-    // Make sure it's visible
-    notification.style.display = 'block';
-    notification.style.opacity = '1';
-    notification.style.visibility = 'visible';
-    notification.style.pointerEvents = 'auto';
-    
-    console.log('🎯 Notification should now be visible');
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            console.log('🧹 Auto-removing notification');
-            notification.remove();
-        }
-    }, 5000);
-}
-
-// Legacy owl modal functions - deprecated but kept for compatibility
-function openOwlModal(url) {
-    console.warn('openOwlModal is deprecated. Use sharePost() instead.');
-    // Fallback to new sharing system
-    copyToClipboard(url);
-}
-
-function closeOwlModal() {
-    const modal = document.getElementById('sharing-modal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
 
 // Like a blog post
 async function likePost(postId) {
@@ -1002,17 +905,6 @@ function cancelPostEdit(postId, originalTitle, originalContent) {
     document.getElementById('modal-content').innerHTML = originalContent;
 }
 
-// Test function - remove after debugging
-function testNotification() {
-    console.log('🧪 Testing notification system...');
-    showShareNotification('🧪 Test notification! If you see this, the system works!');
-}
-
-// Auto-test notification on page load for debugging
-setTimeout(() => {
-    console.log('🚀 Auto-testing notification system in 3 seconds...');
-    testNotification();
-}, 3000);
 
 // Export functions to global scope for compatibility
 window.createBlog = createBlog;
@@ -1026,12 +918,6 @@ window.editCurrentPost = editCurrentPost;
 window.editPost = editPost;
 window.savePostEdit = savePostEdit;
 window.cancelPostEdit = cancelPostEdit;
-window.copyToClipboard = copyToClipboard;
-window.showShareNotification = showShareNotification;
-window.testNotification = testNotification; // Debug function
-// Legacy compatibility
-window.openOwlModal = openOwlModal;
-window.closeOwlModal = closeOwlModal;
 
 // ALWAYS check for auto-open regardless of page type - multiple triggers to ensure it runs
 // Immediate check

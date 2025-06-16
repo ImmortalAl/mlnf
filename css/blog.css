@@ -901,11 +901,23 @@ body.light-theme .blog-post .content::after {
     opacity: 1;
 }
 
+/* Modern Timestamp Icon */
 .scroll-date::before,
 .blog-post .date::before {
-    content: '🕯️';
-    font-size: 1rem;
-    filter: sepia(1) hue-rotate(25deg) saturate(1.2);
+    content: '✨';
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.3));
+    animation: sparkle 3s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
 }
 
 .blog-post .author {
@@ -1691,10 +1703,22 @@ body.modal-open {
     gap: 0.5rem;
 }
 
+/* Enhanced Modal Timestamp Icon */
 .blog-modal-header .date::before {
-    content: '🕯️';
-    font-size: 1.1rem;
-    filter: sepia(1) hue-rotate(300deg) saturate(1.5);
+    content: '⏰';
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
 }
 
 .blog-modal-header .date:hover {
