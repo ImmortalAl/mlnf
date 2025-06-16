@@ -228,6 +228,36 @@ class MLNFAvatarSystem {
     }
 
     /**
+     * Generate unique color based on username
+     * @param {string} username - Username for color generation
+     * @returns {Object} Background and text colors
+     */
+    generateUserColors(username) {
+        // Simple hash function to generate consistent colors per username
+        let hash = 0;
+        for (let i = 0; i < username.length; i++) {
+            hash = username.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        
+        // Immortal-themed color palette
+        const immortalColors = [
+            { bg: 'ff5e78', text: 'fff' }, // Pink/white
+            { bg: 'ffca28', text: '0d0d1a' }, // Gold/dark
+            { bg: '4ade80', text: 'fff' }, // Green/white
+            { bg: '60a5fa', text: 'fff' }, // Blue/white
+            { bg: 'c084fc', text: 'fff' }, // Purple/white
+            { bg: 'f97316', text: 'fff' }, // Orange/white
+            { bg: 'ef4444', text: 'fff' }, // Red/white
+            { bg: '06b6d4', text: 'fff' }, // Cyan/white
+            { bg: 'a855f7', text: 'fff' }, // Violet/white
+            { bg: '10b981', text: 'fff' }, // Emerald/white
+        ];
+        
+        const colorIndex = Math.abs(hash) % immortalColors.length;
+        return immortalColors[colorIndex];
+    }
+
+    /**
      * Generate avatar URL with fallback
      * @param {string} username - Username for avatar generation
      * @param {number} size - Avatar size in pixels
@@ -242,9 +272,12 @@ class MLNFAvatarSystem {
             return customUrl;
         }
         
+        // Generate unique colors for this username
+        const colors = this.generateUserColors(username);
+        
         const encodedName = encodeURIComponent(username);
-        const generatedUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=${this.defaultAvatarConfig.background}&color=${this.defaultAvatarConfig.color}&size=${size}&format=${this.defaultAvatarConfig.format}`;
-        console.log(`[MLNF Avatar] Generated UI-Avatars URL: ${generatedUrl}`);
+        const generatedUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=${colors.bg}&color=${colors.text}&size=${size}&format=${this.defaultAvatarConfig.format}`;
+        console.log(`[MLNF Avatar] Generated UI-Avatars URL with unique colors: ${generatedUrl}`);
         return generatedUrl;
     }
 
