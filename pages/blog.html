@@ -124,7 +124,11 @@
         <div class="blog-modal-content">
             <button class="close-modal" onclick="closeBlogModal()" aria-label="Close modal">×</button>
             <div class="blog-modal-header">
-                <div class="scroll-author">
+                <div class="modal-author-info">
+                    <!-- MLNF Avatar System will populate this -->
+                </div>
+                <!-- Fallback structure for compatibility -->
+                <div class="scroll-author" style="display: none;">
                     <a href="#" id="modal-author-link" class="author-avatar">
                         <img id="modal-author-avatar" src="" alt="">
                     </a>
@@ -164,7 +168,7 @@
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/comments.js?v=1.2"></script>
-    <script src="../js/blog.js?v=2.2"></script>
+    <script src="../js/blog.js?v=2.3"></script>
     <script src="../js/scripts.js?v=1.2"></script>
 </body>
 </html>

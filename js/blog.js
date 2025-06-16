@@ -437,31 +437,48 @@ async function openBlogModal(postId) {
         
         // Update author info using MLNF Avatar System
         const modalAuthorContainer = document.querySelector('.modal-author-info');
-        if (modalAuthorContainer) {
+        const fallbackContainer = document.querySelector('.scroll-author');
+        
+        if (modalAuthorContainer && window.MLNFAvatars) {
             // Clear existing content
             modalAuthorContainer.innerHTML = '';
             
             // Create unified author display for modal
             const modalAuthorDisplay = window.MLNFAvatars.createUserDisplay({
                 username: post.author.username,
+                displayName: post.author.displayName || post.author.username,
                 title: post.author.title || 'Scroll Author',
                 status: `Chronicled on ${new Date(post.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 })}`,
-                avatarSize: 'lg',
-                displaySize: 'md',
+                avatarSize: 'xl',
+                displaySize: 'lg',
                 mystical: post.author.isVIP || post.author.role === 'admin',
                 online: post.author.online,
                 customAvatar: post.author.avatar,
-                usernameStyle: 'mystical',
-                enableUnifiedNavigation: true
+                usernameStyle: 'immortal',
+                enableUnifiedNavigation: true,
+                showStatus: true,
+                compact: false
             });
             
             modalAuthorContainer.appendChild(modalAuthorDisplay);
+            
+            // Hide fallback container
+            if (fallbackContainer) {
+                fallbackContainer.style.display = 'none';
+            }
         } else {
-            // Fallback to existing elements if modal structure is different
+            // Fallback to existing elements if MLNF Avatar System is not available
+            console.warn('MLNF Avatar System not available, using fallback author display');
+            
+            // Show fallback container
+            if (fallbackContainer) {
+                fallbackContainer.style.display = 'flex';
+            }
+            
             const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
             const authorDisplayName = post.author.displayName || post.author.username;
             const authorLink = `/souls/${post.author.username}.html`;
@@ -477,14 +494,21 @@ async function openBlogModal(postId) {
                 requiredElements['modal-author-name-link'].href = authorLink;
                 requiredElements['modal-author-name-link'].textContent = authorDisplayName;
             }
+            
+            // Hide the MLNF container if it exists but system isn't available
+            if (modalAuthorContainer) {
+                modalAuthorContainer.style.display = 'none';
+            }
         }
         
-        // Update date
-        requiredElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        // Update date (only for fallback, MLNF Avatar System handles this internally)
+        if (requiredElements['modal-date'] && (!window.MLNFAvatars || !modalAuthorContainer)) {
+            requiredElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
         
         // Show edit button if user is the author
         const editBtn = document.getElementById('editPostBtn');
