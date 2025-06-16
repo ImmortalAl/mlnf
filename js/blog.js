@@ -13,11 +13,7 @@ function jwt_decode(token) {
     }
 }
 
-console.log('[blog.js] Script loaded');
-console.log('[blog.js] MLNF_CONFIG:', window.MLNF_CONFIG);
-
 const BLOG_API_BASE_URL = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
-console.log('[blog.js] BLOG_API_BASE_URL:', BLOG_API_BASE_URL);
 
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
@@ -56,11 +52,7 @@ function createExcerpt(content, maxLength = 150) {
 
 // Fetch blog posts with pagination
 async function fetchBlogPosts(page = 1) {
-    console.log('[blog.js] fetchBlogPosts called with page:', page);
-    console.log('[blog.js] Current state - isLoading:', isLoading, 'hasMore:', hasMore);
-    
     if (isLoading || !hasMore) {
-        console.log('[blog.js] Skipping fetch - isLoading:', isLoading, 'hasMore:', hasMore);
         return;
     }
     
@@ -68,7 +60,6 @@ async function fetchBlogPosts(page = 1) {
     showLoadingCrystal();
     
     const fetchUrl = `${BLOG_API_BASE_URL}/blogs?page=${page}&limit=${PAGE_LIMIT}`;
-    console.log('[blog.js] Fetching from URL:', fetchUrl);
     
     try {
         const response = await fetch(fetchUrl, {
@@ -76,7 +67,6 @@ async function fetchBlogPosts(page = 1) {
             headers: { 'Content-Type': 'application/json' }
         });
         
-        console.log('[blog.js] Response received - status:', response.status, 'ok:', response.ok);
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -84,23 +74,17 @@ async function fetchBlogPosts(page = 1) {
         }
         
         const result = await response.json();
-        console.log('[blog.js] Response data:', result);
         
         const posts = result.docs || result; // Handle both paginated and simple array responses
-        console.log('[blog.js] Posts extracted:', posts.length, 'posts');
         
         if (posts.length === 0 && currentPage === 1) {
-            console.log('[blog.js] No posts found, showing empty message');
             blogList.innerHTML = '<p class="empty-message">No scrolls have been written yet. The chamber awaits the first whisper...</p>';
             hasMore = false;
         } else {
-            console.log('[blog.js] Processing', posts.length, 'posts');
             posts.forEach(post => {
                 if (!post.author) {
-                    console.warn('[blog.js] Post has no author, skipping:', post._id);
                     return;
                 }
-                console.log('[blog.js] Processing post:', post._id, post.title);
                 const postElement = document.createElement('div');
                 postElement.className = 'blog-post';
                 postElement.id = post._id;
@@ -166,21 +150,16 @@ async function fetchBlogPosts(page = 1) {
                 
                 // Make post clickable with proper event handling
                 const handlePostClick = function(e) {
-                    console.log('[blog.js] Click event triggered on post:', post._id, 'Title:', post.title, 'Author:', post.author.username);
-                    console.log('[blog.js] Click target:', e.target.tagName, e.target.className, e.target);
                     // Don't open modal if clicking on links or buttons
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
-                        console.log('[blog.js] Click on link/button, not opening modal');
                         return;
                     }
-                    console.log('[blog.js] Opening modal for post:', post._id);
                     e.preventDefault();
                     e.stopPropagation();
                     openBlogModal(post._id);
                 };
 
                 // Add click event only (remove touchend to prevent scroll conflicts)
-                console.log('[blog.js] Adding event listeners to post:', post._id, 'Author:', post.author.username);
                 postElement.addEventListener('click', handlePostClick);
                 
                 // Add touch handling that doesn't conflict with scrolling
@@ -200,13 +179,10 @@ async function fetchBlogPosts(page = 1) {
                     
                     // Only trigger if it's a tap (short duration, minimal movement)
                     if (touchDuration < 300 && touchDistance < 10) {
-                        console.log('[blog.js] Touch tap detected on post:', post._id);
                         // Don't open modal if touching links or buttons
                         if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
-                            console.log('[blog.js] Touch on link/button, not opening modal');
                             return;
                         }
-                        console.log('[blog.js] Opening modal for post (touch tap):', post._id);
                         e.preventDefault();
                         e.stopPropagation();
                         openBlogModal(post._id);
@@ -217,25 +193,17 @@ async function fetchBlogPosts(page = 1) {
                 postElement.classList.add('blog-post-hover');
                 
                 blogList.appendChild(postElement);
-                console.log('[blog.js] Post added to DOM:', post._id);
             });
-            
-            // DEBUG: Log the final DOM structure
-            console.log("----------- DEBUG: Final blogList innerHTML -----------");
-            console.log(blogList.innerHTML);
-            console.log("----------------------------------------------------");
             
             // Check if we have more pages
             if (result.totalPages && currentPage >= result.totalPages) {
                 hasMore = false;
-                console.log('[blog.js] No more pages available');
             } else if (!result.totalPages && posts.length < PAGE_LIMIT) {
                 hasMore = false;
-                console.log('[blog.js] Fewer posts than limit, assuming no more pages');
             }
         }
     } catch (error) {
-        console.error('[blog.js] Error fetching blog posts:', error);
+        console.error('Error fetching blog posts:', error);
         if (currentPage === 1) {
             blogList.innerHTML = `
                 <div class="error-message">
@@ -248,7 +216,6 @@ async function fetchBlogPosts(page = 1) {
     } finally {
         hideLoadingCrystal();
         isLoading = false;
-        console.log('[blog.js] fetchBlogPosts completed - isLoading:', isLoading, 'hasMore:', hasMore);
     }
 }
 
@@ -275,11 +242,8 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 1.0 });
 
 function initBlog() {
-    console.log('[blog.js] initBlog() called');
     blogList = document.getElementById('blogList');
     scrollObserver = document.getElementById('scroll-observer');
-
-    console.log('[blog.js] Elements found - blogList:', !!blogList, 'scrollObserver:', !!scrollObserver);
 
     // Safety check: ensure blog modal isn't blocking clicks on page load
     const blogModal = document.getElementById('blogModal');
@@ -290,11 +254,9 @@ function initBlog() {
         blogModal.style.visibility = 'hidden';
         blogModal.style.pointerEvents = 'none';
         document.body.classList.remove('modal-open');
-        console.log('[blog.js] Cleared any stuck blog modal states on init');
     }
 
     if (!blogList) {
-        console.log('[blog.js] blogList element not found, aborting init.');
         return;
     }
 
@@ -374,43 +336,33 @@ async function createBlog() {
 
 // Fetch a single blog post by ID
 async function fetchBlogPost(postId) {
-    console.log('[blog.js] fetchBlogPost called for ID:', postId);
-    
     // Check if we have it cached
     if (blogPosts[postId] && blogPosts[postId].content) {
-        console.log('[blog.js] Returning cached post:', blogPosts[postId]);
         return blogPosts[postId];
     }
     
     // Check if it exists in window.blogPosts (from profile page)
     if (window.blogPosts && window.blogPosts[postId]) {
-        console.log('[blog.js] Found post in window.blogPosts:', window.blogPosts[postId]);
         blogPosts[postId] = window.blogPosts[postId];
         return window.blogPosts[postId];
     }
     
-    console.log('[blog.js] Post not cached, fetching from API...');
-    
     try {
         const url = `${BLOG_API_BASE_URL}/blogs/${postId}`;
-        console.log('[blog.js] Fetching from URL:', url);
         
         const response = await fetch(url);
-        console.log('[blog.js] API response status:', response.status);
         
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('[blog.js] API error response:', errorText);
             throw new Error(`Failed to fetch blog post: ${response.status}`);
         }
         
         const post = await response.json();
-        console.log('[blog.js] API response data:', post);
         
         blogPosts[post._id] = post;
         return post;
     } catch (error) {
-        console.error('[blog.js] Error fetching post:', error);
+        console.error('Error fetching post:', error);
         return null;
     }
 }
@@ -419,41 +371,35 @@ async function fetchBlogPost(postId) {
 async function openBlogModal(postId) {
     // Prevent duplicate calls
     if (window._blogModalOpening) {
-        console.log('[blog.js] Modal already opening, preventing duplicate call');
         return;
     }
     
     window._blogModalOpening = true;
-    
-    console.log('[blog.js] Opening modal for post:', postId);
     currentPostId = postId;
     
     // Get modal element first and check if it exists
     const modal = document.getElementById('blogModal');
     if (!modal) {
-        console.error('[blog.js] blogModal element not found in DOM!');
+        console.error('blogModal element not found in DOM!');
         window._blogModalOpening = false;
         // Ensure body scroll is not locked
         document.body.classList.remove('modal-open');
         return;
     }
     
-    console.log('[blog.js] Modal element found:', modal);
-    
     // Fetch the post data
     let post;
     try {
         post = await fetchBlogPost(postId);
-        console.log('[blog.js] Post data fetched:', post);
     } catch (error) {
-        console.error('[blog.js] Error fetching post:', error);
+        console.error('Error fetching post:', error);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
     
     if (!post) {
-        console.error('[blog.js] No post data returned for ID:', postId);
+        console.error('No post data returned for ID:', postId);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
@@ -478,13 +424,11 @@ async function openBlogModal(postId) {
     }
     
     if (missingElements.length > 0) {
-        console.error('[blog.js] Missing modal elements:', missingElements);
+        console.error('Missing modal elements:', missingElements);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
-    
-    console.log('[blog.js] All modal elements found, updating content...');
     
     // Update modal content
     try {
@@ -561,9 +505,8 @@ async function openBlogModal(postId) {
             editBtn.style.display = 'none';
         }
         
-        console.log('[blog.js] Modal content updated successfully');
     } catch (error) {
-        console.error('[blog.js] Error updating modal content:', error);
+        console.error('Error updating modal content:', error);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
@@ -572,7 +515,6 @@ async function openBlogModal(postId) {
     // Remove any existing event listeners by using a data attribute
     if (modal.dataset.listenersAttached !== 'true') {
         // First time setup - add event listeners
-        console.log('[blog.js] Attaching event listeners to modal...');
         
         // Add backdrop click listener
         modal.addEventListener('click', function(e) {
@@ -592,9 +534,6 @@ async function openBlogModal(postId) {
                 e.stopPropagation();
                 closeBlogModal();
             });
-            console.log('[blog.js] Close button listener attached');
-        } else {
-            console.warn('[blog.js] Close button not found');
         }
         
         // Mark that listeners are attached
@@ -602,8 +541,6 @@ async function openBlogModal(postId) {
     }
     
     // Show the modal
-    console.log('[blog.js] Showing modal...');
-    
     // Remove any inline display style that might be overriding our CSS
     modal.style.removeProperty('display');
     
@@ -615,45 +552,15 @@ async function openBlogModal(postId) {
     // Force a reflow to ensure the modal is visible
     modal.offsetHeight;
     
-    // Get computed styles to debug visibility
+    // Get computed styles to check visibility
     const computedStyle = window.getComputedStyle(modal);
-    const modalContent = modal.querySelector('.blog-modal-content');
-    const contentComputedStyle = modalContent ? window.getComputedStyle(modalContent) : null;
-    
-    console.log('[blog.js] Modal computed styles:', {
-        display: computedStyle.display,
-        position: computedStyle.position,
-        top: computedStyle.top,
-        left: computedStyle.left,
-        width: computedStyle.width,
-        height: computedStyle.height,
-        opacity: computedStyle.opacity,
-        visibility: computedStyle.visibility,
-        zIndex: computedStyle.zIndex
-    });
-    
-    if (contentComputedStyle) {
-        console.log('[blog.js] Modal content computed styles:', {
-            display: contentComputedStyle.display,
-            width: contentComputedStyle.width,
-            height: contentComputedStyle.height,
-            opacity: contentComputedStyle.opacity,
-            visibility: contentComputedStyle.visibility
-        });
-    }
-    
-    console.log('[blog.js] Body classes:', document.body.className);
-    console.log('[blog.js] Modal classes:', modal.className);
     
     // Fallback: If the modal is still not visible after adding the show class, force it
     if (computedStyle.display === 'none') {
-        console.warn('[blog.js] Modal still hidden after adding show class, forcing display');
         modal.style.display = 'flex';
         modal.style.opacity = '1';
         modal.style.visibility = 'visible';
     }
-    
-    console.log('[blog.js] Modal should now be visible. Display:', computedStyle.display, 'Z-index:', modal.style.zIndex);
     
     // Initialize comments system
     if (commentsSystem) {
@@ -665,9 +572,8 @@ async function openBlogModal(postId) {
         if (window.MLNF && window.MLNF.CommentsSystem) {
             try {
                 commentsSystem = new window.MLNF.CommentsSystem('blog', postId, 'blogComments');
-                console.log('[blog.js] Comments system initialized');
             } catch (error) {
-                console.error('[blog.js] Error initializing comments:', error);
+                console.error('Error initializing comments:', error);
             }
         }
         window._blogModalOpening = false;
@@ -676,7 +582,6 @@ async function openBlogModal(postId) {
 
 // Close blog modal
 function closeBlogModal() {
-    console.log('[blog.js] Closing modal');
     const modal = document.getElementById('blogModal');
     if (modal) {
         modal.classList.remove('show');
@@ -978,42 +883,23 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
     // Initialize blog functionality when DOM is loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('[blog.js] Initializing blog functionality.');
             initBlog();
         });
     } else {
-        console.log('[blog.js] Initializing blog functionality.');
         initBlog();
     }
-} else {
-    console.log('[blog.js] Auto-initialization is disabled for this page type.');
-}
-
-function debugLog(message) {
-    console.log(message);
 }
 
 // Separate function to handle auto-opening from highlights
 function checkAutoOpen() {
     const autoOpenScrollId = sessionStorage.getItem('openScrollId');
-    debugLog(`checkAutoOpen called, scrollId: ${autoOpenScrollId}`);
-    debugLog(`Current URL pathname: ${window.location.pathname}`);
-    debugLog(`Document readyState: ${document.readyState}`);
-    debugLog(`Page loaded at: ${new Date().toLocaleTimeString()}`);
     
     if (autoOpenScrollId) {
-        debugLog(`Found scroll ID to auto-open: ${autoOpenScrollId}`);
         sessionStorage.removeItem('openScrollId');
         
         // Wait for all systems to be ready
         const attemptAutoOpen = (attempts = 0) => {
-            debugLog(`Auto-open attempt: ${attempts + 1}`);
-            debugLog(`MLNFAvatars available: ${!!window.MLNFAvatars}`);
-            debugLog(`blogPosts keys: ${Object.keys(blogPosts).length}`);
-            debugLog(`blogModal element: ${!!document.getElementById('blogModal')}`);
-            
             if (!window.MLNFAvatars) {
-                debugLog('MLNFAvatars not ready, retrying...');
                 if (attempts < 20) {
                     setTimeout(() => attemptAutoOpen(attempts + 1), 500);
                 }
@@ -1023,32 +909,22 @@ function checkAutoOpen() {
             // Check if modal exists
             const modal = document.getElementById('blogModal');
             if (!modal) {
-                debugLog('Blog modal not found in DOM!');
                 if (attempts < 20) {
                     setTimeout(() => attemptAutoOpen(attempts + 1), 500);
                 }
                 return;
             }
             
-            debugLog(`All systems ready, attempting to open modal for: ${autoOpenScrollId}`);
-            
             try {
-                // Try to open modal directly
                 openBlogModal(autoOpenScrollId);
-                debugLog('Modal open call executed');
-                
-                debugLog('Modal opened successfully');
-                
             } catch (error) {
-                debugLog(`Error opening modal: ${error.message}`);
+                console.error('Error opening modal:', error);
             }
             
             // Also try fetching the post if it's not cached
             if (!blogPosts[autoOpenScrollId]) {
-                debugLog(`Post not in cache, fetching: ${autoOpenScrollId}`);
                 fetchBlogPost(autoOpenScrollId).then(post => {
                     if (post) {
-                        debugLog('Post fetched, trying modal again');
                         openBlogModal(autoOpenScrollId);
                     }
                 });
@@ -1056,39 +932,6 @@ function checkAutoOpen() {
         };
         
         setTimeout(() => attemptAutoOpen(), 2000);
-    } else {
-        debugLog('No scroll ID found in sessionStorage - normal blog page load');
     }
 }
 
-// Debug function to find what's blocking clicks
-window.debugClickBlocker = function() {
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const elements = document.elementsFromPoint(centerX, centerY);
-    
-    console.log('[DEBUG] Elements at center of screen (top to bottom):');
-    elements.forEach((el, index) => {
-        const computed = window.getComputedStyle(el);
-        const info = {
-            tag: el.tagName,
-            id: el.id || 'none',
-            class: el.className || 'none',
-            zIndex: computed.zIndex,
-            position: computed.position,
-            display: computed.display,
-            visibility: computed.visibility,
-            pointerEvents: computed.pointerEvents,
-            opacity: computed.opacity
-        };
-        console.log(`[${index}]`, info);
-    });
-};
-
-// Auto-run debug on page load if there are issues
-setTimeout(() => {
-    console.log('[blog.js] Running click blocker debug...');
-    if (window.debugClickBlocker) {
-        window.debugClickBlocker();
-    }
-}, 2000);
