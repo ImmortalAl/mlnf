@@ -318,8 +318,22 @@ class MLNFAvatarSystem {
         
         // Add optional classes
         if (mystical) img.classList.add('mlnf-avatar--mystical');
-        if (online === true) img.classList.add('mlnf-avatar--online');
-        if (online === false) img.classList.add('mlnf-avatar--offline');
+        
+        // Create container for avatar + status dot
+        const avatarContainer = document.createElement('div');
+        avatarContainer.style.position = 'relative';
+        avatarContainer.style.display = 'inline-block';
+        avatarContainer.appendChild(img);
+        
+        // Add online status dot if specified
+        if (online === true || online === false) {
+            const statusDot = document.createElement('div');
+            statusDot.className = 'online-dot';
+            if (online === true) {
+                statusDot.classList.add('online');
+            }
+            avatarContainer.appendChild(statusDot);
+        }
         classes.forEach(cls => img.classList.add(cls));
 
         // Enhanced error handling for avatar loading
@@ -335,7 +349,7 @@ class MLNFAvatarSystem {
             img.onerror = null; // Prevent infinite loop
         };
 
-        return img;
+        return online === true || online === false ? avatarContainer : img;
     }
 
     /**
