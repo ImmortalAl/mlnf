@@ -309,10 +309,36 @@ function initBlog() {
         console.log('[blog.js] Auto-opening scroll from highlights:', autoOpenScrollId);
         sessionStorage.removeItem('openScrollId');
         
-        // Wait a bit for posts to load before trying to open modal
-        setTimeout(() => {
-            openBlogModal(autoOpenScrollId);
-        }, 1000);
+        // Wait for posts to load and MLNFAvatars to be ready, then try multiple times if needed
+        const attemptAutoOpen = (attempts = 0) => {
+            console.log('[blog.js] Auto-open attempt:', attempts + 1);
+            
+            if (!window.MLNFAvatars) {
+                console.log('[blog.js] MLNFAvatars not ready, retrying...');
+                if (attempts < 10) {
+                    setTimeout(() => attemptAutoOpen(attempts + 1), 500);
+                }
+                return;
+            }
+            
+            if (blogPosts[autoOpenScrollId] || Object.keys(blogPosts).length > 0) {
+                console.log('[blog.js] Posts loaded, opening modal for:', autoOpenScrollId);
+                openBlogModal(autoOpenScrollId);
+            } else if (attempts < 10) {
+                console.log('[blog.js] Posts not loaded yet, retrying in 500ms...');
+                setTimeout(() => attemptAutoOpen(attempts + 1), 500);
+            } else {
+                console.log('[blog.js] Failed to auto-open after 10 attempts, fetching post directly');
+                // Last resort: fetch the post directly
+                fetchBlogPost(autoOpenScrollId).then(post => {
+                    if (post) {
+                        openBlogModal(autoOpenScrollId);
+                    }
+                });
+            }
+        };
+        
+        setTimeout(() => attemptAutoOpen(), 1000);
     }
 }
 
@@ -982,8 +1008,48 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
         console.log('[blog.js] Initializing blog functionality.');
         initBlog();
     }
+    
+    // Also check for auto-open on page load regardless of initialization
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkAutoOpen);
+    } else {
+        checkAutoOpen();
+    }
 } else {
-    console.log('[blog.js] Auto-initialization is disabled.');
+    console.log('[blog.js] Auto-initialization is disabled, but still checking for auto-open.');
+    // Still check for auto-open even if main init is disabled
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkAutoOpen);
+    } else {
+        checkAutoOpen();
+    }
+}
+
+// Separate function to handle auto-opening from highlights
+function checkAutoOpen() {
+    const autoOpenScrollId = sessionStorage.getItem('openScrollId');
+    if (autoOpenScrollId) {
+        console.log('[blog.js] Standalone auto-open check for:', autoOpenScrollId);
+        sessionStorage.removeItem('openScrollId');
+        
+        // Wait for all systems to be ready
+        const attemptAutoOpen = (attempts = 0) => {
+            console.log('[blog.js] Standalone auto-open attempt:', attempts + 1);
+            
+            if (!window.MLNFAvatars) {
+                console.log('[blog.js] MLNFAvatars not ready, retrying...');
+                if (attempts < 15) {
+                    setTimeout(() => attemptAutoOpen(attempts + 1), 300);
+                }
+                return;
+            }
+            
+            // Try to open modal directly
+            openBlogModal(autoOpenScrollId);
+        };
+        
+        setTimeout(() => attemptAutoOpen(), 1500);
+    }
 }
 
 // Debug function to find what's blocking clicks
