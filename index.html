@@ -588,8 +588,11 @@
                 // Add click handler to open specific scroll
                 highlightCard.addEventListener('click', function(e) {
                     e.preventDefault();
+                    console.log('[index.html] Scroll highlight clicked:', scroll._id, scroll.title);
                     // Store scroll ID for blog page to auto-open
                     sessionStorage.setItem('openScrollId', scroll._id);
+                    console.log('[index.html] Set sessionStorage openScrollId to:', scroll._id);
+                    console.log('[index.html] Navigating to blog page...');
                     window.location.href = 'pages/blog.html';
                 });
                 

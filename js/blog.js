@@ -302,44 +302,6 @@ function initBlog() {
     }
 
     fetchBlogPosts(1);
-    
-    // Check if we should auto-open a specific scroll from highlights
-    const autoOpenScrollId = sessionStorage.getItem('openScrollId');
-    if (autoOpenScrollId) {
-        console.log('[blog.js] Auto-opening scroll from highlights:', autoOpenScrollId);
-        sessionStorage.removeItem('openScrollId');
-        
-        // Wait for posts to load and MLNFAvatars to be ready, then try multiple times if needed
-        const attemptAutoOpen = (attempts = 0) => {
-            console.log('[blog.js] Auto-open attempt:', attempts + 1);
-            
-            if (!window.MLNFAvatars) {
-                console.log('[blog.js] MLNFAvatars not ready, retrying...');
-                if (attempts < 10) {
-                    setTimeout(() => attemptAutoOpen(attempts + 1), 500);
-                }
-                return;
-            }
-            
-            if (blogPosts[autoOpenScrollId] || Object.keys(blogPosts).length > 0) {
-                console.log('[blog.js] Posts loaded, opening modal for:', autoOpenScrollId);
-                openBlogModal(autoOpenScrollId);
-            } else if (attempts < 10) {
-                console.log('[blog.js] Posts not loaded yet, retrying in 500ms...');
-                setTimeout(() => attemptAutoOpen(attempts + 1), 500);
-            } else {
-                console.log('[blog.js] Failed to auto-open after 10 attempts, fetching post directly');
-                // Last resort: fetch the post directly
-                fetchBlogPost(autoOpenScrollId).then(post => {
-                    if (post) {
-                        openBlogModal(autoOpenScrollId);
-                    }
-                });
-            }
-        };
-        
-        setTimeout(() => attemptAutoOpen(), 1000);
-    }
 }
 
 // Create blog post (for compatibility with existing forms)
@@ -1028,27 +990,64 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
 // Separate function to handle auto-opening from highlights
 function checkAutoOpen() {
     const autoOpenScrollId = sessionStorage.getItem('openScrollId');
+    console.log('[blog.js] checkAutoOpen called, scrollId:', autoOpenScrollId);
+    console.log('[blog.js] Current URL pathname:', window.location.pathname);
+    console.log('[blog.js] sessionStorage openScrollId:', autoOpenScrollId);
+    
     if (autoOpenScrollId) {
-        console.log('[blog.js] Standalone auto-open check for:', autoOpenScrollId);
+        console.log('[blog.js] Found scroll ID to auto-open:', autoOpenScrollId);
         sessionStorage.removeItem('openScrollId');
         
         // Wait for all systems to be ready
         const attemptAutoOpen = (attempts = 0) => {
-            console.log('[blog.js] Standalone auto-open attempt:', attempts + 1);
+            console.log('[blog.js] Auto-open attempt:', attempts + 1);
+            console.log('[blog.js] MLNFAvatars available:', !!window.MLNFAvatars);
+            console.log('[blog.js] blogPosts keys:', Object.keys(blogPosts));
+            console.log('[blog.js] blogModal element:', !!document.getElementById('blogModal'));
             
             if (!window.MLNFAvatars) {
                 console.log('[blog.js] MLNFAvatars not ready, retrying...');
-                if (attempts < 15) {
-                    setTimeout(() => attemptAutoOpen(attempts + 1), 300);
+                if (attempts < 20) {
+                    setTimeout(() => attemptAutoOpen(attempts + 1), 500);
                 }
                 return;
             }
             
+            // Check if modal exists
+            const modal = document.getElementById('blogModal');
+            if (!modal) {
+                console.log('[blog.js] Blog modal not found in DOM!');
+                if (attempts < 20) {
+                    setTimeout(() => attemptAutoOpen(attempts + 1), 500);
+                }
+                return;
+            }
+            
+            console.log('[blog.js] All systems ready, attempting to open modal for:', autoOpenScrollId);
+            
             // Try to open modal directly
-            openBlogModal(autoOpenScrollId);
+            openBlogModal(autoOpenScrollId).then(() => {
+                console.log('[blog.js] Modal opened successfully');
+            }).catch(error => {
+                console.error('[blog.js] Error opening modal:', error);
+                // If openBlogModal doesn't return a promise, this won't work, but that's OK
+            });
+            
+            // Also try fetching the post if it's not cached
+            if (!blogPosts[autoOpenScrollId]) {
+                console.log('[blog.js] Post not in cache, fetching:', autoOpenScrollId);
+                fetchBlogPost(autoOpenScrollId).then(post => {
+                    if (post) {
+                        console.log('[blog.js] Post fetched, trying modal again');
+                        openBlogModal(autoOpenScrollId);
+                    }
+                });
+            }
         };
         
-        setTimeout(() => attemptAutoOpen(), 1500);
+        setTimeout(() => attemptAutoOpen(), 2000);
+    } else {
+        console.log('[blog.js] No scroll ID found in sessionStorage');
     }
 }
 
