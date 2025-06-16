@@ -302,6 +302,18 @@ function initBlog() {
     }
 
     fetchBlogPosts(1);
+    
+    // Check if we should auto-open a specific scroll from highlights
+    const autoOpenScrollId = sessionStorage.getItem('openScrollId');
+    if (autoOpenScrollId) {
+        console.log('[blog.js] Auto-opening scroll from highlights:', autoOpenScrollId);
+        sessionStorage.removeItem('openScrollId');
+        
+        // Wait a bit for posts to load before trying to open modal
+        setTimeout(() => {
+            openBlogModal(autoOpenScrollId);
+        }, 1000);
+    }
 }
 
 // Create blog post (for compatibility with existing forms)
