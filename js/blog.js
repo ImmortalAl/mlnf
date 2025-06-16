@@ -1,33 +1,3 @@
-// IMMEDIATE VISUAL INDICATOR - Show that blog.js is loading
-(function() {
-    const indicator = document.createElement('div');
-    indicator.style.cssText = `
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        background: red;
-        color: white;
-        padding: 10px;
-        border: 2px solid white;
-        z-index: 999999;
-        font-family: monospace;
-        font-weight: bold;
-    `;
-    indicator.textContent = '🔴 BLOG.JS LOADED';
-    document.documentElement.appendChild(indicator);
-    
-    setTimeout(() => {
-        indicator.style.background = 'green';
-        indicator.textContent = '🟢 BLOG.JS READY';
-        
-        // IMMEDIATE sessionStorage check
-        const scrollId = sessionStorage.getItem('openScrollId');
-        if (scrollId) {
-            indicator.textContent = `🎯 FOUND SCROLL: ${scrollId}`;
-            indicator.style.background = 'blue';
-        }
-    }, 1000);
-})();
 
 // Embedded jwt-decode
 function jwt_decode(token) {
@@ -1019,38 +989,8 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
     console.log('[blog.js] Auto-initialization is disabled for this page type.');
 }
 
-// Create visual debug panel
-function createDebugPanel() {
-    const debugPanel = document.createElement('div');
-    debugPanel.id = 'debugPanel';
-    debugPanel.style.cssText = `
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        width: 300px;
-        max-height: 400px;
-        background: rgba(0, 0, 0, 0.9);
-        color: #00ff00;
-        font-family: monospace;
-        font-size: 12px;
-        padding: 10px;
-        border: 2px solid #00ff00;
-        border-radius: 5px;
-        z-index: 999999;
-        overflow-y: auto;
-    `;
-    debugPanel.innerHTML = '<h4 style="margin: 0 0 10px 0; color: #ffff00;">🐛 Auto-Open Debug</h4><div id="debugLog"></div>';
-    document.body.appendChild(debugPanel);
-    return debugPanel;
-}
-
 function debugLog(message) {
     console.log(message);
-    const debugPanel = document.getElementById('debugPanel') || createDebugPanel();
-    const logDiv = debugPanel.querySelector('#debugLog');
-    const timestamp = new Date().toLocaleTimeString();
-    logDiv.innerHTML += `<div>${timestamp}: ${message}</div>`;
-    logDiv.scrollTop = logDiv.scrollHeight;
 }
 
 // Separate function to handle auto-opening from highlights
@@ -1097,21 +1037,7 @@ function checkAutoOpen() {
                 openBlogModal(autoOpenScrollId);
                 debugLog('Modal open call executed');
                 
-                // Check if modal is actually visible after a delay
-                setTimeout(() => {
-                    const modalVisible = modal.classList.contains('show');
-                    debugLog(`Modal visible after open: ${modalVisible}`);
-                    if (modalVisible) {
-                        debugLog('✅ SUCCESS: Modal is now visible!');
-                        // Hide debug panel after success
-                        setTimeout(() => {
-                            const panel = document.getElementById('debugPanel');
-                            if (panel) panel.style.display = 'none';
-                        }, 3000);
-                    } else {
-                        debugLog('❌ FAILED: Modal not visible');
-                    }
-                }, 500);
+                debugLog('Modal opened successfully');
                 
             } catch (error) {
                 debugLog(`Error opening modal: ${error.message}`);
@@ -1131,21 +1057,7 @@ function checkAutoOpen() {
         
         setTimeout(() => attemptAutoOpen(), 2000);
     } else {
-        debugLog('No scroll ID found in sessionStorage');
-        debugLog('Auto-open not needed - normal blog page load');
-        // Keep debug panel visible for a bit longer so user can see it worked
-        setTimeout(() => {
-            const panel = document.getElementById('debugPanel');
-            if (panel) {
-                panel.style.opacity = '0.5';
-                panel.querySelector('h4').textContent = '✅ Auto-open check complete';
-            }
-        }, 3000);
-        // Hide debug panel after showing completion
-        setTimeout(() => {
-            const panel = document.getElementById('debugPanel');
-            if (panel) panel.style.display = 'none';
-        }, 5000);
+        debugLog('No scroll ID found in sessionStorage - normal blog page load');
     }
 }
 
