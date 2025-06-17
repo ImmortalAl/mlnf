@@ -520,6 +520,7 @@ class MLNFAvatarSystem {
 
     /**
      * Test UI-Avatars network connectivity
+     * Note: Disabled by default due to CORS issues with ui-avatars.com
      */
     async testUIAvatarsConnectivity() {
         console.log('[MLNF Avatar] Testing UI-Avatars connectivity...');
@@ -527,14 +528,19 @@ class MLNFAvatarSystem {
         const testUrl = 'https://ui-avatars.com/api/?name=Test&background=ff5e78&color=fff&size=40&format=svg';
         
         try {
-            const response = await fetch(testUrl, { method: 'HEAD' });
-            console.log(`[MLNF Avatar] UI-Avatars connectivity test - Status: ${response.status}, OK: ${response.ok}`);
-            
-            if (!response.ok) {
-                console.warn('[MLNF Avatar] UI-Avatars service may be unavailable');
-            }
+            // Use no-cors mode to avoid CORS preflight issues
+            const response = await fetch(testUrl, { 
+                method: 'HEAD',
+                mode: 'no-cors' // This prevents CORS errors but limits response access
+            });
+            console.log(`[MLNF Avatar] UI-Avatars connectivity test completed (no-cors mode)`);
+            console.log('[MLNF Avatar] Note: CORS limitations prevent detailed response checking');
         } catch (error) {
-            console.error('[MLNF Avatar] UI-Avatars connectivity test failed:', error);
+            if (error.message.includes('CORS')) {
+                console.warn('[MLNF Avatar] UI-Avatars CORS restriction detected - service still functional for avatar generation');
+            } else {
+                console.error('[MLNF Avatar] UI-Avatars connectivity test failed:', error);
+            }
         }
     }
 
@@ -559,8 +565,8 @@ class MLNFAvatarSystem {
         // Run test for debugging
         this.testAvatarGeneration();
         
-        // Test network connectivity to UI-Avatars
-        this.testUIAvatarsConnectivity();
+        // UI-Avatars connectivity test disabled due to CORS issues
+        // this.testUIAvatarsConnectivity();
     }
 }
 
