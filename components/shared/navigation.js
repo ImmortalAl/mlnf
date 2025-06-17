@@ -125,6 +125,17 @@ function setupMobileNavEvents() {
             mobileNav.classList.add('active');
             mobileOverlay.classList.add('active');
             document.body.style.overflow = 'hidden'; // Prevent background scroll
+            
+            // Debug: Check overlay state after opening
+            setTimeout(() => {
+                console.log('[DEBUG] Overlay state after opening:', {
+                    hasActiveClass: mobileOverlay.classList.contains('active'),
+                    computedStyle: window.getComputedStyle(mobileOverlay),
+                    zIndex: window.getComputedStyle(mobileOverlay).zIndex,
+                    pointerEvents: window.getComputedStyle(mobileOverlay).pointerEvents,
+                    opacity: window.getComputedStyle(mobileOverlay).opacity
+                });
+            }, 100);
         });
 
         const closeMenu = () => {
@@ -141,13 +152,37 @@ function setupMobileNavEvents() {
 
         mobileOverlay.addEventListener('click', (e) => {
             console.log('[navigation.js] Overlay clicked - closing menu');
+            console.log('[DEBUG] Overlay click event:', e);
             closeMenu();
+        });
+        
+        // Debug: Add global click listener to see what's being clicked
+        document.addEventListener('click', (e) => {
+            if (mobileNav.classList.contains('active')) {
+                console.log('[DEBUG] Click detected while menu is open:', {
+                    target: e.target,
+                    targetId: e.target.id,
+                    targetClass: e.target.className,
+                    isOverlay: e.target === mobileOverlay,
+                    isInsideNav: mobileNav.contains(e.target),
+                    overlayActive: mobileOverlay.classList.contains('active')
+                });
+            }
         });
 
         // Close mobile nav if a link inside it is clicked - this will be called initially and after auth links update
         setupMobileNavLinkHandlers();
 
         console.log('[navigation.js] Mobile nav events attached successfully');
+        
+        // Debug: Test overlay click programmatically 
+        window.debugMobileOverlay = () => {
+            console.log('[DEBUG] Testing overlay click...');
+            console.log('[DEBUG] Overlay element:', mobileOverlay);
+            console.log('[DEBUG] Overlay rect:', mobileOverlay.getBoundingClientRect());
+            console.log('[DEBUG] Overlay styles:', window.getComputedStyle(mobileOverlay));
+            mobileOverlay.click();
+        };
     } else {
         console.warn('[navigation.js] One or more mobile navigation elements not found. Events not attached.');
         console.warn('[navigation.js] Missing elements:', {
