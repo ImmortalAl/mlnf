@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celestial Commons - MLNF Chat</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/utilities.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <style>
+        .chat-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .chat-embed {
+            width: 100%;
+            height: 600px;
+            border: 2px solid var(--accent);
+            border-radius: var(--border-radius);
+            background: var(--background-secondary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chat-info {
+            background: var(--background-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .chat-info h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .chat-info p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .chat-embed {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="../index.html">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation,</span>
+                        <span class="title-line-two">Naturally Free</span>
+                    </span>
+                    <span class="short-title">MLNF</span>
+                </div>
+            </a>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="../index.html"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                <li><a href="messageboard.html"><i class="fas fa-comments"></i> <span>Echoes Unbound</span></a></li>
+                <li><a href="blogs.html"><i class="fas fa-scroll"></i> <span>Soul Scrolls</span></a></li>
+                <li><a href="news.html"><i class="fas fa-newspaper"></i> <span>Chronicles</span></a></li>
+                <li><a href="mindmap.html"><i class="fas fa-project-diagram"></i> <span>Nexus</span></a></li>
+                <li><a href="celestial-commons.html" class="active"><i class="fas fa-star"></i> <span>Celestial Commons</span></a></li>
+            </ul>
+        </nav>
+        <div class="header-controls">
+            <div class="header-auth-buttons">
+                <a href="../lander.html" class="btn btn-outline">Enter</a>
+                <button class="btn btn-primary" id="headerSignupBtn">Join</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="chat-container">
+            <div class="section-title">
+                <h1 class="font-immortal-mystical">
+                    <i class="fas fa-star"></i> Celestial Commons
+                </h1>
+                <p>Where souls gather freely under infinite stars</p>
+            </div>
+            
+            <div class="chat-info">
+                <h3><i class="fas fa-info-circle"></i> Welcome to the Commons</h3>
+                <p><strong>Server:</strong> irc.libera.chat</p>
+                <p><strong>Channel:</strong> #mlnf</p>
+                <p><strong>Simple IRC chat</strong> - just pick a nickname and start chatting with fellow souls!</p>
+            </div>
+            
+            <iframe 
+                src="https://kiwiirc.com/nextclient/#irc://irc.libera.chat:+6697/#mlnf"
+                class="chat-embed"
+                title="MLNF Celestial Commons IRC Chat">
+            </iframe>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Eternal Links</h3>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="messageboard.html">Echoes Unbound</a></li>
+                    <li><a href="blogs.html">Soul Scrolls</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="guidelines.html">Guidelines</a></li>
+                    <li><a href="privacy.html">Privacy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Shared Components -->
+    <script src="../components/shared/config.js"></script>
+    <script src="../components/shared/navigation.js"></script>
+    <script src="../components/shared/userMenu.js"></script>
+    <script src="../components/shared/authModal.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html> 

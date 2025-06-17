@@ -15,6 +15,7 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
         { href: "/pages/blog.html", icon: "fas fa-scroll", text: "Soul Scrolls" },
         { href: "/pages/news.html", icon: "fas fa-newspaper", text: "Boundless Chronicles" },
         { href: "/pages/messageboard.html", icon: "fas fa-comments", text: "Echoes Unbound" },
+        { href: "/pages/celestial-commons.html", icon: "fas fa-star", text: "Celestial Commons" },
         { href: "/pages/debate.html", icon: "fas fa-gavel", text: "Clash of Immortals" },
         { href: "/pages/mindmap.html", icon: "fas fa-project-diagram", text: "Infinite Nexus" },
         { href: "/pages/archive.html", icon: "fas fa-vault", text: "Timeless Vault" }
