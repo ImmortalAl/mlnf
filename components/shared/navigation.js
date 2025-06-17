@@ -116,21 +116,40 @@ function setupMobileNavEvents() {
     const closeMobileNav = document.getElementById('closeMobileNav');
     const mobileOverlay = document.getElementById('mobileOverlay');
 
+    console.log('[navigation.js] Setting up mobile nav events...');
+    console.log('[navigation.js] Elements found:', {
+        mobileNavToggle: !!mobileNavToggle,
+        mobileNav: !!mobileNav,
+        closeMobileNav: !!closeMobileNav,
+        mobileOverlay: !!mobileOverlay
+    });
+
     if (mobileNavToggle && mobileNav && closeMobileNav && mobileOverlay) {
+        console.log('[navigation.js] All mobile nav elements found, attaching events...');
+        
         mobileNavToggle.addEventListener('click', () => {
+            console.log('[navigation.js] Mobile nav toggle clicked, opening menu...');
             mobileNav.classList.add('active');
             mobileOverlay.classList.add('active');
             document.body.style.overflow = 'hidden'; // Prevent background scroll
         });
 
         const closeMenu = () => {
+            console.log('[navigation.js] Closing mobile menu...');
             mobileNav.classList.remove('active');
             mobileOverlay.classList.remove('active');
             document.body.style.overflow = ''; // Restore background scroll
         };
 
-        closeMobileNav.addEventListener('click', closeMenu);
-        mobileOverlay.addEventListener('click', closeMenu);
+        closeMobileNav.addEventListener('click', (e) => {
+            console.log('[navigation.js] Close button clicked');
+            closeMenu();
+        });
+
+        mobileOverlay.addEventListener('click', (e) => {
+            console.log('[navigation.js] Overlay clicked - closing menu');
+            closeMenu();
+        });
 
         // Close mobile nav if a link inside it is clicked
         const mobileNavLinks = mobileNav.querySelectorAll('a');
@@ -139,13 +158,21 @@ function setupMobileNavEvents() {
                 // Only close if it's a navigation link, not a control like logout
                 // This check might need refinement based on actual link IDs/classes
                 if (!link.id || (!link.id.includes('Logout') && !link.id.includes('Login') && !link.id.includes('Register'))) {
+                    console.log('[navigation.js] Navigation link clicked, closing menu');
                     closeMenu();
                 }
             });
         });
 
+        console.log('[navigation.js] Mobile nav events attached successfully');
     } else {
-        console.warn('One or more mobile navigation elements not found. Events not attached.');
+        console.warn('[navigation.js] One or more mobile navigation elements not found. Events not attached.');
+        console.warn('[navigation.js] Missing elements:', {
+            mobileNavToggle: !mobileNavToggle ? 'MISSING' : 'found',
+            mobileNav: !mobileNav ? 'MISSING' : 'found', 
+            closeMobileNav: !closeMobileNav ? 'MISSING' : 'found',
+            mobileOverlay: !mobileOverlay ? 'MISSING' : 'found'
+        });
     }
 }
 
