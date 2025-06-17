@@ -15,6 +15,8 @@
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" href="../favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Immortal-themed fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Caesar+Dressing&family=Metal+Mania&family=Griffy&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/base-theme.css">
     <link rel="stylesheet" href="../css/styles.css?v=1.4">
     <link rel="stylesheet" href="../components/shared/styles.css?v=1.6">
@@ -133,6 +135,8 @@
 
     <!-- Config MUST be loaded first -->
     <script src="../components/shared/config.js?v=1.2"></script> <!-- Cache bust -->
+    <!-- Load MLNF Avatar System before main script -->
+    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
 
     <script>
         // API constants are now in config.js, accessed via window.MLNF_CONFIG
@@ -328,6 +332,17 @@
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for MLNF Avatar System to be ready
+            let attempts = 0;
+            while (!window.MLNFAvatars && attempts < 10) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+            
+            if (!window.MLNFAvatars) {
+                console.warn('MLNF Avatar System failed to load, profile cards may not display properly');
+            }
+            
             await fetchProfiles();
             
             // Store all profiles for searching
@@ -364,6 +379,6 @@
     <script src="../components/shared/authModal.js?v=1.2"></script> 
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
-    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
+    <!-- MLNF Avatar System now loaded earlier to prevent race condition -->
 </body>
 </html> 
