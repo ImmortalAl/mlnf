@@ -292,19 +292,11 @@
                     
                     if (!response.ok) throw new Error(`Failed to fetch profiles: ${response.status}`);
                     
-                    const responseData = await response.json();
+                    profiles = await response.json();
                     
-                    if (Array.isArray(responseData)) profiles = responseData;
-                    else if (responseData && typeof responseData === 'object') {
-                        if (Array.isArray(responseData.users)) profiles = responseData.users;
-                        else if (responseData.data && Array.isArray(responseData.data)) profiles = responseData.data;
-                        else {
-                            const possibleProfiles = Object.values(responseData).filter(item => 
-                                item && typeof item === 'object' && (item.username || item.displayName));
-                            if (possibleProfiles.length > 0) profiles = possibleProfiles;
-                            else throw new Error('Unexpected API response format');
-                        }
-                    } else throw new Error('Invalid API response');
+                    if (!Array.isArray(profiles)) {
+                        throw new Error('API did not return an array of profiles');
+                    }
                     
                     localStorage.setItem('mlnf_profiles', JSON.stringify(profiles));
                     localStorage.setItem('mlnf_profiles_timestamp', Date.now().toString());
