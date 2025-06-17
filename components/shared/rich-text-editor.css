@@ -1,0 +1,198 @@
+/* MLNF Shared Rich Text Editor Styles */
+/* Mystical theme for Quill.js editor */
+
+.mlnf-rich-editor-container {
+    margin: 1rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.2),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.mlnf-rich-editor-container:hover {
+    box-shadow: 
+        0 12px 40px rgba(255, 94, 120, 0.25),
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(240, 230, 255, 0.15);
+}
+
+/* Quill Toolbar Styling */
+.mlnf-rich-editor-container .ql-toolbar {
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(42, 64, 102, 0.9) 100%) !important;
+    border: 2px solid rgba(255, 94, 120, 0.3) !important;
+    border-bottom: 1px solid rgba(255, 94, 120, 0.2) !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 94, 120, 0.4) 25%,
+        rgba(255, 202, 40, 0.3) 50%,
+        rgba(255, 94, 120, 0.4) 75%,
+        transparent 100%);
+    border-radius: 12px 12px 0 0;
+}
+
+/* Quill Container Styling */
+.mlnf-rich-editor-container .ql-container {
+    background: linear-gradient(135deg, 
+        rgba(13, 13, 26, 0.95) 0%, 
+        rgba(26, 26, 51, 0.9) 100%) !important;
+    border: 2px solid rgba(255, 94, 120, 0.3) !important;
+    border-top: none !important;
+    border-radius: 0 0 12px 12px !important;
+    font-family: 'Segoe UI', system-ui, sans-serif !important;
+}
+
+/* Quill Editor Content Area */
+.mlnf-rich-editor-container .ql-editor {
+    color: var(--text) !important;
+    min-height: 150px !important;
+    padding: 1.5rem !important;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+.mlnf-rich-editor-container .ql-editor.ql-blank::before {
+    color: var(--text-secondary) !important;
+    opacity: 0.7 !important;
+    font-style: italic !important;
+}
+
+/* Toolbar Button Styling */
+.mlnf-rich-editor-container .ql-toolbar button {
+    color: var(--text-secondary) !important;
+    transition: all 0.2s ease !important;
+    border-radius: 4px !important;
+    padding: 0.25rem !important;
+    margin: 0 0.1rem !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar button:hover {
+    color: var(--accent) !important;
+    background: rgba(255, 94, 120, 0.1) !important;
+    text-shadow: 0 0 8px rgba(255, 94, 120, 0.4) !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar button.ql-active {
+    color: var(--accent) !important;
+    background: rgba(255, 94, 120, 0.2) !important;
+    text-shadow: 0 0 10px rgba(255, 94, 120, 0.5) !important;
+}
+
+/* Picker (Dropdown) Styling */
+.mlnf-rich-editor-container .ql-toolbar .ql-picker {
+    color: var(--text-secondary) !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar .ql-picker-label {
+    color: var(--text-secondary) !important;
+    transition: all 0.2s ease !important;
+    border-radius: 4px !important;
+    padding: 0.25rem 0.5rem !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar .ql-picker-label:hover {
+    color: var(--accent) !important;
+    background: rgba(255, 94, 120, 0.1) !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar .ql-picker.ql-expanded .ql-picker-label {
+    color: var(--accent) !important;
+    background: rgba(255, 94, 120, 0.2) !important;
+}
+
+/* Picker Options Styling */
+.mlnf-rich-editor-container .ql-picker-options {
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.98) 0%, 
+        rgba(42, 64, 102, 0.95) 100%) !important;
+    border: 2px solid rgba(255, 94, 120, 0.4) !important;
+    border-radius: 8px !important;
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.mlnf-rich-editor-container .ql-picker-item {
+    color: var(--text-secondary) !important;
+    transition: all 0.2s ease !important;
+    padding: 0.5rem 0.75rem !important;
+}
+
+.mlnf-rich-editor-container .ql-picker-item:hover {
+    color: var(--accent) !important;
+    background: rgba(255, 94, 120, 0.1) !important;
+}
+
+/* Stroke and SVG Icon Colors */
+.mlnf-rich-editor-container .ql-toolbar button svg,
+.mlnf-rich-editor-container .ql-toolbar .ql-picker-label svg {
+    stroke: var(--text-secondary) !important;
+    fill: var(--text-secondary) !important;
+    transition: all 0.2s ease !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar button:hover svg,
+.mlnf-rich-editor-container .ql-toolbar .ql-picker-label:hover svg {
+    stroke: var(--accent) !important;
+    fill: var(--accent) !important;
+    filter: drop-shadow(0 0 4px rgba(255, 94, 120, 0.4)) !important;
+}
+
+.mlnf-rich-editor-container .ql-toolbar button.ql-active svg {
+    stroke: var(--accent) !important;
+    fill: var(--accent) !important;
+    filter: drop-shadow(0 0 6px rgba(255, 94, 120, 0.5)) !important;
+}
+
+/* Focus State */
+.mlnf-rich-editor-container .ql-container.ql-focused {
+    border-color: rgba(255, 94, 120, 0.5) !important;
+    box-shadow: 
+        0 0 0 3px rgba(255, 94, 120, 0.2),
+        0 8px 32px rgba(255, 94, 120, 0.3),
+        inset 0 1px 0 rgba(240, 230, 255, 0.15) !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .mlnf-rich-editor-container .ql-toolbar {
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    .mlnf-rich-editor-container .ql-editor {
+        min-height: 120px !important;
+        padding: 1rem !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .mlnf-rich-editor-container .ql-toolbar button {
+        padding: 0.2rem !important;
+        margin: 0.05rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .mlnf-rich-editor-container .ql-editor {
+        min-height: 100px !important;
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+}

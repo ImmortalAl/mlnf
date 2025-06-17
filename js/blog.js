@@ -804,56 +804,80 @@ async function editPost(postId) {
     const originalTitle = modalTitle.textContent;
     const originalContent = modalContent.innerHTML;
 
-    // Create edit form
+    // Create edit form with rich text editor
     modalTitle.innerHTML = `
         <input type="text" id="edit-title" value="${post.title}" 
-               style="width: 100%; background: transparent; border: 2px solid var(--gold); 
-                      border-radius: 8px; padding: 0.75rem; font-family: 'Cinzel', serif; 
+               style="width: 100%; background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(42, 64, 102, 0.9)); 
+                      border: 2px solid rgba(255, 94, 120, 0.4); border-radius: 12px; 
+                      padding: 1rem; font-family: 'Cinzel', serif; 
                       font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 700; 
-                      color: var(--ink); text-align: center;">
+                      color: var(--text); text-align: center; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">
     `;
 
     modalContent.innerHTML = `
-        <div style="margin-bottom: 1rem;">
-            <textarea id="edit-content" style="width: 100%; min-height: 300px; 
-                      background: rgba(255, 255, 255, 0.9); border: 2px solid var(--gold); 
-                      border-radius: 12px; padding: 1.5rem; font-family: 'Montserrat', sans-serif; 
-                      font-size: 1.1rem; line-height: 1.6; color: var(--ink); resize: vertical;">${post.content}</textarea>
+        <div style="margin-bottom: 2rem;">
+            <div id="edit-content-container"></div>
         </div>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <button onclick="savePostEdit('${postId}')" 
-                    style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); 
-                           color: white; border: none; padding: 0.75rem 1.5rem; 
-                           border-radius: 25px; cursor: pointer; font-weight: 600; 
-                           min-height: 44px; transition: var(--transition-smooth);">
+        <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+            <button id="save-edit-btn"
+                    style="background: linear-gradient(135deg, rgba(255, 94, 120, 0.9), rgba(255, 202, 40, 0.8)); 
+                           color: var(--primary); border: 2px solid rgba(255, 94, 120, 0.4); 
+                           padding: 0.9rem 2rem; border-radius: 30px; cursor: pointer; 
+                           font-weight: 700; font-family: 'Cinzel', serif; font-size: 1rem;
+                           min-height: 50px; transition: var(--transition-smooth);
+                           text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                           box-shadow: 0 6px 20px rgba(255, 94, 120, 0.4), 0 3px 10px rgba(0, 0, 0, 0.3);">
                 ✅ Save Changes
             </button>
-            <button onclick="cancelPostEdit('${postId}', \`${originalTitle.replace(/`/g, '\\`')}\`, \`${originalContent.replace(/`/g, '\\`')}\`)" 
-                    style="background: transparent; color: var(--ink-light); 
-                           border: 2px solid var(--aged-border); padding: 0.75rem 1.5rem; 
-                           border-radius: 25px; cursor: pointer; font-weight: 600; 
-                           min-height: 44px; transition: var(--transition-smooth);">
+            <button id="cancel-edit-btn"
+                    style="background: linear-gradient(135deg, rgba(26, 26, 51, 0.9), rgba(42, 64, 102, 0.8)); 
+                           color: var(--accent); border: 2px solid var(--accent); 
+                           padding: 0.75rem 1.75rem; border-radius: 30px; cursor: pointer; 
+                           font-weight: 600; font-family: 'Cinzel', serif; font-size: 0.95rem;
+                           min-height: 46px; transition: var(--transition-smooth);
+                           text-shadow: 0 0 8px rgba(255, 94, 120, 0.3);
+                           box-shadow: 0 4px 16px rgba(255, 94, 120, 0.2), 0 2px 8px rgba(0, 0, 0, 0.3);">
                 ❌ Cancel
             </button>
         </div>
     `;
+
+    // Initialize rich text editor with post content
+    window.currentEditEditor = new MLNFRichTextEditor('edit-content-container', {
+        placeholder: 'Edit your eternal thoughts...',
+        theme: 'snow'
+    });
+    
+    // Set the content after editor is initialized
+    setTimeout(() => {
+        if (window.currentEditEditor) {
+            window.currentEditEditor.setContent(post.content);
+            window.currentEditEditor.focus();
+        }
+    }, 100);
+
+    // Add event listeners for buttons (replacing inline onclick)
+    document.getElementById('save-edit-btn').addEventListener('click', () => savePostEdit(postId));
+    document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+        cancelPostEdit(postId, originalTitle, originalContent);
+    });
 }
 
 // Save post edit
 async function savePostEdit(postId) {
     const token = localStorage.getItem('sessionToken');
     const titleInput = document.getElementById('edit-title');
-    const contentInput = document.getElementById('edit-content');
     
-    if (!titleInput || !contentInput) {
+    if (!titleInput || !window.currentEditEditor) {
         console.error('[blog.js] Edit form elements not found');
         return;
     }
     
     const newTitle = titleInput.value.trim();
-    const newContent = contentInput.value.trim();
+    const newContent = window.currentEditEditor.getContent().trim();
+    const textContent = window.currentEditEditor.getText().trim();
     
-    if (!newTitle || !newContent) {
+    if (!newTitle || !textContent) {
         alert('Title and content are required');
         return;
     }
@@ -891,6 +915,12 @@ async function savePostEdit(postId) {
             if (contentElement) contentElement.innerHTML = createExcerpt(updatedPost.content);
         }
         
+        // Clean up rich text editor
+        if (window.currentEditEditor) {
+            window.currentEditEditor.destroy();
+            window.currentEditEditor = null;
+        }
+        
         alert('Scroll updated successfully!');
         
     } catch (error) {
@@ -901,6 +931,13 @@ async function savePostEdit(postId) {
 
 // Cancel post edit
 function cancelPostEdit(postId, originalTitle, originalContent) {
+    // Clean up rich text editor
+    if (window.currentEditEditor) {
+        window.currentEditEditor.destroy();
+        window.currentEditEditor = null;
+    }
+    
+    // Restore original content
     document.getElementById('modal-title').textContent = originalTitle;
     document.getElementById('modal-content').innerHTML = originalContent;
 }
