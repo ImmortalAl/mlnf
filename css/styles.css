@@ -2092,3 +2092,464 @@ nav a {
     pointer-events: auto;
     opacity: 1;
 }
+
+/* Eternal Souls Highlight Section - Greek Agora Theme */
+.eternal-souls-agora {
+    background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(42, 64, 102, 0.9));
+    border-radius: var(--border-radius-lg);
+    padding: 3rem 2rem;
+    margin: 3rem 0;
+    border: 2px solid rgba(255, 94, 120, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.eternal-souls-agora::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 94, 120, 0.05) 0%, transparent 50%, rgba(255, 202, 40, 0.05) 100%);
+    pointer-events: none;
+}
+
+.agora-subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.agora-subtitle i {
+    color: var(--accent);
+}
+
+.souls-highlight-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin: 2rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.soul-highlight-card {
+    background: var(--background-secondary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    border: 2px solid rgba(255, 94, 120, 0.2);
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.soul-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 94, 120, 0.05) 50%, transparent 100%);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.soul-highlight-card:hover::before {
+    opacity: 1;
+}
+
+.soul-highlight-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 15px 35px rgba(255, 94, 120, 0.2);
+}
+
+.soul-card-founder {
+    background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 202, 40, 0.1));
+    border-color: var(--accent);
+}
+
+.soul-card-featured {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(96, 165, 250, 0.1));
+    border-color: #4ade80;
+}
+
+.soul-card-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gradient-accent);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(255, 94, 120, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.soul-card-featured .soul-card-badge {
+    background: linear-gradient(135deg, #4ade80, #60a5fa);
+}
+
+.soul-card-content {
+    margin-top: 1rem;
+}
+
+.soul-display-container {
+    margin: 1.5rem 0;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-soul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.soul-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 94, 120, 0.3);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.soul-card-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.soul-message-btn, .soul-profile-btn {
+    background: var(--gradient-accent);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.soul-profile-btn {
+    background: linear-gradient(135deg, rgba(26, 26, 51, 0.9), rgba(42, 64, 102, 0.8));
+    border: 2px solid var(--accent);
+}
+
+.soul-message-btn:hover, .soul-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 94, 120, 0.4);
+}
+
+.soul-card-featured .soul-message-btn {
+    background: linear-gradient(135deg, #4ade80, #60a5fa);
+}
+
+.soul-card-featured .soul-message-btn:hover {
+    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+}
+
+/* Agora Preview Section */
+.agora-preview {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid rgba(255, 94, 120, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.agora-info {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.agora-info i {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.agora-info p {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.agora-info small {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Soul Highlight Avatar Customization */
+.soul-highlight-card .mlnf-user-display {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.soul-highlight-card .mlnf-user-display--lg {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+}
+
+.soul-highlight-card .mlnf-avatar--xl {
+    border: 3px solid rgba(255, 94, 120, 0.3);
+    transition: var(--transition);
+}
+
+.soul-highlight-card:hover .mlnf-avatar--xl {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(255, 94, 120, 0.3);
+}
+
+.soul-highlight-card .mlnf-username--mystical {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.soul-highlight-card .mlnf-user-title {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+
+.soul-highlight-card .mlnf-user-status {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .eternal-souls-agora {
+        padding: 2rem 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .souls-highlight-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .soul-highlight-card {
+        padding: 1.5rem;
+    }
+    
+    .soul-card-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .soul-message-btn, .soul-profile-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem 1rem;
+    }
+    
+    .agora-subtitle {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .eternal-souls-agora {
+        padding: 1.5rem 1rem;
+    }
+    
+    .soul-card-badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .soul-highlight-card .mlnf-username--mystical {
+        font-size: 1.1rem;
+    }
+    
+    .agora-info p {
+        font-size: 1rem;
+    }
+}
+
+/* Anonymous Message Modal Styling */
+.anonymous-message-modal {
+    max-width: 500px;
+}
+
+.anonymous-message-modal h3 {
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.recipient-info {
+    background: var(--background-tertiary);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent);
+}
+
+.recipient-info p {
+    margin: 0;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.anonymous-message-modal .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.anonymous-message-modal label {
+    display: block;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.anonymous-message-modal input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--background-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.anonymous-message-modal input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 94, 120, 0.3);
+}
+
+.anonymous-message-modal textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    background: var(--background-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: var(--transition);
+}
+
+.anonymous-message-modal textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 94, 120, 0.3);
+}
+
+.anonymous-message-modal small {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+/* Error/Loading States for Soul Cards */
+.error-soul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+    padding: 2rem;
+}
+
+.error-soul i {
+    font-size: 2rem;
+    color: var(--accent);
+    opacity: 0.7;
+}
+
+/* Enhanced Greek Theming */
+.eternal-souls-agora::after {
+    content: '⚱️';
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.agora-preview::before {
+    content: '🏛️';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.4;
+}
+
+/* Enhanced Mobile Experience */
+@media (max-width: 480px) {
+    .anonymous-message-modal {
+        max-width: 95vw;
+        width: 95vw;
+        padding: 1.5rem 1rem;
+        margin: 1rem;
+    }
+    
+    .anonymous-message-modal h3 {
+        font-size: 1.2rem;
+    }
+    
+    .recipient-info {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .anonymous-message-modal input[type="text"],
+    .anonymous-message-modal textarea {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    
+    .anonymous-message-modal textarea {
+        min-height: 100px;
+    }
+}

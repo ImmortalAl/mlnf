@@ -196,21 +196,67 @@
             </div>
         </section>
 
-        <section class="highlights" id="profiles" aria-labelledby="profilesHeading">
+        <section class="highlights eternal-souls-agora" id="profiles" aria-labelledby="profilesHeading">
             <div class="section-title">
-                <h2 id="profilesHeading">Eternal Souls</h2>
-                <p>Connect with the Unbound</p>
+                <h2 id="profilesHeading" class="font-immortal-mystical">
+                    <i class="fas fa-crown"></i> Eternal Souls Highlight
+                </h2>
+                <p class="agora-subtitle">
+                    <i class="fas fa-temple-zeus"></i> Connect with our community pillars in the spirit of the ancient agora
+                </p>
             </div>
-            <div class="highlight-grid">
-                <div class="highlight-item">
-                    <h4>ImmortalAl</h4>
-                    <p>Founder of MLNF, seeker of unshackled truth.</p>
+            
+            <div class="souls-highlight-container">
+                <!-- ImmortalAl Featured Card -->
+                <div class="soul-highlight-card soul-card-founder">
+                    <div class="soul-card-badge">
+                        <i class="fas fa-infinity"></i> Community Founder
+                    </div>
+                    <div class="soul-card-content">
+                        <div id="founder-soul-display" class="soul-display-container">
+                            <!-- MLNF Avatar System will populate this -->
+                        </div>
+                        <div class="soul-card-actions">
+                            <button class="soul-message-btn" onclick="openFounderMessage()" aria-label="Send message to ImmortalAl">
+                                <i class="fas fa-envelope"></i> Message Founder
+                            </button>
+                            <a href="/souls/ImmortalAl.html" class="soul-profile-btn" aria-label="View ImmortalAl's profile">
+                                <i class="fas fa-user"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="highlight-item">
-                    <h4>FreeSoul</h4>
-                    <p>Advocate for timeless liberty and defiance.</p>
+
+                <!-- Featured Community Soul -->
+                <div class="soul-highlight-card soul-card-featured">
+                    <div class="soul-card-badge">
+                        <i class="fas fa-star"></i> Featured Soul
+                    </div>
+                    <div class="soul-card-content">
+                        <div id="featured-soul-display" class="soul-display-container">
+                            <div class="loading-soul">
+                                <div class="soul-loading-spinner"></div>
+                                <p>Summoning featured soul...</p>
+                            </div>
+                        </div>
+                        <div class="soul-card-actions" id="featured-soul-actions" style="display: none;">
+                            <button class="soul-message-btn" onclick="openFeaturedSoulMessage()" aria-label="Send message to featured soul">
+                                <i class="fas fa-heart-handshake"></i> Send Message
+                            </button>
+                            <a href="#" id="featured-soul-profile-link" class="soul-profile-btn" aria-label="View featured soul's profile">
+                                <i class="fas fa-user"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <a href="/souls" class="btn btn-primary">Meet More Souls</a>
+            </div>
+            
+            <div class="agora-preview">
+                <div class="agora-info">
+                    <i class="fas fa-temple-zeus"></i>
+                    <p>Future home of the <strong>Anonymous Agora</strong> - where free speech meets eternal wisdom</p>
+                    <small>Coming soon: A public forum inspired by ancient Greek democracy</small>
+                </div>
             </div>
         </section>
 

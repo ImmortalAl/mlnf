@@ -272,4 +272,374 @@ document.addEventListener('DOMContentLoaded', () => {
             window.feedbackSystem = new FeedbackSystem();
         }
     }, 500);
+    
+    // Initialize Eternal Souls Highlight system
+    setTimeout(() => {
+        if (window.MLNFAvatars) {
+            window.eternalSoulsHighlight = new EternalSoulsHighlight();
+        } else {
+            // Wait for Avatar System to load
+            const checkAvatarSystem = setInterval(() => {
+                if (window.MLNFAvatars) {
+                    clearInterval(checkAvatarSystem);
+                    window.eternalSoulsHighlight = new EternalSoulsHighlight();
+                }
+            }, 500);
+        }
+    }, 1000);
 });
+
+// Eternal Souls Highlight System
+class EternalSoulsHighlight {
+    constructor() {
+        this.featuredSoulData = null;
+        this.init();
+    }
+
+    async init() {
+        console.log('[EternalSouls] Initializing highlight system...');
+        await this.populateFounderCard();
+        await this.populateFeaturedSoul();
+    }
+
+    async populateFounderCard() {
+        const founderDisplay = document.getElementById('founder-soul-display');
+        if (!founderDisplay || !window.MLNFAvatars) {
+            console.warn('[EternalSouls] Founder display or Avatar System not available');
+            return;
+        }
+
+        try {
+            // Fetch ImmortalAl's profile data
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/ImmortalAl`);
+            let founderData = {
+                username: 'ImmortalAl',
+                displayName: 'ImmortalAl',
+                title: 'Community Founder',
+                status: 'Manifesting Liberation, Naturally Free',
+                online: true,
+                avatar: null,
+                isVIP: true,
+                role: 'admin'
+            };
+
+            if (response.ok) {
+                const profileData = await response.json();
+                founderData = {
+                    ...founderData,
+                    displayName: profileData.displayName || 'ImmortalAl',
+                    status: profileData.status || 'Manifesting Liberation, Naturally Free',
+                    online: profileData.online !== undefined ? profileData.online : true,
+                    avatar: profileData.avatar
+                };
+            }
+
+            // Create founder display using MLNF Avatar System
+            const founderUserDisplay = window.MLNFAvatars.createUserDisplay({
+                username: founderData.username,
+                title: founderData.title,
+                status: founderData.status,
+                avatarSize: 'xl',
+                displaySize: 'lg',
+                mystical: true,
+                online: founderData.online,
+                customAvatar: founderData.avatar,
+                usernameStyle: 'mystical',
+                clickable: false // Disable click since we have dedicated buttons
+            });
+
+            founderDisplay.innerHTML = '';
+            founderDisplay.appendChild(founderUserDisplay);
+
+            console.log('[EternalSouls] Founder card populated successfully');
+
+        } catch (error) {
+            console.error('[EternalSouls] Error populating founder card:', error);
+            founderDisplay.innerHTML = `
+                <div class="error-soul">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Unable to summon founder data</p>
+                </div>
+            `;
+        }
+    }
+
+    async populateFeaturedSoul() {
+        const featuredDisplay = document.getElementById('featured-soul-display');
+        const featuredActions = document.getElementById('featured-soul-actions');
+        const featuredProfileLink = document.getElementById('featured-soul-profile-link');
+
+        if (!featuredDisplay || !window.MLNFAvatars) {
+            console.warn('[EternalSouls] Featured display or Avatar System not available');
+            return;
+        }
+
+        try {
+            // Fetch users and select first one (or based on criteria)
+            const token = localStorage.getItem('sessionToken');
+            const headers = token ? 
+                { 'Authorization': `Bearer ${token}` } : 
+                {};
+
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users?limit=5`, {
+                headers: headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch users: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            let users = [];
+
+            // Handle different response structures
+            if (Array.isArray(responseData)) {
+                users = responseData;
+            } else if (responseData.users && Array.isArray(responseData.users)) {
+                users = responseData.users;
+            } else if (responseData.data && Array.isArray(responseData.data)) {
+                users = responseData.data;
+            }
+
+            // Filter out ImmortalAl and select first available user
+            const availableUsers = users.filter(user => 
+                user.username && user.username.toLowerCase() !== 'immortalal'
+            );
+
+            if (availableUsers.length === 0) {
+                throw new Error('No featured souls available');
+            }
+
+            // Select first user as featured soul
+            this.featuredSoulData = availableUsers[0];
+            const featuredSoul = this.featuredSoulData;
+
+            // Create featured soul display
+            const featuredUserDisplay = window.MLNFAvatars.createUserDisplay({
+                username: featuredSoul.username,
+                title: 'Featured Community Soul',
+                status: featuredSoul.status || 'Wandering the eternal realms...',
+                avatarSize: 'xl',
+                displaySize: 'lg',
+                mystical: featuredSoul.isVIP || featuredSoul.role === 'admin',
+                online: featuredSoul.online,
+                customAvatar: featuredSoul.avatar,
+                usernameStyle: 'immortal',
+                clickable: false // Disable click since we have dedicated buttons
+            });
+
+            // Update display
+            featuredDisplay.innerHTML = '';
+            featuredDisplay.appendChild(featuredUserDisplay);
+
+            // Update profile link
+            if (featuredProfileLink) {
+                featuredProfileLink.href = `/souls/${featuredSoul.username}.html`;
+                featuredProfileLink.setAttribute('aria-label', `View ${featuredSoul.username}'s profile`);
+            }
+
+            // Show actions
+            if (featuredActions) {
+                featuredActions.style.display = 'flex';
+            }
+
+            console.log('[EternalSouls] Featured soul populated:', featuredSoul.username);
+
+        } catch (error) {
+            console.error('[EternalSouls] Error populating featured soul:', error);
+            featuredDisplay.innerHTML = `
+                <div class="error-soul">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Unable to summon featured soul</p>
+                </div>
+            `;
+        }
+    }
+}
+
+// Anonymous Messaging for Soul Highlights
+function openFounderMessage() {
+    console.log('[EternalSouls] Opening founder message modal');
+    openAnonymousMessage('ImmortalAl', 'Community Founder');
+}
+
+function openFeaturedSoulMessage() {
+    if (!window.eternalSoulsHighlight?.featuredSoulData) {
+        console.warn('[EternalSouls] No featured soul data available');
+        return;
+    }
+    
+    const featured = window.eternalSoulsHighlight.featuredSoulData;
+    console.log('[EternalSouls] Opening featured soul message modal for:', featured.username);
+    openAnonymousMessage(featured.username, 'Featured Soul');
+}
+
+function openAnonymousMessage(recipientUsername, recipientTitle) {
+    // Check if we have the feedback modal system to extend
+    if (!window.feedbackSystem) {
+        console.warn('[EternalSouls] Feedback system not available, using fallback');
+        // Fallback to simple prompt
+        const message = prompt(`Send an anonymous message to ${recipientUsername}:`);
+        if (message && message.trim()) {
+            sendAnonymousMessage(recipientUsername, message.trim());
+        }
+        return;
+    }
+
+    // Create enhanced anonymous message modal
+    createAnonymousMessageModal(recipientUsername, recipientTitle);
+}
+
+function createAnonymousMessageModal(recipientUsername, recipientTitle) {
+    // Remove existing modal if present
+    const existingModal = document.getElementById('anonymousMessageModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Create new modal
+    const modal = document.createElement('div');
+    modal.id = 'anonymousMessageModal';
+    modal.className = 'modal';
+    modal.setAttribute('aria-hidden', 'true');
+
+    modal.innerHTML = `
+        <form id="anonymousMessageForm" class="feedback-modal anonymous-message-modal">
+            <button type="button" class="close-modal" onclick="closeAnonymousMessageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h3>
+                <i class="fas fa-mask"></i> Anonymous Message
+            </h3>
+            
+            <div class="recipient-info">
+                <p>Sending to: <strong>${recipientUsername}</strong> (${recipientTitle})</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="senderName">Your Name (Optional):</label>
+                <input type="text" id="senderName" placeholder="Anonymous Soul" maxlength="50">
+                <small>Leave blank to remain completely anonymous</small>
+            </div>
+            
+            <div class="form-group">
+                <textarea id="anonymousMessageContent" 
+                         placeholder="Share your thoughts with this eternal soul..." 
+                         maxlength="1000" required></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="submit" id="sendAnonymousMessage" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+                <button type="button" onclick="closeAnonymousMessageModal()" class="btn btn-outline">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Show modal
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    // Focus on textarea
+    setTimeout(() => {
+        document.getElementById('anonymousMessageContent').focus();
+    }, 100);
+
+    // Handle form submission
+    document.getElementById('anonymousMessageForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const senderName = document.getElementById('senderName').value.trim() || 'Anonymous Soul';
+        const content = document.getElementById('anonymousMessageContent').value.trim();
+        
+        if (!content) {
+            alert('Please enter a message');
+            return;
+        }
+
+        await sendAnonymousMessage(recipientUsername, content, senderName);
+    });
+
+    // Handle backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeAnonymousMessageModal();
+        }
+    });
+
+    // Handle escape key
+    document.addEventListener('keydown', function handleEscape(e) {
+        if (e.key === 'Escape') {
+            closeAnonymousMessageModal();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    });
+}
+
+function closeAnonymousMessageModal() {
+    const modal = document.getElementById('anonymousMessageModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        modal.remove();
+    }
+}
+
+async function sendAnonymousMessage(recipientUsername, content, senderName = 'Anonymous Soul') {
+    const submitBtn = document.getElementById('sendAnonymousMessage');
+    
+    try {
+        // Show loading
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        }
+
+        // For now, use the existing feedback endpoint
+        // Later this can be enhanced with a dedicated anonymous message endpoint
+        const messageData = {
+            content: `[Anonymous Message to ${recipientUsername}]\nFrom: ${senderName}\n\n${content}`,
+            anonymous: true,
+            recipient: recipientUsername
+        };
+
+        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(messageData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to send message: ${response.status}`);
+        }
+
+        // Show success
+        alert(`Your anonymous message has been sent to ${recipientUsername}!`);
+        closeAnonymousMessageModal();
+
+        console.log('[EternalSouls] Anonymous message sent successfully');
+
+    } catch (error) {
+        console.error('[EternalSouls] Error sending anonymous message:', error);
+        alert(`Failed to send message: ${error.message}`);
+        
+        // Reset button
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+        }
+    }
+}
+
+// Global functions for onclick handlers
+window.openFounderMessage = openFounderMessage;
+window.openFeaturedSoulMessage = openFeaturedSoulMessage;
+window.closeAnonymousMessageModal = closeAnonymousMessageModal;
