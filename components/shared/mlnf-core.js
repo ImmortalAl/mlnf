@@ -10,40 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // The order of initialization can be important.
   // For example, user menu should be initialized before components that might use it.
   
-  // 1. User Menu
-  if (typeof window.MLNF.initUserMenu === 'function') {
-    window.MLNF.initUserMenu();
-  } else {
-    console.warn('Core component `initUserMenu` not found.');
-  }
-  
-  // 2. Navigation
-  if (typeof window.MLNF.initNavigation === 'function') {
-    window.MLNF.initNavigation();
-  } else {
-    console.warn('Core component `initNavigation` not found.');
-  }
-  
-  // 3. Auth Modal
-  if (typeof window.MLNF.initAuthModal === 'function') {
-    window.MLNF.initAuthModal();
-  } else {
-    console.warn('Core component `initAuthModal` not found.');
-  }
+  // Initialize components only if their functions are available
+  const components = [
+    { name: 'initUserMenu', desc: 'User Menu' },
+    { name: 'initNavigation', desc: 'Navigation' },
+    { name: 'initAuthModal', desc: 'Auth Modal' },
+    { name: 'initMessageModal', desc: 'Message Modal' },
+    { name: 'initActiveUsers', desc: 'Active Users Sidebar' }
+  ];
 
-  // 4. Message Modal
-  if (typeof window.MLNF.initMessageModal === 'function') {
-    window.MLNF.initMessageModal();
-  } else {
-    console.warn('Core component `initMessageModal` not found.');
-  }
+  let successfulInits = 0;
   
-  // 5. Active Users Sidebar (depends on Message Modal)
-  if (typeof window.MLNF.initActiveUsers === 'function') {
-    window.MLNF.initActiveUsers();
-  } else {
-    console.warn('Core component `initActiveUsers` not found.');
-  }
+  components.forEach(component => {
+    if (typeof window.MLNF[component.name] === 'function') {
+      try {
+        window.MLNF[component.name]();
+        successfulInits++;
+      } catch (error) {
+        console.error(`Failed to initialize ${component.desc}:`, error);
+      }
+    }
+  });
+
+  console.log(`[mlnf-core.js] Initialized ${successfulInits}/${components.length} components.`);
   
   // Optional components
   if (typeof window.MLNF.initHeroParticles === 'function') {

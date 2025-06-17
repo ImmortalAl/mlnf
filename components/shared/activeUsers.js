@@ -23,18 +23,10 @@ function setupActiveUsersEvents() {
     const closeUsersBtn = document.getElementById('closeUsers'); // The 'X' button inside the sidebar
     const activeUsersOverlay = document.getElementById('activeUsersOverlay');
 
-    console.log('[activeUsers.js] setupActiveUsersEvents: Elements found - showBtn:', !!showUsersBtn, 'sidebar:', !!activeUsersSidebar, 'closeBtn:', !!closeUsersBtn, 'overlay:', !!activeUsersOverlay);
-    if (activeUsersSidebar) {
-        console.log('[activeUsers.js] Sidebar initial state - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
-    }
-    if (activeUsersOverlay) {
-        console.log('[activeUsers.js] Overlay initial state - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
-    }
+    // Elements validation completed
 
     if (showUsersBtn && activeUsersSidebar && activeUsersOverlay) {
         showUsersBtn.addEventListener('click', () => {
-            console.log('[activeUsers.js] showUsersBtn clicked.');
-
             // Force clear any lingering force-close class
             activeUsersSidebar.classList.remove('force-close');
             activeUsersSidebar.style.right = ''; // Clear any inline style
@@ -42,71 +34,36 @@ function setupActiveUsersEvents() {
             // Make overlay active and show sidebar 
             activeUsersOverlay.classList.add('active');
             activeUsersSidebar.classList.add('active');
-
-            console.log('[activeUsers.js] Applied .active to sidebar and overlay.');
-            console.log('[activeUsers.js] Sidebar AFTER - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
-            console.log('[activeUsers.js] Sidebar AFTER - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
-
-            if (activeUsersOverlay) {
-                console.log('[activeUsers.js] Overlay AFTER - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
-                console.log('[activeUsers.js] Overlay AFTER - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
-            }
             
             document.body.style.overflow = 'hidden';
-
-            // Reduced timeout for quicker feedback, original fallback logic removed for now
-            setTimeout(() => {
-                console.log('[activeUsers.js] --- AFTER TIMEOUT (30ms) ---');
-                 if (activeUsersSidebar) {
-                    console.log('[activeUsers.js] Sidebar TIMEOUT - ID:', activeUsersSidebar.id, 'Classes:', activeUsersSidebar.className);
-                    console.log('[activeUsers.js] Sidebar TIMEOUT - Computed right:', getComputedStyle(activeUsersSidebar).right, 'Computed display:', getComputedStyle(activeUsersSidebar).display);
-                }
-                if (activeUsersOverlay) {
-                    console.log('[activeUsers.js] Overlay TIMEOUT - ID:', activeUsersOverlay.id, 'Classes:', activeUsersOverlay.className);
-                    console.log('[activeUsers.js] Overlay TIMEOUT - Computed opacity:', getComputedStyle(activeUsersOverlay).opacity, 'Computed display:', getComputedStyle(activeUsersOverlay).display);
-                }
-            }, 30); 
         });
 
         // Prevent sidebar clicks from closing the sidebar
         activeUsersSidebar.addEventListener('click', (event) => {
             event.stopPropagation();
-            console.log('[activeUsers.js] Sidebar clicked, prevented close.');
         });
 
         // Fix: Always close sidebar on overlay or X click
         let isClosing = false; // Prevent multiple rapid calls
         const closeActiveSidebar = (event) => {
-            if (isClosing) {
-                console.log('[activeUsers.js] closeActiveSidebar: Already closing, ignoring. Target:', event?.target?.id);
-                return;
-            }
+            if (isClosing) return;
             isClosing = true;
-            
-            console.log('[activeUsers.js] closeActiveSidebar: Starting. Target:', event?.target?.id);
-            console.log('[activeUsers.js] Sidebar PRE-CLOSE - Classes:', activeUsersSidebar.className, 'Inline right:', activeUsersSidebar.style.right);
-            console.log('[activeUsers.js] Overlay PRE-CLOSE - Classes:', activeUsersOverlay.className, 'Inline opacity:', activeUsersOverlay.style.opacity);
 
             activeUsersSidebar.classList.remove('active');
             activeUsersOverlay.classList.remove('active');
-            console.log('[activeUsers.js] Removed .active from sidebar and overlay.');
 
             activeUsersSidebar.style.right = ''; // Clear any inline style from opening
             activeUsersOverlay.style.opacity = ''; // Clear any inline style from opening
 
             activeUsersSidebar.classList.add('force-close');
-            console.log('[activeUsers.js] Added .force-close to sidebar. Sidebar classes:', activeUsersSidebar.className);
 
             // Force reflow
             activeUsersSidebar.offsetHeight; 
-            console.log('[activeUsers.js] Sidebar POST .force-close - Computed right:', getComputedStyle(activeUsersSidebar).right);
 
             document.body.style.overflow = '';
             
             setTimeout(() => {
-                console.log('[activeUsers.js] Close TIMEOUT: Removing .force-close.');
                 activeUsersSidebar.classList.remove('force-close');
-                console.log('[activeUsers.js] Close TIMEOUT: Sidebar classes final:', activeUsersSidebar.className);
                 isClosing = false;
             }, 350); 
         };
@@ -154,16 +111,20 @@ async function populateActiveUsersList() {
 
     try {
         // Test basic connectivity to API
-        console.log('[activeUsers.js] Testing API connectivity to:', window.MLNF_CONFIG.API_BASE_URL);
-        
+        // Test API connectivity
         try {
             const healthCheck = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/health`, { 
                 method: 'GET',
-                mode: 'cors'
+                mode: 'cors',
+                timeout: 5000
             });
-            console.log('[activeUsers.js] Health check response:', healthCheck.status, healthCheck.statusText);
+            if (!healthCheck.ok) {
+                throw new Error(`API health check failed: ${healthCheck.status}`);
+            }
         } catch (healthError) {
-            console.warn('[activeUsers.js] Health check failed:', healthError.message);
+            console.warn('[activeUsers.js] API connectivity issue:', healthError.message);
+            userListDiv.innerHTML = '<p class="api-error">Unable to connect to eternal realm. Please try again later.</p>';
+            return;
         }
         
         console.log('[activeUsers.js] Attempting to fetch from:', `${window.MLNF_CONFIG.API_BASE_URL}/users/online`);

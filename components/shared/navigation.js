@@ -1,12 +1,9 @@
 // navigation.js - Handles the consistent navigation bar across the site
 
 function generateNavLinksHTML(currentPath, navType = 'main') {
-    console.log(`[navigation.js] generateNavLinksHTML called. currentPath: ${currentPath}, navType: ${navType}`); // DEBUG
-    
     // Normalize currentPath for local file testing (ends with / or /index.html)
     const isHomePageLocal = currentPath.endsWith('/index.html') || currentPath.endsWith('/');
     const normalizedCurrentPath = isHomePageLocal && currentPath.includes('/MLNF/index.html') ? '/' : currentPath; // Simplify if it's the full local path to index
-    console.log(`[navigation.js] normalizedCurrentPath: ${normalizedCurrentPath}`); // DEBUG
 
     const allLinks = [
         { href: "/", icon: "fas fa-home", text: "Home" },
@@ -29,7 +26,6 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
         // 2. Always remove "Eternal Hearth"
         linksToRender = allLinks.filter(link => {
             if (link.text === "Home" && (normalizedCurrentPath === "/" || normalizedCurrentPath === "/index.html")) {
-                console.log('[navigation.js] Filtering Home link on main nav for homepage.'); // DEBUG
                 return false; // Exclude Home on homepage
             }
             if (link.text === "Eternal Hearth") {
@@ -43,7 +39,6 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
         // 2. Always remove "Eternal Hearth" (available in user dropdown)
         linksToRender = allLinks.filter(link => {
             if (link.text === "Home" && (normalizedCurrentPath === "/" || normalizedCurrentPath === "/index.html")) {
-                console.log('[navigation.js] Filtering Home link on mobile nav for homepage.'); // DEBUG
                 return false; // Exclude Home on homepage
             }
             if (link.text === "Eternal Hearth") {
@@ -54,7 +49,6 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
     }
     // For any other navType, we use allLinks by default
 
-    console.log('[navigation.js] linksToRender BEFORE map:', JSON.stringify(linksToRender)); // DEBUG
     const finalHTML = linksToRender.map(link => {
         const isActive = normalizedCurrentPath === link.href || 
                        (link.href !== "/" && normalizedCurrentPath.startsWith(link.href)) || 
@@ -73,7 +67,6 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
             : `<i class="${link.icon}"></i> ${link.text}`;
         return `<li><a href="${link.href}" class="${isActive ? 'active' : ''}">${linkContent}</a></li>`;
     }).join('');
-    console.log(`[navigation.js] finalHTML for ${navType}:`, finalHTML.length > 100 ? finalHTML.substring(0,100) + '...' : finalHTML); // DEBUG
     return finalHTML;
 }
 
