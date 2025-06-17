@@ -88,9 +88,9 @@
 }
 
 .profile-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .profile-card::before {
@@ -100,14 +100,14 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)) !important;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
 }
 
 .profile-card:hover::before {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .profile-card-link-wrapper {
