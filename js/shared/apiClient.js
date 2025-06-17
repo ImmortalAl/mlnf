@@ -64,9 +64,7 @@ const apiClient = {
             headers.append('Authorization', `Bearer ${token}`);
         }
 
-        console.log(`[API Client] DEBUG - Token present: ${token ? 'Yes' : 'No'}`);
-        console.log(`[API Client] DEBUG - Skip auth for this request: ${skipAuth}`);
-        console.log(`[API Client] DEBUG - Headers:`, Object.fromEntries(headers.entries()));
+        // Debug logging removed for cleaner console output
 
         const config = {
             method,
@@ -77,7 +75,7 @@ const apiClient = {
             config.body = JSON.stringify(body);
         }
         
-        console.log(`[API Client] -> ${method} ${url}`, body || '');
+        // Request logging removed for cleaner console output
 
         try {
             const response = await fetch(url, config);
@@ -107,12 +105,12 @@ const apiClient = {
 
             // For 204 No Content, there's no body to parse
             if (response.status === 204) {
-                 console.log(`[API Client] <- ${method} ${url} (204 No Content)`);
+                 // Success logging removed for cleaner console output
                 return null;
             }
 
             const data = await response.json();
-            console.log(`[API Client] <- ${method} ${url} (Success)`, data);
+            // Success logging removed for cleaner console output
             return data;
 
         } catch (error) {
