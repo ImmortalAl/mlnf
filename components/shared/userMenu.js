@@ -267,6 +267,11 @@ function updateMobileAuthLinks() {
      // Call this from navigation.js after it populates the main mobile links
      // Or ensure MLNF.setupMobileAuthClickHandlers does this if we keep that pattern.
      // For now, directly attaching here since injectNavigation also calls updateMobileAuthLinks.
+     
+     // Re-setup mobile nav link handlers after adding auth links
+     if (window.MLNF && window.MLNF.setupMobileNavLinkHandlers) {
+         window.MLNF.setupMobileNavLinkHandlers();
+     }
 }
 // Make sure setupMobileAuthClickHandlers can be called by navigation.js if it's responsible for main link injection
 window.MLNF.setupMobileAuthClickHandlers = updateMobileAuthLinks;

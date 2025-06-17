@@ -151,18 +151,8 @@ function setupMobileNavEvents() {
             closeMenu();
         });
 
-        // Close mobile nav if a link inside it is clicked
-        const mobileNavLinks = mobileNav.querySelectorAll('a');
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                // Only close if it's a navigation link, not a control like logout
-                // This check might need refinement based on actual link IDs/classes
-                if (!link.id || (!link.id.includes('Logout') && !link.id.includes('Login') && !link.id.includes('Register'))) {
-                    console.log('[navigation.js] Navigation link clicked, closing menu');
-                    closeMenu();
-                }
-            });
-        });
+        // Close mobile nav if a link inside it is clicked - this will be called initially and after auth links update
+        setupMobileNavLinkHandlers();
 
         console.log('[navigation.js] Mobile nav events attached successfully');
     } else {
@@ -174,6 +164,38 @@ function setupMobileNavEvents() {
             mobileOverlay: !mobileOverlay ? 'MISSING' : 'found'
         });
     }
+}
+
+// Setup event handlers for mobile nav links (to close menu when clicked)
+function setupMobileNavLinkHandlers() {
+    const mobileNav = document.getElementById('mobileNav');
+    if (!mobileNav) return;
+
+    const closeMenu = () => {
+        console.log('[navigation.js] Closing mobile menu...');
+        mobileNav.classList.remove('active');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        if (mobileOverlay) mobileOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore background scroll
+    };
+
+    // Remove existing event listeners to avoid duplicates
+    const mobileNavLinks = mobileNav.querySelectorAll('a');
+    mobileNavLinks.forEach(link => {
+        // Clone and replace to remove old event listeners
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+        
+        // Add new event listener
+        newLink.addEventListener('click', () => {
+            // Only close if it's a navigation link, not a control like logout
+            // This check might need refinement based on actual link IDs/classes
+            if (!newLink.id || (!newLink.id.includes('Logout') && !newLink.id.includes('Login') && !newLink.id.includes('Register'))) {
+                console.log('[navigation.js] Navigation link clicked, closing menu');
+                closeMenu();
+            }
+        });
+    });
 }
 
 
@@ -188,6 +210,8 @@ window.MLNF = window.MLNF || {};
 window.MLNF.initNavigation = initNavigation;
 // Expose injectNavigation if other scripts need to refresh it, e.g., after login/logout
 window.MLNF.injectNavigation = injectNavigation;
+// Expose setupMobileNavLinkHandlers so it can be called after auth links are updated
+window.MLNF.setupMobileNavLinkHandlers = setupMobileNavLinkHandlers;
 
 // Make sure to call initNavigation after the DOM is loaded,
 // for example, from mlnf-core.js or a DOMContentLoaded listener.
