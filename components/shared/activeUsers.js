@@ -113,7 +113,9 @@ async function populateActiveUsersList() {
         // Test basic connectivity to API
         // Test API connectivity
         try {
-            const healthCheck = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/health`, { 
+            // Health endpoint is at root level, not under /api path
+            const baseUrl = window.MLNF_CONFIG.API_BASE_URL.replace('/api', '');
+            const healthCheck = await fetch(`${baseUrl}/health`, { 
                 method: 'GET',
                 mode: 'cors',
                 timeout: 5000
