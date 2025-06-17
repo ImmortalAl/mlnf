@@ -150,13 +150,7 @@ function setupMobileNavEvents() {
             closeMenu();
         });
 
-        mobileOverlay.addEventListener('click', (e) => {
-            console.log('[navigation.js] Overlay clicked - closing menu');
-            console.log('[DEBUG] Overlay click event:', e);
-            closeMenu();
-        });
-        
-        // Debug: Add global click listener to see what's being clicked
+        // Replace overlay click with document click that checks if click is outside nav
         document.addEventListener('click', (e) => {
             if (mobileNav.classList.contains('active')) {
                 console.log('[DEBUG] Click detected while menu is open:', {
@@ -165,8 +159,15 @@ function setupMobileNavEvents() {
                     targetClass: e.target.className,
                     isOverlay: e.target === mobileOverlay,
                     isInsideNav: mobileNav.contains(e.target),
+                    isToggleButton: e.target === mobileNavToggle || mobileNavToggle.contains(e.target),
                     overlayActive: mobileOverlay.classList.contains('active')
                 });
+                
+                // Close menu if click is outside the nav and not the toggle button
+                if (!mobileNav.contains(e.target) && !mobileNavToggle.contains(e.target) && e.target !== mobileNavToggle) {
+                    console.log('[navigation.js] Click outside detected - closing menu');
+                    closeMenu();
+                }
             }
         });
 
