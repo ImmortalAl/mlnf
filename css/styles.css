@@ -892,12 +892,36 @@ body.light-theme .debate-position h4 {
     color: var(--text);
 }
 
-/* Username size variants */
+/* Username size variants - ONLY font-size to avoid overriding font-family */
 .mlnf-user-display--xs .mlnf-username { font-size: 0.8rem; }
 .mlnf-user-display--sm .mlnf-username { font-size: 0.85rem; }
 .mlnf-user-display--md .mlnf-username { font-size: 0.95rem; }
 .mlnf-user-display--lg .mlnf-username { font-size: 1.1rem; }
 .mlnf-user-display--xl .mlnf-username { font-size: 1.25rem; }
+
+/* Ensure username style classes take precedence over size variants */
+.mlnf-username--immortal {
+    font-family: 'Cinzel', serif !important;
+    background: var(--gradient-accent) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    font-weight: 600 !important;
+}
+
+.mlnf-username--mystical {
+    font-family: 'Caesar Dressing', serif !important;
+    color: var(--accent) !important;
+    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.03em !important;
+}
+
+.mlnf-username--eternal {
+    font-family: 'Metal Mania', serif !important;
+    color: var(--accent) !important;
+    letter-spacing: 0.05em !important;
+}
 
 .mlnf-user-display--xs .mlnf-user-title { font-size: 0.65rem; }
 .mlnf-user-display--sm .mlnf-user-title { font-size: 0.7rem; }
@@ -917,28 +941,7 @@ body.light-theme .debate-position h4 {
     background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
 }
 
-/* Immortal themed username styling */
-.mlnf-username--immortal {
-    font-family: 'Cinzel', serif;
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-weight: 600;
-}
-
-.mlnf-username--mystical {
-    font-family: 'Caesar Dressing', serif;
-    color: var(--accent);
-    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
-    font-weight: 400;
-}
-
-.mlnf-username--eternal {
-    font-family: 'Metal Mania', serif;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-}
+/* Old immortal username styles removed - now using !important versions above */
 
 /* Light theme adjustments */
 body.light-theme .mlnf-user-display {
@@ -1093,7 +1096,7 @@ body.light-theme .mlnf-avatar {
         0 0 0 1px rgba(var(--accent-rgb, 255, 94, 120), 0.2);
 }
 
-.mlnf-user-display--interactive:hover .mlnf-username {
+.mlnf-user-display--interactive:hover .mlnf-username:not(.mlnf-username--mystical):not(.mlnf-username--immortal):not(.mlnf-username--eternal) {
     color: var(--accent);
     text-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
 }
@@ -2326,13 +2329,7 @@ nav a {
 }
 
 .soul-highlight-card .mlnf-username--mystical {
-    /* Font styles from base .mlnf-username--mystical class */
-    font-family: 'Caesar Dressing', serif;
-    color: var(--accent);
-    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
-    font-weight: 400;
-    letter-spacing: 0.03em;
-    /* Local overrides for soul cards */
+    /* Font now properly inherited from !important rules above */
     font-size: 1.3rem;
     margin-bottom: 0.5rem;
 }
@@ -2390,13 +2387,7 @@ nav a {
 
     
     .soul-highlight-card .mlnf-username--mystical {
-        /* Font styles from base .mlnf-username--mystical class */
-        font-family: 'Caesar Dressing', serif;
-        color: var(--accent);
-        text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
-        font-weight: 400;
-        letter-spacing: 0.03em;
-        /* Mobile override */
+        /* Font now properly inherited from !important rules above */
         font-size: 1.1rem;
     }
     
