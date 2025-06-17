@@ -94,15 +94,8 @@ function injectNavigation() {
         // If Eternal Hearth should also be removed from mobile, adjust navType logic or filter here
         let mobileLinksHTML = generateNavLinksHTML(currentPath, 'mobile'); // Use 'mobile' type
 
-        // Set the main navigation links first
+        // Set the main navigation links - mobile nav is for navigation only
         mobileNavList.innerHTML = mobileLinksHTML;
-
-        // Now, let userMenu.js handle adding/updating the auth-related links and their events
-        if (window.MLNF && window.MLNF.updateMobileAuthLinks) { // Assuming userMenu.js exposes this
-            window.MLNF.updateMobileAuthLinks();
-        } else {
-            console.warn('[navigation.js] window.MLNF.updateMobileAuthLinks not found. Mobile auth links might be missing or stale.');
-        }
 
     } else {
         console.warn('Mobile navigation list UL not found. Mobile links not injected.');
@@ -179,21 +172,15 @@ function setupMobileNavLinkHandlers() {
         document.body.style.overflow = ''; // Restore background scroll
     };
 
-    // Remove existing event listeners to avoid duplicates
-    const mobileNavLinks = mobileNav.querySelectorAll('a');
+    // All links in mobile nav are navigation links - close menu when any is clicked
+    const mobileNavLinks = mobileNav.querySelectorAll('.mobile-nav-list a');
     mobileNavLinks.forEach(link => {
-        // Clone and replace to remove old event listeners
-        const newLink = link.cloneNode(true);
-        link.parentNode.replaceChild(newLink, link);
-        
+        // Remove existing event listener if any
+        link.removeEventListener('click', closeMenu);
         // Add new event listener
-        newLink.addEventListener('click', () => {
-            // Only close if it's a navigation link, not a control like logout
-            // This check might need refinement based on actual link IDs/classes
-            if (!newLink.id || (!newLink.id.includes('Logout') && !newLink.id.includes('Login') && !newLink.id.includes('Register'))) {
-                console.log('[navigation.js] Navigation link clicked, closing menu');
-                closeMenu();
-            }
+        link.addEventListener('click', () => {
+            console.log('[navigation.js] Navigation link clicked, closing menu');
+            closeMenu();
         });
     });
 }

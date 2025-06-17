@@ -136,8 +136,6 @@ function setupUserMenuEvents() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', handleLogout);
   }
-  
-  updateMobileAuthLinks();
 }
 
 // Handle user logout
@@ -196,82 +194,12 @@ window.MLNF.initUserMenu = initUserMenu;
 window.MLNF.updateUserMenu = updateUserMenu; // Expose for mlnf-core.js storage listener
 window.MLNF.handleLogout = handleLogout; // Expose if needed by other components, e.g. mobile menu
 
-// Function to update mobile auth links - slightly refactored for clarity
+// Function to update mobile auth links - DISABLED: Mobile nav should only contain navigation links
 function updateMobileAuthLinks() {
-    const mobileNavList = document.querySelector('.mobile-nav-list');
-    if (!mobileNavList) return;
-
-    // Clear existing auth links first to avoid duplication
-    const existingDividers = mobileNavList.querySelectorAll('.mobile-auth-divider');
-    existingDividers.forEach(d => d.remove());
-    const existingAuthLinks = mobileNavList.querySelectorAll('.mobile-auth-link');
-    existingAuthLinks.forEach(l => l.remove());
-
-    const token = localStorage.getItem('sessionToken');
-    const cachedUser = localStorage.getItem('user');
-    let authLinksHTML = '';
-
-    if (token) {
-        let adminLinkHTML = '';
-        if (cachedUser) {
-            try {
-                const userData = JSON.parse(cachedUser);
-                if (userData.username === 'ImmortalAl' || userData.role === 'admin') {
-                    adminLinkHTML = '<a href="/admin/" class="mobile-auth-link"><i class="fas fa-crown"></i> Admin Panel</a>';
-                }
-            } catch (error) {
-                console.error('[userMenu.js] Error parsing user data for mobile admin link:', error);
-            }
-        }
-        
-        authLinksHTML = `
-            <div class="divider mobile-auth-divider"></div>
-            <a href="/profile" id="mobileProfileLink" class="mobile-auth-link"><i class="fas fa-user"></i> My Soul</a>
-            <a href="/pages/profile-setup.html" class="mobile-auth-link"><i class="fas fa-cog"></i> Edit Profile</a>
-            ${adminLinkHTML}
-            <div class="divider mobile-auth-divider"></div>
-            <a href="#" id="mobileLogoutBtn" class="mobile-auth-link"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
-        `;
-    } else {
-        authLinksHTML = `
-            <div class="divider mobile-auth-divider"></div>
-            <a href="#" id="mobileLoginBtn" class="mobile-auth-link"><i class="fas fa-sign-in-alt"></i> Login</a>
-            <a href="#" id="mobileRegisterBtn" class="mobile-auth-link"><i class="fas fa-user-plus"></i> Register</a>
-        `;
-    }
-    mobileNavList.insertAdjacentHTML('beforeend', authLinksHTML);
-
-    // Re-attach event listeners
-    const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-    const mobileRegisterBtn = document.getElementById('mobileRegisterBtn');
-    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
-
-    if (mobileLoginBtn) {
-        mobileLoginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (window.MLNF && window.MLNF.openSoulModal) window.MLNF.openSoulModal('login');
-        });
-    }
-    if (mobileRegisterBtn) {
-        mobileRegisterBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (window.MLNF && window.MLNF.openSoulModal) window.MLNF.openSoulModal('register');
-        });
-    }
-    if (mobileLogoutBtn) {
-        mobileLogoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            handleLogout();
-        });
-    }
-     // Call this from navigation.js after it populates the main mobile links
-     // Or ensure MLNF.setupMobileAuthClickHandlers does this if we keep that pattern.
-     // For now, directly attaching here since injectNavigation also calls updateMobileAuthLinks.
-     
-     // Re-setup mobile nav link handlers after adding auth links
-     if (window.MLNF && window.MLNF.setupMobileNavLinkHandlers) {
-         window.MLNF.setupMobileNavLinkHandlers();
-     }
+    // Mobile navigation should only contain navigation links, not user auth functions
+    // User authentication is handled through the header user menu dropdown
+    console.log('[userMenu.js] updateMobileAuthLinks called but disabled - mobile nav is for navigation only');
+    return;
 }
 // Make sure setupMobileAuthClickHandlers can be called by navigation.js if it's responsible for main link injection
 window.MLNF.setupMobileAuthClickHandlers = updateMobileAuthLinks;
