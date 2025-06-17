@@ -54,8 +54,8 @@ const apiClient = {
         const headers = new Headers({
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
+            'Pragma': 'no-cache'
+            // 'Expires': '0' // Temporarily disabled due to 502 backend issues
         });
 
         // Skip auth headers for GET /threads since it doesn't require authentication
