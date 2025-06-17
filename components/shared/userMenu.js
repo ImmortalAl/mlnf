@@ -270,3 +270,4 @@ function updateMobileAuthLinks() {
 }
 // Make sure setupMobileAuthClickHandlers can be called by navigation.js if it's responsible for main link injection
 window.MLNF.setupMobileAuthClickHandlers = updateMobileAuthLinks;
+window.MLNF.updateMobileAuthLinks = updateMobileAuthLinks;
