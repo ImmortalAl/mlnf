@@ -267,11 +267,11 @@
                 loadingIndicator.style.display = 'flex';
                 errorMessage.style.display = 'none';
                 
-                // Check if cached data exists and is still fresh (30 seconds for testing online indicators)
+                // Check if cached data exists and is still fresh (5 minutes for souls data)
                 const cachedProfiles = localStorage.getItem('mlnf_profiles');
                 const cacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
                 const cacheAge = cacheTimestamp ? Date.now() - parseInt(cacheTimestamp) : Infinity;
-                const isCacheExpired = cacheAge > 30000; // 30 seconds for testing
+                const isCacheExpired = cacheAge > 300000; // 5 minutes for souls data
                 
                 let profiles = null;
                 
@@ -279,10 +279,11 @@
                     try {
                         profiles = JSON.parse(cachedProfiles);
                         if (Array.isArray(profiles) && profiles.length > 0) {
-                            console.log('[Souls] Using cached profiles:', profiles.length);
+                            console.log('[Souls] Using fresh cached profiles:', profiles.length);
                             renderProfiles(profiles);
                             if (loadingIndicator) loadingIndicator.style.display = 'none';
                             if (profilesGrid) profilesGrid.style.opacity = '1';
+                            if (errorMessage) errorMessage.style.display = 'none'; // Ensure no error message shows
                             return; // Use cache and exit early
                         }
                     } catch (e) { 
@@ -371,9 +372,9 @@
                     try {
                         const staleProfiles = JSON.parse(staleCache);
                         if (Array.isArray(staleProfiles) && staleProfiles.length > 0) {
-                            console.log('[Souls] Using stale cache as fallback');
+                            console.log('[Souls] Using stale cache as fallback due to network error');
                             renderProfiles(staleProfiles);
-                            displayError('Using cached data. Network connection may be unstable.');
+                            displayError('Unable to refresh data. Showing cached souls - some information may be outdated.');
                             return;
                         }
                     } catch (e) {
