@@ -44,6 +44,27 @@
 3. Test functionality on multiple page types
 4. Verify integration points work consistently
 
+## Console Cleanup & Debugging Guidelines
+
+### Debug Statement Management
+- **Production**: Remove debug console.log statements before deployment
+- **Development**: Use `console.log('[ComponentName] DEBUG: message')` format for clarity
+- **Error Handling**: Keep error console.error statements for production debugging
+- **Performance**: Remove performance timing logs in production
+
+### Systematic Console Error Resolution
+1. **Document each error** before fixing (screenshot/copy error text)
+2. **One error at a time** - fix completely before moving to next
+3. **Test thoroughly** after each fix to ensure no regression
+4. **Verify fix across all affected pages** before moving on
+5. **Update CSS version numbers** when making style changes for cache busting
+
+### Debug Statement Removal Process
+- Search for `console.log` site-wide and evaluate each one
+- Keep error logging: `console.error`, `console.warn`
+- Remove development logs: `console.log('[DEBUG]')`, timing logs
+- Replace with proper error handling where needed
+
 ## Auto-Push Reminder
 After completing any task involving file changes, Claude must:
 1. Run git status to verify changes
