@@ -366,11 +366,12 @@
             } catch (error) {
                 console.error('[Souls] Error fetching profiles:', error);
                 
-                // Try to use stale cache as fallback - but only show error if cache is significantly old
+                // Try to use stale cache as fallback - but be more selective about showing errors
                 const staleCache = localStorage.getItem('mlnf_profiles');
                 const staleCacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
                 const staleCacheAge = staleCacheTimestamp ? Date.now() - parseInt(staleCacheTimestamp) : Infinity;
                 const isCacheVeryOld = staleCacheAge > 3600000; // 1 hour
+                const isCacheAncient = staleCacheAge > 86400000; // 24 hours
                 
                 if (staleCache) {
                     try {
@@ -379,9 +380,11 @@
                             console.log('[Souls] Using stale cache as fallback due to network error');
                             renderProfiles(staleProfiles);
                             
-                            // Only show error message if cache is very old (1+ hour)
-                            if (isCacheVeryOld) {
-                                displayError('Unable to refresh data. Showing cached souls - some information may be outdated.');
+                            // Only show error message if cache is ancient (24+ hours) or if it's a server error
+                            const isServerError = error.message && (error.message.includes('500') || error.message.includes('502') || error.message.includes('503'));
+                            
+                            if (isCacheAncient || (isCacheVeryOld && isServerError)) {
+                                displayError('Data may be outdated. Some souls information might not be current.');
                             }
                             return;
                         }
