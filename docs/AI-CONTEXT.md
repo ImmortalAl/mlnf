@@ -35,7 +35,6 @@ C:\Users\coold\Documents\Sites\MLNF\
 ## 📋 **Current Project Status (December 2024)**
 
 ### **✅ Recently Completed**
-- **Owl Messaging System**: Fixed modal positioning, implemented backend with nodemailer, graceful fallback system
 - **Admin Panel**: Removed email field from user editing, streamlined for privacy
 - **Documentation Reorganization**: Consolidated scattered docs into centralized `docs/` folder
 - **CSS Architecture**: Fixed modal conflicts, improved component isolation
@@ -45,7 +44,6 @@ C:\Users\coold\Documents\Sites\MLNF\
 - ✅ User authentication (registration, login, JWT tokens)
 - ✅ Public profile system (`/souls/username` URLs)
 - ✅ Admin panel (Immortal's Sanctum) with user management
-- ✅ Owl messaging with smart fallback (email optional)
 - ✅ Real-time online status tracking
 - ✅ Responsive design across all devices
 - ✅ Modal systems (auth, messaging, admin)

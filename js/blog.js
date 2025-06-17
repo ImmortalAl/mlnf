@@ -350,7 +350,12 @@ async function fetchBlogPost(postId) {
     try {
         const url = `${BLOG_API_BASE_URL}/blogs/${postId}`;
         
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
+            }
+        });
         
         if (!response.ok) {
             const errorText = await response.text();

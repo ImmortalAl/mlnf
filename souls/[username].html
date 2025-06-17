@@ -669,9 +669,41 @@
                 },
 
                 updateProfileDisplay: function(profileData) {
-                    document.getElementById('profileName').textContent = profileData.displayName || profileData.username;
-                    document.getElementById('profileUsername').textContent = `@${profileData.username}`;
-                    document.getElementById('profileAvatar').src = profileData.avatar || '../assets/images/default.jpg';
+                    // Replace manual avatar and status with MLNF Avatar System
+                    const profileHeader = document.querySelector('.profile-header');
+                    
+                    // Clear existing avatar and manual status elements
+                    const existingAvatar = document.getElementById('profileAvatar');
+                    const existingName = document.getElementById('profileName');
+                    const existingUsername = document.getElementById('profileUsername');
+                    const existingStatus = document.getElementById('profileStatus');
+                    const existingOnlineStatus = document.getElementById('onlineStatus');
+                    
+                    if (existingAvatar) existingAvatar.style.display = 'none';
+                    if (existingName) existingName.style.display = 'none';
+                    if (existingUsername) existingUsername.style.display = 'none';
+                    if (existingStatus) existingStatus.style.display = 'none';
+                    if (existingOnlineStatus) existingOnlineStatus.style.display = 'none';
+                    
+                    // Create unified user display with enhanced profile styling
+                    if (window.MLNFAvatars && !profileHeader.querySelector('.mlnf-user-display')) {
+                        const userDisplay = window.MLNFAvatars.createUserDisplay({
+                            username: profileData.username,
+                            title: profileData.displayName || profileData.username,
+                            status: profileData.status || (profileData.online ? 'Online now' : 'Eternal wanderer'),
+                            avatarSize: 'xxl',
+                            displaySize: 'xl',
+                            compact: false,
+                            mystical: profileData.isVIP || profileData.role === 'admin',
+                            online: profileData.online,
+                            customAvatar: profileData.avatar,
+                            usernameStyle: 'mystical',
+                            enableUnifiedNavigation: false  // Disable navigation since we're already on their profile
+                        });
+                        
+                        // Insert the user display at the beginning of profile header
+                        profileHeader.insertBefore(userDisplay, profileHeader.firstChild);
+                    }
                     
                     // Handle bio section
                     if (profileData.bio) {
@@ -683,21 +715,6 @@
                     const joinDate = profileData.joinDate || profileData.createdAt || profileData.created_at;
                     if (joinDate) {
                         document.getElementById('joinDate').textContent = new Date(joinDate).toLocaleDateString();
-                    }
-                    
-                    // Handle status
-                    if (profileData.status) {
-                        const statusElement = document.getElementById('profileStatus');
-                        statusElement.textContent = profileData.status;
-                        statusElement.style.display = 'inline-block';
-                    }
-                    
-                    // Handle online status
-                    const onlineStatusElement = document.getElementById('onlineStatus');
-                    if (profileData.online) {
-                        onlineStatusElement.innerHTML = '<i class="fas fa-circle" style="color: #4ade80;"></i><span>Online</span>';
-                    } else {
-                        onlineStatusElement.innerHTML = '<i class="fas fa-circle" style="color: #6b7280;"></i><span>Offline</span>';
                     }
 
                     // Init profile comments here
