@@ -2182,29 +2182,8 @@ nav a {
     border-color: #4ade80;
 }
 
-.soul-card-badge {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gradient-accent);
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 25px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(255, 94, 120, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.soul-card-featured .soul-card-badge {
-    background: linear-gradient(135deg, #4ade80, #60a5fa);
-}
-
 .soul-card-content {
-    margin-top: 1rem;
+    margin-top: 0;
 }
 
 .soul-display-container {
@@ -2391,10 +2370,7 @@ nav a {
         padding: 1.5rem 1rem;
     }
     
-    .soul-card-badge {
-        font-size: 0.75rem;
-        padding: 0.5rem 1rem;
-    }
+
     
     .soul-highlight-card .mlnf-username--mystical {
         font-size: 1.1rem;

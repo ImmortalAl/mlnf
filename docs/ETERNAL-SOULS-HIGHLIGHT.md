@@ -10,7 +10,6 @@ Transform your MySpace Tom concept into a sophisticated **community guidance eco
 
 #### **1. The Eternal Founder (Permanent)**
 - **ImmortalAl** - "Architect of Liberation"
-- Always featured with special "Founder's Seal"
 - Enhanced mystical avatar styling
 - Direct anonymous messaging for:
   - Site feedback & suggestions
