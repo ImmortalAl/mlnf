@@ -254,9 +254,9 @@
 .message-soul-btn {
     margin: 0 1.5rem 1.5rem;
     padding: 0.7rem 1.2rem;
-    background: linear-gradient(45deg, var(--accent), var(--warning));
-    color: var(--primary);
-    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -267,9 +267,10 @@
 }
 
 .message-soul-btn:hover {
-    background: linear-gradient(45deg, var(--warning), var(--accent));
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 94, 120, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Ensure no text decoration inheritance */
