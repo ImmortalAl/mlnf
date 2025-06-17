@@ -2326,8 +2326,12 @@ nav a {
 }
 
 .soul-highlight-card .mlnf-username--mystical {
+    font-family: 'Caesar Dressing', serif;
     font-size: 1.3rem;
     margin-bottom: 0.5rem;
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+    font-weight: 400;
 }
 
 .soul-highlight-card .mlnf-user-title {
@@ -2383,7 +2387,11 @@ nav a {
 
     
     .soul-highlight-card .mlnf-username--mystical {
+        font-family: 'Caesar Dressing', serif;
         font-size: 1.1rem;
+        color: var(--accent);
+        text-shadow: 0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+        font-weight: 400;
     }
     
     .agora-info p {
