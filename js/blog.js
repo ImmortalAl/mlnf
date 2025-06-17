@@ -640,7 +640,7 @@ function shareCurrentPost() {
     }
 }
 
-// Share post by ID - Simple link generation
+// Share post by ID - Clean URL only
 function sharePost(postId) {
     const post = blogPosts[postId];
     if (!post) {
@@ -650,16 +650,16 @@ function sharePost(postId) {
     
     const shareUrl = `${window.location.origin}${window.location.pathname}#scroll-${postId}`;
     
-    // Simple clipboard copy without complex notifications
+    // Copy clean URL to clipboard without metadata
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('🔗 Link copied to clipboard!');
+            alert('Link copied');
         }).catch(() => {
-            prompt('Copy this link to share:', shareUrl);
+            prompt('Copy link:', shareUrl);
         });
     } else {
-        // Fallback: show the link in a prompt for user to copy
-        prompt('Copy this link to share:', shareUrl);
+        // Fallback: show the clean link for manual copy
+        prompt('Copy link:', shareUrl);
     }
 }
 
