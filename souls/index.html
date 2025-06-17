@@ -366,15 +366,23 @@
             } catch (error) {
                 console.error('[Souls] Error fetching profiles:', error);
                 
-                // Try to use stale cache as fallback
+                // Try to use stale cache as fallback - but only show error if cache is significantly old
                 const staleCache = localStorage.getItem('mlnf_profiles');
+                const staleCacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
+                const staleCacheAge = staleCacheTimestamp ? Date.now() - parseInt(staleCacheTimestamp) : Infinity;
+                const isCacheVeryOld = staleCacheAge > 3600000; // 1 hour
+                
                 if (staleCache) {
                     try {
                         const staleProfiles = JSON.parse(staleCache);
                         if (Array.isArray(staleProfiles) && staleProfiles.length > 0) {
                             console.log('[Souls] Using stale cache as fallback due to network error');
                             renderProfiles(staleProfiles);
-                            displayError('Unable to refresh data. Showing cached souls - some information may be outdated.');
+                            
+                            // Only show error message if cache is very old (1+ hour)
+                            if (isCacheVeryOld) {
+                                displayError('Unable to refresh data. Showing cached souls - some information may be outdated.');
+                            }
                             return;
                         }
                     } catch (e) {
@@ -382,7 +390,7 @@
                     }
                 }
                 
-                // Final fallback - show error message
+                // Final fallback - show error message only if no usable cache exists
                 displayError('Unable to manifest eternal souls at this time. Please check your connection and try again.');
                 renderProfiles([]);
                 
