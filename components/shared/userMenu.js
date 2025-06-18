@@ -97,16 +97,26 @@ function populateHeaderAuthButtons(container) {
   if (headerSignupButton) {
     headerSignupButton.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('[userMenu.js] Signup button clicked. MLNF object:', window.MLNF);
+      console.log('[userMenu.js] openSoulModal function:', window.MLNF ? window.MLNF.openSoulModal : 'MLNF not found');
       if (window.MLNF && window.MLNF.openSoulModal) {
         window.MLNF.openSoulModal('register');
+      } else {
+        console.error('[userMenu.js] openSoulModal function not available!');
+        alert('Registration modal not available. Please refresh the page.');
       }
     });
   }
   if (headerLoginButton) {
     headerLoginButton.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('[userMenu.js] Login button clicked. MLNF object:', window.MLNF);
+      console.log('[userMenu.js] openSoulModal function:', window.MLNF ? window.MLNF.openSoulModal : 'MLNF not found');
       if (window.MLNF && window.MLNF.openSoulModal) {
         window.MLNF.openSoulModal('login');
+      } else {
+        console.error('[userMenu.js] openSoulModal function not available!');
+        alert('Login modal not available. Please refresh the page.');
       }
     });
   }
