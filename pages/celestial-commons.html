@@ -147,6 +147,22 @@
         <!-- Active Users Overlay -->
         <div class="active-users-overlay" id="activeUsersOverlay"></div>
     </main>
+    
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <h3>Direct Message</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory"></div>
+            <div class="message-form">
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="form-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="site-footer">
         <div class="footer-content">
@@ -185,5 +201,18 @@
     
     <!-- Required Scripts for MLNF Avatar System -->
     <script src="../js/mlnf-avatar-system.js"></script>
+    
+    <script>
+    // Initialize shared components
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize message modal
+        if (window.MLNF && window.MLNF.initMessageModal) {
+            window.MLNF.initMessageModal();
+            console.log('[celestial-commons] Message modal initialized');
+        } else {
+            console.error('[celestial-commons] MLNF.initMessageModal not found!');
+        }
+    });
+    </script>
 </body>
 </html> 
