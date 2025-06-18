@@ -43,8 +43,7 @@
         }
 
         body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                        url('../assets/images/bg.jpg') center/cover fixed;
+            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8));
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
@@ -1044,54 +1043,5 @@
     <script src="../components/shared/authModal.js?v=1.2"></script> 
     <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    
-    <script>
-        // Initialize components in the correct order
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('[profile] DOM loaded, initializing components...');
-            
-            // Debug: Check if required elements exist
-            console.log('[profile] Checking for required elements:');
-            console.log('- messageModal:', !!document.getElementById('messageModal'));
-            console.log('- recipientName:', !!document.getElementById('recipientName'));
-            console.log('- messageInput:', !!document.getElementById('messageInput'));
-            console.log('- messageHistory:', !!document.getElementById('messageHistory'));
-            console.log('- sendMessageBtn:', !!document.getElementById('sendMessageBtn'));
-            console.log('- closeMessageModal:', !!document.getElementById('closeMessageModal'));
-            
-            // Initialize message modal first
-            if (window.MLNF && window.MLNF.initMessageModal) {
-                window.MLNF.initMessageModal();
-                console.log('[profile] Message modal initialized');
-                console.log('[profile] MLNF.openMessageModal available:', typeof window.MLNF.openMessageModal === 'function');
-            } else {
-                console.error('[profile] MLNF.initMessageModal not found!');
-            }
-            
-            // Then initialize active users (which depends on message modal)
-            if (window.MLNF && window.MLNF.initActiveUsers) {
-                window.MLNF.initActiveUsers();
-                console.log('[profile] Active users initialized');
-                
-                // Debug: Check if message buttons get created
-                setTimeout(() => {
-                    const messageButtons = document.querySelectorAll('.message-btn');
-                    console.log('[profile] Message buttons found:', messageButtons.length);
-                    messageButtons.forEach((btn, index) => {
-                        console.log(`- Button ${index}: username="${btn.dataset.username}"`);
-                    });
-                }, 1000);
-            } else {
-                console.error('[profile] MLNF.initActiveUsers not found!');
-            }
-        });
-    </script>
-
-    <!-- Shared Component Scripts -->
-    <script src="../components/shared/navigation.js"></script>
-    <script src="../components/shared/userMenu.js"></script>
-    <script src="../components/shared/activeUsers.js"></script>
-    <script src="../components/shared/authModal.js"></script>
-    <script src="../components/shared/mlnf-core.js"></script>
 </body>
 </html> 
