@@ -6,13 +6,9 @@ function setTheme(theme) {
     document.body.classList.toggle('light-theme', theme === 'light');
     localStorage.setItem('theme', theme);
     
-    // Update theme toggle icon if element exists
-    if (themeToggle) {
-        const icon = themeToggle.querySelector('i');
-        if (icon) {
-            icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-        }
-    }
+    // Update theme toggle icon
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
 }
 
 function initTheme() {
@@ -25,13 +21,10 @@ function initTheme() {
     }
 }
 
-// Only add event listener if themeToggle exists
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
-        setTheme(currentTheme === 'light' ? 'dark' : 'light');
-    });
-}
+themeToggle.addEventListener('click', () => {
+    const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+    setTheme(currentTheme === 'light' ? 'dark' : 'light');
+});
 
 // Initialize theme on page load
 initTheme();
