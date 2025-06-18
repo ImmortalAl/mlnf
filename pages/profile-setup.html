@@ -130,8 +130,25 @@
     <!-- Config MUST be loaded first -->
     <script src="../components/shared/config.js?v=1.2"></script>
     
+    <!-- Core MLNF Components -->
+    <script src="../components/shared/authManager.js?v=1.2"></script>
+    <script src="../components/shared/apiClient.js?v=1.2"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/userMenu.js?v=1.2"></script>
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
+    
+    <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize MLNF core components
+            if (typeof MLNF !== 'undefined') {
+                MLNF.initNavigation();
+                MLNF.initUserMenu();
+                MLNF.initActiveUsers();
+                MLNF.initMessageModal();
+            }
+
             const elements = {
                 username: document.getElementById('username'),
                 displayName: document.getElementById('displayName'),
@@ -144,434 +161,94 @@
                 message: document.getElementById('message')
             };
 
-            // API_BASE_URL is now in config.js, accessed via window.MLNF_CONFIG
-            const DEBUG_MODE = true; // Keep local debug mode if needed for this page
+            // Check if all required elements exist
+            const missingElements = Object.entries(elements)
+                .filter(([_, element]) => !element)
+                .map(([name]) => name);
 
-            // console.log('API Base URL:', window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : 'CONFIG NOT LOADED');
-
-            // Removed local checkToken() function. Will use localStorage.getItem('sessionToken') directly.
-
-            // Fetch with retry and timeout
-            async function fetchWithRetry(url, options, retries = 3, delay = 1000, timeout = 30000) {
-                if (DEBUG_MODE) console.log(`Fetching ${options.method} ${url}, Headers:`, options.headers);
-                for (let i = 0; i < retries; i++) {
-                    try {
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), timeout);
-                        options.signal = controller.signal;
-                        
-                        console.log(`Attempt ${i+1} of ${retries} to ${options.method} ${url}`);
-                        const response = await fetch(url, options);
-                        clearTimeout(timeoutId);
-                        
-                        if (DEBUG_MODE) {
-                            console.log(`Response: ${options.method} ${url}, Status: ${response.status}`);
-                            console.log(`CORS Headers:`, {
-                                'Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
-                                'Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
-                                'Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
-                            });
-                        }
-                        
-                        if (response.ok) {
-                            return response;
-                        }
-                        
-                        const text = await response.text();
-                        console.error(`Fetch failed for ${options.method} ${url}: HTTP ${response.status}, Response: ${text.slice(0, 200)}`);
-                        
-                        // Handle specific HTTP error codes
-                        if (response.status === 401) {
-                            console.error('Authentication error, clearing token');
-                            localStorage.removeItem('sessionToken');
-                            throw new Error('Authentication failed. Please log in again.');
-                        } else if (response.status === 429) {
-                            // Rate limiting - wait longer before retry
-                            await new Promise(resolve => setTimeout(resolve, delay * 3));
-                            continue;
-                        }
-                        
-                        throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
-                    } catch (error) {
-                        if (error.name === 'AbortError') {
-                            console.error(`Fetch timeout for ${options.method} ${url} after ${timeout}ms`);
-                            if (i < retries - 1) {
-                                console.log(`Will retry after timeout (attempt ${i+1}/${retries})`);
-                                await new Promise(resolve => setTimeout(resolve, delay));
-                                continue;
-                            }
-                            throw new Error('Request timed out. Please check your network connection.');
-                        }
-                        
-                        if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
-                            console.error(`Network error for ${options.method} ${url}: ${error.message}`);
-                            if (i < retries - 1) {
-                                const waitTime = delay * Math.pow(2, i);
-                                console.log(`Network error, retrying in ${waitTime}ms (attempt ${i+1}/${retries})`);
-                                await new Promise(resolve => setTimeout(resolve, waitTime));
-                                continue;
-                            }
-                        }
-                        
-                        if (i === retries - 1) throw error;
-                        
-                        console.log(`Retrying ${options.method} ${url} (${i + 1}/${retries}) after ${delay}ms`);
-                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
-                    }
-                }
+            if (missingElements.length > 0) {
+                console.error('Missing elements:', missingElements.join(', '));
+                return;
             }
 
-            // Initial auth check
-            async function initializePage() {
-                const token = localStorage.getItem('sessionToken'); // Use direct localStorage check
-                if (!token) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Please log in to view and save your profile.';
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('login'); 
-                        // Add a way to know if login was successful to then call fetchUserData, 
-                        // or rely on user to manually try saving after login.
-                        // For now, just prompt login. The save button will re-check.
-                    } else {
-                        console.error('AuthModal component not available.');
-                        // Fallback or different handling if modal not ready
-                    }
-                    // Do not redirect immediately, let the modal handle it or user interaction.
-                    return; 
-                }
-                await fetchUserData(token);
-            }
-
-            // Fetch user data to pre-fill form
-            async function fetchUserData(token) {
+            // Fetch user data
+            async function fetchUserData() {
                 try {
-                    elements.message.className = '';
-                    elements.message.textContent = 'Loading your profile...';
-                    
-                    const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
-                    if (!apiUrl) { throw new Error('API configuration is missing.'); }
-
-                    const response = await fetchWithRetry(`${apiUrl}/users/me`, {
-                        method: 'GET',
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/me`, {
                         headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
+                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
                         }
                     });
-                    
-                    const text = await response.text();
-                    let user;
-                    try {
-                        user = JSON.parse(text);
-                    } catch (e) {
-                        console.error(`Invalid JSON from /users/me: ${text.slice(0, 200)}`);
-                        throw new Error('Invalid JSON response from server');
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
                     }
+
+                    const userData = await response.json();
                     
-                    if (DEBUG_MODE) console.log('Fetched user:', user);
+                    // Populate form fields
+                    elements.username.value = userData.username || '';
+                    elements.displayName.value = userData.displayName || '';
+                    elements.avatar.value = userData.avatar || '';
+                    elements.status.value = userData.status || '';
+                    elements.bio.value = userData.bio || '';
+                    elements.signature.value = userData.signature || '';
                     
-                    // Update form fields with user data
-                    elements.username.value = user.username || '';
-                    elements.displayName.value = user.displayName || '';
-                    elements.avatar.value = user.avatar || '';
-                    elements.avatarPreview.src = user.avatar || '../assets/images/default.jpg';
-                    elements.status.value = user.status || '';
-                    elements.bio.value = user.bio || '';
-                    elements.signature.value = user.signature || '';
-                    
-                    // Clear loading message
-                    elements.message.textContent = '';
+                    // Update avatar preview
+                    if (userData.avatar) {
+                        elements.avatarPreview.src = userData.avatar;
+                    }
                 } catch (error) {
-                    console.error('Fetch user data error:', error);
-                    
-                    // More specific error messages based on the error type
-                    elements.message.className = 'error-message';
-                    
-                    if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
-                        elements.message.textContent = 'Network connection error. Please check your internet connection.';
-                    } else if (error.name === 'AbortError') {
-                        elements.message.textContent = 'Request timed out. Please check your network connection.';
-                    } else {
-                    elements.message.textContent = `Error fetching profile: ${error.message}. Please try again or contact support.`;
-                    }
-                    
-                    localStorage.removeItem('sessionToken');
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                         window.MLNF.openSoulModal('login'); // Prompt login again
-                    } else {
-                        elements.message.textContent = 'Session expired. Please login via header.';
-                    }
+                    console.error('Error fetching user data:', error);
+                    elements.message.textContent = 'Error loading profile data. Please try again.';
                 }
             }
 
-            // Update avatar preview dynamically
-            elements.avatar.addEventListener('input', () => {
-                const url = elements.avatar.value.trim();
-                elements.avatarPreview.src = url || '../assets/images/default.jpg';
-                elements.avatarPreview.onerror = () => {
-                    elements.avatarPreview.src = '../assets/images/default.jpg';
-                };
-            });
-
-            // Handle form submission
-            elements.saveProfile.addEventListener('click', async (e) => {
-                console.log('Save button clicked');
-                e.preventDefault(); 
-                
-                const token = localStorage.getItem('sessionToken'); // Use direct localStorage check
-                console.log('Token check result:', token ? 'Valid token' : 'No valid token');
-                
-                if (!token) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Please log in to save your profile';
-                    console.log('User not logged in, opening login modal');
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('login');
-                    } else {
-                        console.error('AuthModal component not available for save attempt.');
-                        // Fallback, maybe alert or redirect to a general login page if header isn't used.
-                    }
-                    return;
-                }
-
-                // Validate form inputs
-                const username = elements.username.value.trim();
-                const displayName = elements.displayName.value.trim();
-                const avatar = elements.avatar.value.trim();
-                const status = elements.status.value.trim();
-                const bio = elements.bio.value.trim();
-                const signature = elements.signature.value.trim();
-
-                // Input validation
-                if (!username) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Username is required';
-                    return;
-                }
-
-                if (username.length < 3 || username.length > 30) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Username must be between 3 and 30 characters';
-                    return;
-                }
-
-                if (displayName && displayName.length > 50) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Display name must be less than 50 characters';
-                    return;
-                }
-
-                if (status && status.length > 100) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Status must be less than 100 characters';
-                    return;
-                }
-
-                if (bio && bio.length > 500) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Bio must be less than 500 characters';
-                    return;
-                }
-
-                if (signature && signature.length > 150) {
-                    elements.message.className = 'error-message';
-                    elements.message.textContent = 'Signature must be less than 150 characters';
-                    return;
-                }
-
-                // Validate avatar URL if provided
-                if (avatar) {
-                    try {
-                        new URL(avatar);
-                    } catch {
-                        elements.message.className = 'error-message';
-                        elements.message.textContent = 'Please enter a valid avatar URL';
-                        return;
-                    }
-                }
-
-                // Disable save button and show loading state
-                elements.saveProfile.disabled = true;
-                const originalButtonText = elements.saveProfile.innerHTML;
-                elements.saveProfile.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-                elements.message.className = 'success-message';
-                elements.message.textContent = 'Saving profile...';
-                
-                console.log('Form data prepared:', {
-                    username,
-                    displayName: displayName || 'Not provided',
-                    avatar: avatar ? 'Avatar URL provided' : 'No avatar',
-                    status: status || 'No status',
-                    bio: bio || 'No bio',
-                    signature: signature || 'No signature'
-                });
+            // Save profile
+            async function saveProfile(event) {
+                event.preventDefault();
+                elements.message.textContent = '';
 
                 try {
-                    // Get API URL from config
-                    const apiUrl = window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '';
-                    if (!apiUrl) { 
-                        throw new Error('API configuration is missing.'); 
-                    }
-                    
-                    // Correct endpoint URL to match backend route
-                    console.log('Sending request to:', `${apiUrl}/users/me`);
-                    const requestBody = {
-                        username,
-                        displayName,
-                        avatar,
-                        status,
-                        bio,
-                        signature
-                    };
-                    
-                    console.log('Request body:', JSON.stringify(requestBody, null, 2));
-                    
-                    const response = await fetchWithRetry(`${apiUrl}/users/me`, {
-                        method: 'PATCH',
+                    const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/me`, {
+                        method: 'PUT',
                         headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
                         },
-                        body: JSON.stringify(requestBody)
+                        body: JSON.stringify({
+                            username: elements.username.value,
+                            displayName: elements.displayName.value,
+                            avatar: elements.avatar.value,
+                            status: elements.status.value,
+                            bio: elements.bio.value,
+                            signature: elements.signature.value
+                        })
                     });
-                    
-                    let data;
-                    try {
-                        const responseText = await response.text();
-                        console.log('Raw response:', responseText);
-                        
-                        // Try to parse as JSON, but handle non-JSON responses
-                        try {
-                            data = responseText ? JSON.parse(responseText) : {};
-                            console.log('Parsed response data:', data);
-                        } catch (parseError) {
-                            console.error('Failed to parse response as JSON:', parseError);
-                            throw new Error('Received invalid response from server');
-                        }
-                        
-                        if (!response.ok) {
-                            console.error('Server responded with error status:', response.status);
-                            throw new Error(data.error || `Server error: ${response.status} ${response.statusText}`);
-                        }
-                        
-                        elements.message.className = 'success-message';
-                        elements.message.textContent = '✅ Profile saved successfully!';
-                        
-                        // Store the updated user data in localStorage
-                        if (data) {
-                            localStorage.setItem('user', JSON.stringify(data));
-                            console.log('[profile-setup] Saved user to localStorage:', data);
-                            console.log('[profile-setup] Bio in response:', data.bio);
-                        }
-                        
-                        // Redirect after a short delay
-                        setTimeout(() => {
-                            window.location.href = '../lander.html';
-                        }, 1500);
-                    } catch (error) {
-                        console.error('Error saving profile:', {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        });
-                        
-                        elements.message.className = 'error-message';
-                        
-                        // Provide more specific error messages
-                        let errorMessage = 'Failed to save profile. Please try again.';
-                        console.log('Error type:', error.constructor.name);
-                        if (error.message.includes('network') || error.message.includes('NetworkError')) {
-                            errorMessage = 'Network error. Please check your connection and try again.';
-                        } else if (error.message.includes('token') || error.message.includes('401')) {
-                            errorMessage = 'Session expired. Please log in again.';
-                            localStorage.removeItem('sessionToken');
-                            setTimeout(() => {
-                                if (window.MLNF && window.MLNF.openSoulModal) {
-                                    window.MLNF.openSoulModal('login');
-                                } else {
-                                    window.location.href = '../lander.html';
-                                }
-                            }, 2000);
-                        } else {
-                            errorMessage = error.message || errorMessage;
-                        }
-                        
-                        elements.message.textContent = errorMessage;
-                        
-                        // Re-enable the save button after a delay
-                        setTimeout(() => {
-                            elements.saveProfile.disabled = false;
-                            elements.saveProfile.innerHTML = originalButtonText;
-                        }, 3000);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
                     }
+
+                    elements.message.textContent = 'Profile saved successfully!';
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 1500);
                 } catch (error) {
-                    console.error('Unexpected error in form submission:', error);
-                    elements.message.className = 'error-message';
-                    
-                    // Better error handling for network errors
-                    let errorMessage = 'An unexpected error occurred. Please try again.';
-                    if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
-                        errorMessage = 'Network connection error. Please check your internet connection and try again.';
-                    } else if (error.name === 'AbortError') {
-                        errorMessage = 'Request timed out. Please check your network connection.';
-                    } else if (error.message) {
-                        errorMessage = error.message;
-                    }
-                    
-                    elements.message.textContent = errorMessage;
-                    elements.saveProfile.disabled = false;
-                    elements.saveProfile.innerHTML = originalButtonText;
+                    console.error('Error saving profile:', error);
+                    elements.message.textContent = 'Error saving profile. Please try again.';
                 }
+            }
+
+            // Event listeners
+            elements.avatar.addEventListener('input', () => {
+                elements.avatarPreview.src = elements.avatar.value || '../assets/images/default.jpg';
             });
 
-            // Single initialization point with clear console logging
-            function init() {
-                console.log('Profile setup page initialization starting');
-                console.log('Elements loaded:', Object.keys(elements).map(key => `${key}: ${!!elements[key]}`).join(', '));
-                
-                // Check if all elements are present
-                const missingElements = Object.entries(elements)
-                    .filter(([key, element]) => !element)
-                    .map(([key]) => key);
-                
-                if (missingElements.length > 0) {
-                    console.error('Missing elements:', missingElements.join(', '));
-                    return false;
-                }
-                
-                // Initialize the page
-                initializePage();
-                return true;
-            }
-            
-            // Wait for DOM to be fully loaded
-            if (document.readyState === 'loading') {
-                console.log('Document still loading, waiting for DOMContentLoaded');
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                console.log('Document already loaded, initializing immediately');
-                init();
-            }
-        });
-    </script>
+            elements.saveProfile.addEventListener('click', saveProfile);
 
-    <!-- Shared Components -->
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script> 
-    <script src="../components/shared/navigation.js?v=1.2"></script> 
-    <script src="../components/shared/userMenu.js?v=1.2"></script> 
-    <script src="../components/shared/authModal.js?v=1.2"></script> 
-    <script src="../components/shared/messageModal.js?v=1.2"></script>
-    <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize message modal first
-            if (window.MLNF && window.MLNF.initMessageModal) {
-                window.MLNF.initMessageModal();
-            }
-            // Then initialize active users (which depends on message modal)
-            if (window.MLNF && window.MLNF.initActiveUsers) {
-                window.MLNF.initActiveUsers();
-            }
+            // Load user data
+            fetchUserData();
         });
     </script>
 </body>

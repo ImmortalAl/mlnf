@@ -720,24 +720,26 @@
         </div>
     </div>
 
-    <!-- Core Configuration -->
-    <script src="../components/shared/config.js"></script>
-
-    <!-- Core MLNF -->
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
-
-    <!-- Shared Components -->
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.2"></script>
+    
+    <!-- Core MLNF Components -->
+    <script src="../components/shared/authManager.js?v=1.2"></script>
+    <script src="../components/shared/apiClient.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
     <script src="../components/shared/userMenu.js?v=1.2"></script>
-    <script src="../components/shared/authModal.js?v=1.2"></script>
-    <script src="../components/shared/messageModal.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
-
+    <script src="../components/shared/messageModal.js?v=1.2"></script>
+    
     <!-- Initialize MLNF -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.MLNF && typeof window.MLNF.initAll === 'function') {
-                window.MLNF.initAll();
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize MLNF core components
+            if (typeof MLNF !== 'undefined') {
+                MLNF.initNavigation();
+                MLNF.initUserMenu();
+                MLNF.initActiveUsers();
+                MLNF.initMessageModal();
             } else {
                 console.error('[profile] MLNF core not properly initialized');
             }

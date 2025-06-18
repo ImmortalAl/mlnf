@@ -248,11 +248,48 @@
         <p>With great power comes eternal responsibility.</p>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Config MUST be loaded first -->
     <script src="../components/shared/config.js?v=1.2"></script>
+    
+    <!-- Core MLNF Components -->
+    <script src="../components/shared/authManager.js?v=1.2"></script>
+    <script src="../components/shared/apiClient.js?v=1.2"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/userMenu.js?v=1.2"></script>
+    <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
-    <!-- <script src="../js/scripts.js?v=1.0"></script> --> <!-- Legacy script - functionality moved to components -->
-    <script src="../js/admin.js?v=1.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Admin Components -->
+    <script src="../js/admin/dashboard.js?v=1.2"></script>
+    <script src="../js/admin/userManagement.js?v=1.2"></script>
+    <script src="../js/admin/analytics.js?v=1.2"></script>
+    <script src="../js/admin/feedback.js?v=1.2"></script>
+    
+    <!-- Initialize MLNF -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize MLNF core components
+            if (typeof MLNF !== 'undefined') {
+                MLNF.initNavigation();
+                MLNF.initUserMenu();
+                MLNF.initActiveUsers();
+                MLNF.initMessageModal();
+            }
+            
+            // Initialize admin components
+            if (typeof AdminDashboard !== 'undefined') {
+                AdminDashboard.init();
+            }
+            if (typeof UserManagement !== 'undefined') {
+                UserManagement.init();
+            }
+            if (typeof AdminAnalytics !== 'undefined') {
+                AdminAnalytics.init();
+            }
+            if (typeof AdminFeedback !== 'undefined') {
+                AdminFeedback.init();
+            }
+        });
+    </script>
 </body>
 </html> 
