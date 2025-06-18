@@ -733,7 +733,7 @@
     
     <!-- Initialize MLNF -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // Initialize MLNF core components
             if (typeof MLNF !== 'undefined') {
                 MLNF.initNavigation();
@@ -742,6 +742,64 @@
                 MLNF.initMessageModal();
             } else {
                 console.error('[profile] MLNF core not properly initialized');
+                return;
+            }
+
+            // Load profile data
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/me`);
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                
+                const userData = await response.json();
+                
+                // Update profile header
+                const profileHeader = document.querySelector('.profile-header');
+                if (profileHeader) {
+                    const avatar = profileHeader.querySelector('.profile-avatar');
+                    const name = profileHeader.querySelector('.profile-title h1');
+                    const username = profileHeader.querySelector('.profile-title .username');
+                    const status = profileHeader.querySelector('.profile-status');
+
+                    if (avatar) avatar.src = userData.avatar || '../assets/images/default.jpg';
+                    if (name) name.textContent = userData.displayName || userData.username;
+                    if (username) username.textContent = `@${userData.username}`;
+                    if (status) status.textContent = userData.status || 'No status set';
+                }
+
+                // Update bio section
+                const bioSection = document.querySelector('.profile-bio');
+                if (bioSection) {
+                    bioSection.textContent = userData.bio || 'No bio provided';
+                }
+
+                // Update stats
+                const statsSection = document.querySelector('.profile-stats');
+                if (statsSection) {
+                    statsSection.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${userData.posts || 0}</div>
+                            <div class="stat-label">Soul Scrolls</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${userData.comments || 0}</div>
+                            <div class="stat-label">Echoes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${userData.followers || 0}</div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${userData.following || 0}</div>
+                            <div class="stat-label">Following</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                const profileCard = document.querySelector('.profile-card');
+                if (profileCard) {
+                    profileCard.innerHTML = '<p class="error">Failed to load your eternal soul. Please try again later.</p>';
+                }
             }
         });
     </script>
