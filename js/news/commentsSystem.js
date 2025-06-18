@@ -28,7 +28,13 @@ class CommentsSystem {
             }
         });
 
-        // Future: Add comment submission form listeners here
+        // Handle comment form submission using event delegation
+        document.addEventListener('submit', (e) => {
+            if (e.target.id === 'commentForm') {
+                e.preventDefault();
+                this.handleCommentSubmission(e);
+            }
+        });
     }
 
     openComments(chronicleId) {
@@ -83,14 +89,15 @@ class CommentsSystem {
                 <div class="placeholder-icon">
                     <i class="fas fa-comments" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
                 </div>
-                <h3>Comments Coming Soon</h3>
-                <p>The eternal echoes system is being forged in the digital fires. Soon, souls will be able to discuss and debate the chronicles of truth.</p>
-                <p><strong>Current Features Available:</strong></p>
+                <h3>Test Comment System</h3>
+                <p>The comment form below is functional for testing. Your eternal echoes will be preserved once the backend is connected.</p>
+                ${this.renderCommentForm()}
+                <p><strong>Current Status:</strong></p>
                 <ul style="text-align: left; max-width: 400px; margin: 1rem auto;">
                     <li>✅ Chronicle submission and editing</li>
                     <li>✅ Validation and challenge voting</li>
-                    <li>🔄 Comments system (in development)</li>
-                    <li>🔄 Real-time discussions (planned)</li>
+                    <li>✅ Comments form (frontend ready)</li>
+                    <li>🔄 Comments backend (in development)</li>
                 </ul>
                 <button class="btn btn-outline" onclick="window.commentsSystem.closeComments()">
                     Return to Chronicles
@@ -190,6 +197,57 @@ class CommentsSystem {
         const container = document.getElementById('commentsContainer');
         if (container) {
             container.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+    }
+
+    async handleCommentSubmission(e) {
+        e.preventDefault();
+        
+        if (!window.authManager || !window.authManager.isLoggedIn()) {
+            alert('Please log in to comment.');
+            return;
+        }
+
+        if (!this.currentChronicleId) {
+            alert('Error: No chronicle selected.');
+            return;
+        }
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const content = formData.get('content');
+
+        if (!content.trim()) {
+            alert('Please enter a comment.');
+            return;
+        }
+
+        try {
+            // Disable submit button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Posting...';
+
+            // TODO: Replace with actual API call when comments backend is ready
+            // const response = await window.apiClient.post(`/chronicles/${this.currentChronicleId}/comments`, {
+            //     content: content.trim()
+            // });
+
+            // For now, show success message
+            alert('Comment functionality is coming soon! Your eternal echo will be preserved once the system is fully forged.');
+            form.reset();
+            
+        } catch (error) {
+            console.error('Error submitting comment:', error);
+            alert('Failed to submit comment. Please try again.');
+        } finally {
+            // Re-enable submit button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
         }
     }
 }

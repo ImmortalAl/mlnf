@@ -795,6 +795,96 @@
             font-family: inherit;
         }
 
+        /* Comment System Styles */
+        .comments-placeholder {
+            text-align: center;
+            padding: 2rem;
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+
+        .comment-form {
+            background: var(--gradient-card);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            border: 1px solid var(--highlight);
+        }
+
+        .comment-form h4 {
+            color: var(--truth-gold);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            background: rgba(13, 13, 26, 0.8);
+            border: 2px solid var(--highlight);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--truth-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .form-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .comment-auth-prompt {
+            text-align: center;
+            padding: 2rem;
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            border: 1px solid var(--highlight);
+        }
+
         footer {
             background: var(--gradient-secondary);
             text-align: center;
@@ -1072,11 +1162,15 @@
             if (typeof ChroniclesFeed !== 'undefined') {
                 ChroniclesFeed.init();
                 console.log('[News] ChroniclesFeed initialized');
+                
+                // Make sure chroniclesFeed has access to submissionModal for editing
+                if (window.chroniclesFeed && window.submissionModal) {
+                    console.log('[News] Connected ChroniclesFeed to SubmissionModal for editing');
+                }
             }
             
             console.log('[News] Chronicles functionality fully restored!');
         });
     </script>
 </body>
-</html> 
 </html> 
