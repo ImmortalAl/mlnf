@@ -422,6 +422,39 @@ color: #f0e6ff;
 - `[page-name].css` - Page-specific styles
 - `[component-name].css` - Component-specific styles
 
+### **UI Component Architecture**
+
+#### **1. Component Stacking Context**
+- **HTML Structure**: Components must be placed in correct DOM hierarchy for proper stacking
+- **Z-Index Management**: 
+  - Use consistent z-index scale across components
+  - Consider parent stacking contexts when positioning elements
+  - Avoid z-index conflicts by planning component hierarchy
+- **Modal/Sidebar Positioning**: 
+  - Place modals and sidebars outside main content flow
+  - Use fixed positioning with proper z-index values
+  - Ensure proper event propagation and scroll management
+
+#### **2. Scroll Management**
+- **Modal/Sidebar Scrolling**:
+  - Prevent body scroll when modal/sidebar is open
+  - Maintain scroll position when closing components
+  - Handle nested scrollable areas properly
+- **Scroll Lock Implementation**:
+  - Use CSS `overflow: hidden` on body when needed
+  - Restore scroll position on component close
+  - Consider mobile-specific scroll behaviors
+
+#### **3. Component Integration**
+- **Event Handling**:
+  - Properly manage event bubbling and capture
+  - Implement click-outside detection correctly
+  - Handle keyboard navigation and accessibility
+- **State Management**:
+  - Track component open/close states
+  - Manage component interactions
+  - Handle component lifecycle properly
+
 ---
 
 ## 🔧 Backend Development
@@ -559,89 +592,4 @@ const headers = {
 ### **Ending a Development Session**
 1. Test all changes thoroughly across relevant contexts
 2. Commit and push changes with descriptive messages
-3. Update `CHANGELOG.md` with session summary
-4. Update feature roadmap status
-5. Note any issues for next session
-6. **Document any architectural insights or lessons learned**
-
----
-
-## 🆘 Common Issues & Solutions
-
-### **CSS Not Loading**
-- Verify CSS file order (base-theme.css → styles.css → shared → page-specific)
-- Check file paths are correct
-- Clear browser cache
-- Validate CSS syntax
-- **Verify CSS dependencies are available on all required pages**
-
-### **Authentication Issues**
-- Check localStorage for sessionToken and user data
-- Verify API endpoints match frontend calls
-- Test JWT token expiration
-- Check CORS settings
-
-### **Profile URLs Not Working**
-- Verify `_redirects` file configuration
-- Check Netlify deployment logs
-- Test profile template JavaScript
-- Validate username parameter extraction
-
-### **Cross-Site Feature Failures**
-- **Map CSS file loading across different page types**
-- **Test feature functionality on all relevant pages**
-- **Verify script loading order and dependencies**
-- **Check integration points for consistency**
-
-### **Git Repository Confusion**
-```bash
-# Always run git commands from front/ directory
-cd front
-git status
-git add .
-git commit -m "commit message"
-git push
-```
-
----
-
-## 🔍 Debugging Tools
-
-### **Browser Developer Tools**
-- **Console**: Check for JavaScript errors and debug logging
-- **Network**: Monitor API calls and responses, verify CSS/JS loading
-- **Elements**: Inspect CSS and DOM structure, verify class application
-- **Application**: Check localStorage data and session information
-
-### **API Testing**
-- Use browser network tab for API debugging
-- Test endpoints with curl or Postman
-- Check backend logs on Render dashboard
-- Verify database operations in MongoDB Atlas
-
-### **CSS Debugging**
-- **Inspect Element**: Verify CSS classes are applied correctly
-- **Computed Styles**: Check which styles are actually applied
-- **CSS Coverage**: Identify unused CSS rules
-- **Responsive Testing**: Test across different screen sizes
-
-### **Architecture Debugging**
-- **Document data flow**: Trace from API to UI rendering
-- **Map integration points**: Identify all places feature is used
-- **Test cross-page functionality**: Verify consistency across site
-- **Review dependency chain**: Check CSS and JavaScript loading order
-
----
-
-## 📚 Additional Resources
-
-- **[FEATURES.md](./FEATURES.md)** - Current features and roadmap
-- **[CSS-GUIDE.md](./CSS-GUIDE.md)** - Complete CSS documentation
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Technical architecture details
-- **[avatar-system.md](./avatar-system.md)** - Comprehensive avatar system documentation
-- **[CHANGELOG.md](./CHANGELOG.md)** - Development history and completed features
-- **[AI-CONTEXT.md](./AI-CONTEXT.md)** - AI assistant context and handoff
-
----
-
-*Last updated: Major documentation update with leadership analysis and architecture-first development methodologies*
+3. Update `CHANGELOG.md`
