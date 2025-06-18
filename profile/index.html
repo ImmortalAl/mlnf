@@ -568,7 +568,7 @@
         
         <div id="profileCard" class="profile-card" style="display: none;">
             <div class="profile-header">
-                <img src="/assets/images/default-avatar.png" alt="Profile Avatar" class="profile-avatar" id="profileAvatar">
+                <img src="/assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar" id="profileAvatar">
                 <div class="profile-title">
                     <h1 id="profileDisplayName">Display Name</h1>
                     <p class="username" id="profileUsername">@username</p>
@@ -940,9 +940,9 @@
                     console.log('Displaying user data:', userData);
                     // Set avatar
                     const avatarElement = document.getElementById('profileAvatar');
-                    avatarElement.src = userData.avatar || (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png');
+                    avatarElement.src = userData.avatar || (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default.jpg');
                     avatarElement.onerror = () => {
-                        avatarElement.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png');
+                        avatarElement.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default.jpg');
                     };
                     
                     // Set display name and username
@@ -982,7 +982,7 @@
                     document.getElementById('profileUsername').textContent = '@anonymous';
                     document.getElementById('profileStatus').textContent = 'Exploring the eternal realm...';
                     document.getElementById('profileBio').textContent = 'This soul is just beginning their journey.';
-                    document.getElementById('profileAvatar').src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default-avatar.png');
+                    document.getElementById('profileAvatar').src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '../assets/images/default.jpg');
                     document.getElementById('joinedDate').textContent = 'Recently joined';
                     
                     // Load privacy settings

@@ -103,7 +103,7 @@
             <label for="avatar">Avatar</label>
             <input type="text" id="avatar" placeholder="Enter an image URL or leave blank for default" pattern="https?://.+">
             <div class="avatar-preview">
-                <img id="avatarPreview" src="../assets/images/default-avatar.png" alt="Avatar Preview">
+                <img id="avatarPreview" src="../assets/images/default.jpg" alt="Avatar Preview">
                 <span>Preview</span>
             </div>
         </div>
@@ -274,7 +274,7 @@
                     elements.username.value = user.username || '';
                     elements.displayName.value = user.displayName || '';
                     elements.avatar.value = user.avatar || '';
-                    elements.avatarPreview.src = user.avatar || '../assets/images/default-avatar.png';
+                    elements.avatarPreview.src = user.avatar || '../assets/images/default.jpg';
                     elements.status.value = user.status || '';
                     elements.bio.value = user.bio || '';
                     elements.signature.value = user.signature || '';
@@ -307,9 +307,9 @@
             // Update avatar preview dynamically
             elements.avatar.addEventListener('input', () => {
                 const url = elements.avatar.value.trim();
-                elements.avatarPreview.src = url || '../assets/images/default-avatar.png';
+                elements.avatarPreview.src = url || '../assets/images/default.jpg';
                 elements.avatarPreview.onerror = () => {
-                    elements.avatarPreview.src = '../assets/images/default-avatar.png';
+                    elements.avatarPreview.src = '../assets/images/default.jpg';
                 };
             });
 

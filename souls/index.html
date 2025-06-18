@@ -245,7 +245,7 @@
                         img.classList.remove('skeleton');
                     };
                     tempImage.onerror = () => {
-                        img.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default-avatar.png'); // Fallback
+                        img.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default.jpg'); // Fallback
                         img.classList.add('loaded'); 
                         img.classList.remove('lazy-avatar');
                         img.classList.remove('skeleton');
