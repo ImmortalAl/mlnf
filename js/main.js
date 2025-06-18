@@ -105,7 +105,7 @@ class FeedbackSystem {
         this.modal.style.display = 'none';
         this.modal.setAttribute('aria-hidden', 'true');
         this.modal.classList.remove('keyboard-open');
-        document.body.style.overflow = '';
+        document.body.style.removeProperty('overflow');
     }
     updateUserInfo() {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -603,7 +603,7 @@ function closeAnonymousMessageModal() {
     if (modal) {
         modal.style.display = 'none';
         modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+        document.body.style.removeProperty('overflow');
         modal.remove();
     }
 }

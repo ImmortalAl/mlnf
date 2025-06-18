@@ -78,7 +78,7 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         if (!isInitialized || !messageModal) return;
         messageModal.classList.remove('active');
         messageModal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+        document.body.style.removeProperty('overflow');
         currentRecipientUsername = null;
         if (currentBackdropListener) {
             messageModal.removeEventListener('click', currentBackdropListener);

@@ -135,7 +135,7 @@ function setupMobileNavEvents() {
             console.log('[navigation.js] Closing mobile menu...');
             mobileNav.classList.remove('active');
             mobileOverlay.classList.remove('active');
-            document.body.style.overflow = ''; // Restore background scroll
+            document.body.style.removeProperty('overflow'); // Restore background scroll
         };
 
         closeMobileNav.addEventListener('click', (e) => {
@@ -198,7 +198,7 @@ function setupMobileNavLinkHandlers() {
         mobileNav.classList.remove('active');
         const mobileOverlay = document.getElementById('mobileOverlay');
         if (mobileOverlay) mobileOverlay.classList.remove('active');
-        document.body.style.overflow = ''; // Restore background scroll
+        document.body.style.removeProperty('overflow'); // Restore background scroll
     };
 
     // All links in mobile nav are navigation links - close menu when any is clicked

@@ -111,7 +111,7 @@ function closeSoulModal() {
   }
   
   soulModal.classList.remove('active');
-  document.body.style.overflow = ''; // Restore background scroll
+          document.body.style.removeProperty('overflow'); // Restore background scroll
   
   if (modalFeedback) modalFeedback.textContent = '';
   if (soulLoginForm) soulLoginForm.reset();

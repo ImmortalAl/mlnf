@@ -60,7 +60,8 @@ function setupActiveUsersEvents() {
             // Force reflow
             activeUsersSidebar.offsetHeight; 
 
-            document.body.style.overflow = '';
+            // Restore scrolling by removing the overflow style completely
+            document.body.style.removeProperty('overflow');
             
             setTimeout(() => {
                 activeUsersSidebar.classList.remove('force-close');
