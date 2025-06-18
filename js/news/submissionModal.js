@@ -75,7 +75,7 @@ class SubmissionModal {
         const modal = document.getElementById('submissionModal');
         if (modal) {
             this.resetSubmissionForm();
-            modal.style.display = 'flex';
+            modal.classList.add('show');
             document.body.style.overflow = 'hidden';
         }
     }
@@ -83,7 +83,7 @@ class SubmissionModal {
     closeSubmissionModal() {
         const modal = document.getElementById('submissionModal');
         if (modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('show');
             document.body.style.overflow = '';
             this.resetSubmissionForm();
         }
@@ -107,7 +107,7 @@ class SubmissionModal {
 
         const modal = document.getElementById('editModal');
         if (modal) {
-            modal.style.display = 'flex';
+            modal.classList.add('show');
             document.body.style.overflow = 'hidden';
         }
     }
@@ -115,7 +115,7 @@ class SubmissionModal {
     closeEditModal() {
         const modal = document.getElementById('editModal');
         if (modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('show');
             document.body.style.overflow = '';
             this.isEditMode = false;
             this.currentChronicleId = null;

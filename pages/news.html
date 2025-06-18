@@ -55,6 +55,107 @@
             flex-direction: column;
         }
 
+        /* Active Users Sidebar - CRITICAL: Must be defined to prevent blocking */
+        .active-users {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: var(--gradient-card);
+            border-left: 2px solid var(--truth-gold);
+            transition: var(--transition);
+            z-index: 1500;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+        }
+
+        .active-users.open {
+            right: 0;
+        }
+
+        .active-users-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--highlight);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .active-users-header h3 {
+            color: var(--truth-gold);
+            font-size: 1.2rem;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-sidebar:hover {
+            color: var(--truth-gold);
+        }
+
+        .show-users-btn {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--gradient-accent);
+            border: none;
+            color: var(--primary);
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1400;
+            box-shadow: var(--shadow);
+        }
+
+        .show-users-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Mobile Navigation - Proper z-index management */
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1200;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .mobile-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 300px;
+            height: 100vh;
+            background: var(--gradient-card);
+            z-index: 1300;
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+
+        .mobile-nav.active {
+            left: 0;
+        }
+
         header {
             background: var(--gradient-secondary);
             padding: 1rem 2rem;
@@ -64,7 +165,7 @@
             border-bottom: 3px solid var(--truth-gold);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 1100;
             backdrop-filter: blur(15px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
@@ -374,26 +475,72 @@
         .chronicle-author {
             color: var(--accent);
             font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .chronicle-author::before {
+            content: '✍️';
+            font-size: 1.1rem;
+        }
+
+        .chronicle-author:hover {
+            color: var(--truth-gold);
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            transition: var(--transition);
         }
 
         .edit-chronicle-btn {
-            background: none;
-            border: 1px solid var(--highlight);
-            color: var(--text);
-            padding: 0.5rem;
+            background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 94, 120, 0.05));
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.6rem;
             border-radius: 50%;
             cursor: pointer;
             transition: var(--transition);
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 8px rgba(255, 94, 120, 0.2);
+        }
+
+        .edit-chronicle-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .edit-chronicle-btn:hover::before {
+            opacity: 1;
         }
 
         .edit-chronicle-btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
+            color: white;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 4px 15px rgba(255, 94, 120, 0.4);
+        }
+
+        .edit-chronicle-btn i {
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .edit-chronicle-btn:hover i {
             transform: scale(1.1);
         }
 
@@ -555,11 +702,11 @@
             box-shadow: var(--shadow);
         }
 
-        /* Modal Improvements */
+        /* FIXED MODAL SYSTEM - Standardized z-index and structure */
         .modal {
             display: none;
             position: fixed;
-            z-index: 5000;
+            z-index: 9000; /* Highest z-index for modals */
             left: 0;
             top: 0;
             width: 100%;
@@ -567,15 +714,16 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
-        }
-        
-        .modal.active, .modal[style*="flex"] {
-            display: flex;
             align-items: center;
             justify-content: center;
         }
+        
+        /* CRITICAL: Only show modal when explicitly made visible */
+        .modal.show {
+            display: flex !important;
+        }
 
-        .modal-content {
+        .modal-content, .message-modal-content {
             background: var(--gradient-card);
             margin: 5% auto;
             padding: 3rem;
@@ -586,6 +734,7 @@
             box-shadow: var(--shadow-hover);
             animation: modal-fade-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(15px);
+            position: relative;
         }
 
         @keyframes modal-fade-in {
@@ -659,16 +808,52 @@
         @media (max-width: 768px) {
             .chronicles-header h2 { font-size: 2.5rem; }
             .chronicle-card { padding: 1.5rem; }
-            .chronicle-title { font-size: 1.5rem; }
+            .chronicle-title { 
+                font-size: 1.6rem; 
+                min-width: auto;
+            }
+            .chronicle-title::before {
+                left: -1.5rem;
+                font-size: 1.2rem;
+            }
+            .chronicle-meta {
+                min-width: auto;
+                align-items: flex-start;
+            }
             .view-controls { flex-direction: column; gap: 1rem; }
             .chronicle-actions { gap: 0.5rem; }
             .action-btn { font-size: 0.9rem; padding: 0.5rem 1rem; }
-            .modal-content { padding: 2rem; margin: 10% auto; width: 95%; }
+            .modal-content, .message-modal-content { padding: 2rem; margin: 10% auto; width: 95%; }
+            .active-users { width: 100vw; right: -100vw; }
+            .show-users-btn { right: 10px; }
         }
 
         @media (max-width: 480px) {
-            .chronicle-header { flex-direction: column; align-items: flex-start; }
-            .chronicle-meta { align-items: flex-start; }
+            .chronicle-header { 
+                flex-direction: column; 
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .chronicle-title {
+                font-size: 1.4rem;
+                padding-left: 1rem;
+            }
+            .chronicle-title::before {
+                left: -0.5rem;
+                font-size: 1rem;
+            }
+            .chronicle-meta { 
+                align-items: flex-start;
+                width: 100%;
+            }
+            .chronicle-date {
+                align-self: flex-start;
+            }
+            .edit-chronicle-btn {
+                width: 40px;
+                height: 40px;
+                padding: 0.5rem;
+            }
             .chronicle-actions { flex-direction: column; align-items: stretch; }
             .action-btn { justify-content: center; }
         }
@@ -893,4 +1078,5 @@
         });
     </script>
 </body>
+</html> 
 </html> 

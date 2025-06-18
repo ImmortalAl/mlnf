@@ -37,7 +37,7 @@ class CommentsSystem {
         
         const modal = document.getElementById('commentsModal');
         if (modal) {
-            modal.style.display = 'flex';
+            modal.classList.add('show');
             document.body.style.overflow = 'hidden';
             
             // Update modal title
@@ -51,7 +51,7 @@ class CommentsSystem {
     closeComments() {
         const modal = document.getElementById('commentsModal');
         if (modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('show');
             document.body.style.overflow = '';
             this.currentChronicleId = null;
             this.comments = [];
