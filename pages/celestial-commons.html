@@ -87,7 +87,9 @@
             <i class="fas fa-bars"></i>
         </button>
         <nav class="main-nav">
-            <ul></ul>
+            <ul>
+                <!-- Navigation items will be populated by navigation.js -->
+            </ul>
         </nav>
         <div class="header-controls">
             <div class="user-menu" id="userMenuContainer"></div>
@@ -103,7 +105,9 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <ul class="mobile-nav-list"></ul>
+            <ul class="mobile-nav-list">
+                <!-- Mobile navigation items will be populated by navigation.js -->
+            </ul>
         </nav>
     </header>
 
@@ -175,8 +179,7 @@
     <!-- Message Modal -->
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="modal-content">
-            <h3>Direct Message</h3>
-            <p id="recipientName">To: Username</p>
+            <h3>Direct Message to <span id="recipientName">Username</span></h3>
             <div class="message-history" id="messageHistory"></div>
             <div class="message-form">
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
