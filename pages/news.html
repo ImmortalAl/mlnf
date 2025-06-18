@@ -569,9 +569,10 @@
     <script src="../js/mlnf-avatar-system.js?v=1.1"></script>
     
     <!-- News Components -->
-    <script src="../js/news/submissionModal.js?v=1.2"></script>
-    <script src="../js/news/commentsSystem.js?v=1.2"></script>
-    <script src="../js/news/chroniclesFeed.js?v=1.2"></script>
+    <!-- TODO: Create these missing files when implementing news functionality -->
+    <!-- <script src="../js/news/submissionModal.js?v=1.2"></script> -->
+    <!-- <script src="../js/news/commentsSystem.js?v=1.2"></script> -->
+    <!-- <script src="../js/news/chroniclesFeed.js?v=1.2"></script> -->
     
     <!-- Initialize MLNF -->
     <script>
@@ -584,15 +585,16 @@
                 MLNF.initMessageModal();
             }
 
-            // Initialize news components
-            if (typeof SubmissionModal !== 'undefined') {
-                SubmissionModal.init();
-            }
-            if (typeof CommentsSystem !== 'undefined') {
-                CommentsSystem.init();
-            }
-            if (typeof ChroniclesFeed !== 'undefined') {
-                ChroniclesFeed.init();
+            // Basic news page functionality (placeholder)
+            console.log('[News] Page loaded - news functionality needs to be implemented');
+            
+            // TODO: Implement SubmissionModal, CommentsSystem, and ChroniclesFeed
+            // For now, just hide/disable elements that depend on these systems
+            const submitButton = document.getElementById('openSubmissionModal');
+            if (submitButton) {
+                submitButton.addEventListener('click', () => {
+                    alert('Chronicle submission functionality coming soon!');
+                });
             }
         });
     </script>
