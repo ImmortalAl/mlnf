@@ -378,7 +378,8 @@
             if (!replies || replies.length === 0) {
                 return '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
             }
-            return replies.map(reply => `
+            
+            const repliesHTML = replies.map(reply => `
                 <div class="reply" data-id="${reply._id}">
                      <div class="thread-voting reply-voting">
                         <button class="vote-btn" data-action="upvote-reply" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
