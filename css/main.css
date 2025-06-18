@@ -2,20 +2,6 @@
 @import 'variables.css';
 @import 'utilities.css';
 
-/* Components */
-@import 'components/header.css';
-@import 'components/cards.css';
-@import 'components/navigation.css';
-@import 'components/forms.css';
-@import 'components/modals.css';
-
-/* Sections */
-@import 'sections/hero.css';
-@import 'sections/features.css';
-@import 'sections/highlights.css';
-@import 'sections/debate.css';
-@import 'sections/mindmap.css';
-
 /* Layout */
 body {
     background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;

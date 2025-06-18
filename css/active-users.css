@@ -7,13 +7,16 @@
     height: 100vh;
     background: var(--secondary, #1a1a33);
     border-left: 3px solid var(--accent, #ff5e78);
-    z-index: 9999;
+    z-index: 9999 !important;
     padding: var(--header-height, 70px) 1rem 1rem 1rem;
     transition: right 0.3s ease;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    /* Ensure this creates its own stacking context */
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 /* ---------------------------------------------------------
@@ -33,6 +36,7 @@
 --------------------------------------------------------- */
 aside#activeUsers.active-users.active {
     right: 0 !important; /* Force visible – wins against page-specific overrides */
+    z-index: 99999 !important; /* Ensure maximum z-index when active */
 }
 
 /* Force sidebar to close - overrides all other rules including .active */
