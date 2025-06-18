@@ -724,6 +724,7 @@
     <script src="../components/shared/config.js?v=1.2"></script>
     
     <!-- Core MLNF Components -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
     <script src="../components/shared/authManager.js?v=1.2"></script>
     <script src="../components/shared/apiClient.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
@@ -734,74 +735,93 @@
     <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize MLNF core components
-            if (typeof MLNF !== 'undefined') {
-                MLNF.initNavigation();
-                MLNF.initUserMenu();
-                MLNF.initActiveUsers();
-                MLNF.initMessageModal();
-            } else {
-                console.error('[profile] MLNF core not properly initialized');
-                return;
-            }
-
-            // Load profile data
-            try {
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/me`);
-                if (!response.ok) throw new Error('Failed to fetch profile');
-                
-                const userData = await response.json();
-                
-                // Update profile header
-                const profileHeader = document.querySelector('.profile-header');
-                if (profileHeader) {
-                    const avatar = profileHeader.querySelector('.profile-avatar');
-                    const name = profileHeader.querySelector('.profile-title h1');
-                    const username = profileHeader.querySelector('.profile-title .username');
-                    const status = profileHeader.querySelector('.profile-status');
-
-                    if (avatar) avatar.src = userData.avatar || '../assets/images/default.jpg';
-                    if (name) name.textContent = userData.displayName || userData.username;
-                    if (username) username.textContent = `@${userData.username}`;
-                    if (status) status.textContent = userData.status || 'No status set';
-                }
-
-                // Update bio section
-                const bioSection = document.querySelector('.profile-bio');
-                if (bioSection) {
-                    bioSection.textContent = userData.bio || 'No bio provided';
-                }
-
-                // Update stats
-                const statsSection = document.querySelector('.profile-stats');
-                if (statsSection) {
-                    statsSection.innerHTML = `
-                        <div class="stat-card">
-                            <div class="stat-value">${userData.posts || 0}</div>
-                            <div class="stat-label">Soul Scrolls</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${userData.comments || 0}</div>
-                            <div class="stat-label">Echoes</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${userData.followers || 0}</div>
-                            <div class="stat-label">Followers</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${userData.following || 0}</div>
-                            <div class="stat-label">Following</div>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-                const profileCard = document.querySelector('.profile-card');
-                if (profileCard) {
-                    profileCard.innerHTML = '<p class="error">Failed to load your eternal soul. Please try again later.</p>';
-                }
-            }
+            // mlnf-core.js handles component initialization automatically
+            // Just load the profile data
+            await loadUserProfile();
         });
+
+        async function loadUserProfile() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const profileCard = document.getElementById('profileCard');
+
+            try {
+                // Show loading state
+                if (loadingIndicator) loadingIndicator.style.display = 'flex';
+                if (errorMessage) errorMessage.style.display = 'none';
+                if (profileCard) profileCard.style.display = 'none';
+
+                // Fetch user data
+                const response = await window.apiClient.get('/users/me');
+                const userData = response;
+
+                // Hide loading and show profile
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                if (profileCard) profileCard.style.display = 'block';
+
+                // Populate profile data
+                populateProfile(userData);
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                
+                // Hide loading and show error
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                if (errorMessage) {
+                    errorMessage.textContent = 'Failed to load your eternal soul. Please try refreshing the page.';
+                    errorMessage.style.display = 'block';
+                }
+            }
+        }
+
+        function populateProfile(userData) {
+            // Update avatar
+            const avatar = document.getElementById('profileAvatar');
+            if (avatar) {
+                avatar.src = userData.avatar || '../assets/images/default.jpg';
+                avatar.alt = `${userData.displayName || userData.username}'s Avatar`;
+            }
+
+            // Update basic info
+            const displayName = document.getElementById('profileDisplayName');
+            const username = document.getElementById('profileUsername');
+            const status = document.getElementById('profileStatus');
+            const bio = document.getElementById('profileBio');
+
+            if (displayName) displayName.textContent = userData.displayName || userData.username;
+            if (username) username.textContent = `@${userData.username}`;
+            if (status) status.textContent = userData.status || 'Living eternally free';
+            if (bio) bio.textContent = userData.bio || 'No biography written yet. Express your eternal essence!';
+
+            // Update stats
+            const postsCount = document.getElementById('postsCount');
+            const commentsCount = document.getElementById('commentsCount');
+            const connectionCount = document.getElementById('connectionCount');
+
+            if (postsCount) postsCount.textContent = userData.postsCount || 0;
+            if (commentsCount) commentsCount.textContent = userData.commentsCount || 0;
+            if (connectionCount) connectionCount.textContent = userData.connectionsCount || 0;
+
+            // Update join date
+            const joinedDate = document.getElementById('joinedDate');
+            if (joinedDate && userData.createdAt) {
+                const date = new Date(userData.createdAt);
+                joinedDate.textContent = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+
+            // Update privacy settings display
+            const profileVisibility = document.getElementById('profileVisibility');
+            const messagingStatus = document.getElementById('messagingStatus');
+            const directoryStatus = document.getElementById('directoryStatus');
+
+            if (profileVisibility) profileVisibility.textContent = userData.privacy?.profileVisibility || 'Public';
+            if (messagingStatus) messagingStatus.textContent = userData.privacy?.allowMessages ? 'Enabled' : 'Disabled';
+            if (directoryStatus) directoryStatus.textContent = userData.privacy?.showInDirectory ? 'Listed' : 'Unlisted';
+        }
     </script>
 </body>
 </html> 
