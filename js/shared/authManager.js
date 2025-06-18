@@ -6,7 +6,27 @@ class AuthManager {
         this.currentUser = null;
         this.token = localStorage.getItem('sessionToken') || null;
         this._subscribers = [];
-        this.initialize();
+        // Delay initialization to ensure dependencies are loaded
+        this._initializeWhenReady();
+    }
+
+    /**
+     * Wait for dependencies and then initialize
+     */
+    async _initializeWhenReady() {
+        // Wait for apiClient to be available
+        const checkApiClient = () => {
+            return new Promise((resolve) => {
+                if (window.apiClient) {
+                    resolve();
+                } else {
+                    setTimeout(() => checkApiClient().then(resolve), 100);
+                }
+            });
+        };
+        
+        await checkApiClient();
+        await this.initialize();
     }
 
     /**
@@ -42,15 +62,31 @@ class AuthManager {
             return;
         }
 
+        // Don't initialize if apiClient isn't available yet
+        if (!window.apiClient) {
+            console.warn('[AuthManager] apiClient not available yet, delaying initialization');
+            return;
+        }
+
         try {
+            console.log('[AuthManager] Verifying token with API...');
             // Use the global apiClient to verify the user
             const user = await window.apiClient.get('/users/me');
             this.currentUser = user;
+            console.log('[AuthManager] Token verified successfully, user loaded:', user.username);
         } catch (error) {
-            console.warn('[AuthManager] Token is invalid or expired. Clearing session.');
-            this.logout(); // This will clear the token and user data
-            // No need to notify here, logout() already does it.
-            return; // Exit early
+            console.warn('[AuthManager] Token verification failed:', error);
+            // Only logout if it's specifically a 401 Unauthorized error
+            if (error.error && error.error.includes('401') || error.status === 401) {
+                console.warn('[AuthManager] Token is invalid or expired. Clearing session.');
+                this.logout();
+            } else {
+                console.warn('[AuthManager] API error during initialization, keeping session for now:', error);
+                // For network errors or server issues, don't automatically logout
+                // Just set currentUser to null but keep the token
+                this.currentUser = null;
+            }
+            return;
         }
         
         this._notify(); // Notify subscribers that user is logged in
@@ -97,9 +133,21 @@ class AuthManager {
      */
     logout() {
         localStorage.removeItem('sessionToken');
+        localStorage.removeItem('user'); // Also clear cached user data
         this.token = null;
         this.currentUser = null;
         this._notify();
+    }
+
+    /**
+     * Show login modal (for compatibility with apiClient)
+     */
+    showLogin() {
+        if (window.MLNF && window.MLNF.openSoulModal) {
+            window.MLNF.openSoulModal('login');
+        } else {
+            console.warn('[AuthManager] Cannot show login modal - openSoulModal not available');
+        }
     }
 }
 
