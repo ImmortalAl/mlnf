@@ -606,202 +606,125 @@
         <p>Embrace your infinite potential and connect across eternity.</p>
     </footer>
 
-    <!-- Core MLNF Components -->
+    <!-- Config MUST be loaded first -->
     <script src="../components/shared/config.js?v=1.2"></script>
     
-    <!-- 
-      Set flag BEFORE blog.js is loaded to prevent its auto-initialization.
-      This is critical for pages that use blog.js functions but are not the main blog page.
-    -->
-    <script>
-        window.DISABLE_BLOG_AUTO_INIT = true;
-    </script>
-    
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
-    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
+    <!-- Core MLNF Components -->
+    <script src="../components/shared/authManager.js?v=1.2"></script>
+    <script src="../components/shared/apiClient.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
     <script src="../components/shared/userMenu.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
-    <script src="../components/shared/comments.js?v=1.2"></script>
-    <script src="../js/blog.js?v=1.2"></script>
-    <!-- <script src="../js/scripts.js?v=1.2"></script> --> <!-- Legacy script - functionality moved to components -->
-
+    
+    <!-- Avatar System -->
+    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
+    
+    <!-- Initialize MLNF -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize message modal first
-            if (window.MLNF && window.MLNF.initMessageModal) {
-                window.MLNF.initMessageModal();
-                console.log('[profile] Message modal initialized');
-            } else {
-                console.error('[profile] MLNF.initMessageModal not found!');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize MLNF core components
+            if (typeof MLNF !== 'undefined') {
+                MLNF.initNavigation();
+                MLNF.initUserMenu();
+                MLNF.initActiveUsers();
+                MLNF.initMessageModal();
             }
 
-            const ProfilePage = {
-                blogPosts: {},
-                blogsLoaded: false,
+            // Initialize avatar system
+            if (typeof MLNFAvatars !== 'undefined') {
+                MLNFAvatars.init();
+            }
 
-                init: function() {
-                    const username = window.location.pathname.split('/').pop().replace('.html', '');
-                    this.fetchProfile(username);
-                    this.fetchUserBlogs(username);
-                    this.initMessageButton(username);
-                },
-
-                fetchProfile: async function(user) {
-                    const loadingState = document.getElementById('loadingState');
-                    const errorState = document.getElementById('errorState');
-                    const profileContent = document.getElementById('profileContent');
-
-                    try {
-                        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${user}`);
-                        if (!response.ok) throw new Error(`Profile not found for ${user}`);
-                        const profile = await response.json();
-                        loadingState.style.display = 'none';
-                        profileContent.style.display = 'block';
-                        this.updateProfileDisplay(profile);
-                    } catch (error) {
-                        console.error('Error fetching profile:', error);
-                        loadingState.style.display = 'none';
-                        errorState.style.display = 'block';
-                        document.getElementById('errorMessage').textContent = error.message;
-                    }
-                },
-
-                updateProfileDisplay: function(profileData) {
-                    // Replace manual avatar and status with MLNF Avatar System
-                    const profileHeader = document.querySelector('.profile-header');
-                    
-                    // Clear existing avatar and manual status elements
-                    const existingAvatar = document.getElementById('profileAvatar');
-                    const existingName = document.getElementById('profileName');
-                    const existingUsername = document.getElementById('profileUsername');
-                    const existingStatus = document.getElementById('profileStatus');
-                    const existingOnlineStatus = document.getElementById('onlineStatus');
-                    
-                    if (existingAvatar) existingAvatar.style.display = 'none';
-                    if (existingName) existingName.style.display = 'none';
-                    if (existingUsername) existingUsername.style.display = 'none';
-                    if (existingStatus) existingStatus.style.display = 'none';
-                    if (existingOnlineStatus) existingOnlineStatus.style.display = 'none';
-                    
-                    // Create unified user display with enhanced profile styling
-                    if (window.MLNFAvatars && !profileHeader.querySelector('.mlnf-user-display')) {
-                        const userDisplay = window.MLNFAvatars.createUserDisplay({
-                            username: profileData.username,
-                            title: profileData.displayName || profileData.username,
-                            status: profileData.status || (profileData.online ? 'Online now' : 'Eternal wanderer'),
-                            avatarSize: 'xxl',
-                            displaySize: 'xl',
-                            compact: false,
-                            mystical: profileData.isVIP || profileData.role === 'admin',
-                            online: profileData.online,
-                            customAvatar: profileData.avatar,
-                            usernameStyle: 'mystical',
-                            enableUnifiedNavigation: false  // Disable navigation since we're already on their profile
-                        });
-                        
-                        // Insert the user display at the beginning of profile header
-                        profileHeader.insertBefore(userDisplay, profileHeader.firstChild);
-                    }
-                    
-                    // Handle bio section
-                    if (profileData.bio) {
-                        document.getElementById('profileBio').textContent = profileData.bio;
-                        document.getElementById('profileBioSection').style.display = 'block';
-                    }
-                    
-                    // Handle join date - check for different possible field names
-                    const joinDate = profileData.joinDate || profileData.createdAt || profileData.created_at;
-                    if (joinDate) {
-                        document.getElementById('joinDate').textContent = new Date(joinDate).toLocaleDateString();
-                    }
-
-                    // Init profile comments here
-                    if (window.MLNF && window.MLNF.CommentsSystem) {
-                        new window.MLNF.CommentsSystem('profile', profileData.username, 'profileComments');
-                    }
-                },
-
-                fetchUserBlogs: async function(user) {
-                    if (this.blogsLoaded) return;
-                    this.blogsLoaded = true;
-
-                    const userBlogsContainer = document.getElementById('userBlogs');
-                    try {
-                        const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs/user/${user}`);
-                        if (!response.ok) throw new Error('Could not fetch blogs');
-                        const blogs = await response.json();
-
-                        if (!blogs || blogs.length === 0) {
-                            userBlogsContainer.innerHTML = `<div class="no-blogs"><p>This soul has not yet penned any scrolls.</p></div>`;
-                            return;
-                        }
-                        
-                        // Use the global blogPosts object from blog.js
-                        window.blogPosts = window.blogPosts || {};
-                        
-                        userBlogsContainer.innerHTML = blogs.map(blog => {
-                            window.blogPosts[blog._id] = blog; // Store post data for the modal
-                            return `
-                                <div class="blog-preview" data-blog-id="${blog._id}">
-                                    <h4>${blog.title}</h4>
-                                    <div class="content">${this.createExcerpt(blog.content)}</div>
-                                    <div class="date">${new Date(blog.createdAt).toLocaleDateString()}</div>
-                                </div>
-                            `;
-                        }).join('');
-
-                        // Use event delegation with proper event handling
-                        userBlogsContainer.addEventListener('click', (event) => {
-                            // Prevent bubbling up and duplicate events
-                            event.stopPropagation();
-                            
-                            const blogPreview = event.target.closest('.blog-preview');
-                            if (blogPreview && window.openBlogModal) {
-                                const blogId = blogPreview.dataset.blogId;
-                                // Prevent multiple clicks
-                                if (!blogPreview.dataset.clicked) {
-                                    blogPreview.dataset.clicked = 'true';
-                                    window.openBlogModal(blogId);
-                                    // Reset after a short delay
-                                    setTimeout(() => {
-                                        delete blogPreview.dataset.clicked;
-                                    }, 500);
-                                }
-                            }
-                        });
-
-                    } catch (error) {
-                        console.error('Error fetching user blogs:', error);
-                        userBlogsContainer.innerHTML = `<div class="error-state"><p>Failed to summon scrolls.</p></div>`;
-                    }
-                },
-
-                createExcerpt: function(content, maxLength = 100) {
-                    const textContent = content.replace(/<[^>]*>/g, '');
-                    return textContent.length > maxLength 
-                        ? textContent.substring(0, maxLength) + '...'
-                        : textContent;
-                },
-
-                initMessageButton: function(user) {
-                    const messageBtn = document.getElementById('messageBtn');
-                    if (messageBtn) {
-                        messageBtn.addEventListener('click', () => {
-                            if (window.MLNF && window.MLNF.openMessageModal) {
-                                window.MLNF.openMessageModal(user.username);
-                            } else {
-                                console.error('Message modal component not ready');
-                            }
-                        });
-                    }
-                }
-            };
-
-            // Run the initializer
-            ProfilePage.init();
+            // Load profile data
+            loadProfile();
         });
+
+        async function loadProfile() {
+            try {
+                const username = window.location.pathname.split('/').pop();
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`);
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                
+                const userData = await response.json();
+                renderProfile(userData);
+                loadUserBlogs(username);
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                const profileContainer = document.querySelector('.profile-container');
+                if (profileContainer) {
+                    profileContainer.innerHTML = '<p class="error">Failed to load eternal soul. Please try again later.</p>';
+                }
+            }
+        }
+
+        function renderProfile(userData) {
+            const profileHeader = document.querySelector('.profile-header');
+            if (!profileHeader) return;
+
+            // Update profile header
+            const avatar = profileHeader.querySelector('.profile-avatar');
+            const name = profileHeader.querySelector('.profile-name');
+            const username = profileHeader.querySelector('.profile-username');
+            const status = profileHeader.querySelector('.profile-status');
+
+            if (avatar) avatar.src = userData.avatar || '../assets/images/default.jpg';
+            if (name) name.textContent = userData.displayName || userData.username;
+            if (username) username.textContent = `@${userData.username}`;
+            if (status) status.textContent = userData.status || 'No status set';
+
+            // Update bio section
+            const bioSection = document.querySelector('.profile-bio');
+            if (bioSection) {
+                const bioContent = bioSection.querySelector('p');
+                if (bioContent) {
+                    bioContent.textContent = userData.bio || 'No bio provided';
+                }
+            }
+        }
+
+        async function loadUserBlogs(username) {
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs?author=${username}`);
+                if (!response.ok) throw new Error('Failed to fetch user blogs');
+                
+                const data = await response.json();
+                const blogs = data.docs || data;
+                renderBlogs(blogs);
+            } catch (error) {
+                console.error('Error fetching user blogs:', error);
+                const blogsSection = document.querySelector('.profile-blogs');
+                if (blogsSection) {
+                    blogsSection.innerHTML = '<p class="error">Failed to load soul scrolls. Please try again later.</p>';
+                }
+            }
+        }
+
+        function renderBlogs(blogs) {
+            const blogsList = document.querySelector('.user-blogs-list');
+            if (!blogsList) return;
+
+            if (!Array.isArray(blogs) || blogs.length === 0) {
+                blogsList.innerHTML = `
+                    <div class="no-blogs">
+                        <i class="fas fa-scroll"></i>
+                        <p>No soul scrolls found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            blogsList.innerHTML = blogs.map(blog => `
+                <div class="blog-preview" onclick="window.location.href='/pages/blog.html?id=${blog._id}'">
+                    <h4>${blog.title}</h4>
+                    <div class="content">${blog.content.substring(0, 200)}...</div>
+                    <div class="date">
+                        <i class="fas fa-calendar"></i>
+                        ${new Date(blog.createdAt).toLocaleDateString()}
+                    </div>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html> 
