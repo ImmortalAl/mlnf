@@ -110,9 +110,9 @@ class ChroniclesFeed {
                 <div class="chronicle-header">
                     <h3 class="chronicle-title">${this.escapeHtml(chronicle.title)}</h3>
                     <div class="chronicle-meta">
-                        <span class="chronicle-date">${date}</span>
-                        <span class="chronicle-author">by ${this.escapeHtml(chronicle.author.displayName || chronicle.author.username)}</span>
-                        ${isAuthor ? `<button class="edit-chronicle-btn" data-id="${chronicle._id}"><i class="fas fa-edit"></i></button>` : ''}
+                        <div class="chronicle-date">${date}</div>
+                        <div class="chronicle-author">by ${this.escapeHtml(chronicle.author.displayName || chronicle.author.username)}</div>
+                        ${isAuthor ? `<button class="edit-chronicle-btn" data-id="${chronicle._id}" title="Edit Chronicle"><i class="fas fa-edit"></i></button>` : ''}
                     </div>
                 </div>
                 <div class="chronicle-content">
@@ -120,21 +120,26 @@ class ChroniclesFeed {
                 </div>
                 ${chronicle.sources && chronicle.sources.length > 0 ? `
                     <div class="chronicle-sources">
-                        <h4>Sources:</h4>
+                        <h4>Sources & References</h4>
                         <ul>
                             ${chronicle.sources.map(source => `<li><a href="${source}" target="_blank" rel="noopener">${source}</a></li>`).join('')}
                         </ul>
                     </div>
                 ` : ''}
                 <div class="chronicle-actions">
-                    <button class="validate-btn" data-id="${chronicle._id}">
-                        <i class="fas fa-check"></i> Validate (${chronicle.validations ? chronicle.validations.length : 0})
+                    <button class="action-btn validate" data-id="${chronicle._id}" title="Validate this chronicle">
+                        <i class="fas fa-check"></i> 
+                        <span>Validate</span>
+                        <span class="count">(${chronicle.validations ? chronicle.validations.length : 0})</span>
                     </button>
-                    <button class="challenge-btn" data-id="${chronicle._id}">
-                        <i class="fas fa-question"></i> Challenge (${chronicle.challenges ? chronicle.challenges.length : 0})
+                    <button class="action-btn challenge" data-id="${chronicle._id}" title="Challenge this chronicle">
+                        <i class="fas fa-question"></i> 
+                        <span>Challenge</span>
+                        <span class="count">(${chronicle.challenges ? chronicle.challenges.length : 0})</span>
                     </button>
-                    <button class="comments-btn" data-id="${chronicle._id}">
-                        <i class="fas fa-comments"></i> Comments
+                    <button class="action-btn comments" data-id="${chronicle._id}" title="View comments">
+                        <i class="fas fa-comments"></i> 
+                        <span>Comments</span>
                     </button>
                 </div>
             </article>
@@ -151,7 +156,7 @@ class ChroniclesFeed {
         });
 
         // Validate buttons
-        document.querySelectorAll('.validate-btn').forEach(btn => {
+        document.querySelectorAll('.action-btn.validate').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.target.closest('button').dataset.id;
                 this.validateChronicle(id);
@@ -159,7 +164,7 @@ class ChroniclesFeed {
         });
 
         // Challenge buttons
-        document.querySelectorAll('.challenge-btn').forEach(btn => {
+        document.querySelectorAll('.action-btn.challenge').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.target.closest('button').dataset.id;
                 this.challengeChronicle(id);
@@ -167,7 +172,7 @@ class ChroniclesFeed {
         });
 
         // Comments buttons
-        document.querySelectorAll('.comments-btn').forEach(btn => {
+        document.querySelectorAll('.action-btn.comments').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.target.closest('button').dataset.id;
                 this.openComments(id);
@@ -186,9 +191,14 @@ class ChroniclesFeed {
         try {
             const response = await window.apiClient.post(`/chronicles/${id}/validate`);
             // Update the UI with new validation count
-            const button = document.querySelector(`.validate-btn[data-id="${id}"]`);
+            const button = document.querySelector(`.action-btn.validate[data-id="${id}"]`);
             if (button) {
-                button.innerHTML = `<i class="fas fa-check"></i> Validate (${response.validations})`;
+                const countSpan = button.querySelector('.count');
+                if (countSpan) {
+                    countSpan.textContent = `(${response.validations})`;
+                }
+                // Add visual feedback
+                button.classList.toggle('active', response.userValidated);
             }
         } catch (error) {
             console.error('Error validating chronicle:', error);
@@ -200,9 +210,14 @@ class ChroniclesFeed {
         try {
             const response = await window.apiClient.post(`/chronicles/${id}/challenge`);
             // Update the UI with new challenge count
-            const button = document.querySelector(`.challenge-btn[data-id="${id}"]`);
+            const button = document.querySelector(`.action-btn.challenge[data-id="${id}"]`);
             if (button) {
-                button.innerHTML = `<i class="fas fa-question"></i> Challenge (${response.challenges})`;
+                const countSpan = button.querySelector('.count');
+                if (countSpan) {
+                    countSpan.textContent = `(${response.challenges})`;
+                }
+                // Add visual feedback
+                button.classList.toggle('active', response.userChallenged);
             }
         } catch (error) {
             console.error('Error challenging chronicle:', error);
