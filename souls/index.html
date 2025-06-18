@@ -134,324 +134,88 @@
     </footer>
 
     <!-- Config MUST be loaded first -->
-    <script src="../components/shared/config.js?v=1.2"></script> <!-- Cache bust -->
-    <!-- Load API Client for consistent API handling -->
-    <script src="../js/shared/apiClient.js?v=1.0"></script>
-    <!-- Load MLNF Avatar System before main script -->
-    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
-
-    <script>
-        // API constants are now in config.js, accessed via window.MLNF_CONFIG
-        
-        // Loading and error elements
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const errorMessage = document.getElementById('errorMessage');
-        const profilesGrid = document.getElementById('profilesGrid');
-        
-        // Function to display errors with optional login link
-        function displayError(message, showLoginLink = false) {
-            if (showLoginLink) {
-                errorMessage.innerHTML = `
-                    <p>${message}</p>
-                    <div style="margin-top: 1rem;">
-                        <a href="#" class="btn btn-primary" onclick="window.MLNF?.openSoulModal?.('login') || (window.location.href='/pages/auth.html')">
-                            Enter Sanctuary
-                        </a>
-                    </div>
-                `;
-            } else {
-                errorMessage.textContent = message;
-            }
-            errorMessage.style.display = 'block';
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-        }
-        
-        // Logout handler is now globally available as window.MLNF.handleLogout from userMenu.js
-        // So, local handleLogout function is removed.
-        
-        // Function to create profile cards using unified avatar system
-        function createProfileCard(profile) {
-            // Ensure we have default values for everything
-            const name = profile.displayName || profile.username || 'Anonymous Soul';
-            const username = profile.username || 'anonymous';
-            const bio = profile.bio || 'This soul has not shared their story yet.';
-            const isOnline = profile.online === true;
-            
-            // Create profile card container
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'profile-card';
-            cardDiv.setAttribute('data-username', username);
-            
-            // Create unified user display with enhanced profile styling (with safety check)
-            const userDisplay = window.MLNFAvatars ? window.MLNFAvatars.createUserDisplay({
-                username: username,
-                title: name,
-                status: bio,
-                avatarSize: 'xl',
-                displaySize: 'lg',
-                compact: false,
-                mystical: profile.isVIP || profile.role === 'admin',
-                online: isOnline,
-                customAvatar: profile.avatar,
-                usernameStyle: 'immortal',
-                enableUnifiedNavigation: true
-            }) : document.createElement('div');
-            
-            // Create message button
-            const messageBtn = document.createElement('button');
-            messageBtn.className = 'btn btn-secondary message-soul-btn';
-            messageBtn.textContent = 'Message';
-            messageBtn.onclick = () => {
-                if (window.MLNF && window.MLNF.openMessageModal) {
-                    window.MLNF.openMessageModal(username);
-                } else {
-                    console.error('messageModal component not ready.');
-                }
-            };
-            
-            // Assemble card
-            cardDiv.appendChild(userDisplay);
-            cardDiv.appendChild(messageBtn);
-            
-            return cardDiv;
-        }
-
-        // Rendering function
-        function renderProfiles(profiles) {
-            if (!profilesGrid) return;
-            if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
-                profilesGrid.innerHTML = '<p class="no-results">No eternal souls found. Be the first to manifest!</p>';
-                return;
-            }
-            
-            try {
-                const fragment = document.createDocumentFragment();
-                profiles.forEach(profile => {
-                    const cardElement = createProfileCard(profile);
-                    fragment.appendChild(cardElement);
-                });
-                
-                profilesGrid.innerHTML = ''; // Clear existing
-                profilesGrid.appendChild(fragment);
-                
-                const lazyAvatars = profilesGrid.querySelectorAll('.lazy-avatar');
-                lazyAvatars.forEach(img => {
-                    const actualSrc = img.dataset.src;
-                    const tempImage = new Image();
-                    tempImage.onload = () => {
-                        img.src = actualSrc;
-                        img.classList.add('loaded'); 
-                        img.classList.remove('lazy-avatar');
-                        img.classList.remove('skeleton');
-                    };
-                    tempImage.onerror = () => {
-                        img.src = (window.MLNF_CONFIG ? window.MLNF_CONFIG.DEFAULT_AVATAR : '/assets/images/default.jpg'); // Fallback
-                        img.classList.add('loaded'); 
-                        img.classList.remove('lazy-avatar');
-                        img.classList.remove('skeleton');
-                    };
-                    tempImage.src = actualSrc; // Start loading in background
-                });
-
-            } catch (error) {
-                console.error('Error rendering profiles:', error);
-                if (profilesGrid) profilesGrid.innerHTML = '<p class="error-message">Failed to render eternal souls. The cosmic energies are unstable.</p>';
-            }
-        }
-        
-        // Optimized fetch function with better authentication handling
-        async function fetchProfiles() {
-            if (!profilesGrid || !loadingIndicator || !errorMessage) return;
-            try {
-                profilesGrid.style.opacity = '0.7';
-                loadingIndicator.style.display = 'flex';
-                errorMessage.style.display = 'none';
-                
-                // Check if cached data exists and is still fresh (5 minutes for souls data)
-                const cachedProfiles = localStorage.getItem('mlnf_profiles');
-                const cacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
-                const cacheAge = cacheTimestamp ? Date.now() - parseInt(cacheTimestamp) : Infinity;
-                const isCacheExpired = cacheAge > 300000; // 5 minutes for souls data
-                
-                let profiles = null;
-                
-                if (cachedProfiles && !isCacheExpired) {
-                    try {
-                        profiles = JSON.parse(cachedProfiles);
-                        if (Array.isArray(profiles) && profiles.length > 0) {
-                            console.log('[Souls] Using fresh cached profiles:', profiles.length);
-                            renderProfiles(profiles);
-                            if (loadingIndicator) loadingIndicator.style.display = 'none';
-                            if (profilesGrid) profilesGrid.style.opacity = '1';
-                            if (errorMessage) errorMessage.style.display = 'none'; // Ensure no error message shows
-                            return; // Use cache and exit early
-                        }
-                    } catch (e) { 
-                        console.error('Failed to parse cached profiles:', e); 
-                        localStorage.removeItem('mlnf_profiles');
-                        localStorage.removeItem('mlnf_profiles_timestamp');
-                    }
-                }
-                
-                // Check if user is authenticated
-                const token = localStorage.getItem('sessionToken');
-                console.log('[Souls] Authentication check - Token present:', token ? 'Yes' : 'No');
-                
-                if (!token) {
-                    // User is not authenticated - show login prompt
-                    displayError('Please log in to discover and connect with eternal souls in our community.', true);
-                    renderProfiles([]); // Show empty state
-                    return;
-                }
-                
-                // Fetch from API with authentication using apiClient if available
-                console.log('[Souls] Fetching profiles from API...');
-                
-                if (window.apiClient) {
-                    // Use the centralized API client
-                    try {
-                        profiles = await window.apiClient.get('/users');
-                        console.log('[Souls] Received profiles from API via apiClient:', profiles?.length || 0);
-                    } catch (apiError) {
-                        if (apiError.error && apiError.error.includes('No token provided')) {
-                            localStorage.removeItem('sessionToken');
-                            localStorage.removeItem('user');
-                            displayError('Your session has expired. Please log in again to view eternal souls.', true);
-                            renderProfiles([]);
-                            return;
-                        }
-                        throw apiError; // Re-throw to be caught by outer catch block
-                    }
-                } else {
-                    // Fallback to direct fetch if apiClient not available
-                    const headers = { 
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache'
-                    };
-                    
-                    const response = await fetch(`${(window.MLNF_CONFIG ? window.MLNF_CONFIG.API_BASE_URL : '')}/users`, {
-                        method: 'GET',
-                        headers: headers
-                    });
-                    
-                    if (response.status === 401) {
-                        // Token is invalid or expired
-                        localStorage.removeItem('sessionToken');
-                        localStorage.removeItem('user');
-                        displayError('Your session has expired. Please log in again to view eternal souls.', true);
-                        renderProfiles([]);
-                        return;
-                    }
-                    
-                    if (!response.ok) {
-                        throw new Error(`API returned ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    profiles = await response.json();
-                    console.log('[Souls] Received profiles from API via fetch:', profiles?.length || 0);
-                }
-                
-                if (!Array.isArray(profiles)) {
-                    throw new Error('API did not return an array of profiles');
-                }
-                
-                // Cache the successful response
-                localStorage.setItem('mlnf_profiles', JSON.stringify(profiles));
-                localStorage.setItem('mlnf_profiles_timestamp', Date.now().toString());
-                
-                renderProfiles(profiles);
-                
-            } catch (error) {
-                console.error('[Souls] Error fetching profiles:', error);
-                
-                // Try to use stale cache as fallback - but be more selective about showing errors
-                const staleCache = localStorage.getItem('mlnf_profiles');
-                const staleCacheTimestamp = localStorage.getItem('mlnf_profiles_timestamp');
-                const staleCacheAge = staleCacheTimestamp ? Date.now() - parseInt(staleCacheTimestamp) : Infinity;
-                const isCacheVeryOld = staleCacheAge > 3600000; // 1 hour
-                const isCacheAncient = staleCacheAge > 86400000; // 24 hours
-                
-                if (staleCache) {
-                    try {
-                        const staleProfiles = JSON.parse(staleCache);
-                        if (Array.isArray(staleProfiles) && staleProfiles.length > 0) {
-                            console.log('[Souls] Using stale cache as fallback due to network error');
-                            renderProfiles(staleProfiles);
-                            
-                            // Only show error message if cache is ancient (24+ hours) or if it's a server error
-                            const isServerError = error.message && (error.message.includes('500') || error.message.includes('502') || error.message.includes('503'));
-                            
-                            if (isCacheAncient || (isCacheVeryOld && isServerError)) {
-                                displayError('Data may be outdated. Some souls information might not be current.');
-                            }
-                            return;
-                        }
-                    } catch (e) {
-                        console.error('Failed to parse stale cache:', e);
-                    }
-                }
-                
-                // Final fallback - show error message only if no usable cache exists
-                displayError('Unable to manifest eternal souls at this time. Please check your connection and try again.');
-                renderProfiles([]);
-                
-            } finally {
-                if (loadingIndicator) loadingIndicator.style.display = 'none';
-                if (profilesGrid) profilesGrid.style.opacity = '1';
-            }
-        }
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Wait for MLNF Avatar System to be ready
-            let attempts = 0;
-            while (!window.MLNFAvatars && attempts < 10) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                attempts++;
-            }
-            
-            if (!window.MLNFAvatars) {
-                console.warn('MLNF Avatar System failed to load, profile cards may not display properly');
-            }
-            
-            await fetchProfiles();
-            
-            // Store all profiles for searching
-            try {
-                const cachedProfiles = localStorage.getItem('mlnf_profiles');
-                if (cachedProfiles) {
-                    allProfiles = JSON.parse(cachedProfiles);
-                }
-            } catch (error) {
-                console.error('Error parsing cached profiles:', error);
-            }
-            
-            // Conditionally hide "Eternal Souls" from dropdown logic will be handled by userMenu.js
-            const errorMessage = document.getElementById('errorMessage');
-            const profilesGrid = document.getElementById('profilesGrid');
-            
-            // If this page needs a specific logout button, it should call window.MLNF.handleLogout.
-            const localLogoutBtn = document.getElementById('logoutBtn'); 
-            if (localLogoutBtn && window.MLNF && window.MLNF.handleLogout) { // Check if global logout exists
-                 localLogoutBtn.addEventListener('click', window.MLNF.handleLogout);
-            }
-            const mobileLogoutBtn = document.getElementById('mobileLogoutBtn'); 
-            if (mobileLogoutBtn && window.MLNF && window.MLNF.handleLogout) { // Check if global logout exists
-                 mobileLogoutBtn.addEventListener('click', window.MLNF.handleLogout);
-            }
-        });
-    </script>
+    <script src="../components/shared/config.js?v=1.2"></script>
     
-    <!-- Shared Components -->
-    <!-- config.js is loaded before the main inline script block -->
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script> 
-    <script src="../components/shared/navigation.js?v=1.2"></script> 
-    <script src="../components/shared/userMenu.js?v=1.2"></script> 
-    <script src="../components/shared/authModal.js?v=1.2"></script> 
+    <!-- Core MLNF Components -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
+    <script src="../components/shared/authManager.js?v=1.2"></script>
+    <script src="../components/shared/apiClient.js?v=1.2"></script>
+    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/userMenu.js?v=1.2"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=1.2"></script>
-    <!-- MLNF Avatar System now loaded earlier to prevent race condition -->
+    
+    <!-- Avatar System -->
+    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
+    
+    <!-- Initialize MLNF -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // mlnf-core.js handles component initialization automatically
+            initializeProfilesPage();
+        });
+
+        async function initializeProfilesPage() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const profilesGrid = document.getElementById('profilesGrid');
+
+            try {
+                if (loadingIndicator) loadingIndicator.style.display = 'flex';
+                if (errorMessage) errorMessage.style.display = 'none';
+
+                const response = await window.apiClient.get('/users');
+                const users = response.users || response.data || response;
+
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+                if (Array.isArray(users)) {
+                    renderProfiles(users);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                console.error('[Souls] Error fetching profiles:', error);
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                if (errorMessage) {
+                    errorMessage.textContent = 'Failed to load eternal souls. Please try again later.';
+                    errorMessage.style.display = 'block';
+                }
+            }
+        }
+
+        function renderProfiles(users) {
+            const profilesGrid = document.getElementById('profilesGrid');
+            if (!profilesGrid) return;
+
+            if (users.length === 0) {
+                profilesGrid.innerHTML = '<p>No eternal souls found.</p>';
+                return;
+            }
+
+            profilesGrid.innerHTML = users.map(user => {
+                const avatarHtml = window.MLNFAvatars ? 
+                    window.MLNFAvatars.createUserDisplay({
+                        username: user.username,
+                        title: user.displayName || user.username,
+                        status: user.status || 'Eternal seeker',
+                        avatarSize: 'lg',
+                        displaySize: 'md',
+                        mystical: user.isVIP || user.role === 'admin',
+                        online: user.online,
+                        customAvatar: user.avatar,
+                        usernameStyle: 'immortal',
+                        enableUnifiedNavigation: true
+                    }).outerHTML :
+                    `<div class="profile-card">
+                        <img src="${user.avatar || '../assets/images/default.jpg'}" alt="${user.username}">
+                        <h3>${user.displayName || user.username}</h3>
+                        <p>@${user.username}</p>
+                    </div>`;
+                
+                return avatarHtml;
+            }).join('');
+        }
+    </script>
 </body>
 </html> 

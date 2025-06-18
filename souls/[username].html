@@ -610,6 +610,7 @@
     <script src="../components/shared/config.js?v=1.2"></script>
     
     <!-- Core MLNF Components -->
+    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
     <script src="../components/shared/authManager.js?v=1.2"></script>
     <script src="../components/shared/apiClient.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
@@ -623,30 +624,15 @@
     <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize MLNF core components
-            if (typeof MLNF !== 'undefined') {
-                MLNF.initNavigation();
-                MLNF.initUserMenu();
-                MLNF.initActiveUsers();
-                MLNF.initMessageModal();
-            }
-
-            // Initialize avatar system
-            if (typeof MLNFAvatars !== 'undefined') {
-                MLNFAvatars.init();
-            }
-
-            // Load profile data
+            // mlnf-core.js handles component initialization automatically
             loadProfile();
         });
 
         async function loadProfile() {
             try {
                 const username = window.location.pathname.split('/').pop();
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/users/${username}`);
-                if (!response.ok) throw new Error('Failed to fetch profile');
-                
-                const userData = await response.json();
+                const response = await window.apiClient.get(`/users/${username}`);
+                const userData = response;
                 renderProfile(userData);
                 loadUserBlogs(username);
             } catch (error) {
@@ -685,10 +671,8 @@
 
         async function loadUserBlogs(username) {
             try {
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs?author=${username}`);
-                if (!response.ok) throw new Error('Failed to fetch user blogs');
-                
-                const data = await response.json();
+                const response = await window.apiClient.get(`/blogs?author=${username}`);
+                const data = response;
                 const blogs = data.docs || data;
                 renderBlogs(blogs);
             } catch (error) {
