@@ -311,8 +311,12 @@ class EternalSoulsHighlight {
 
     async populateFounderCard() {
         const founderDisplay = document.getElementById('founder-soul-display');
-        if (!founderDisplay || !window.MLNFAvatars) {
-            console.warn('[EternalSouls] Founder display or Avatar System not available');
+        if (!founderDisplay) {
+            // This is expected on pages without the founder display element
+            return;
+        }
+        if (!window.MLNFAvatars) {
+            console.warn('[EternalSouls] Avatar System not available for founder display');
             return;
         }
 
@@ -376,8 +380,12 @@ class EternalSoulsHighlight {
         const featuredActions = document.getElementById('featured-soul-actions');
         const featuredProfileLink = document.getElementById('featured-soul-profile-link');
 
-        if (!featuredDisplay || !window.MLNFAvatars) {
-            console.warn('[EternalSouls] Featured display or Avatar System not available');
+        if (!featuredDisplay) {
+            // This is expected on pages without the featured soul display element
+            return;
+        }
+        if (!window.MLNFAvatars) {
+            console.warn('[EternalSouls] Avatar System not available for featured soul display');
             return;
         }
 
