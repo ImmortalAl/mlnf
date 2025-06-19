@@ -55,7 +55,15 @@ const CommentsSystem = {
                     this.handleSubmitComment();
                 }
             });
+
+            // Character count
+            commentInput.addEventListener('input', (e) => {
+                this.updateCharacterCount(e.target.value.length);
+            });
         }
+
+        // Setup character count display
+        this.updateCharacterCount(0);
     },
 
     async openComments(targetType, targetId) {
@@ -88,6 +96,7 @@ const CommentsSystem = {
         if (commentInput) {
             commentInput.value = '';
         }
+        this.updateCharacterCount(0);
         this.clearFeedback();
     },
 
@@ -378,10 +387,10 @@ const CommentsSystem = {
     },
 
     showFeedback(message, type) {
-        const feedbackElement = this.modal.querySelector('.comment-feedback');
+        const feedbackElement = this.modal.querySelector('#commentFeedback');
         if (feedbackElement) {
             feedbackElement.textContent = message;
-            feedbackElement.className = `comment-feedback ${type}`;
+            feedbackElement.className = `modal-feedback ${type}`;
             feedbackElement.style.display = 'block';
             
             // Auto-hide success messages
@@ -392,10 +401,27 @@ const CommentsSystem = {
     },
 
     clearFeedback() {
-        const feedbackElement = this.modal.querySelector('.comment-feedback');
+        const feedbackElement = this.modal.querySelector('#commentFeedback');
         if (feedbackElement) {
             feedbackElement.textContent = '';
             feedbackElement.style.display = 'none';
+        }
+    },
+
+    updateCharacterCount(count) {
+        const charCountElement = this.modal.querySelector('#commentCharCount');
+        if (charCountElement) {
+            charCountElement.textContent = count;
+            
+            // Change color based on character count
+            const countElement = charCountElement.parentElement;
+            if (count > 900) {
+                countElement.style.color = 'var(--danger)';
+            } else if (count > 800) {
+                countElement.style.color = 'var(--warning)';
+            } else {
+                countElement.style.color = 'var(--text-muted)';
+            }
         }
     }
 };

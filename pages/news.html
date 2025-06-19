@@ -300,7 +300,31 @@
                 <h3 id="commentsModalTitle">Chronicle Comments</h3>
                 <button class="close-modal" id="closeCommentsModal" aria-label="Close modal">×</button>
             </div>
-            <div id="commentsContainer" class="comments-container"></div>
+            
+            <div class="comments-content">
+                <div id="commentsContainer" class="comments-container"></div>
+                
+                <!-- Comment Input Form -->
+                <div class="comment-input-section">
+                    <div class="comment-form">
+                        <textarea id="newCommentText" 
+                                  placeholder="Share your thoughts on this chronicle..." 
+                                  rows="3" 
+                                  maxlength="1000"></textarea>
+                        <div class="comment-actions">
+                            <button type="button" id="submitCommentBtn" class="btn btn-primary">
+                                <i class="fas fa-comment"></i> Post Comment
+                            </button>
+                            <div class="character-count">
+                                <span id="commentCharCount">0</span>/1000
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feedback Section -->
+            <div id="commentFeedback" class="modal-feedback" style="display: none;"></div>
         </div>
     </div>
 

@@ -516,8 +516,10 @@ class ChroniclesFeed {
     }
 
     openComments(id) {
-        if (window.commentsSystem) {
-            window.commentsSystem.openComments(id);
+        if (window.CommentsSystem) {
+            window.CommentsSystem.openComments('news', id);
+        } else {
+            console.error('Comments system not available');
         }
     }
 
