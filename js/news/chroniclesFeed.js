@@ -173,14 +173,14 @@ class ChroniclesFeed {
                                 title="Consecrate this chronicle as eternal truth">
                             <i class="fas fa-certificate"></i>
                             <span>Consecrate</span>
-                            <span class="count">(${chronicle.validations ? chronicle.validations.length : 0})</span>
-                        </button>
+                        <span class="count">(${chronicle.validations ? chronicle.validations.length : 0})</span>
+                    </button>
                         <button class="action-btn investigate" data-id="${chronicle._id}" data-action="investigate"
                                 title="Investigate this chronicle for accuracy">
                             <i class="fas fa-search"></i>
                             <span>Investigate</span>
-                            <span class="count">(${chronicle.challenges ? chronicle.challenges.length : 0})</span>
-                        </button>
+                        <span class="count">(${chronicle.challenges ? chronicle.challenges.length : 0})</span>
+                    </button>
                     </div>
                     
                     <div class="chronicle-management">
@@ -191,7 +191,7 @@ class ChroniclesFeed {
                         ` : ''}
                         <button class="action-btn comments" data-id="${chronicle._id}" data-action="comments" title="View comments">
                             <i class="fas fa-comments"></i> Comments
-                        </button>
+                    </button>
                     </div>
                 </div>
             </article>
@@ -214,7 +214,7 @@ class ChroniclesFeed {
                         this.investigateChronicle(id);
                         break;
                     case 'edit':
-                        this.editChronicle(id);
+                this.editChronicle(id);
                         break;
                     case 'comments':
                         this.openComments(id);
@@ -232,14 +232,31 @@ class ChroniclesFeed {
         authorContainers.forEach((container, index) => {
             if (this.chronicles[index] && this.chronicles[index].author) {
                 const author = this.chronicles[index].author;
+                console.log('[Chronicles] Populating avatar for author:', author);
+                
                 if (window.MLNFAvatars) {
-                    const avatarElement = window.MLNFAvatars.createUserDisplay(author, {
-                        showStatus: true,
-                        size: 'small',
-                        showDisplayName: true
+                    const avatarElement = window.MLNFAvatars.createUserDisplay({
+                        username: author.username || author.displayName || 'Anonymous',
+                        title: author.title || 'Eternal Soul',
+                        status: author.status || null,
+                        avatarSize: 'sm',
+                        displaySize: 'sm',
+                        mystical: author.role === 'admin' || author.isVIP,
+                        online: author.online,
+                        customAvatar: author.avatar,
+                        usernameStyle: 'immortal'
                     });
                     container.innerHTML = '';
                     container.appendChild(avatarElement);
+                } else {
+                    console.warn('[Chronicles] MLNFAvatars not available, creating fallback');
+                    // Fallback if avatar system not loaded
+                    container.innerHTML = `
+                        <div class="fallback-author">
+                            <div class="fallback-avatar">${(author.username || 'A')[0].toUpperCase()}</div>
+                            <span class="fallback-name">${author.username || author.displayName || 'Anonymous'}</span>
+                        </div>
+                    `;
                 }
             }
         });
@@ -257,7 +274,7 @@ class ChroniclesFeed {
             // Show modal
             const modal = document.getElementById('chronicleModal');
             if (modal) {
-                modal.classList.add('show');
+                modal.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
             }
         } catch (error) {
@@ -340,14 +357,33 @@ class ChroniclesFeed {
 
         // Populate author avatar
         const authorContainer = document.querySelector('.chronicle-detail .chronicle-author-info');
-        if (authorContainer && chronicle.author && window.MLNFAvatars) {
-            const avatarElement = window.MLNFAvatars.createUserDisplay(chronicle.author, {
-                showStatus: true,
-                size: 'medium',
-                showDisplayName: true
-            });
-            authorContainer.innerHTML = '';
-            authorContainer.appendChild(avatarElement);
+        if (authorContainer && chronicle.author) {
+            console.log('[Chronicles Modal] Populating avatar for author:', chronicle.author);
+            
+            if (window.MLNFAvatars) {
+                const avatarElement = window.MLNFAvatars.createUserDisplay({
+                    username: chronicle.author.username || chronicle.author.displayName || 'Anonymous',
+                    title: chronicle.author.title || 'Eternal Soul',
+                    status: chronicle.author.status || null,
+                    avatarSize: 'md',
+                    displaySize: 'md',
+                    mystical: chronicle.author.role === 'admin' || chronicle.author.isVIP,
+                    online: chronicle.author.online,
+                    customAvatar: chronicle.author.avatar,
+                    usernameStyle: 'immortal'
+                });
+                authorContainer.innerHTML = '';
+                authorContainer.appendChild(avatarElement);
+            } else {
+                console.warn('[Chronicles Modal] MLNFAvatars not available, creating fallback');
+                // Fallback if avatar system not loaded
+                authorContainer.innerHTML = `
+                    <div class="fallback-author">
+                        <div class="fallback-avatar">${(chronicle.author.username || 'A')[0].toUpperCase()}</div>
+                        <span class="fallback-name">${chronicle.author.username || chronicle.author.displayName || 'Anonymous'}</span>
+                    </div>
+                `;
+            }
         }
 
         // Set up modal event listeners
@@ -400,7 +436,7 @@ class ChroniclesFeed {
     closeChronicleModal() {
         const modal = document.getElementById('chronicleModal');
         if (modal) {
-            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
         }
     }
@@ -509,5 +545,5 @@ class ChroniclesFeed {
 
 // Auto-initialize when script loads
 if (typeof window !== 'undefined') {
-    window.ChroniclesFeed = ChroniclesFeed;
+window.ChroniclesFeed = ChroniclesFeed;
 }

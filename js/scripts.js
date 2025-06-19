@@ -464,185 +464,7 @@ function isLoggedIn() {
     return !!localStorage.getItem('sessionToken');
 }
 
-// Welcome Modal for new users
-function showWelcomeModal() {
-    // Check if the user is logged in
-    const hasSeenWelcome = localStorage.getItem('mlnf_has_seen_welcome');
-    
-    // If user is logged in and hasn't seen the welcome message
-    if (isLoggedIn() && !hasSeenWelcome) {
-        // First, check if a modal already exists and remove it, just in case.
-        const existingModal = document.getElementById('welcomeModal');
-        if (existingModal) {
-            document.body.removeChild(existingModal);
-        }
-
-        const welcomeModal = document.createElement('div');
-        welcomeModal.id = 'welcomeModal';
-        welcomeModal.className = 'modal'; // Use the generic modal class for base styles
-        
-        welcomeModal.innerHTML = `
-            <div class="modal-content welcome-modal-content">
-                <button class="close-modal">&times;</button>
-                <h2 class="welcome-title">Welcome to Manifest Liberation</h2>
-                
-                <div class="welcome-body">
-                    <p class="welcome-intro">You've just joined a sanctuary for free thinkers where:</p>
-                    
-                    <div class="welcome-principles">
-                        <div class="principle">
-                            <i class="fas fa-infinity"></i>
-                            <h3>Immortality</h3>
-                            <p>Ideas endure eternally, preserved beyond the limitations of time</p>
-                        </div>
-                        
-                        <div class="principle">
-                            <i class="fas fa-lightbulb"></i>
-                            <h3>Truth</h3>
-                            <p>Knowledge unfettered by conventional censorship or control</p>
-                        </div>
-                        
-                        <div class="principle">
-                            <i class="fas fa-dove"></i>
-                            <h3>Freedom</h3>
-                            <p>Express your authentic self without fear of judgment</p>
-                        </div>
-                        
-                        <div class="principle">
-                            <i class="fas fa-users"></i>
-                            <h3>Direct Democracy</h3>
-                            <p>Community-driven verification where all voices matter equally</p>
-                        </div>
-                    </div>
-                    
-                    <div class="welcome-actions">
-                        <button id="welcomeGetStarted" class="btn btn-primary">Get Started</button>
-                        <div class="welcome-checkbox">
-                            <input type="checkbox" id="dontShowAgain">
-                            <label for="dontShowAgain">Don't show again</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(welcomeModal);
-
-        // Add the 'active' class to show it with a fade-in transition
-        // Use a short timeout to allow the element to be in the DOM first, ensuring CSS transition works
-        setTimeout(() => {
-            welcomeModal.classList.add('active');
-        }, 50);
-
-        // Style for the welcome modal
-        const style = document.createElement('style');
-        style.textContent = `
-            .welcome-modal-content {
-                max-width: 700px;
-                padding: 2rem;
-                background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-                border: 2px solid var(--accent);
-                border-radius: var(--border-radius);
-                color: var(--text);
-            }
-            
-            .welcome-title {
-                font-size: 2rem;
-                text-align: center;
-                margin-bottom: 1.5rem;
-            }
-            
-            .welcome-intro {
-                text-align: center;
-                font-size: 1.1rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .welcome-principles {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
-            }
-            
-            .principle {
-                text-align: center;
-                padding: 1.5rem;
-                background: rgba(255, 94, 120, 0.08);
-                border-radius: var(--border-radius);
-                transition: var(--transition);
-            }
-            
-            .principle:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 5px 15px rgba(255, 94, 120, 0.2);
-            }
-            
-            .principle i {
-                font-size: 2rem;
-                color: var(--accent);
-                margin-bottom: 0.75rem;
-            }
-            
-            .principle h3 {
-                margin-bottom: 0.75rem;
-                font-size: 1.2rem;
-            }
-            
-            .welcome-actions {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
-            
-            .welcome-checkbox {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 0.9rem;
-            }
-            
-            @media (max-width: 768px) {
-                .welcome-principles {
-                    grid-template-columns: 1fr;
-                }
-            }
-        `;
-        
-        document.head.appendChild(style);
-        
-        // A more robust function to close and remove the modal
-        const closeAndDestroyWelcomeModal = () => {
-            const modal = document.getElementById('welcomeModal');
-            if (!modal) return;
-
-            // Check if the "Don't show again" box is checked
-            const dontShowCheckbox = document.getElementById('dontShowAgain');
-            if (dontShowCheckbox && dontShowCheckbox.checked) {
-                localStorage.setItem('mlnf_has_seen_welcome', 'true');
-                console.log('[Welcome Modal] "Don\'t show again" preference saved.');
-            }
-
-            // Fade out first by removing the active class
-            modal.classList.remove('active');
-
-            // Remove from DOM after transition
-            setTimeout(() => {
-                if (document.body.contains(modal)) {
-                    document.body.removeChild(modal);
-                    console.log('[Welcome Modal] Successfully removed from DOM.');
-                }
-            }, 500); // Should match the transition duration in CSS
-        };
-        
-        // Close modal and set flag when user clicks "Get Started"
-        document.getElementById('welcomeGetStarted').addEventListener('click', closeAndDestroyWelcomeModal);
-        
-        // Close modal when user clicks X button
-        welcomeModal.querySelector('.close-modal').addEventListener('click', closeAndDestroyWelcomeModal);
-    }
-}
+// Welcome modal removed - was interfering with other modals
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[Debug Step] DOMContentLoaded fired.');
@@ -964,15 +786,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         modalFeedback.textContent = 'Sanctuary access granted. The gateway opens...';
                         console.log('[Login Debug] Login successful, token stored.');
                         await updateAuthUI(true);
+                        await updateAuthUIAndFetchUsers(); // Update UI after successful login
+                        
+                        // Show success feedback and auto-close after delay
+                        modalFeedback.innerHTML = '<span style="color: var(--success);">Login successful! Welcome back, Soul.</span>';
                         setTimeout(() => {
                             closeSoulModal();
-                            // Show the welcome modal to the newly logged-in user
-                            showWelcomeModal();
-                             // Optionally, refresh online users if sidebar was open or redirect
-                            if (activeUsers && activeUsers.classList.contains('active')) {
-                                fetchOnlineUsers();
-                            }
-                        }, 1500); 
+                        }, 1500);
+                        
+                        // Clear feedback after closing
+                        setTimeout(() => {
+                            modalFeedback.innerHTML = '';
+                        }, 2000);
                     } else {
                         modalFeedback.textContent = 'Token not received. Entry denied.';
                         console.log('[Login Debug] Token not received in login mode.');
@@ -988,13 +813,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         
                         modalFeedback.textContent = 'Eternity claimed! Welcome to the Sanctuary.';
-                        console.log('[Login Debug] Registration successful, token stored.');
-                        await updateAuthUI(true);
+                        console.log('Registration successful:', data);
+                        await updateAuthUIAndFetchUsers(); // Update UI after successful registration
+                        
+                        // Show success feedback and auto-close after delay
+                        modalFeedback.innerHTML = '<span style="color: var(--success);">Registration successful! Welcome to the Liberation, Soul.</span>';
                         setTimeout(() => {
                             closeSoulModal();
-                            // Also show welcome modal on successful registration
-                            showWelcomeModal();
                         }, 1500);
+                        
+                        // Clear feedback after closing
+                        setTimeout(() => {
+                            modalFeedback.innerHTML = '';
+                        }, 2000);
                     } else {
                         // Fallback if no token (shouldn't happen with current backend)
                         modalFeedback.textContent = data.message || 'Eternity claimed! Please enter the Sanctuary now.';
@@ -1007,11 +838,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
             } catch (error) {
-                console.error(`[Auth Form Error - ${mode}]:`, error);
-                if (!modalFeedback.textContent) { // Avoid overwriting specific backend error
-                    modalFeedback.textContent = 'An unexpected disturbance occurred. Try again.';
-                }
-                console.log('[Login Debug] Error caught:', error.message);
+                console.error('Authentication error:', error);
+                modalFeedback.innerHTML = `<span style="color: var(--danger);">${error.message}</span>`;
             } finally {
                 soulModalSubmit.disabled = false;
                 soulModalSubmit.textContent = mode === 'register' ? 'Begin Your Eternity' : 'Transcend';
@@ -1036,7 +864,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check if user is logged in and show welcome modal if needed
     if (isLoggedIn()) {
-        showWelcomeModal();
+        // Remove the showWelcomeModal call
     }
 });
 

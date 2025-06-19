@@ -43,7 +43,7 @@ class CommentsSystem {
         
         const modal = document.getElementById('commentsModal');
         if (modal) {
-            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
             
             // Update modal title
@@ -57,7 +57,7 @@ class CommentsSystem {
     closeComments() {
         const modal = document.getElementById('commentsModal');
         if (modal) {
-            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
             this.currentChronicleId = null;
             this.comments = [];
@@ -104,12 +104,12 @@ class CommentsSystem {
                 <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
                     <p><strong style="color: var(--immortal-gold);">Development Status:</strong></p>
                     <ul style="text-align: left; max-width: 400px; margin: 1rem auto; color: var(--text-secondary);">
-                        <li>✅ Chronicle submission and editing</li>
+                    <li>✅ Chronicle submission and editing</li>
                         <li>✅ Immortal voting system (Consecrate/Investigate)</li>
                         <li>✅ Comments form interface (ready)</li>
                         <li>🔄 Comments backend integration (in development)</li>
                         <li>🔄 Real-time comment updates</li>
-                    </ul>
+                </ul>
                 </div>
                 
                 <button class="btn btn-outline" onclick="window.commentsSystem.closeComments()" style="margin-top: 1.5rem;">
@@ -180,13 +180,13 @@ class CommentsSystem {
                 <h4><i class="fas fa-quill-pen"></i> Share Your Eternal Echo</h4>
                 <form id="commentForm">
                     <div class="form-group">
-                        <textarea 
-                            id="commentContent" 
-                            name="content" 
-                            placeholder="Express your thoughts on this chronicle..." 
-                            required
-                            rows="4"
-                        ></textarea>
+                    <textarea 
+                        id="commentContent" 
+                        name="content" 
+                        placeholder="Express your thoughts on this chronicle..." 
+                        required
+                        rows="4"
+                    ></textarea>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
@@ -220,7 +220,7 @@ class CommentsSystem {
 
     async handleCommentSubmission(e) {
         e.preventDefault();
-
+        
         if (!window.authManager || !window.authManager.isLoggedIn()) {
             this.showError('Please log in to post a comment.');
             return;
@@ -317,7 +317,7 @@ class CommentsSystem {
             setTimeout(() => {
                 if (errorElement.parentNode) {
                     errorElement.remove();
-                }
+        }
             }, 5000);
         }
     }
@@ -368,5 +368,5 @@ class CommentsSystem {
 
 // Auto-initialize when script loads
 if (typeof window !== 'undefined') {
-    window.CommentsSystem = CommentsSystem;
+window.CommentsSystem = CommentsSystem;
 }

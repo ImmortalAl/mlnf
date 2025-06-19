@@ -45,6 +45,37 @@
 }
 
 /* ==========================================================================
+   FALLBACK AUTHOR DISPLAY (when avatar system unavailable)
+   ========================================================================== */
+.fallback-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.fallback-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--immortal-gold);
+    color: var(--background-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 2px solid rgba(255, 202, 40, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.fallback-name {
+    color: var(--immortal-gold);
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: 'Crimson Text', serif;
+}
+
+/* ==========================================================================
    NEWSPAPER HEADER & MASTHEAD
    ========================================================================== */
 .newspaper-header {
@@ -504,10 +535,15 @@
     backdrop-filter: blur(8px);
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
-.modal.show {
+.modal[aria-hidden="false"] {
     display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .chronicle-modal,

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Page Debug Test</title>
+    
+    <!-- Same CSS as news page -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="css/base-theme.css">
+    <link rel="stylesheet" href="css/styles.css?v=1.4">
+    <link rel="stylesheet" href="components/shared/styles.css?v=1.6">
+    <link rel="stylesheet" href="css/active-users.css?v=1.2">
+    <link rel="stylesheet" href="css/news.css?v=2.2">
+    
+    <style>
+        .debug-section {
+            margin: 2rem;
+            padding: 2rem;
+            background: #f0f0f0;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        .test-btn {
+            margin: 0.5rem;
+            padding: 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        #debugOutput {
+            background: #000;
+            color: #0f0;
+            padding: 1rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-section">
+        <h1>News Page Debug Test</h1>
+        
+        <h2>1. Test Modal Visibility</h2>
+        <button class="test-btn" onclick="testModalVisibility()">Test Modal CSS</button>
+        <button class="test-btn" onclick="openTestModal()">Open Test Modal</button>
+        
+        <h2>2. Test Avatar System</h2>
+        <button class="test-btn" onclick="testAvatarSystem()">Test Avatar Creation</button>
+        <div id="avatarTestContainer" style="margin-top: 1rem;"></div>
+        
+        <h2>3. Check Dependencies</h2>
+        <button class="test-btn" onclick="checkDependencies()">Check All Dependencies</button>
+        
+        <h2>Debug Output:</h2>
+        <div id="debugOutput"></div>
+    </div>
+    
+    <!-- Test Modal -->
+    <div id="testModal" class="modal" aria-hidden="true">
+        <div class="chronicle-modal">
+            <div class="modal-header">
+                <h3>Test Modal</h3>
+                <button class="close-modal" onclick="closeTestModal()">×</button>
+            </div>
+            <div style="padding: 2rem;">
+                <p>If you can see this, the modal system is working!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load scripts in same order as news page -->
+    <script src="components/shared/config.js?v=1.3"></script>
+    <script src="components/shared/mlnf-core.js?v=1.3"></script>
+    <script src="js/shared/authManager.js?v=1.3"></script>
+    <script src="js/shared/apiClient.js?v=1.3"></script>
+    <script src="js/mlnf-avatar-system.js?v=1.1"></script>
+    
+    <script>
+        const debug = document.getElementById('debugOutput');
+        
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            debug.textContent += `[${timestamp}] ${isError ? 'ERROR: ' : ''}${message}\n`;
+            debug.scrollTop = debug.scrollHeight;
+        }
+        
+        function testModalVisibility() {
+            log('Testing modal CSS rules...');
+            
+            const modal = document.getElementById('testModal');
+            const computedStyle = window.getComputedStyle(modal);
+            
+            log(`Initial state:
+- display: ${computedStyle.display}
+- opacity: ${computedStyle.opacity}
+- aria-hidden: ${modal.getAttribute('aria-hidden')}`);
+            
+            // Test aria-hidden=false
+            modal.setAttribute('aria-hidden', 'false');
+            const openStyle = window.getComputedStyle(modal);
+            log(`\nWith aria-hidden="false":
+- display: ${openStyle.display}
+- opacity: ${openStyle.opacity}`);
+            
+            // Reset
+            modal.setAttribute('aria-hidden', 'true');
+            
+            // Check if CSS rules exist
+            const hasAriaRule = Array.from(document.styleSheets).some(sheet => {
+                try {
+                    return Array.from(sheet.cssRules || []).some(rule => 
+                        rule.selectorText && rule.selectorText.includes('[aria-hidden="false"]')
+                    );
+                } catch(e) {
+                    return false;
+                }
+            });
+            
+            log(`\nCSS rule .modal[aria-hidden="false"] exists: ${hasAriaRule}`);
+        }
+        
+        function openTestModal() {
+            log('Opening test modal...');
+            const modal = document.getElementById('testModal');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            
+            const computedStyle = window.getComputedStyle(modal);
+            log(`Modal opened:
+- display: ${computedStyle.display}
+- opacity: ${computedStyle.opacity}
+- visibility: ${computedStyle.visibility}`);
+        }
+        
+        function closeTestModal() {
+            const modal = document.getElementById('testModal');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            log('Modal closed');
+        }
+        
+        function testAvatarSystem() {
+            log('Testing avatar system...');
+            
+            const container = document.getElementById('avatarTestContainer');
+            container.innerHTML = '';
+            
+            if (!window.MLNFAvatars) {
+                log('ERROR: window.MLNFAvatars is not available!', true);
+                return;
+            }
+            
+            log('MLNFAvatars is available');
+            
+            // Test avatar creation
+            try {
+                const testUser = {
+                    username: 'TestUser',
+                    title: 'Test Title',
+                    avatar: null
+                };
+                
+                const avatarElement = window.MLNFAvatars.createUserDisplay({
+                    username: testUser.username,
+                    title: testUser.title,
+                    avatarSize: 'md',
+                    displaySize: 'md',
+                    customAvatar: testUser.avatar,
+                    usernameStyle: 'immortal'
+                });
+                
+                container.appendChild(avatarElement);
+                log('Avatar created successfully! Check above.');
+                
+                // Check avatar URL generation
+                const avatarUrl = window.MLNFAvatars.generateAvatarUrl('TestUser', 40, null);
+                log(`Generated avatar URL: ${avatarUrl}`);
+                
+            } catch (error) {
+                log(`Error creating avatar: ${error.message}`, true);
+                console.error(error);
+            }
+        }
+        
+        function checkDependencies() {
+            log('Checking dependencies...');
+            
+            const checks = [
+                { name: 'window.MLNF_CONFIG', exists: typeof window.MLNF_CONFIG !== 'undefined' },
+                { name: 'window.MLNF', exists: typeof window.MLNF !== 'undefined' },
+                { name: 'window.authManager', exists: typeof window.authManager !== 'undefined' },
+                { name: 'window.apiClient', exists: typeof window.apiClient !== 'undefined' },
+                { name: 'window.MLNFAvatars', exists: typeof window.MLNFAvatars !== 'undefined' },
+                { name: 'Font Awesome', exists: document.querySelector('link[href*="font-awesome"]') !== null },
+                { name: 'base-theme.css', exists: document.querySelector('link[href*="base-theme.css"]') !== null },
+                { name: 'styles.css', exists: document.querySelector('link[href*="styles.css"]') !== null },
+                { name: 'news.css', exists: document.querySelector('link[href*="news.css"]') !== null }
+            ];
+            
+            checks.forEach(check => {
+                log(`${check.name}: ${check.exists ? '✓ Loaded' : '✗ Missing'}`, !check.exists);
+            });
+            
+            // Check for JavaScript errors
+            if (window.console && window.console.error) {
+                log('\nCheck browser console for any JavaScript errors!');
+            }
+        }
+        
+        // Run initial check on load
+        window.addEventListener('DOMContentLoaded', () => {
+            log('Page loaded, running initial checks...');
+            checkDependencies();
+        });
+    </script>
+</body>
+</html> 

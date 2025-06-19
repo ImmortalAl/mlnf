@@ -86,7 +86,7 @@ class SubmissionModal {
         const modal = document.getElementById('submissionModal');
         if (modal) {
             this.resetSubmissionForm();
-            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
         }
     }
@@ -94,7 +94,7 @@ class SubmissionModal {
     closeSubmissionModal() {
         const modal = document.getElementById('submissionModal');
         if (modal) {
-            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
             this.resetSubmissionForm();
         }
@@ -118,7 +118,7 @@ class SubmissionModal {
 
         const modal = document.getElementById('editModal');
         if (modal) {
-            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
         }
     }
@@ -126,7 +126,7 @@ class SubmissionModal {
     closeEditModal() {
         const modal = document.getElementById('editModal');
         if (modal) {
-            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
             this.isEditMode = false;
             this.currentChronicleId = null;
