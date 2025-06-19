@@ -21,6 +21,16 @@
     --immortal-crimson: #8b0000;
     --immortal-purple: #4a148c;
     
+    /* Missing variables needed for modals */
+    --background: var(--primary);
+    --background-secondary: var(--secondary);
+    --background-tertiary: #2a2a45;
+    --border: var(--highlight);
+    --text-secondary: #c9b3e0;
+    --text-muted: #a084c4;
+    --info: #3b82f6;
+    --error: var(--danger);
+    
     /* Typography scale for newspaper hierarchy */
     --headline-size: 3.5rem;
     --subhead-size: 1.8rem;
