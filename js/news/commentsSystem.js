@@ -107,7 +107,7 @@ const CommentsSystem = {
         this.showLoadingState();
 
         try {
-            const response = await fetch(`${window.API_BASE}/api/comments/${this.currentTargetType}/${this.currentTargetId}`);
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments/${this.currentTargetType}/${this.currentTargetId}`);
             
             if (!response.ok) {
                 throw new Error('Failed to load comments');
@@ -221,7 +221,7 @@ const CommentsSystem = {
 
             this.setSubmittingState(true);
 
-            const response = await fetch(`${window.API_BASE}/api/comments`, {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -274,7 +274,7 @@ const CommentsSystem = {
                 return;
             }
 
-            const response = await fetch(`${window.API_BASE}/api/comments/${commentId}`, {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -314,7 +314,7 @@ const CommentsSystem = {
                 return;
             }
 
-            const response = await fetch(`${window.API_BASE}/api/comments/${commentId}`, {
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/comments/${commentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
