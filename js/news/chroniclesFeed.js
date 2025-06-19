@@ -6,6 +6,8 @@ class ChroniclesFeed {
         this.currentSort = 'submission';
         this.chronicles = [];
         this.totalPages = 1;
+        this.loading = false;
+        this.hasMore = true;
     }
 
     static init() {
@@ -59,6 +61,9 @@ class ChroniclesFeed {
     }
 
     async loadChronicles() {
+        if (this.loading) return;
+        
+        this.loading = true;
         try {
             const sortParam = this.currentSort === 'event' ? 'eventDate' : 'createdAt';
             const response = await window.apiClient.get(`/chronicles?page=${this.currentPage}&limit=15&sort=${sortParam}`);
@@ -70,18 +75,21 @@ class ChroniclesFeed {
             }
             
             this.totalPages = response.totalPages;
+            this.hasMore = this.currentPage < this.totalPages;
             this.renderChronicles();
         } catch (error) {
             console.error('Error loading chronicles:', error);
             this.showError('Failed to load chronicles. Please try again.');
+        } finally {
+            this.loading = false;
         }
     }
 
     async loadMoreChronicles() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            await this.loadChronicles();
-        }
+        if (!this.hasMore || this.loading) return;
+        
+        this.currentPage++;
+        await this.loadChronicles();
     }
 
     renderChronicles() {

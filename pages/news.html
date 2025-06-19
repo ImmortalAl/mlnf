@@ -330,115 +330,57 @@
     <script src="../js/news/submissionModal.js?v=2.1"></script>
     <script src="../js/news/commentsSystem.js?v=2.1"></script>
     
+    <!-- News Page JavaScript -->
     <script>
-        // Initialize page
+        // API Configuration
+        window.API_BASE = 'http://localhost:3001';
+
+        // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Set current date in newspaper header
-            const dateElement = document.getElementById('currentDate');
-            if (dateElement) {
-                const today = new Date();
-                const options = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                };
-                dateElement.textContent = today.toLocaleDateString('en-US', options);
+            console.log('News page initializing...');
+            
+            // Check if all required components are available
+            const requiredComponents = ['ChroniclesFeed', 'SubmissionModal', 'CommentsSystem'];
+            const missingComponents = requiredComponents.filter(comp => !window[comp]);
+            
+            if (missingComponents.length > 0) {
+                console.error('Missing required components:', missingComponents);
+                return;
             }
-            
-            // Initialize components
-            ChroniclesFeed.init();
-            SubmissionModal.init();
-                CommentsSystem.init();
-        });
 
-        // Debug script - Run this in browser console on news page
-        console.log('=== MLNF News Page Debug ===');
+            // Initialize all components
+            try {
+                window.SubmissionModal.init();
+                window.CommentsSystem.init();
+                window.ChroniclesFeed.init();
+                
+                console.log('All news page components initialized successfully');
+            } catch (error) {
+                console.error('Error initializing news page components:', error);
+            }
 
-        // 1. Check CSS loading
-        const checkCSS = () => {
-            const styles = document.styleSheets;
-            let newsCSS = false;
-            let modalRule = false;
-            
-            Array.from(styles).forEach(sheet => {
-                try {
-                    if (sheet.href && sheet.href.includes('news.css')) {
-                        newsCSS = true;
-                        Array.from(sheet.cssRules).forEach(rule => {
-                            if (rule.selectorText && rule.selectorText.includes('modal[aria-hidden="false"]')) {
-                                modalRule = true;
-                            }
-                        });
+            // Setup Submit Truth button
+            const submitTruthBtn = document.getElementById('submitTruthBtn');
+            if (submitTruthBtn) {
+                submitTruthBtn.addEventListener('click', () => {
+                    // Check if user is logged in
+                    const token = localStorage.getItem('sessionToken');
+                    if (!token) {
+                        // Try to open login modal if AuthManager is available
+                        if (window.AuthManager && window.AuthManager.openLoginModal) {
+                            window.AuthManager.openLoginModal();
+                        } else if (window.openSoulModal) {
+                            window.openSoulModal('login');
+                        } else {
+                            alert('Please log in to submit truth');
+                        }
+                        return;
                     }
-                } catch(e) {}
-            });
-            
-            console.log('✓ news.css loaded:', newsCSS);
-            console.log('✓ modal[aria-hidden="false"] rule exists:', modalRule);
-        };
-
-        // 2. Check JavaScript objects
-        const checkJS = () => {
-            console.log('\n=== JavaScript Objects ===');
-            console.log('window.MLNFAvatars:', !!window.MLNFAvatars);
-            console.log('window.chroniclesFeed:', !!window.chroniclesFeed);
-            console.log('window.submissionModal:', !!window.submissionModal);
-            console.log('window.commentsSystem:', !!window.commentsSystem);
-        };
-
-        // 3. Test modal directly
-        const testModal = () => {
-            console.log('\n=== Testing Modal ===');
-            const modal = document.getElementById('submissionModal');
-            if (modal) {
-                console.log('Modal found');
-                modal.setAttribute('aria-hidden', 'false');
-                const style = window.getComputedStyle(modal);
-                console.log('Display:', style.display);
-                console.log('Opacity:', style.opacity);
-                console.log('Visibility:', style.visibility);
-                
-                // Reset
-                setTimeout(() => {
-                    modal.setAttribute('aria-hidden', 'true');
-                    console.log('Modal hidden again');
-                }, 3000);
-            }
-        };
-
-        // 4. Test avatar
-        const testAvatar = () => {
-            console.log('\n=== Testing Avatar ===');
-            if (window.MLNFAvatars) {
-                const testDiv = document.createElement('div');
-                testDiv.style.position = 'fixed';
-                testDiv.style.top = '10px';
-                testDiv.style.right = '10px';
-                testDiv.style.background = 'white';
-                testDiv.style.padding = '20px';
-                testDiv.style.zIndex = '10000';
-                
-                const avatar = window.MLNFAvatars.createUserDisplay({
-                    username: 'TestUser',
-                    title: 'Debug Test',
-                    avatarSize: 'lg',
-                    displaySize: 'lg'
+                    
+                    window.SubmissionModal.open();
                 });
-                
-                testDiv.appendChild(avatar);
-                document.body.appendChild(testDiv);
-                console.log('Avatar test created in top-right corner');
-                
-                setTimeout(() => testDiv.remove(), 5000);
             }
-        };
-
-        // Run all checks
-        checkCSS();
-        checkJS();
-        console.log('\nRun testModal() to test modal visibility');
-        console.log('Run testAvatar() to test avatar creation');
+        });
     </script>
 
     <script src="../news-hotfix.js"></script>
