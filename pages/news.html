@@ -3,972 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Boundless Chronicles: User-submitted stories immortalizing hidden truths in the MLNF sanctuary.">
+    <meta name="description" content="Boundless Chronicles: Eternal truths and timeless stories in the MLNF sanctuary.">
     <meta name="theme-color" content="#0d0d1a">
-    <title>Boundless Chronicles - Manifest Liberation, Naturally Free (v1.1)</title>
+    <title>Boundless Chronicles - Manifest Liberation, Naturally Free</title>
+    
     <!-- Immortal-themed favicon -->
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" href="../favicon.svg">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/base-theme.css">
-    <link rel="stylesheet" href="/css/styles.css?v=1.4">
-    <link rel="stylesheet" href="/components/shared/styles.css?v=1.6">
-    <link rel="stylesheet" href="/css/active-users.css?v=1.2">
-    <style>
-        :root {
-            --primary: #0d0d1a;
-            --secondary: #1a1a33;
-            --accent: #ff5e78;
-            --text: #f0e6ff;
-            --truth-gold: #FFD700;
-            --highlight: #2a4066;
-            --success: #5cb85c;
-            --success-dim: rgba(92, 184, 92, 0.1);
-            --danger: #d9534f;
-            --danger-dim: rgba(217, 83, 79, 0.1);
-            --gradient-accent: linear-gradient(45deg, var(--accent), var(--truth-gold));
-            --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
-            --gradient-card: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.9));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.6);
-            --border-radius: 16px;
-            --glow: 0 0 20px rgba(255, 215, 0, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.8)), 
-                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-            color: var(--text);
-            font-family: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Active Users Sidebar - CRITICAL: Must be defined to prevent blocking */
-        .active-users {
-            position: fixed;
-            right: -350px;
-            top: 0;
-            width: 350px;
-            height: 100vh;
-            background: var(--gradient-card);
-            border-left: 2px solid var(--truth-gold);
-            transition: var(--transition);
-            z-index: 1500;
-            overflow-y: auto;
-            backdrop-filter: blur(15px);
-        }
-
-        .active-users.open {
-            right: 0;
-        }
-
-        .active-users-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--highlight);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .active-users-header h3 {
-            color: var(--truth-gold);
-            font-size: 1.2rem;
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-sidebar:hover {
-            color: var(--truth-gold);
-        }
-
-        .show-users-btn {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--gradient-accent);
-            border: none;
-            color: var(--primary);
-            padding: 1rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-            z-index: 1400;
-            box-shadow: var(--shadow);
-        }
-
-        .show-users-btn:hover {
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: var(--shadow-hover);
-        }
-
-        /* Mobile Navigation - Proper z-index management */
-        .mobile-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1200;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .mobile-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 300px;
-            height: 100vh;
-            background: var(--gradient-card);
-            z-index: 1300;
-            transition: var(--transition);
-            overflow-y: auto;
-        }
-
-        .mobile-nav.active {
-            left: 0;
-        }
-
-        header {
-            background: var(--gradient-secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--truth-gold);
-            position: sticky;
-            top: 0;
-            z-index: 1100;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo { display: flex; align-items: center; gap: 1rem; }
-        .logo i { 
-            color: var(--truth-gold); 
-            font-size: 2.2rem; 
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-        }
-        .logo h1 { 
-            font-family: 'Playfair Display', serif; 
-            font-size: 1.8rem; 
-            background: var(--gradient-accent); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-        }
-
-        nav ul { display: flex; gap: 1.8rem; list-style: none; }
-        nav a { 
-            color: var(--text); 
-            text-decoration: none; 
-            font-weight: 600; 
-            padding: 0.5rem 0; 
-            transition: var(--transition);
-            position: relative;
-        }
-        nav a:hover, nav a.active { 
-            color: var(--truth-gold); 
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        nav a:hover::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-            animation: glow-pulse 2s infinite;
-        }
-
-        main { padding: 3rem 2rem; flex: 1; }
-
-        .chronicles-header {
-            text-align: center;
-            margin-bottom: 4rem;
-            position: relative;
-        }
-
-        .chronicles-header::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: -1;
-        }
-
-        .chronicles-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-            animation: title-glow 3s ease-in-out infinite alternate;
-        }
-
-        .chronicles-header p {
-            font-size: 1.3rem;
-            color: #d9ccff;
-            font-style: italic;
-        }
-
-        @keyframes title-glow {
-            from { filter: brightness(1); }
-            to { filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 215, 0, 0.4)); }
-        }
-
-        @keyframes glow-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .view-controls {
-            text-align: center;
-            margin-bottom: 3rem;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .view-btn {
-            background: var(--gradient-card);
-            border: 2px solid var(--highlight);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text);
-            cursor: pointer;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .view-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-accent);
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .view-btn:hover::before {
-            left: 0;
-        }
-
-        .view-btn:hover {
-            color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .view-btn.active {
-            border-color: var(--truth-gold);
-            background: var(--gradient-accent);
-            color: var(--primary);
-            box-shadow: var(--glow);
-        }
-
-        .submit-truth-btn {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-            margin: 0 auto 4rem;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-truth-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, var(--truth-gold), var(--accent));
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .submit-truth-btn:hover::before {
-            left: 0;
-        }
-
-        .submit-truth-btn:hover {
-            transform: scale(1.05) translateY(-3px);
-            box-shadow: var(--shadow-hover);
-            filter: brightness(1.1);
-        }
-
-        .submit-truth-btn i { margin-right: 0.5rem; }
-
-        .chronicles-feed {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 3rem;
-        }
-
-        .chronicle-card {
-            background: var(--gradient-card);
-            border-radius: var(--border-radius);
-            padding: 2.5rem;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .chronicle-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-accent);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .chronicle-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--truth-gold);
-        }
-
-        .chronicle-card:hover::before {
-            opacity: 1;
-        }
-
-        .chronicle-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .chronicle-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--truth-gold), transparent, var(--truth-gold));
-            opacity: 0.6;
-        }
-
-        .chronicle-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            color: var(--truth-gold);
-            margin: 0;
-            line-height: 1.2;
-            flex: 1;
-            min-width: 250px;
-            position: relative;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .chronicle-title::before {
-            content: '✦';
-            position: absolute;
-            left: -2rem;
-            top: 0;
-            color: var(--accent);
-            font-size: 1.5rem;
-            opacity: 0.7;
-            animation: star-twinkle 3s ease-in-out infinite;
-        }
-
-        @keyframes star-twinkle {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        .chronicle-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.8rem;
-            font-size: 0.95rem;
-            color: #d9ccff;
-            min-width: 200px;
-        }
-
-        .chronicle-date {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            font-weight: 600;
-            font-size: 0.9rem;
-            position: relative;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.1);
-        }
-
-        .chronicle-date::before {
-            content: '📅';
-            margin-right: 0.5rem;
-        }
-
-        .chronicle-author {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-        }
-
-        .chronicle-author::before {
-            content: '✍️';
-            font-size: 1.1rem;
-        }
-
-        .chronicle-author:hover {
-            color: var(--truth-gold);
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-            transition: var(--transition);
-        }
-
-        .edit-chronicle-btn {
-            background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 94, 120, 0.05));
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 0.6rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 8px rgba(255, 94, 120, 0.2);
-        }
-
-        .edit-chronicle-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--accent);
-            border-radius: 50%;
-            opacity: 0;
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .edit-chronicle-btn:hover::before {
-            opacity: 1;
-        }
-
-        .edit-chronicle-btn:hover {
-            color: white;
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 4px 15px rgba(255, 94, 120, 0.4);
-        }
-
-        .edit-chronicle-btn i {
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }
-
-        .edit-chronicle-btn:hover i {
-            transform: scale(1.1);
-        }
-
-        .chronicle-content {
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .chronicle-content p {
-            margin-bottom: 1rem;
-            color: #e0d8ff;
-            font-size: 1.05rem;
-        }
-
-        .chronicle-sources {
-            margin-bottom: 2rem;
-            background: rgba(26, 26, 51, 0.5);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--truth-gold);
-        }
-
-        .chronicle-sources h4 {
-            color: var(--truth-gold);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .chronicle-sources h4::before {
-            content: '🔗';
-            font-size: 1.2rem;
-        }
-
-        .chronicle-sources ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .chronicle-sources li {
-            margin-bottom: 0.5rem;
-            padding-left: 1rem;
-            position: relative;
-        }
-
-        .chronicle-sources li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .chronicle-sources a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .chronicle-sources a:hover {
-            color: var(--truth-gold);
-            text-decoration: underline;
-        }
-
-        .chronicle-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border-top: 1px solid var(--highlight);
-            padding-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            background: var(--gradient-card);
-            border: 1px solid var(--highlight);
-            color: var(--text);
-            padding: 0.7rem 1.2rem;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .action-btn.validate::before { background: var(--success); }
-        .action-btn.challenge::before { background: var(--danger); }
-        .action-btn.comments::before { background: var(--highlight); }
-
-        .action-btn:hover::before { left: 0; }
-        .action-btn:hover { color: white; }
-
-        .action-btn.validate:hover { border-color: var(--success); }
-        .action-btn.challenge:hover { border-color: var(--danger); }
-        .action-btn.comments:hover { border-color: var(--accent); }
-
-        .action-btn.active {
-            color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .action-btn.validate.active {
-            background: var(--success);
-            border-color: var(--success);
-        }
-
-        .action-btn.challenge.active {
-            background: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .no-chronicles {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--gradient-card);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            font-size: 1.2rem;
-            color: #d9ccff;
-        }
-
-        .load-more-btn {
-            background: var(--gradient-accent);
-            color: var(--primary);
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            margin: 2rem auto;
-            display: block;
-        }
-
-        .load-more-btn:hover {
-            transform: scale(1.05);
-            box-shadow: var(--shadow);
-        }
-
-        /* FIXED MODAL SYSTEM - Standardized z-index and structure */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9000; /* Highest z-index for modals */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* CRITICAL: Only show modal when explicitly made visible */
-        .modal.show {
-            display: flex !important;
-        }
-
-        .modal-content, .message-modal-content {
-            background: var(--gradient-card);
-            margin: 5% auto;
-            padding: 3rem;
-            border: 2px solid var(--truth-gold);
-            width: 90%;
-            max-width: 800px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-hover);
-            animation: modal-fade-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(15px);
-            position: relative;
-        }
-
-        @keyframes modal-fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(-30px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .close-btn {
-            color: var(--text);
-            float: right;
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            line-height: 1;
-        }
-        
-        .close-btn:hover, .close-btn:focus { 
-            color: var(--truth-gold); 
-            transform: scale(1.1);
-        }
-
-        .form-group { margin-bottom: 2rem; }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 0.8rem; 
-            font-weight: bold; 
-            color: var(--truth-gold);
-            font-size: 1.1rem;
-        }
-        
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(13, 13, 26, 0.8);
-            border: 2px solid var(--highlight);
-            border-radius: 12px;
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--truth-gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-        }
-        
-        .form-group textarea { 
-            min-height: 150px; 
-            resize: vertical; 
-            font-family: inherit;
-        }
-
-        /* Comment System Styles */
-        .comments-placeholder {
-            text-align: center;
-            padding: 2rem;
-            background: var(--gradient-card);
-            border-radius: var(--border-radius);
-            margin: 1rem 0;
-        }
-
-        .comment-form {
-            background: var(--gradient-card);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            margin-top: 2rem;
-            border: 1px solid var(--highlight);
-        }
-
-        .comment-form h4 {
-            color: var(--truth-gold);
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .comment-form textarea {
-            width: 100%;
-            min-height: 120px;
-            padding: 1rem;
-            background: rgba(13, 13, 26, 0.8);
-            border: 2px solid var(--highlight);
-            border-radius: 12px;
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        .comment-form textarea:focus {
-            outline: none;
-            border-color: var(--truth-gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-        }
-
-        .form-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: var(--primary);
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent);
-            color: var(--primary);
-        }
-
-        .comment-auth-prompt {
-            text-align: center;
-            padding: 2rem;
-            background: var(--gradient-card);
-            border-radius: var(--border-radius);
-            margin-top: 1rem;
-            border: 1px solid var(--highlight);
-        }
-
-        footer {
-            background: var(--gradient-secondary);
-            text-align: center;
-            padding: 2rem;
-            border-top: 3px solid var(--truth-gold);
-            margin-top: 4rem;
-            backdrop-filter: blur(15px);
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .chronicles-header h2 { font-size: 2.5rem; }
-            .chronicle-card { padding: 1.5rem; }
-            .chronicle-title { 
-                font-size: 1.6rem; 
-                min-width: auto;
-            }
-            .chronicle-title::before {
-                left: -1.5rem;
-                font-size: 1.2rem;
-            }
-            .chronicle-meta {
-                min-width: auto;
-                align-items: flex-start;
-            }
-            .view-controls { flex-direction: column; gap: 1rem; }
-            .chronicle-actions { gap: 0.5rem; }
-            .action-btn { font-size: 0.9rem; padding: 0.5rem 1rem; }
-            .modal-content, .message-modal-content { padding: 2rem; margin: 10% auto; width: 95%; }
-            .active-users { width: 100vw; right: -100vw; }
-            .show-users-btn { right: 10px; }
-        }
-
-        @media (max-width: 480px) {
-            .chronicle-header { 
-                flex-direction: column; 
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .chronicle-title {
-                font-size: 1.4rem;
-                padding-left: 1rem;
-            }
-            .chronicle-title::before {
-                left: -0.5rem;
-                font-size: 1rem;
-            }
-            .chronicle-meta { 
-                align-items: flex-start;
-                width: 100%;
-            }
-            .chronicle-date {
-                align-self: flex-start;
-            }
-            .edit-chronicle-btn {
-                width: 40px;
-                height: 40px;
-                padding: 0.5rem;
-            }
-            .chronicle-actions { flex-direction: column; align-items: stretch; }
-            .action-btn { justify-content: center; }
-        }
-    </style>
+    
+    <!-- Classic Newspaper Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- CRITICAL CSS Loading Order -->
+    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/styles.css?v=1.4">
+    <link rel="stylesheet" href="../components/shared/styles.css?v=1.6">
+    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
+    <link rel="stylesheet" href="../css/news.css?v=2.0">
 </head>
 <body>
-    <!-- Active Users Sidebar -->
+    <!-- Active Users Sidebar (Shared Component) -->
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
-            <h3>Eternal Seekers</h3>
+            <h3>Eternal Chroniclers</h3>
             <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
         </div>
-        <div id="userList"></div> <!-- Populated by activeUsers.js -->
+        <div id="userList"></div>
     </aside>
-    <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
 
-    <!-- Message Modal -->
+    <!-- Floating Buttons (Shared Component) -->
+    <div class="floating-buttons">
+        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users">
+            <i class="fas fa-users"></i>
+        </button>
+    </div>
+
+    <!-- Message Modal (Shared Component) -->
     <div id="messageModal" class="modal" aria-hidden="true">
         <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Soul-to-Soul Connection</h3>
+            <h3 id="messageTitle">Direct Message</h3>
             <p id="recipientName">To: Username</p>
-            <div class="message-history" id="messageHistory">
-                <!-- Messages will be dynamically added here -->
-            </div>
-            <div class="message-form">
+            <div class="message-history" id="messageHistory"></div>
+            <div>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
                     <button type="submit" id="sendMessageBtn">Send Whisper</button>
@@ -977,7 +57,7 @@
             </div>
         </div>
     </div>
-    
+
     <header>
         <div class="logo">
             <a href="/">
@@ -998,10 +78,8 @@
             <ul></ul>
         </nav>
         <div class="header-controls">
-            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
-            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
-                <!-- Populated by userMenu.js when logged out -->
-            </div>
+            <div class="user-menu" id="userMenuContainer"></div>
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;"></div>
         </div>
         
         <!-- Mobile Navigation -->
@@ -1013,163 +91,266 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <ul class="mobile-nav-list">
-                <!-- Links will be dynamically populated -->
-            </ul>
+            <ul class="mobile-nav-list"></ul>
         </nav>
     </header>
 
-    <main>
-        <section class="chronicles-header">
-            <h2>Boundless Chronicles</h2>
-            <p>A Timeless Ledger of User-Submitted Truths</p>
-        </section>
-
-        <div class="view-controls">
-            <button class="view-btn active" data-view="recent"><i class="fas fa-bolt"></i> Recent Revelations</button>
-            <button class="view-btn" data-view="historical"><i class="fas fa-landmark"></i> Historical Timeline</button>
+    <main class="chronicles-main">
+        <!-- Newspaper Header -->
+        <div class="newspaper-header">
+            <div class="newspaper-masthead">
+                <h1 class="newspaper-title">The Boundless Chronicles</h1>
+                <div class="newspaper-subtitle">
+                    <span class="motto">"Eternal Truths Beyond Mortal Lies"</span>
+                    <span class="established">Est. Eternity</span>
+                </div>
+                <div class="newspaper-date" id="currentDate"></div>
+            </div>
         </div>
 
-        <button class="submit-truth-btn" id="openSubmissionModal"><i class="fas fa-plus-circle"></i> Submit Your Truth</button>
+        <!-- Chronicles Controls -->
+        <div class="chronicles-controls">
+            <div class="view-controls">
+                <button class="view-btn active" data-view="recent" data-sort="submission">
+                    <i class="fas fa-clock"></i> Latest Submissions
+                </button>
+                <button class="view-btn" data-view="chronological" data-sort="event">
+                    <i class="fas fa-history"></i> Historical Order
+                </button>
+            </div>
+            
+            <button class="submit-chronicle-btn" id="openSubmissionModal">
+                <i class="fas fa-feather-alt"></i> Submit Chronicle
+            </button>
+        </div>
 
-        <div class="chronicles-feed" id="chroniclesFeed">
-            <!-- Articles will be loaded here dynamically -->
+        <!-- Chronicles Feed -->
+        <div class="chronicles-container">
+            <div id="chroniclesFeed" class="chronicles-feed">
+                <div class="loading-chronicles">
+                    <div class="chronicle-spinner"></div>
+                    <p>Gathering eternal chronicles...</p>
+                </div>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <p>Eternal Year 1 - Manifest Liberation, Naturally Free. Eternity is ours.</p>
-    </footer>
+    <!-- Chronicle Submission Modal -->
+    <div id="submissionModal" class="modal" aria-hidden="true">
+        <div class="modal-content chronicle-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-scroll"></i> Submit Chronicle to Eternity</h3>
+                <button class="close-modal" id="closeSubmissionModal" aria-label="Close modal">×</button>
+            </div>
+            
+            <form id="submissionForm" class="chronicle-form">
+                <div class="form-group">
+                    <label for="chronicleTitle">Chronicle Title *</label>
+                    <input type="text" id="chronicleTitle" name="title" required 
+                           placeholder="Enter the title of your eternal chronicle">
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventDate">Event Date *</label>
+                    <input type="date" id="eventDate" name="eventDate" required>
+                    <small>When did this event occur?</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="chronicleContent">Chronicle Content *</label>
+                    <textarea id="chronicleContent" name="content" required rows="10"
+                              placeholder="Tell the story that shall echo through eternity..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="chronicleSources">Sources & References</label>
+                    <textarea id="chronicleSources" name="sources" rows="4"
+                              placeholder="List your sources (one per line)"></textarea>
+                    <small>Help others verify your chronicle's accuracy</small>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-scroll"></i> Immortalize Chronicle
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="closeSubmissionModal()">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <!-- Comments Modal -->
-    <div id="commentsModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <span class="close-btn" id="closeCommentsModal">&times;</span>
-            <h3 id="commentsModalTitle">Eternal Echoes</h3>
-            <div id="commentsContainer">
-                <!-- The CommentsSystem will populate this area -->
+    <!-- Chronicle Edit Modal -->
+    <div id="editModal" class="modal" aria-hidden="true">
+        <div class="modal-content chronicle-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Chronicle</h3>
+                <button class="close-modal" id="closeEditModal" aria-label="Close modal">×</button>
+            </div>
+            
+            <form id="editForm" class="chronicle-form">
+                <input type="hidden" id="editChronicleId" name="chronicleId">
+                
+                <div class="form-group">
+                    <label for="editTitle">Chronicle Title *</label>
+                    <input type="text" id="editTitle" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventDate">Event Date *</label>
+                    <input type="date" id="editEventDate" name="eventDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editContent">Chronicle Content *</label>
+                    <textarea id="editContent" name="content" required rows="10"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editSources">Sources & References</label>
+                    <textarea id="editSources" name="sources" rows="4"></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button type="button" class="btn btn-danger" id="deleteChronicle">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chronicle Detail Modal -->
+    <div id="chronicleModal" class="modal" aria-hidden="true">
+        <div class="modal-content chronicle-detail-modal">
+            <div class="modal-header">
+                <button class="close-modal" id="closeChronicleModal" aria-label="Close modal">×</button>
+            </div>
+            
+            <article class="chronicle-detail">
+                <div class="chronicle-detail-header">
+                    <h2 id="modalChronicleTitle" class="chronicle-title"></h2>
+                    <div class="chronicle-meta">
+                        <div class="chronicle-author-info">
+                            <!-- MLNF Avatar System will populate this -->
+                        </div>
+                        <div class="chronicle-dates">
+                            <div class="event-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span id="modalEventDate"></span>
+                            </div>
+                            <div class="submission-date">
+                                <i class="fas fa-clock"></i>
+                                <span id="modalSubmissionDate"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chronicle-content" id="modalChronicleContent"></div>
+                
+                <div class="chronicle-sources" id="modalChronicleSourcesContainer" style="display: none;">
+                    <h4><i class="fas fa-link"></i> Sources & References</h4>
+                    <ul id="modalChronicleSourcesList"></ul>
+                </div>
+                
+                <div class="chronicle-actions">
+                    <div class="voting-actions">
+                        <button class="action-btn consecrate" id="modalConsecrateBtn" title="Consecrate this chronicle as eternal truth">
+                            <i class="fas fa-certificate"></i>
+                            <span>Consecrate</span>
+                            <span class="count" id="modalConsecrateCount">(0)</span>
+                        </button>
+                        <button class="action-btn investigate" id="modalInvestigateBtn" title="Investigate this chronicle for accuracy">
+                            <i class="fas fa-search"></i>
+                            <span>Investigate</span>
+                            <span class="count" id="modalInvestigateCount">(0)</span>
+                        </button>
+                    </div>
+                    
+                    <div class="chronicle-management">
+                        <button class="action-btn edit" id="modalEditBtn" style="display: none;" title="Edit this chronicle">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn comments" id="modalCommentsBtn" title="View comments">
+                            <i class="fas fa-comments"></i> Comments
+                        </button>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Comments Section -->
+            <div class="chronicle-comments" id="chronicleCommentsSection">
+                <div id="chronicleCommentsContainer"></div>
             </div>
         </div>
     </div>
 
-    <!-- Submission Modal -->
-    <div id="submissionModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeSubmissionModal">&times;</span>
-            <h3 style="font-family: 'Playfair Display', serif; color: var(--truth-gold); font-size: 2rem; margin-bottom: 2rem;">Immortalize Your Truth</h3>
-            <form id="submissionForm">
-                <div class="form-group">
-                    <label for="storyTitle">Title</label>
-                    <input type="text" id="storyTitle" name="title" placeholder="The Banner of Your Truth" required>
-                </div>
-                <div class="form-group">
-                    <label for="storyContent">Content</label>
-                    <textarea id="storyContent" name="content" placeholder="Detail the events, the findings, the hidden narrative..." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="eventDate">Date of Event</label>
-                    <input type="date" id="eventDate" name="eventDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="storySources">Sources (separate by new line)</label>
-                    <textarea id="storySources" name="sources" placeholder="e.g., https://archive.is/link\nDeclassified Document FOIA-123"></textarea>
-                </div>
-                <button type="submit" class="submit-truth-btn" style="width: 100%; margin-top: 1rem;">Submit to the Chronicles</button>
-            </form>
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="modal" aria-hidden="true">
+        <div class="modal-content comments-modal">
+            <div class="modal-header">
+                <h3 id="commentsModalTitle">Chronicle Comments</h3>
+                <button class="close-modal" id="closeCommentsModal" aria-label="Close modal">×</button>
+            </div>
+            <div id="commentsContainer" class="comments-container"></div>
         </div>
     </div>
 
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeEditModal">&times;</span>
-            <h3 style="font-family: 'Playfair Display', serif; color: var(--truth-gold); font-size: 2rem; margin-bottom: 2rem;">Edit Your Truth</h3>
-            <form id="editForm">
-                <input type="hidden" id="editChronicleId">
-                <div class="form-group">
-                    <label for="editTitle">Title</label>
-                    <input type="text" id="editTitle" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="editContent">Content</label>
-                    <textarea id="editContent" name="content" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editEventDate">Date of Event</label>
-                    <input type="date" id="editEventDate" name="eventDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="editSources">Sources (separate by new line)</label>
-                    <textarea id="editSources" name="sources"></textarea>
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="submit-truth-btn" style="flex: 1;">Update Chronicle</button>
-                    <button type="button" id="deleteChronicle" class="submit-truth-btn" style="flex: 1; background: var(--danger);">Delete</button>
-                </div>
-            </form>
+    <footer>
+        <div class="newspaper-footer">
+            <p class="copyright">© Eternal Year ∞ - The Boundless Chronicles</p>
+            <p class="motto">Where truth transcends time and mortal limitations</p>
         </div>
-    </div>
+    </footer>
 
-    <!-- Auth Modal container -->
-    <div id="auth-modal-container"></div>
-
-    <!-- Config MUST be loaded first -->
-    <script src="../components/shared/config.js?v=1.2"></script>
-    
-    <!-- Core MLNF Components -->
-    <script src="../components/shared/mlnf-core.js?v=1.2"></script>
-    <script src="../js/shared/authManager.js?v=1.2"></script>
-    <script src="../js/shared/apiClient.js?v=1.2"></script>
-    <script src="../components/shared/navigation.js?v=1.2"></script>
-    <script src="../components/shared/authModal.js?v=1.2"></script>
-    <script src="../components/shared/userMenu.js?v=1.2"></script>
-    <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <script src="../components/shared/messageModal.js?v=1.2"></script>
+    <!-- Shared Component Scripts -->
+    <script src="../components/shared/config.js?v=1.3"></script>
+    <script src="../components/shared/mlnf-core.js?v=1.3"></script>
+    <script src="../js/shared/authManager.js?v=1.3"></script>
+    <script src="../js/shared/apiClient.js?v=1.3"></script>
+    <script src="../components/shared/navigation.js?v=1.3"></script>
+    <script src="../components/shared/authModal.js?v=1.3"></script>
+    <script src="../components/shared/userMenu.js?v=1.3"></script>
+    <script src="../components/shared/activeUsers.js?v=1.3"></script>
+    <script src="../components/shared/messageModal.js?v=1.3"></script>
+    <script src="../components/shared/comments.js?v=1.3"></script>
     
     <!-- Avatar System -->
     <script src="../js/mlnf-avatar-system.js?v=1.1"></script>
     
-    <!-- News Components -->
-    <script src="../js/news/submissionModal.js?v=1.2"></script>
-    <script src="../js/news/commentsSystem.js?v=1.2"></script>
-    <script src="../js/news/chroniclesFeed.js?v=1.2"></script>
+    <!-- Page-specific Scripts -->
+    <script src="../js/news/chroniclesFeed.js?v=2.0"></script>
+    <script src="../js/news/submissionModal.js?v=2.0"></script>
+    <script src="../js/news/commentsSystem.js?v=2.0"></script>
     
-    <!-- Initialize MLNF -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize MLNF core components
-            if (typeof MLNF !== 'undefined') {
-                MLNF.initNavigation();
-                MLNF.initAuthModal();
-                MLNF.initUserMenu();
-                MLNF.initActiveUsers();
-                MLNF.initMessageModal();
-            }
-
-            console.log('[News] Initializing Chronicles functionality...');
-            
-            // Initialize News/Chronicles components
-            if (typeof SubmissionModal !== 'undefined') {
-                SubmissionModal.init();
-                console.log('[News] SubmissionModal initialized');
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date in newspaper header
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                const today = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                dateElement.textContent = today.toLocaleDateString('en-US', options);
             }
             
-            if (typeof CommentsSystem !== 'undefined') {
-                CommentsSystem.init();
-                console.log('[News] CommentsSystem initialized');
-            }
-            
-            if (typeof ChroniclesFeed !== 'undefined') {
-                ChroniclesFeed.init();
-                console.log('[News] ChroniclesFeed initialized');
-                
-                // Make sure chroniclesFeed has access to submissionModal for editing
-                if (window.chroniclesFeed && window.submissionModal) {
-                    console.log('[News] Connected ChroniclesFeed to SubmissionModal for editing');
-                }
-            }
-            
-            console.log('[News] Chronicles functionality fully restored!');
+            // Initialize components
+            ChroniclesFeed.init();
+            SubmissionModal.init();
+            CommentsSystem.init();
         });
     </script>
 </body>

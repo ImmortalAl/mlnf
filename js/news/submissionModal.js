@@ -141,29 +141,49 @@ class SubmissionModal {
         const formData = new FormData(form);
         
         const data = {
-            title: formData.get('title'),
-            content: formData.get('content'),
+            title: formData.get('title')?.trim(),
+            content: formData.get('content')?.trim(),
             eventDate: formData.get('eventDate'),
-            sources: formData.get('sources')
+            sources: formData.get('sources')?.trim()
         };
 
         // Validate required fields
-        if (!data.title || !data.content || !data.eventDate) {
-            alert('Please fill in all required fields.');
+        if (!data.title) {
+            this.showFormError(form, 'chronicleTitle', 'Chronicle title is required.');
+            return;
+        }
+
+        if (!data.content) {
+            this.showFormError(form, 'chronicleContent', 'Chronicle content is required.');
+            return;
+        }
+
+        if (!data.eventDate) {
+            this.showFormError(form, 'eventDate', 'Event date is required.');
+            return;
+        }
+
+        // Validate date is not in the future
+        const eventDateObj = new Date(data.eventDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time for proper comparison
+        
+        if (eventDateObj > today) {
+            this.showFormError(form, 'eventDate', 'Event date cannot be in the future.');
             return;
         }
 
         try {
             // Disable submit button
             const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
+            const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Immortalizing...';
 
             const response = await window.apiClient.post('/chronicles', data);
             
             // Success
-            alert('Chronicle submitted successfully!');
+            this.showSuccess('Chronicle immortalized successfully!');
             this.closeSubmissionModal();
             
             // Refresh the feed
@@ -173,12 +193,20 @@ class SubmissionModal {
 
         } catch (error) {
             console.error('Error submitting chronicle:', error);
-            alert('Failed to submit chronicle. Please try again.');
+            let errorMessage = 'Failed to submit chronicle. Please try again.';
+            
+            if (error.response && error.response.data && error.response.data.error) {
+                errorMessage = error.response.data.error;
+            }
+            
+            this.showFormError(form, null, errorMessage);
         } finally {
             // Re-enable submit button
             const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-scroll"></i> Immortalize Chronicle';
+            }
         }
     }
 
@@ -194,29 +222,49 @@ class SubmissionModal {
         const formData = new FormData(form);
         
         const data = {
-            title: formData.get('title'),
-            content: formData.get('content'),
+            title: formData.get('title')?.trim(),
+            content: formData.get('content')?.trim(),
             eventDate: formData.get('eventDate'),
-            sources: formData.get('sources')
+            sources: formData.get('sources')?.trim()
         };
 
         // Validate required fields
-        if (!data.title || !data.content || !data.eventDate) {
-            alert('Please fill in all required fields.');
+        if (!data.title) {
+            this.showFormError(form, 'editTitle', 'Chronicle title is required.');
+            return;
+        }
+
+        if (!data.content) {
+            this.showFormError(form, 'editContent', 'Chronicle content is required.');
+            return;
+        }
+
+        if (!data.eventDate) {
+            this.showFormError(form, 'editEventDate', 'Event date is required.');
+            return;
+        }
+
+        // Validate date is not in the future
+        const eventDateObj = new Date(data.eventDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (eventDateObj > today) {
+            this.showFormError(form, 'editEventDate', 'Event date cannot be in the future.');
             return;
         }
 
         try {
             // Disable submit button
             const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
+            const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Updating...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
             const response = await window.apiClient.put(`/chronicles/${this.currentChronicleId}`, data);
             
             // Success
-            alert('Chronicle updated successfully!');
+            this.showSuccess('Chronicle updated successfully!');
             this.closeEditModal();
             
             // Refresh the feed
@@ -226,12 +274,20 @@ class SubmissionModal {
 
         } catch (error) {
             console.error('Error updating chronicle:', error);
-            alert('Failed to update chronicle. Please try again.');
+            let errorMessage = 'Failed to update chronicle. Please try again.';
+            
+            if (error.response && error.response.data && error.response.data.error) {
+                errorMessage = error.response.data.error;
+            }
+            
+            this.showFormError(form, null, errorMessage);
         } finally {
             // Re-enable submit button
             const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            }
         }
     }
 
@@ -241,15 +297,13 @@ class SubmissionModal {
             return;
         }
 
-        if (!confirm('Are you sure you want to delete this chronicle? This action cannot be undone.')) {
-            return;
-        }
+        const confirmed = confirm('Are you sure you want to delete this chronicle? This action cannot be undone.');
+        if (!confirmed) return;
 
         try {
             await window.apiClient.delete(`/chronicles/${this.currentChronicleId}`);
             
-            // Success
-            alert('Chronicle deleted successfully!');
+            this.showSuccess('Chronicle deleted successfully.');
             this.closeEditModal();
             
             // Refresh the feed
@@ -259,10 +313,105 @@ class SubmissionModal {
 
         } catch (error) {
             console.error('Error deleting chronicle:', error);
-            alert('Failed to delete chronicle. Please try again.');
+            let errorMessage = 'Failed to delete chronicle. Please try again.';
+            
+            if (error.response && error.response.data && error.response.data.error) {
+                errorMessage = error.response.data.error;
+            }
+            
+            alert(errorMessage);
         }
+    }
+
+    showFormError(form, fieldId, message) {
+        // Remove any existing error messages
+        const existingErrors = form.querySelectorAll('.field-error');
+        existingErrors.forEach(error => error.remove());
+
+        // Create error element
+        const errorElement = document.createElement('div');
+        errorElement.className = 'field-error';
+        errorElement.style.cssText = `
+            color: var(--error);
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid var(--error);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        `;
+        errorElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+
+        // Add error to form
+        if (fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                const formGroup = field.closest('.form-group');
+                if (formGroup) {
+                    formGroup.appendChild(errorElement);
+                    field.focus();
+                    return;
+                }
+            }
+        }
+        
+        // Fallback: add error at the end of the form
+        const modalActions = form.querySelector('.modal-actions');
+        if (modalActions) {
+            form.insertBefore(errorElement, modalActions);
+        } else {
+            form.appendChild(errorElement);
+        }
+    }
+
+    showSuccess(message) {
+        // Create temporary success notification
+        const successElement = document.createElement('div');
+        successElement.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.3s ease-out;
+        `;
+        successElement.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(successElement);
+
+        // Remove after 4 seconds
+        setTimeout(() => {
+            if (successElement.parentNode) {
+                successElement.remove();
+            }
+            if (style.parentNode) {
+                style.remove();
+            }
+        }, 4000);
     }
 }
 
-// Make it globally available
-window.SubmissionModal = SubmissionModal;
+// Auto-initialize when script loads
+if (typeof window !== 'undefined') {
+    window.SubmissionModal = SubmissionModal;
+}

@@ -3,6 +3,7 @@ class ChroniclesFeed {
     constructor() {
         this.currentPage = 1;
         this.currentView = 'recent';
+        this.currentSort = 'submission';
         this.chronicles = [];
         this.totalPages = 1;
     }
@@ -23,20 +24,31 @@ class ChroniclesFeed {
         viewButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const view = e.target.dataset.view;
-                this.switchView(view);
+                const sort = e.target.dataset.sort;
+                this.switchView(view, sort);
             });
         });
 
-        // Pagination (if needed)
+        // Pagination
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('load-more-btn')) {
                 this.loadMoreChronicles();
             }
         });
+
+        // Chronicle card clicks - open detail modal
+        document.addEventListener('click', (e) => {
+            const chronicleCard = e.target.closest('.chronicle-card');
+            if (chronicleCard && !e.target.closest('.action-btn')) {
+                const chronicleId = chronicleCard.dataset.id;
+                this.openChronicleModal(chronicleId);
+            }
+        });
     }
 
-    switchView(view) {
+    switchView(view, sort) {
         this.currentView = view;
+        this.currentSort = sort;
         this.currentPage = 1;
         
         // Update active button
@@ -48,8 +60,8 @@ class ChroniclesFeed {
 
     async loadChronicles() {
         try {
-            const endpoint = this.currentView === 'recent' ? '/chronicles' : '/chronicles';
-            const response = await window.apiClient.get(`${endpoint}?page=${this.currentPage}&limit=15`);
+            const sortParam = this.currentSort === 'event' ? 'eventDate' : 'createdAt';
+            const response = await window.apiClient.get(`/chronicles?page=${this.currentPage}&limit=15&sort=${sortParam}`);
             
             if (this.currentPage === 1) {
                 this.chronicles = response.docs;
@@ -77,7 +89,7 @@ class ChroniclesFeed {
         if (!feed) return;
 
         if (this.chronicles.length === 0) {
-            feed.innerHTML = '<div class="no-chronicles">No chronicles found. Be the first to submit a truth!</div>';
+            feed.innerHTML = '<div class="no-chronicles">No chronicles found. Be the first to submit an eternal truth!</div>';
             return;
         }
 
@@ -96,132 +108,366 @@ class ChroniclesFeed {
     }
 
     createChronicleCard(chronicle) {
-        const date = new Date(chronicle.eventDate || chronicle.createdAt).toLocaleDateString('en-US', {
+        const eventDate = new Date(chronicle.eventDate).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
+            day: 'numeric'
+        });
+
+        const submissionDate = new Date(chronicle.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
             day: 'numeric'
         });
 
         const isAuthor = window.authManager && window.authManager.getUser() && 
                         window.authManager.getUser()._id === chronicle.author._id;
 
+        // Create excerpt from content
+        const excerpt = chronicle.content.length > 300 
+            ? chronicle.content.substring(0, 300) + '...' 
+            : chronicle.content;
+
         return `
             <article class="chronicle-card" data-id="${chronicle._id}">
                 <div class="chronicle-header">
                     <h3 class="chronicle-title">${this.escapeHtml(chronicle.title)}</h3>
                     <div class="chronicle-meta">
-                        <div class="chronicle-date">${date}</div>
-                        <div class="chronicle-author">by ${this.escapeHtml(chronicle.author.displayName || chronicle.author.username)}</div>
-                        ${isAuthor ? `<button class="edit-chronicle-btn" data-id="${chronicle._id}" title="Edit Chronicle"><i class="fas fa-edit"></i></button>` : ''}
+                        <div class="chronicle-author-info">
+                            <!-- MLNF Avatar System will populate this -->
+                        </div>
+                        <div class="chronicle-dates">
+                            <div class="event-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                ${eventDate}
+                            </div>
+                            <div class="submission-date">
+                                <i class="fas fa-clock"></i>
+                                ${submissionDate}
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="chronicle-content">
-                    ${this.formatContent(chronicle.content)}
+                    <div class="chronicle-excerpt">
+                        ${this.formatContent(excerpt)}
+                    </div>
                 </div>
+                
                 ${chronicle.sources && chronicle.sources.length > 0 ? `
                     <div class="chronicle-sources">
-                        <h4>Sources & References</h4>
+                        <h4><i class="fas fa-link"></i> Sources & References</h4>
                         <ul>
-                            ${chronicle.sources.map(source => `<li><a href="${source}" target="_blank" rel="noopener">${source}</a></li>`).join('')}
+                            ${chronicle.sources.slice(0, 3).map(source => 
+                                `<li><a href="${source}" target="_blank" rel="noopener">${this.truncateUrl(source)}</a></li>`
+                            ).join('')}
+                            ${chronicle.sources.length > 3 ? `<li>... and ${chronicle.sources.length - 3} more</li>` : ''}
                         </ul>
                     </div>
                 ` : ''}
+                
                 <div class="chronicle-actions">
-                    <button class="action-btn validate" data-id="${chronicle._id}" title="Validate this chronicle">
-                        <i class="fas fa-check"></i> 
-                        <span>Validate</span>
-                        <span class="count">(${chronicle.validations ? chronicle.validations.length : 0})</span>
-                    </button>
-                    <button class="action-btn challenge" data-id="${chronicle._id}" title="Challenge this chronicle">
-                        <i class="fas fa-question"></i> 
-                        <span>Challenge</span>
-                        <span class="count">(${chronicle.challenges ? chronicle.challenges.length : 0})</span>
-                    </button>
-                    <button class="action-btn comments" data-id="${chronicle._id}" title="View comments">
-                        <i class="fas fa-comments"></i> 
-                        <span>Comments</span>
-                    </button>
+                    <div class="voting-actions">
+                        <button class="action-btn consecrate" data-id="${chronicle._id}" data-action="consecrate" 
+                                title="Consecrate this chronicle as eternal truth">
+                            <i class="fas fa-certificate"></i>
+                            <span>Consecrate</span>
+                            <span class="count">(${chronicle.validations ? chronicle.validations.length : 0})</span>
+                        </button>
+                        <button class="action-btn investigate" data-id="${chronicle._id}" data-action="investigate"
+                                title="Investigate this chronicle for accuracy">
+                            <i class="fas fa-search"></i>
+                            <span>Investigate</span>
+                            <span class="count">(${chronicle.challenges ? chronicle.challenges.length : 0})</span>
+                        </button>
+                    </div>
+                    
+                    <div class="chronicle-management">
+                        ${isAuthor ? `
+                            <button class="action-btn edit" data-id="${chronicle._id}" data-action="edit" title="Edit this chronicle">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        ` : ''}
+                        <button class="action-btn comments" data-id="${chronicle._id}" data-action="comments" title="View comments">
+                            <i class="fas fa-comments"></i> Comments
+                        </button>
+                    </div>
                 </div>
             </article>
         `;
     }
 
     attachChronicleEvents() {
-        // Edit buttons
-        document.querySelectorAll('.edit-chronicle-btn').forEach(btn => {
+        // Action button clicks
+        document.querySelectorAll('.action-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const id = e.target.closest('button').dataset.id;
-                this.editChronicle(id);
+                e.stopPropagation(); // Prevent card click
+                const action = e.target.closest('.action-btn').dataset.action;
+                const id = e.target.closest('.action-btn').dataset.id;
+                
+                switch(action) {
+                    case 'consecrate':
+                        this.consecrateChronicle(id);
+                        break;
+                    case 'investigate':
+                        this.investigateChronicle(id);
+                        break;
+                    case 'edit':
+                        this.editChronicle(id);
+                        break;
+                    case 'comments':
+                        this.openComments(id);
+                        break;
+                }
             });
         });
 
-        // Validate buttons
-        document.querySelectorAll('.action-btn.validate').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.target.closest('button').dataset.id;
-                this.validateChronicle(id);
+        // Populate avatar systems for chronicle author info
+        this.populateChronicleAvatars();
+    }
+
+    populateChronicleAvatars() {
+        const authorContainers = document.querySelectorAll('.chronicle-author-info');
+        authorContainers.forEach((container, index) => {
+            if (this.chronicles[index] && this.chronicles[index].author) {
+                const author = this.chronicles[index].author;
+                if (window.MLNFAvatars) {
+                    const avatarElement = window.MLNFAvatars.createUserDisplay(author, {
+                        showStatus: true,
+                        size: 'small',
+                        showDisplayName: true
+                    });
+                    container.innerHTML = '';
+                    container.appendChild(avatarElement);
+                }
+            }
+        });
+    }
+
+    async openChronicleModal(chronicleId) {
+        try {
+            // Get full chronicle details
+            const response = await window.apiClient.get(`/chronicles/${chronicleId}`);
+            const chronicle = response;
+
+            // Populate modal
+            this.populateChronicleModal(chronicle);
+            
+            // Show modal
+            const modal = document.getElementById('chronicleModal');
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        } catch (error) {
+            console.error('Error loading chronicle details:', error);
+            this.showError('Failed to load chronicle details.');
+        }
+    }
+
+    populateChronicleModal(chronicle) {
+        // Title
+        const titleElement = document.getElementById('modalChronicleTitle');
+        if (titleElement) titleElement.textContent = chronicle.title;
+
+        // Dates
+        const eventDateElement = document.getElementById('modalEventDate');
+        const submissionDateElement = document.getElementById('modalSubmissionDate');
+        
+        if (eventDateElement) {
+            eventDateElement.textContent = new Date(chronicle.eventDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
+        }
+        
+        if (submissionDateElement) {
+            submissionDateElement.textContent = new Date(chronicle.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Content
+        const contentElement = document.getElementById('modalChronicleContent');
+        if (contentElement) {
+            contentElement.innerHTML = this.formatContent(chronicle.content);
+        }
+
+        // Sources
+        const sourcesContainer = document.getElementById('modalChronicleSourcesContainer');
+        const sourcesList = document.getElementById('modalChronicleSourcesList');
+        
+        if (chronicle.sources && chronicle.sources.length > 0) {
+            sourcesContainer.style.display = 'block';
+            sourcesList.innerHTML = chronicle.sources.map(source => 
+                `<li><a href="${source}" target="_blank" rel="noopener">${source}</a></li>`
+            ).join('');
+        } else {
+            sourcesContainer.style.display = 'none';
+        }
+
+        // Voting counts
+        const consecrateCount = document.getElementById('modalConsecrateCount');
+        const investigateCount = document.getElementById('modalInvestigateCount');
+        
+        if (consecrateCount) consecrateCount.textContent = `(${chronicle.validations ? chronicle.validations.length : 0})`;
+        if (investigateCount) investigateCount.textContent = `(${chronicle.challenges ? chronicle.challenges.length : 0})`;
+
+        // Edit button visibility
+        const editBtn = document.getElementById('modalEditBtn');
+        const isAuthor = window.authManager && window.authManager.getUser() && 
+                        window.authManager.getUser()._id === chronicle.author._id;
+        
+        if (editBtn) {
+            editBtn.style.display = isAuthor ? 'block' : 'none';
+            editBtn.dataset.id = chronicle._id;
+        }
+
+        // Set up modal action buttons
+        const consecrateBtn = document.getElementById('modalConsecrateBtn');
+        const investigateBtn = document.getElementById('modalInvestigateBtn');
+        const commentsBtn = document.getElementById('modalCommentsBtn');
+
+        if (consecrateBtn) consecrateBtn.dataset.id = chronicle._id;
+        if (investigateBtn) investigateBtn.dataset.id = chronicle._id;
+        if (commentsBtn) commentsBtn.dataset.id = chronicle._id;
+
+        // Populate author avatar
+        const authorContainer = document.querySelector('.chronicle-detail .chronicle-author-info');
+        if (authorContainer && chronicle.author && window.MLNFAvatars) {
+            const avatarElement = window.MLNFAvatars.createUserDisplay(chronicle.author, {
+                showStatus: true,
+                size: 'medium',
+                showDisplayName: true
+            });
+            authorContainer.innerHTML = '';
+            authorContainer.appendChild(avatarElement);
+        }
+
+        // Set up modal event listeners
+        this.setupModalEventListeners();
+    }
+
+    setupModalEventListeners() {
+        // Close modal
+        const closeBtn = document.getElementById('closeChronicleModal');
+        if (closeBtn) {
+            closeBtn.onclick = () => this.closeChronicleModal();
+        }
+
+        // Modal action buttons
+        const modalActions = ['modalConsecrateBtn', 'modalInvestigateBtn', 'modalEditBtn', 'modalCommentsBtn'];
+        modalActions.forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.onclick = (e) => {
+                    const chronicleId = btn.dataset.id;
+                    switch(btnId) {
+                        case 'modalConsecrateBtn':
+                            this.consecrateChronicle(chronicleId);
+                            break;
+                        case 'modalInvestigateBtn':
+                            this.investigateChronicle(chronicleId);
+                            break;
+                        case 'modalEditBtn':
+                            this.editChronicle(chronicleId);
+                            break;
+                        case 'modalCommentsBtn':
+                            this.openComments(chronicleId);
+                            break;
+                    }
+                };
+            }
         });
 
-        // Challenge buttons
-        document.querySelectorAll('.action-btn.challenge').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.target.closest('button').dataset.id;
-                this.challengeChronicle(id);
-            });
-        });
+        // Close modal on background click
+        const modal = document.getElementById('chronicleModal');
+        if (modal) {
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    this.closeChronicleModal();
+                }
+            };
+        }
+    }
 
-        // Comments buttons
-        document.querySelectorAll('.action-btn.comments').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.target.closest('button').dataset.id;
-                this.openComments(id);
-            });
-        });
+    closeChronicleModal() {
+        const modal = document.getElementById('chronicleModal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
     }
 
     editChronicle(id) {
         const chronicle = this.chronicles.find(c => c._id === id);
         if (chronicle && window.submissionModal) {
+            this.closeChronicleModal(); // Close detail modal first
             window.submissionModal.openEditModal(chronicle);
         }
     }
 
-    async validateChronicle(id) {
+    async consecrateChronicle(id) {
         try {
             const response = await window.apiClient.post(`/chronicles/${id}/validate`);
-            // Update the UI with new validation count
-            const button = document.querySelector(`.action-btn.validate[data-id="${id}"]`);
-            if (button) {
-                const countSpan = button.querySelector('.count');
-                if (countSpan) {
-                    countSpan.textContent = `(${response.validations})`;
-                }
-                // Add visual feedback
-                button.classList.toggle('active', response.userValidated);
-            }
+            this.updateVotingUI(id, 'consecrate', response);
         } catch (error) {
-            console.error('Error validating chronicle:', error);
-            alert('Failed to validate chronicle. Please try again.');
+            console.error('Error consecrating chronicle:', error);
+            this.showError('Failed to consecrate chronicle.');
         }
     }
 
-    async challengeChronicle(id) {
+    async investigateChronicle(id) {
         try {
             const response = await window.apiClient.post(`/chronicles/${id}/challenge`);
-            // Update the UI with new challenge count
-            const button = document.querySelector(`.action-btn.challenge[data-id="${id}"]`);
-            if (button) {
-                const countSpan = button.querySelector('.count');
-                if (countSpan) {
-                    countSpan.textContent = `(${response.challenges})`;
-                }
-                // Add visual feedback
-                button.classList.toggle('active', response.userChallenged);
-            }
+            this.updateVotingUI(id, 'investigate', response);
         } catch (error) {
-            console.error('Error challenging chronicle:', error);
-            alert('Failed to challenge chronicle. Please try again.');
+            console.error('Error investigating chronicle:', error);
+            this.showError('Failed to investigate chronicle.');
+        }
+    }
+
+    updateVotingUI(chronicleId, action, response) {
+        // Update card buttons
+        const cardConsecrateBtn = document.querySelector(`.chronicle-card[data-id="${chronicleId}"] .action-btn.consecrate .count`);
+        const cardInvestigateBtn = document.querySelector(`.chronicle-card[data-id="${chronicleId}"] .action-btn.investigate .count`);
+        
+        if (cardConsecrateBtn) cardConsecrateBtn.textContent = `(${response.validations})`;
+        if (cardInvestigateBtn) cardInvestigateBtn.textContent = `(${response.challenges})`;
+
+        // Update modal buttons if modal is open
+        const modalConsecrateCount = document.getElementById('modalConsecrateCount');
+        const modalInvestigateCount = document.getElementById('modalInvestigateCount');
+        
+        if (modalConsecrateCount) modalConsecrateCount.textContent = `(${response.validations})`;
+        if (modalInvestigateCount) modalInvestigateCount.textContent = `(${response.challenges})`;
+
+        // Update active states
+        const cardConsecrateButton = document.querySelector(`.chronicle-card[data-id="${chronicleId}"] .action-btn.consecrate`);
+        const cardInvestigateButton = document.querySelector(`.chronicle-card[data-id="${chronicleId}"] .action-btn.investigate`);
+        const modalConsecrateButton = document.getElementById('modalConsecrateBtn');
+        const modalInvestigateButton = document.getElementById('modalInvestigateBtn');
+
+        // Remove all active states first
+        [cardConsecrateButton, cardInvestigateButton, modalConsecrateButton, modalInvestigateButton].forEach(btn => {
+            if (btn) btn.classList.remove('active');
+        });
+
+        // Add active state based on user's current vote
+        if (response.userValidated) {
+            if (cardConsecrateButton) cardConsecrateButton.classList.add('active');
+            if (modalConsecrateButton) modalConsecrateButton.classList.add('active');
+        }
+        
+        if (response.userChallenged) {
+            if (cardInvestigateButton) cardInvestigateButton.classList.add('active');
+            if (modalInvestigateButton) modalInvestigateButton.classList.add('active');
         }
     }
 
@@ -232,16 +478,20 @@ class ChroniclesFeed {
     }
 
     formatContent(content) {
-        // Basic formatting - convert line breaks to paragraphs
-        return content.split('\n\n').map(paragraph => 
-            `<p>${this.escapeHtml(paragraph).replace(/\n/g, '<br>')}</p>`
-        ).join('');
+        return this.escapeHtml(content).replace(/\n/g, '<br>');
     }
 
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    truncateUrl(url) {
+        if (url.length > 50) {
+            return url.substring(0, 47) + '...';
+        }
+        return url;
     }
 
     showError(message) {
@@ -251,12 +501,13 @@ class ChroniclesFeed {
         }
     }
 
-    // Public method to refresh the feed (called after new submission)
     refresh() {
         this.currentPage = 1;
         this.loadChronicles();
     }
 }
 
-// Make it globally available
-window.ChroniclesFeed = ChroniclesFeed;
+// Auto-initialize when script loads
+if (typeof window !== 'undefined') {
+    window.ChroniclesFeed = ChroniclesFeed;
+}
