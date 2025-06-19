@@ -32,6 +32,17 @@ class SubmissionModal {
             closeEditBtn.addEventListener('click', () => this.closeEditModal());
         }
 
+        // Cancel buttons
+        const cancelSubmissionBtn = document.getElementById('cancelSubmissionModal');
+        if (cancelSubmissionBtn) {
+            cancelSubmissionBtn.addEventListener('click', () => this.closeSubmissionModal());
+        }
+
+        const cancelEditBtn = document.getElementById('cancelEditModal');
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', () => this.closeEditModal());
+        }
+
         // Form submissions
         const submissionForm = document.getElementById('submissionForm');
         if (submissionForm) {
