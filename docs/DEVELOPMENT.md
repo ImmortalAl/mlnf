@@ -584,7 +584,7 @@ const headers = {
 ### **During Development**
 - Follow established code patterns
 - **Apply architecture-first approach for complex changes**
-- Test changes locally before committing
+- Test changes live on internet after deployment
 - **Test across multiple page types for site-wide features**
 - Update documentation for new features
 - Maintain consistent code style

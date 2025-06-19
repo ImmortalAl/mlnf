@@ -190,7 +190,7 @@ function initializeModal() {
 ### **During Development**
 - Follow established code patterns
 - Use existing CSS variables and components
-- Test changes locally before committing
+- Test changes live on internet after deployment
 - Maintain documentation updates
 
 ### **Ending a Session**  

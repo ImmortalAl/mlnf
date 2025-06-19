@@ -5,7 +5,7 @@ Welcome, apprentice! This guide will help you use the development mode to test y
 ## 🎯 What is Development Mode?
 
 Development Mode lets you:
-- Test changes locally before deploying
+- Test changes live on internet after deploying
 - Work offline without internet
 - Debug issues more easily
 - Switch between local and production APIs instantly
@@ -69,7 +69,7 @@ Click the dev button to see options:
 
 ## 💡 Pro Tips
 
-1. **Always test in both modes** - What works locally should work in production
+1. **Always test live after deployment** - Monitor changes on the live site immediately
 2. **Use debug logging** - It helps identify issues quickly
 3. **Mock auth for testing** - Saves time when testing logged-in features
 4. **Check the status indicator** - Green ✓ = connected, Red ✗ = offline

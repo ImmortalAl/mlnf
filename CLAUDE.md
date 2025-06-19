@@ -4,10 +4,10 @@
 
 **ALWAYS follow this sequence after making ANY code changes:**
 
-1. **Test changes locally** (if applicable)
-2. **Git add all changes**: `git add .`
-3. **Git commit with descriptive message**: `git commit -m "type: description"`
-4. **Git push immediately**: `git push origin main`
+1. **Git add all changes**: `git add .`
+2. **Git commit with descriptive message**: `git commit -m "type: description"`
+3. **Git push immediately**: `git push origin main`
+4. **Test changes live on internet** (Netlify deployment)
 
 **NEVER skip the push step** - all changes must be deployed to Netlify immediately.
 
