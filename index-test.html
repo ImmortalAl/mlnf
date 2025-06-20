@@ -57,11 +57,31 @@
     <!-- TEST PAGE - Hero transparency override -->
     <style>
         /* INLINE TEST STYLES - Higher priority */
+        
+        /* Fix the body background to be visible from the top */
+        body {
+            background: linear-gradient(180deg, transparent, rgba(13, 13, 26, 0.3)), 
+                        url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover !important;
+            background-attachment: scroll !important; /* Change from fixed to scroll */
+        }
+        
+        body.light-theme {
+            background: linear-gradient(180deg, transparent, rgba(240, 240, 245, 0.3)), 
+                        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover !important;
+            background-attachment: scroll !important;
+        }
+        
+        /* Make hero overlay completely transparent */
         .hero::before {
             background: transparent !important;
         }
         
         body.light-theme .hero::before {
+            background: transparent !important;
+        }
+        
+        /* Make main container transparent */
+        main {
             background: transparent !important;
         }
         
@@ -94,6 +114,19 @@
         
         body.light-theme .hero p {
             text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        /* Make other sections slightly transparent too */
+        .features, .highlights, .debate-arena, .mindmap-section {
+            background: rgba(13, 13, 26, 0.8) !important;
+            backdrop-filter: blur(2px) !important;
+        }
+        
+        body.light-theme .features, 
+        body.light-theme .highlights, 
+        body.light-theme .debate-arena, 
+        body.light-theme .mindmap-section {
+            background: rgba(240, 240, 245, 0.8) !important;
         }
         
         /* Visual indicator that this is test page */
