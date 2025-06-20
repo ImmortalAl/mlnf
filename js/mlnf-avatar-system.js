@@ -14,9 +14,6 @@ class MLNFProfileRouter {
     static navigateToProfile(username, options = {}) {
         const { newTab = false, trackInteraction = true } = options;
         
-        if (trackInteraction) {
-            console.log(`[MLNF] Profile navigation: ${username}`);
-        }
         
         const profileUrl = `/souls/${username}`;
         
@@ -265,10 +262,7 @@ class MLNFAvatarSystem {
      * @returns {string} Avatar URL
      */
     generateAvatarUrl(username = 'Anonymous', size = 40, customUrl = null) {
-        console.log(`[MLNF Avatar] generateAvatarUrl called with:`, { username, size, customUrl });
-        
         if (customUrl) {
-            console.log(`[MLNF Avatar] Using custom URL: ${customUrl}`);
             return customUrl;
         }
         
@@ -277,7 +271,6 @@ class MLNFAvatarSystem {
         
         const encodedName = encodeURIComponent(username);
         const generatedUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=${colors.bg}&color=${colors.text}&size=${size}&format=${this.defaultAvatarConfig.format}`;
-        console.log(`[MLNF Avatar] Generated UI-Avatars URL with unique colors: ${generatedUrl}`);
         return generatedUrl;
     }
 
@@ -303,13 +296,8 @@ class MLNFAvatarSystem {
         
         const pixelSize = sizeMap[size] || 36;
         
-        // Debug logging for avatar URL generation
-        console.log(`[MLNF Avatar] Creating avatar for: ${username}, customUrl: ${customUrl}, size: ${pixelSize}`);
-        
         const avatarUrl = this.generateAvatarUrl(username, pixelSize, customUrl);
         const fallbackUrl = this.generateAvatarUrl(username, pixelSize, null); // Force fallback to UI-Avatars
-        
-        console.log(`[MLNF Avatar] Generated URLs - Primary: ${avatarUrl}, Fallback: ${fallbackUrl}`);
 
         img.src = avatarUrl;
         img.alt = username;
@@ -504,8 +492,7 @@ class MLNFAvatarSystem {
      * Test avatar URL generation for debugging
      */
     testAvatarGeneration() {
-        console.log('[MLNF Avatar] Testing avatar URL generation...');
-        
+        // Avatar generation testing method - debug logs removed for production
         const testUsers = [
             { username: 'TestUser1', avatar: null },
             { username: 'TestUser2', avatar: 'https://example.com/avatar.jpg' },
@@ -514,7 +501,6 @@ class MLNFAvatarSystem {
         
         testUsers.forEach(user => {
             const url = this.generateAvatarUrl(user.username, 40, user.avatar);
-            console.log(`[MLNF Avatar] Test - User: ${user.username}, Generated URL: ${url}`);
         });
     }
 
@@ -523,8 +509,6 @@ class MLNFAvatarSystem {
      * Note: Disabled by default due to CORS issues with ui-avatars.com
      */
     async testUIAvatarsConnectivity() {
-        console.log('[MLNF Avatar] Testing UI-Avatars connectivity...');
-        
         const testUrl = 'https://ui-avatars.com/api/?name=Test&background=ff5e78&color=fff&size=40&format=svg';
         
         try {
@@ -533,8 +517,6 @@ class MLNFAvatarSystem {
                 method: 'HEAD',
                 mode: 'no-cors' // This prevents CORS errors but limits response access
             });
-            console.log(`[MLNF Avatar] UI-Avatars connectivity test completed (no-cors mode)`);
-            console.log('[MLNF Avatar] Note: CORS limitations prevent detailed response checking');
         } catch (error) {
             if (error.message.includes('CORS')) {
                 console.warn('[MLNF Avatar] UI-Avatars CORS restriction detected - service still functional for avatar generation');
@@ -560,8 +542,6 @@ class MLNFAvatarSystem {
             username.classList.add('mlnf-username', 'mlnf-username--immortal');
         });
 
-        console.log('[MLNF Avatar System] Initialized existing elements');
-        
         // Run test for debugging
         this.testAvatarGeneration();
         
