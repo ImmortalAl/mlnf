@@ -208,6 +208,14 @@ aside#activeUsers.active-users.force-close {
     display: block !important; /* Show when active */
 }
 
+/* Hide active users overlay when any modal is open */
+body:has(.modal.active) .active-users-overlay {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    z-index: -1 !important; /* Move behind everything when modal is open */
+}
+
 /* Message Modal styles (original lines 170-267) were here. */
 /* They have been moved to components/shared/styles.css */
 
