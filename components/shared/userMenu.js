@@ -8,7 +8,6 @@
 function updateUserMenu() {
   const API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
   const DEFAULT_AVATAR = window.MLNF_CONFIG.DEFAULT_AVATAR;
-  console.log('[userMenu.js] updateUserMenu called.');
   
   const userMenuContainer = document.getElementById('userMenuContainer');
   const headerAuthButtonsContainer = document.getElementById('headerAuthButtonsContainer');
@@ -20,10 +19,8 @@ function updateUserMenu() {
   
   const token = localStorage.getItem('sessionToken');
   const cachedUser = localStorage.getItem('user');
-  console.log(`[userMenu.js] Token: ${token ? 'Exists' : 'null'}, CachedUser: ${cachedUser ? 'Exists' : 'null'}`);
 
   if (token && cachedUser) {
-    console.log('[userMenu.js] User is logged in.');
     userMenuContainer.style.display = 'flex'; // Or 'block' or 'inline-block' depending on desired layout
     headerAuthButtonsContainer.style.display = 'none';
     headerAuthButtonsContainer.innerHTML = ''; // Clear any old buttons
@@ -71,7 +68,6 @@ function updateUserMenu() {
       populateHeaderAuthButtons(headerAuthButtonsContainer);
     }
   } else {
-    console.log('[userMenu.js] User is guest.');
     userMenuContainer.style.display = 'none';
     userMenuContainer.innerHTML = ''; // Clear it
     headerAuthButtonsContainer.style.display = 'flex'; // Assuming flex for column layout
@@ -97,8 +93,6 @@ function populateHeaderAuthButtons(container) {
   if (headerSignupButton) {
     headerSignupButton.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('[userMenu.js] Signup button clicked. MLNF object:', window.MLNF);
-      console.log('[userMenu.js] openSoulModal function:', window.MLNF ? window.MLNF.openSoulModal : 'MLNF not found');
       if (window.MLNF && window.MLNF.openSoulModal) {
         window.MLNF.openSoulModal('register');
       } else {
@@ -110,8 +104,6 @@ function populateHeaderAuthButtons(container) {
   if (headerLoginButton) {
     headerLoginButton.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('[userMenu.js] Login button clicked. MLNF object:', window.MLNF);
-      console.log('[userMenu.js] openSoulModal function:', window.MLNF ? window.MLNF.openSoulModal : 'MLNF not found');
       if (window.MLNF && window.MLNF.openSoulModal) {
         window.MLNF.openSoulModal('login');
       } else {
@@ -124,7 +116,6 @@ function populateHeaderAuthButtons(container) {
 
 // Setup event listeners for user menu (dropdown toggle, logout)
 function setupUserMenuEvents() {
-  console.log('[userMenu.js] setupUserMenuEvents called.');
   const userMenuBtn = document.getElementById('userMenuBtn'); // This might not exist if logged out
   const userDropdown = document.getElementById('userDropdown'); // This might not exist if logged out
 
@@ -150,7 +141,6 @@ function setupUserMenuEvents() {
 
 // Handle user logout
 function handleLogout() {
-  console.log("Logout initiated");
   localStorage.removeItem('sessionToken');
   localStorage.removeItem('user');
   
@@ -169,14 +159,12 @@ async function validateUserSession() {
   
   if (token && !cachedUser) {
     try {
-      console.log('[userMenu.js] Token found, but no cached user. Fetching user data...');
       const response = await fetch(`${API_BASE_URL}/users/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
         const userData = await response.json();
         localStorage.setItem('user', JSON.stringify(userData));
-        console.log('[userMenu.js] User data fetched and cached.');
       } else {
         // If fetching user data fails (e.g., token invalid), clear token
         console.warn('[userMenu.js] Failed to fetch user data with existing token. Clearing token.');
@@ -208,7 +196,6 @@ window.MLNF.handleLogout = handleLogout; // Expose if needed by other components
 function updateMobileAuthLinks() {
     // Mobile navigation should only contain navigation links, not user auth functions
     // User authentication is handled through the header user menu dropdown
-    console.log('[userMenu.js] updateMobileAuthLinks called but disabled - mobile nav is for navigation only');
     return;
 }
 // Make sure setupMobileAuthClickHandlers can be called by navigation.js if it's responsible for main link injection
