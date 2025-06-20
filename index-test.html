@@ -55,7 +55,61 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Eater&family=Metal+Mania&family=Griffy&display=swap"></noscript>
     
     <!-- TEST PAGE - Hero transparency override -->
-    <link rel="stylesheet" href="css/test-hero.css">
+    <style>
+        /* INLINE TEST STYLES - Higher priority */
+        .hero::before {
+            background: transparent !important;
+        }
+        
+        body.light-theme .hero::before {
+            background: transparent !important;
+        }
+        
+        /* Add content background for readability */
+        .hero-content {
+            background: rgba(0, 0, 0, 0.4) !important;
+            padding: 2rem !important;
+            border-radius: 15px !important;
+            backdrop-filter: blur(3px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        body.light-theme .hero-content {
+            background: rgba(255, 255, 255, 0.4) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Enhanced text readability */
+        .hero h1 {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9) !important;
+        }
+        
+        .hero p {
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        body.light-theme .hero h1 {
+            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        body.light-theme .hero p {
+            text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        /* Visual indicator that this is test page */
+        .hero::after {
+            content: "🧪 TEST PAGE - Background Transparency Test";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
