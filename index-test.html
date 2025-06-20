@@ -117,27 +117,29 @@
             z-index: 1;
         }
         
-        /* Simplified hero title with clean readability */
+        /* Vibrant yet clean hero title */
         .hero h1 {
             text-shadow: 
                 2px 2px 4px rgba(0, 0, 0, 0.8),
-                0 0 8px rgba(0, 0, 0, 0.6) !important;
+                0 0 12px rgba(255, 94, 120, 0.6),
+                0 0 24px rgba(255, 202, 40, 0.4) !important;
             background: linear-gradient(45deg, #ff5e78, #ffca28) !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
-            filter: brightness(1.2) !important;
+            filter: brightness(1.4) saturate(1.3) !important;
         }
         
         body.light-theme .hero h1 {
             text-shadow: 
                 2px 2px 4px rgba(255, 255, 255, 0.8),
-                0 0 8px rgba(255, 255, 255, 0.6) !important;
+                0 0 12px rgba(214, 45, 77, 0.6),
+                0 0 24px rgba(224, 96, 0, 0.4) !important;
             background: linear-gradient(45deg, #d62d4d, #e06000) !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
-            filter: brightness(1.2) !important;
+            filter: brightness(1.4) saturate(1.3) !important;
         }
         
         /* Add content background for readability */
