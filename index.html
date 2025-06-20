@@ -21,7 +21,10 @@
     <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
     <link rel="stylesheet" href="css/critical.css?v=1.0">
     
-    <!-- 3. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
+    <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    
+    <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
     <link rel="preload" href="css/layout.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/layout.css?v=1.0"></noscript>
     
@@ -31,19 +34,19 @@
     <link rel="preload" href="css/features.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/features.css?v=1.0"></noscript>
     
-    <!-- 4. SHARED COMPONENTS (lazy loaded) -->
+    <!-- 5. SHARED COMPONENTS (lazy loaded) -->
     <link rel="preload" href="components/shared/styles.css?v=1.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="components/shared/styles.css?v=1.6"></noscript>
     
-    <!-- 5. PAGE-SPECIFIC (lazy loaded) -->
+    <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
     <link rel="preload" href="css/active-users.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/active-users.css?v=1.2"></noscript>
     
-    <!-- 6. EXTERNAL RESOURCES (lazy loaded with high priority) -->
+    <!-- 7. EXTERNAL RESOURCES (lazy loaded with high priority) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous"></noscript>
     
-    <!-- 7. FONTS (lazy loaded) -->
+    <!-- 8. FONTS (lazy loaded) -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Immortal:wght@400;700&family=Creepster&family=Nosifer&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Immortal:wght@400;700&family=Creepster&family=Nosifer&display=swap"></noscript>
     
