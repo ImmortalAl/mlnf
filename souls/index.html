@@ -14,14 +14,40 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" href="../favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <!-- Immortal-themed fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Caesar+Dressing&family=Metal+Mania&family=Griffy&display=swap" rel="stylesheet">
+    <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
     <link rel="stylesheet" href="../css/base-theme.css">
-    <link rel="stylesheet" href="../css/styles.css?v=1.4">
-    <link rel="stylesheet" href="../components/shared/styles.css?v=1.6">
-    <link rel="stylesheet" href="../css/souls-listing.css?v=1.4">
-    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
+    
+    <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
+    <link rel="stylesheet" href="../css/critical.css?v=1.0">
+    
+    <!-- 3. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
+    <link rel="preload" href="../css/layout.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/layout.css?v=1.0"></noscript>
+    
+    <link rel="preload" href="../css/components.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/components.css?v=1.0"></noscript>
+    
+    <link rel="preload" href="../css/features.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/features.css?v=1.0"></noscript>
+    
+    <!-- 4. SHARED COMPONENTS (lazy loaded) -->
+    <link rel="preload" href="../components/shared/styles.css?v=1.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../components/shared/styles.css?v=1.6"></noscript>
+    
+    <!-- 5. PAGE-SPECIFIC (lazy loaded) -->
+    <link rel="preload" href="../css/active-users.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/active-users.css?v=1.2"></noscript>
+    
+    <link rel="preload" href="../css/souls-listing.css?v=1.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/souls-listing.css?v=1.4"></noscript>
+    
+    <!-- 6. EXTERNAL RESOURCES (lazy loaded) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous"></noscript>
+    
+    <!-- 7. FONTS (lazy loaded) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Caesar+Dressing&family=Metal+Mania&family=Griffy&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Caesar+Dressing&family=Metal+Mania&family=Griffy&display=swap"></noscript>
 </head>
 <body>
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">

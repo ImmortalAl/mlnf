@@ -1,0 +1,1283 @@
+/* MLNF Features CSS - Page-specific features loaded last */
+/* Version: 1.0.0 - Performance optimized split */
+
+/* ==========================================
+   HIGHLIGHT ITEM & DEBATE POSITION STYLING
+   ========================================== */
+
+.highlight-item,
+.debate-position {
+    background: linear-gradient(135deg, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.12) 0%,
+        rgba(26, 26, 51, 0.8) 50%,
+        rgba(13, 13, 26, 0.9) 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border-left: 6px solid var(--accent);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.1),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+}
+
+.highlight-item:hover,
+.debate-position:hover {
+    transform: translateY(-8px) scale(1.03);
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+    box-shadow: 
+        0 16px 40px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+        inset 0 2px 0 rgba(240, 230, 255, 0.2);
+}
+
+/* Add mystical glow effect */
+.highlight-item::before,
+.debate-position::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.05) 0%, 
+        transparent 70%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.highlight-item:hover::before,
+.debate-position:hover::before {
+    opacity: 1;
+}
+
+/* Enhanced heading styling for highlight items */
+.highlight-item h4,
+.debate-position h4 {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    transition: var(--transition);
+}
+
+/* Fallback for browsers that don't support background-clip */
+@supports not (background-clip: text) {
+    .highlight-item h4,
+    .debate-position h4 {
+        color: var(--accent);
+    }
+}
+
+/* Light theme support for headings */
+body.light-theme .highlight-item h4,
+body.light-theme .debate-position h4 {
+    background: linear-gradient(135deg, var(--accent), var(--highlight));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Chronicles highlight card enhancements */
+.chronicle-highlight-card {
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.chronicle-highlight-card:hover {
+    transform: translateY(-12px) scale(1.04);
+    text-decoration: none;
+    color: inherit;
+}
+
+.chronicle-highlight-card:visited {
+    color: inherit;
+}
+
+/* Prominent title styling for Chronicles highlights */
+.chronicle-title-prominent {
+    font-size: 1.9rem !important;
+    margin-bottom: 1.25rem !important;
+    line-height: 1.2 !important;
+}
+
+/* Chronicle excerpt with reduced prominence */
+.chronicle-excerpt {
+    font-size: 1rem !important;
+    opacity: 0.85 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Legacy styles - deprecated in favor of MLNF Avatar System */
+.chronicle-author-display,
+.author-avatar,
+.author-username {
+    /* These styles are maintained for backward compatibility */
+    /* New implementations should use mlnf-user-display, mlnf-avatar, mlnf-username */
+}
+
+/* Read more indicator */
+.read-more-indicator {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.highlight-item p,
+.debate-position p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    opacity: 0.95;
+    letter-spacing: 0.02em;
+}
+
+.highlight-meta {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.highlight-meta .date {
+    color: var(--text);
+    opacity: 0.7;
+}
+
+.highlight-meta .read-more {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.highlight-meta .read-more:hover {
+    color: var(--text);
+    transform: translateX(3px);
+}
+
+/* ==========================================
+   ENHANCED CHRONICLES SECTION
+   ========================================== */
+
+/* Enhanced Chronicles Section */
+#news {
+    background: linear-gradient(135deg, 
+        rgba(13, 13, 26, 0.95) 0%,
+        rgba(26, 26, 51, 0.9) 50%,
+        rgba(42, 64, 102, 0.8) 100%);
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    border-radius: 20px;
+    padding: 4rem 2rem;
+    margin: 3rem auto;
+    max-width: 1440px;
+    position: relative;
+    overflow: hidden;
+}
+
+#news::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent), 
+        rgba(255, 202, 40, 0.8), 
+        var(--accent), 
+        transparent);
+}
+
+#newsHeading {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(135deg, var(--accent), rgba(255, 202, 40, 0.9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+    position: relative;
+}
+
+#newsHeading::after {
+    content: '📜';
+    position: absolute;
+    right: -3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    opacity: 0.6;
+}
+
+/* ==========================================
+   DEBATE ARENA SPECIFIC SECTION
+   ========================================== */
+
+/* Debate Arena Specific Section */
+.debate-arena {
+    padding: 4rem 2rem;
+    background: var(--gradient-secondary);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.35);
+    border-radius: var(--border-radius);
+    margin: 2.5rem auto;
+    max-width: 1440px;
+}
+
+.debate-arena .section-title {
+    margin-bottom: 2rem;
+}
+
+/* ==========================================
+   MINDMAP PREVIEW SECTION
+   ========================================== */
+
+/* Mindmap Preview Section */
+.mindmap-preview {
+    height: 500px;
+    background: var(--gradient-secondary);
+    border-radius: var(--border-radius);
+    position: relative;
+    margin: 2.5rem auto;
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.35);
+    max-width: 1440px;
+    overflow: hidden;
+}
+
+.mindmap-node {
+    position: absolute;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    animation: floatEternal 4.5s ease-in-out infinite;
+}
+
+.mindmap-node:hover {
+    transform: scale(1.12);
+    animation-play-state: paused;
+    box-shadow: 0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+}
+
+.mindmap-line {
+    position: absolute;
+    background: var(--accent);
+    height: 3px;
+}
+
+/* ==========================================
+   PROFILE PREVIEW MODAL SYSTEM
+   ========================================== */
+
+/* Interactive user display hover effects */
+.mlnf-user-display--interactive {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mlnf-user-display--interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.1) 0%,
+        rgba(var(--secondary-rgb, 76, 175, 80), 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.mlnf-user-display--interactive:hover::before {
+    opacity: 1;
+}
+
+.mlnf-user-display--interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-user-display--interactive:hover .mlnf-username:not(.mlnf-username--mystical):not(.mlnf-username--immortal):not(.mlnf-username--eternal) {
+    color: var(--accent);
+    text-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 94, 120), 0.5);
+}
+
+.mlnf-user-display--interactive:hover .mlnf-avatar {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+}
+
+/* Profile Preview Modal */
+.mlnf-profile-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mlnf-profile-preview--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mlnf-profile-preview--closing {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.mlnf-profile-preview__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+}
+
+.mlnf-profile-preview__content {
+    position: relative;
+    background: var(--background-elevated);
+    border-radius: 16px;
+    max-width: 480px;
+    width: 90vw;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(var(--accent-rgb, 255, 94, 120), 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.mlnf-profile-preview--visible .mlnf-profile-preview__content {
+    transform: scale(1);
+}
+
+.mlnf-profile-preview__header {
+    position: relative;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, 
+        rgba(var(--accent-rgb, 255, 94, 120), 0.1) 0%,
+        rgba(var(--secondary-rgb, 76, 175, 80), 0.1) 100%);
+    border-bottom: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-profile-preview__loading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.mlnf-loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border-top: 2px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.mlnf-profile-preview__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.mlnf-profile-preview__close:hover {
+    background: var(--accent);
+    color: white;
+    transform: scale(1.1);
+}
+
+.mlnf-profile-preview__body {
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.mlnf-profile-preview__bio {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-profile-preview__bio h4 {
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.mlnf-profile-preview__bio p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.mlnf-profile-preview__stats {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+.mlnf-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.mlnf-stat {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.1);
+}
+
+.mlnf-stat__value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: 'Cinzel', serif;
+}
+
+.mlnf-stat__label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    font-family: 'Caesar Dressing', serif;
+}
+
+.mlnf-profile-preview__actions {
+    padding: 1.5rem;
+    background: rgba(var(--background-elevated), 0.5);
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    display: flex;
+    gap: 1rem;
+}
+
+.mlnf-profile-preview__actions .mlnf-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.mlnf-btn--primary {
+    background: var(--accent);
+    color: white;
+}
+
+.mlnf-btn--primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+}
+
+.mlnf-btn--accent {
+    background: rgba(var(--secondary-rgb, 76, 175, 80), 0.1);
+    color: var(--secondary);
+    border: 1px solid rgba(var(--secondary-rgb, 76, 175, 80), 0.3);
+}
+
+.mlnf-btn--accent:hover {
+    background: var(--secondary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--secondary-rgb, 76, 175, 80), 0.3);
+}
+
+/* ==========================================
+   FOOTER STYLES
+   ========================================== */
+
+/* Footer Styles */
+footer {
+    background: var(--gradient-secondary);
+    border-top: 3px solid var(--accent);
+    padding: 3rem 2rem;
+    margin-top: auto; /* Pushes footer to bottom if content is short */
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    flex-wrap: wrap;
+}
+
+.footer-column {
+    text-align: center;
+    min-width: 200px;
+}
+
+.footer-column h3 {
+    color: var(--accent);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-column ul li a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    opacity: 0.9;
+}
+
+.footer-column ul li a:hover {
+    color: var(--accent);
+    opacity: 1;
+    transform: translateX(5px);
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    padding-top: 2rem;
+}
+
+.footer-bottom p {
+    font-size: 1rem;
+    line-height: 1.7;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+}
+
+.social-links {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.social-links a {
+    color: var(--text);
+    font-size: 1.5rem;
+    transition: var(--transition);
+}
+
+.social-links a:hover {
+    color: var(--accent);
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* ==========================================
+   SPECIALTY ANIMATIONS
+   ========================================== */
+
+@keyframes pulseGlow { /* Used by logo icon */
+    0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 5px rgba(var(--accent-rgb,255,94,120),0.2); }
+    50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 15px rgba(var(--accent-rgb,255,94,120),0.4); }
+}
+
+@keyframes floatEternal { /* Used by mindmap nodes */
+    0%, 100% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-8px) translateX(3px); }
+    50% { transform: translateY(-3px) translateX(-2px); }
+    75% { transform: translateY(-12px) translateX(1px); }
+}
+
+/* ==========================================
+   FLOATING ACTION BUTTONS
+   ========================================== */
+
+/* Floating Action Buttons */
+.floating-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 1000 !important;
+}
+
+.floating-buttons .theme-toggle,
+.floating-buttons #themeToggle,
+#themeToggle {
+    position: static !important; /* Remove fixed positioning from active-users.css */
+    bottom: auto !important;
+    right: auto !important;
+    order: 2 !important; /* Ensure it's second in flex order */
+}
+
+/* Ultimate override for show-users-btn to ensure style application */
+body .floating-buttons button.show-users-btn#showUsersBtn {
+    z-index: 1001 !important; /* Ensure it's above other elements if needed */
+}
+
+body .floating-buttons button.theme-toggle#themeToggle {
+    z-index: 1000 !important;
+}
+
+.top-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--primary); /* Ensure good contrast */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    font-size: 1.2rem;
+    opacity: 0; /* Hidden by default, made visible by JS */
+    transform: translateY(20px); /* Start off-screen for animation */
+    pointer-events: none; /* Not interactive when hidden */
+}
+
+.top-button.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.top-button:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    background: var(--highlight); /* Or a slightly different accent shade */
+}
+
+/* ==========================================
+   ECHOES UNBOUND AGORA SECTION
+   ========================================== */
+
+/* Echoes Unbound Agora Section - Greek Democracy Theme */
+.echoes-unbound-agora {
+    background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(42, 64, 102, 0.9));
+    border-radius: var(--border-radius-lg);
+    padding: 3rem 2rem;
+    margin: 3rem 0;
+    border: 2px solid rgba(255, 94, 120, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Eternal Souls Highlight Section - Clean Finalized Theme */
+.eternal-souls-highlight {
+    background: linear-gradient(135deg, rgba(26, 26, 51, 0.7), rgba(42, 64, 102, 0.6));
+    border-radius: var(--border-radius-lg);
+    padding: 3rem 2rem;
+    margin: 3rem 0;
+    border: 2px solid rgba(255, 94, 120, 0.2);
+    position: relative;
+}
+
+.echoes-unbound-agora::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 94, 120, 0.05) 0%, transparent 50%, rgba(255, 202, 40, 0.05) 100%);
+    pointer-events: none;
+}
+
+.agora-subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.agora-subtitle i {
+    color: var(--accent);
+}
+
+.souls-highlight-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin: 2rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.soul-highlight-card {
+    background: var(--background-secondary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    border: 2px solid rgba(255, 94, 120, 0.2);
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.soul-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 94, 120, 0.05) 50%, transparent 100%);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.soul-highlight-card:hover::before {
+    opacity: 1;
+}
+
+.soul-highlight-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 15px 35px rgba(255, 94, 120, 0.2);
+}
+
+.soul-card-founder {
+    background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 202, 40, 0.1));
+    border-color: var(--accent);
+}
+
+.soul-card-featured {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(96, 165, 250, 0.1));
+    border-color: #4ade80;
+}
+
+.soul-card-content {
+    margin-top: 0;
+}
+
+.soul-display-container {
+    margin: 1.5rem 0;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-soul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.soul-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 94, 120, 0.3);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.soul-card-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.soul-message-btn, .soul-profile-btn {
+    background: var(--gradient-accent);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.soul-profile-btn {
+    background: linear-gradient(135deg, rgba(26, 26, 51, 0.9), rgba(42, 64, 102, 0.8));
+    border: 2px solid var(--accent);
+}
+
+.soul-message-btn:hover, .soul-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 94, 120, 0.4);
+}
+
+.soul-card-featured .soul-message-btn {
+    background: linear-gradient(135deg, #4ade80, #60a5fa);
+}
+
+.soul-card-featured .soul-message-btn:hover {
+    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+}
+
+/* Agora Preview Section */
+.agora-preview {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid rgba(255, 94, 120, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.agora-info {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.agora-info i {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.agora-info p {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.agora-info small {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Soul Highlight Avatar Customization */
+.soul-highlight-card .mlnf-user-display {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.soul-highlight-card .mlnf-user-display--lg {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+}
+
+.soul-highlight-card .mlnf-avatar--xl {
+    border: 3px solid rgba(255, 94, 120, 0.3);
+    transition: var(--transition);
+}
+
+.soul-highlight-card:hover .mlnf-avatar--xl {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(255, 94, 120, 0.3);
+}
+
+.soul-highlight-card .mlnf-username--mystical {
+    /* Font now properly inherited from !important rules above */
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.soul-highlight-card .mlnf-user-title {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+
+.soul-highlight-card .mlnf-user-status {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* ==========================================
+   ANONYMOUS MESSAGE MODAL STYLING
+   ========================================== */
+
+/* Anonymous Message Modal Styling */
+.anonymous-message-modal {
+    max-width: 500px;
+}
+
+.anonymous-message-modal h3 {
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.recipient-info {
+    background: var(--background-tertiary);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent);
+}
+
+.recipient-info p {
+    margin: 0;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.anonymous-message-modal .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.anonymous-message-modal label {
+    display: block;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.anonymous-message-modal input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--background-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.anonymous-message-modal input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 94, 120, 0.3);
+}
+
+.anonymous-message-modal textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    background: var(--background-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: var(--transition);
+}
+
+.anonymous-message-modal textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 94, 120, 0.3);
+}
+
+.anonymous-message-modal small {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+/* Error/Loading States for Soul Cards */
+.error-soul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+    padding: 2rem;
+}
+
+.error-soul i {
+    font-size: 2rem;
+    color: var(--accent);
+    opacity: 0.7;
+}
+
+/* Enhanced Greek Theming */
+.echoes-unbound-agora::after {
+    content: '🏛️';
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.agora-preview::before {
+    content: '🏛️';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.4;
+}
+
+/* ==========================================
+   LEGACY BUTTON OVERRIDES
+   ========================================== */
+
+/* Styles for .modal-loading and .modal-error if used by JS directly */
+.modal-loading {
+    text-align: center;
+    padding: 1rem;
+    color: var(--highlight);
+}
+
+.modal-error {
+    color: var(--danger);
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Highlight grid button - this was a very specific override in original file */
+.highlight-grid > .btn.btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.7rem 1.25rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+    height: fit-content !important;
+    align-self: center !important;
+    margin: 0 !important;
+    border-radius: var(--border-radius) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    color: var(--primary) !important;
+    background: linear-gradient(to bottom, #ff5e78, #ff8f00) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow:
+        0 0 8px rgba(255, 94, 120, 0.3),
+        0 0 15px rgba(255, 94, 120, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.1) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    animation: none !important;
+    position: relative !important;
+    z-index: 5 !important;
+    white-space: nowrap !important;
+    min-width: 140px !important;
+    max-width: 200px !important;
+}
+
+.highlight-grid > .btn.btn-primary:hover {
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow:
+        0 0 12px rgba(255, 94, 120, 0.5),
+        0 0 25px rgba(255, 94, 120, 0.3),
+        inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==========================================
+   RESPONSIVE FEATURES
+   ========================================== */
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .mlnf-profile-preview__content {
+        max-width: 95vw;
+        max-height: 90vh;
+    }
+    
+    .mlnf-profile-preview__header,
+    .mlnf-profile-preview__body,
+    .mlnf-profile-preview__actions {
+        padding: 1rem;
+    }
+    
+    .mlnf-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mlnf-profile-preview__actions {
+        flex-direction: column;
+    }
+    
+    .highlight-item, .debate-position { padding: 1.5rem; }
+    .highlight-item h4, .debate-position h4 { font-size: 1.5rem; }
+    .chronicle-title-prominent { font-size: 1.6rem !important; }
+    
+    footer { padding: 2rem 1rem; }
+    
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+    
+    .footer-column {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .highlight-grid {
+        grid-template-columns: 1fr; /* Stack items on smaller screens */
+    }
+    .highlight-grid .highlight-item {
+        padding-right: 0; /* Remove right padding if it was for connector lines */
+    }
+     .highlight-grid > .btn.btn-primary {
+        width: 100%; /* Make button full width in its column */
+        margin-top: 1rem !important; /* Add space if stacked */
+    }
+    
+    .echoes-unbound-agora {
+        padding: 2rem 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .souls-highlight-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .soul-highlight-card {
+        padding: 1.5rem;
+    }
+    
+    .soul-card-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .soul-message-btn, .soul-profile-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem 1rem;
+    }
+    
+    .agora-subtitle {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .mlnf-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .highlight-item h4, .debate-position h4 { font-size: 1.3rem; }
+    .chronicle-title-prominent { font-size: 1.4rem !important; }
+    
+    footer {
+        padding: 2rem 1rem;
+    }
+    
+    .footer-content {
+        gap: 1.5rem;
+    }
+    
+    .echoes-unbound-agora {
+        padding: 1.5rem 1rem;
+    }
+    
+    .soul-highlight-card .mlnf-username--mystical {
+        font-size: 1.1rem;
+    }
+    
+    .agora-info p {
+        font-size: 1rem;
+    }
+    
+    .anonymous-message-modal {
+        max-width: 95vw;
+        width: 95vw;
+        padding: 1.5rem 1rem;
+        margin: 1rem;
+    }
+    
+    .anonymous-message-modal h3 {
+        font-size: 1.2rem;
+    }
+    
+    .recipient-info {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .anonymous-message-modal input[type="text"],
+    .anonymous-message-modal textarea {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    
+    .anonymous-message-modal textarea {
+        min-height: 100px;
+    }
+}
