@@ -117,14 +117,14 @@
             z-index: 1;
         }
         
-        /* Orange-toned hero title with brightness */
+        /* Hero title matching "Our Timeless Arsenal" gradient colors */
         .hero h1 {
             text-shadow: 
-                0 0 15px rgba(255, 140, 60, 0.8),
-                0 0 25px rgba(255, 140, 60, 0.6),
-                0 0 35px rgba(255, 140, 60, 0.4),
+                0 0 15px rgba(255, 94, 120, 0.8),
+                0 0 25px rgba(255, 202, 40, 0.6),
+                0 0 35px rgba(255, 148, 80, 0.4),
                 2px 2px 8px rgba(0, 0, 0, 0.5) !important;
-            background: linear-gradient(45deg, #ff8c3a, #ffa855, #ffbf70) !important;
+            background: linear-gradient(45deg, #ff5e78, #ffca28) !important; /* Exact same as --gradient-accent */
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
@@ -133,11 +133,11 @@
         
         body.light-theme .hero h1 {
             text-shadow: 
-                0 0 15px rgba(230, 120, 40, 0.8),
-                0 0 25px rgba(230, 120, 40, 0.6),
-                0 0 35px rgba(230, 120, 40, 0.4),
+                0 0 15px rgba(214, 45, 77, 0.8),
+                0 0 25px rgba(224, 96, 0, 0.6),
+                0 0 35px rgba(219, 70, 38, 0.4),
                 2px 2px 8px rgba(255, 255, 255, 0.5) !important;
-            background: linear-gradient(45deg, #e67828, #ff8c3a, #ffa855) !important;
+            background: linear-gradient(45deg, #d62d4d, #e06000) !important; /* Light theme gradient accent */
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
@@ -940,13 +940,14 @@
     <script>
         function updateBackgroundOpacity() {
             const scrollY = window.scrollY;
-            const maxScroll = 1500; // Distance to scroll for full fade
+            const maxScroll = 3000; // Increased for more gradual fade (was 1500)
             const overlay = document.getElementById('scroll-overlay');
             
             if (!overlay) return;
             
-            // Calculate opacity based on scroll position (0 to 0.95)
-            let opacity = Math.min(scrollY / maxScroll, 0.95);
+            // More gradual curve - slower start, accelerates towards end
+            let progress = Math.min(scrollY / maxScroll, 1);
+            let opacity = progress * progress * 0.95; // Quadratic curve for smoother transition
             
             // Check if light theme
             const isLightTheme = document.body.classList.contains('light-theme');
