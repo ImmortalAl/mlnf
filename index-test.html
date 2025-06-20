@@ -58,37 +58,21 @@
     <style>
         /* INLINE TEST STYLES - Higher priority */
         
-        /* Create a properly layered overlay for reverse scroll effect */
-        html::after {
-            content: '';
+        /* Create dynamic scroll overlay with JavaScript control */
+        #scroll-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 300vh; /* Make it longer than viewport for proper gradient effect */
-            background: linear-gradient(to bottom, 
-                transparent 0%, 
-                transparent 15%, 
-                rgba(13, 13, 26, 0.2) 25%,
-                rgba(13, 13, 26, 0.4) 35%,
-                rgba(13, 13, 26, 0.6) 50%,
-                rgba(13, 13, 26, 0.8) 70%, 
-                rgba(13, 13, 26, 0.95) 90%,
-                rgba(13, 13, 26, 1) 100%);
+            height: 100vh;
+            background: rgba(13, 13, 26, 0);
             pointer-events: none;
             z-index: 0;
+            transition: background-color 0.1s ease-out;
         }
         
-        body.light-theme html::after {
-            background: linear-gradient(to bottom, 
-                transparent 0%, 
-                transparent 15%, 
-                rgba(240, 240, 245, 0.2) 25%,
-                rgba(240, 240, 245, 0.4) 35%,
-                rgba(240, 240, 245, 0.6) 50%,
-                rgba(240, 240, 245, 0.8) 70%, 
-                rgba(240, 240, 245, 0.95) 90%,
-                rgba(240, 240, 245, 1) 100%);
+        body.light-theme #scroll-overlay {
+            background: rgba(240, 240, 245, 0);
         }
         
         /* Clean background without overlay */
@@ -133,14 +117,14 @@
             z-index: 1;
         }
         
-        /* Brighten hero title while keeping original accent color */
+        /* Orange-toned hero title with brightness */
         .hero h1 {
             text-shadow: 
-                0 0 15px rgba(255, 94, 120, 0.8),
-                0 0 25px rgba(255, 94, 120, 0.6),
-                0 0 35px rgba(255, 94, 120, 0.4),
+                0 0 15px rgba(255, 140, 60, 0.8),
+                0 0 25px rgba(255, 140, 60, 0.6),
+                0 0 35px rgba(255, 140, 60, 0.4),
                 2px 2px 8px rgba(0, 0, 0, 0.5) !important;
-            background: linear-gradient(45deg, #ff5e78, #ff8a9b, #ffa8bb) !important;
+            background: linear-gradient(45deg, #ff8c3a, #ffa855, #ffbf70) !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
@@ -149,11 +133,11 @@
         
         body.light-theme .hero h1 {
             text-shadow: 
-                0 0 15px rgba(214, 45, 77, 0.8),
-                0 0 25px rgba(214, 45, 77, 0.6),
-                0 0 35px rgba(214, 45, 77, 0.4),
+                0 0 15px rgba(230, 120, 40, 0.8),
+                0 0 25px rgba(230, 120, 40, 0.6),
+                0 0 35px rgba(230, 120, 40, 0.4),
                 2px 2px 8px rgba(255, 255, 255, 0.5) !important;
-            background: linear-gradient(45deg, #d62d4d, #e06000, #ff6b35) !important;
+            background: linear-gradient(45deg, #e67828, #ff8c3a, #ffa855) !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
@@ -238,6 +222,8 @@
     </style>
 </head>
 <body>
+    <!-- Scroll-controlled overlay for background fading -->
+    <div id="scroll-overlay"></div>
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
         <div class="active-users-header">
             <h3>Eternal Seekers</h3>
@@ -948,6 +934,32 @@
     
     // Load on page ready
     document.addEventListener('DOMContentLoaded', loadScrollsHighlights);
+    </script>
+    
+    <!-- Scroll-based background fade effect -->
+    <script>
+        function updateBackgroundOpacity() {
+            const scrollY = window.scrollY;
+            const maxScroll = 1500; // Distance to scroll for full fade
+            const overlay = document.getElementById('scroll-overlay');
+            
+            if (!overlay) return;
+            
+            // Calculate opacity based on scroll position (0 to 0.95)
+            let opacity = Math.min(scrollY / maxScroll, 0.95);
+            
+            // Check if light theme
+            const isLightTheme = document.body.classList.contains('light-theme');
+            const baseColor = isLightTheme ? '240, 240, 245' : '13, 13, 26';
+            
+            overlay.style.backgroundColor = `rgba(${baseColor}, ${opacity})`;
+        }
+        
+        // Update on scroll
+        window.addEventListener('scroll', updateBackgroundOpacity);
+        
+        // Initial call
+        document.addEventListener('DOMContentLoaded', updateBackgroundOpacity);
     </script>
 </body>
 </html>
