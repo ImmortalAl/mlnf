@@ -1,4 +1,6 @@
 // MLNF/js/heroParticles.js
+console.log('[heroParticles.js] Script loaded!');
+alert('Hero particles script loaded!'); // Very obvious test
 
 function createParticle() {
     console.log('[heroParticles.js] Creating particle...');
