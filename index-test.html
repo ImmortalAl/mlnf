@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A timeless sanctuary for liberated spirits to manifest truth and freedom.">
+    <meta name="theme-color" content="#0d0d1a">
+    <meta property="og:title" content="Manifest Liberation, Naturally Free">
+    <meta property="og:description" content="An immortal sanctuary for uncensored thought and eternal truth">
+    <meta property="og:image" content="https://mlnf.net/social-cover.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Manifest Liberation, Naturally Free (v1.1)</title>
+    <!-- Immortal-themed favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="preconnect" href="https://mlnf-auth.onrender.com" crossorigin>
+    <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
+    <link rel="stylesheet" href="css/base-theme.css">
+    
+    <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
+    <link rel="stylesheet" href="css/critical.css?v=1.0">
+    
+    <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    
+    <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
+    <link rel="preload" href="css/layout.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/layout.css?v=1.0"></noscript>
+    
+    <link rel="preload" href="css/components.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/components.css?v=1.0"></noscript>
+    
+    <link rel="preload" href="css/features.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/features.css?v=1.0"></noscript>
+    
+    <!-- 5. SHARED COMPONENTS (lazy loaded) -->
+    <link rel="preload" href="components/shared/styles.css?v=1.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=1.6"></noscript>
+    
+    <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
+    <link rel="preload" href="css/active-users.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/active-users.css?v=1.2"></noscript>
+    
+    <!-- 7. EXTERNAL RESOURCES (lazy loaded with high priority) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous"></noscript>
+    
+    <!-- 8. FONTS (lazy loaded) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Immortal:wght@400;700&family=Creepster&family=Nosifer&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Immortal:wght@400;700&family=Creepster&family=Nosifer&display=swap"></noscript>
+    
+    <!-- Immortal-themed fonts for mystical elements (lazy loaded) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Eater&family=Metal+Mania&family=Griffy&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Eater&family=Metal+Mania&family=Griffy&display=swap"></noscript>
+</head>
+<body>
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div>
+    </aside>
+
+    <div class="floating-buttons">
+        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    </div>
+
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <a href="/">
+                <i class="fas fa-infinity"></i>
+                <div class="title-stack">
+                    <span class="full-title">
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
+                </span>
+                <span class="short-title">MLNF</span>
+                </div>
+            </a>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/souls"><i class="fas fa-users"></i> Eternal Souls</a></li>
+                <li><a href="/pages/blog.html"><i class="fas fa-scroll"></i> Soul Scrolls</a></li>
+                <li><a href="/pages/messageboard.html"><i class="fas fa-comments"></i> Echoes Unbound</a></li>
+                <li><a href="/pages/news.html"><i class="fas fa-newspaper"></i> Boundless Chronicles</a></li>
+                <li><a href="/pages/debate.html"><i class="fas fa-gavel"></i> Clash of Immortals</a></li>
+                <li><a href="/pages/mindmap.html"><i class="fas fa-project-diagram"></i> Infinite Nexus</a></li>
+                <li><a href="/pages/archive.html"><i class="fas fa-vault"></i> Timeless Vault</a></li>
+            </ul>
+        </nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
+                <!-- Populated by userMenu.js when logged out -->
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <nav class="mobile-nav" id="mobileNav">
+            <div class="sidebar-header">
+                <h2>Eternal Navigation</h2>
+                <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                    <i class="fas fa-times"></i>
+            </button>
+            </div>
+            <ul class="mobile-nav-list">
+                <!-- Links will be dynamically populated or can be hardcoded if preferred -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="mainHeading">
+            <div class="hero-content">
+                <h1 id="mainHeading" class="eternal font-immortal-heading text-immortal-glow">Naturally Free Forever</h1>
+                <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers. Experience true freedom.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
+                    <a href="#" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="censorship-warning" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>BEWARE: This realm harbors eternal truths and unbound thoughts that defy ephemeral control.</p>
+        </div>
+
+        <section class="features" id="features" aria-labelledby="featuresHeading">
+            <div class="section-title">
+                <h2 id="featuresHeading" class="font-immortal-heading">Our Timeless Arsenal</h2>
+                <p>Instruments of Liberation for Souls Unbound</p>
+            </div>
+            <div class="features-grid">
+                <article class="feature-card" data-feature="souls">
+                    <div class="feature-content">
+                        <i class="fas fa-user-secret"></i>
+                        <h3>Eternal Souls</h3>
+                        <p>Whisper truths through timeless channels, forever free. Connect with kindred spirits in unshackled unity.</p>
+                    </div>
+                    <a href="/souls" class="btn btn-primary">Find Souls</a>
+                </article>
+                <article class="feature-card" data-feature="scrolls">
+                    <div class="feature-content">
+                        <i class="fas fa-scroll"></i>
+                        <h3>Soul Scrolls</h3>
+                        <p>Inscribe your essence for eternity, defying decay. Share and explore thoughts that echo beyond time.</p>
+                    </div>
+                    <a href="pages/blog.html" class="btn btn-primary">Write Now</a>
+                </article>
+                <article class="feature-card" data-feature="echoes">
+                    <div class="feature-content">
+                        <i class="fas fa-comments"></i>
+                        <h3>Echoes Unbound</h3>
+                        <p>Weave your voice into our eternal tapestry. Post and discuss freely in a realm without chains.</p>
+                    </div>
+                    <a href="pages/messageboard.html" class="btn btn-primary">Start Thread</a>
+                </article>
+                <article class="feature-card" data-feature="chronicles">
+                    <div class="feature-content">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>Boundless Chronicles</h3>
+                        <p>Immortalize truths beyond transient lies. Submit stories that endure in our collective memory.</p>
+                    </div>
+                    <a href="pages/news.html" class="btn btn-primary">Explore News</a>
+                </article>
+                <article class="feature-card" data-feature="debate">
+                    <div class="feature-content">
+                        <i class="fas fa-gavel"></i>
+                        <h3>Clash of Immortals</h3>
+                        <p>Engage in discourse unbound by mortal limits. Let truth reign in our timeless arena.</p>
+                    </div>
+                    <a href="pages/debate.html" class="btn btn-primary">Enter Arena</a>
+                </article>
+                <article class="feature-card" data-feature="nexus">
+                    <div class="feature-content">
+                        <i class="fas fa-project-diagram"></i>
+                        <h3>Infinite Nexus</h3>
+                        <p>Link your spirit to our living web, spanning beyond time. Contribute to the eternal mindmap.</p>
+                    </div>
+                    <a href="pages/mindmap.html" class="btn btn-primary">Join the Map</a>
+                </article>
+                <article class="feature-card" data-feature="vault">
+                    <div class="feature-content">
+                        <i class="fas fa-vault"></i>
+                        <h3>Timeless Vault</h3>
+                        <p>Safeguard visions in an archive immune to erasure. Upload and preserve the infinite.</p>
+                    </div>
+                    <a href="pages/archive.html" class="btn btn-primary">Access Vault</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="highlights eternal-souls-highlight" id="profiles" aria-labelledby="profilesHeading">
+            <div class="section-title">
+                <h2 id="profilesHeading" class="font-immortal-mystical">
+                    <i class="fas fa-crown"></i> Eternal Souls Highlight
+                </h2>
+                <p>Connect with our community pillars and featured souls</p>
+            </div>
+            
+            <div class="souls-highlight-container">
+                <!-- ImmortalAl Featured Card -->
+                <div class="soul-highlight-card soul-card-founder">
+                    <div class="soul-card-content">
+                        <div id="founder-soul-display" class="soul-display-container">
+                            <!-- MLNF Avatar System will populate this -->
+                        </div>
+                        <div class="soul-card-actions">
+                            <button class="soul-message-btn" onclick="openFounderMessage()" aria-label="Send message to ImmortalAl">
+                                <i class="fas fa-envelope"></i> Message Founder
+                            </button>
+                            <a href="/souls/ImmortalAl.html" class="soul-profile-btn" aria-label="View ImmortalAl's profile">
+                                <i class="fas fa-user"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Community Soul -->
+                <div class="soul-highlight-card soul-card-featured">
+                    <div class="soul-card-content">
+                        <div id="featured-soul-display" class="soul-display-container">
+                            <div class="loading-soul">
+                                <div class="soul-loading-spinner"></div>
+                                <p>Summoning featured soul...</p>
+                            </div>
+                        </div>
+                        <div class="soul-card-actions" id="featured-soul-actions" style="display: none;">
+                            <button class="soul-message-btn" onclick="openFeaturedSoulMessage()" aria-label="Send message to featured soul">
+                                <i class="fas fa-heart-handshake"></i> Send Message
+                            </button>
+                            <a href="#" id="featured-soul-profile-link" class="soul-profile-btn" aria-label="View featured soul's profile">
+                                <i class="fas fa-user"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="highlights" id="blog" aria-labelledby="blogHeading">
+            <div class="section-title">
+                <h2 id="blogHeading" class="font-immortal-mystical text-immortal-gradient">Soul Scrolls</h2>
+                <p>Recent Reflections from Liberated Spirits</p>
+            </div>
+            <div class="highlight-grid" id="scrollsHighlights">
+                <!-- Dynamic content will load here -->
+                <div class="highlight-item">
+                    <h4>Loading Soul Scrolls...</h4>
+                    <p>Gathering the latest whispers from eternal minds...</p>
+                    <p class="author">— System</p>
+                </div>
+                <a href="pages/blog.html" class="btn btn-primary">Explore All Scrolls</a>
+            </div>
+        </section>
+
+        <section class="highlights echoes-unbound-agora" id="messageboard" aria-labelledby="messageboardHeading">
+            <div class="section-title">
+                <h2 id="messageboardHeading">Echoes Unbound</h2>
+                <p class="agora-subtitle">
+                    <i class="fas fa-temple-zeus"></i> Hot Threads from the Eternal Tapestry - Future Agora Awaits
+                </p>
+            </div>
+            <div class="highlight-grid">
+                <div class="highlight-item">
+                    <h4>Thread: Is Privacy Dead?</h4>
+                    <p>"In 2025, every click is watched—how do we fight back?"</p>
+                    <p class="author">— ImmortalAl (12 replies)</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>Thread: The Power of Collective Truth</h4>
+                    <p>"Can we crowdsource our way to freedom?"</p>
+                    <p class="author">— TruthSeeker (8 replies)</p>
+                </div>
+                <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
+            </div>
+            
+            <div class="agora-preview">
+                <div class="agora-info">
+                    <i class="fas fa-temple-zeus"></i>
+                    <p>Future home of the <strong>Anonymous Agora</strong> - where free speech meets eternal wisdom and ideas transform into marketplace opportunities</p>
+                    <small>Coming soon: A public forum and marketplace inspired by ancient Greek democracy</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="highlights" id="news" aria-labelledby="newsHeading">
+            <div class="section-title">
+                <h2 id="newsHeading" class="font-immortal-mystical text-immortal-gradient">Boundless Chronicles</h2>
+                <p>Featured Stories from the Eternal Chronicles</p>
+            </div>
+            <div class="highlight-grid" id="chroniclesHighlights">
+                <!-- Dynamic content will load here -->
+                <div class="highlight-item">
+                    <h4>Loading Chronicles...</h4>
+                    <p>Fetching the latest stories from the eternal archives...</p>
+                    <p class="author">— System</p>
+                </div>
+                <a href="pages/news.html" class="btn btn-primary">Read More Stories</a>
+            </div>
+        </section>
+
+        <section class="debate-arena" id="debate" aria-labelledby="debateHeading">
+            <div class="section-title">
+                <h2 id="debateHeading">Clash of Immortals</h2>
+                <p>Where Eternal Minds Forge Truth</p>
+            </div>
+            <h3 class="debate-topic">Resolved: Freedom is an Eternal Right</h3>
+            <p>Join the timeless struggle as liberated souls contest existence.</p>
+            <div class="debate-preview">
+                <div class="debate-position">
+                    <h4>Affirmative</h4>
+                    <p><strong>"Freedom transcends time;</strong> it's woven into existence." — ImmortalAl</p>
+                    <div class="debate-actions">
+                        <button class="btn btn-primary">Vote Yes</button>
+                        <span class="vote-count">12 Votes</span>
+                    </div>
+                </div>
+                <div class="debate-position">
+                    <h4>Negative</h4>
+                    <p><strong>"Freedom is a fleeting illusion,</strong> bound by power." — EternalVoice</p>
+                    <div class="debate-actions">
+                        <button class="btn btn-outline">Vote No</button>
+                        <span class="vote-count">8 Votes</span>
+                    </div>
+                </div>
+            </div>
+            <a href="pages/debate.html" class="btn btn-primary">Join the Discourse</a>
+        </section>
+
+        <section class="mindmap-section" id="mindmap" aria-labelledby="mindmapHeading">
+            <div class="section-title">
+                <h2 id="mindmapHeading">Infinite Nexus</h2>
+                <p>Our Living Web Binds the Unbound</p>
+            </div>
+            <div class="mindmap-preview" id="mindmapPreview">
+                <div class="mindmap-node main">Liberation</div>
+                <div class="mindmap-node node-truth">Truth</div>
+                <div class="mindmap-node node-freedom">Freedom</div>
+                <div class="mindmap-node node-eternity">Eternity</div>
+                <div class="mindmap-node node-unity">Unity</div>
+                <div class="mindmap-line line-1"></div>
+                <div class="mindmap-line line-2"></div>
+                <div class="mindmap-line line-3"></div>
+                <div class="mindmap-line line-4"></div>
+            </div>
+            <a href="pages/mindmap.html" class="btn btn-primary">Contribute to the Nexus</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Eternal Links</h3>
+                <ul>
+                    <li><a href="pages/about.html">About Our Eternity</a></li>
+                    <li><a href="pages/faq.html">Immortal Questions</a></li>
+                    <li><a href="pages/contact.html">Contact the Beyond</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="pages/guidelines.html">Sanctuary Guidelines</a></li>
+                    <li><a href="pages/privacy.html">Eternal Privacy</a></li>
+                    <li><a href="pages/terms.html">Terms of Infinity</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Stay Connected</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
+                    <a href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+            <p>Embrace your infinite potential and connect across eternity.</p>
+            <div class="footer-feedback">
+                <button type="button" class="feedback-btn footer" id="feedbackBtnFooter">
+                    <i class="fas fa-heart"></i> Share Your Eternal Feedback
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Feedback Modal (hidden by default) -->
+    <div id="feedbackModal" class="modal" aria-hidden="true">
+      <form id="feedbackForm" class="feedback-modal" autocomplete="off" tabindex="-1" role="dialog" aria-labelledby="feedbackTitle">
+        <button type="button" class="close-modal" id="closeFeedbackModal" aria-label="Close Feedback Modal"><i class="fas fa-times"></i></button>
+        <h3 id="feedbackTitle"><i class="fas fa-infinity"></i> Eternal Feedback</h3>
+        <div class="feedback-subtitle">Your thoughts help shape our immortal sanctuary. Share freely—anonymity is honored.</div>
+        <div class="form-group">
+          <textarea id="feedbackContent" placeholder="Share your eternal thoughts..." maxlength="1000" required></textarea>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="feedbackAnonymous">
+            <span class="checkmark"></span>
+            Send as <span style="font-style:italic;">Anonymous Soul</span>
+          </label>
+        </div>
+        <div id="feedbackUserInfo" class="user-info-display" style="display:none;">
+          <span id="feedbackUsername"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" id="submitFeedback" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Feedback</button>
+          <button type="button" id="cancelFeedback" class="btn btn-outline">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Config MUST be loaded first -->
+    <script src="components/shared/config.js?v=1.3"></script>
+    
+    <!-- Core MLNF Components -->
+    <script src="components/shared/mlnf-core.js?v=1.3"></script>
+    <script src="components/shared/authManager.js?v=1.3"></script>
+    <script src="components/shared/apiClient.js?v=1.3"></script>
+    <script src="components/shared/navigation.js?v=1.3"></script>
+    <script src="components/shared/authModal.js?v=1.3"></script>
+    <script src="components/shared/userMenu.js?v=1.3"></script>
+    <script src="components/shared/activeUsers.js?v=1.3"></script>
+    <script src="components/shared/messageModal.js?v=1.3"></script>
+    
+    <!-- Avatar System -->
+    <script src="js/mlnf-avatar-system.js?v=1.1"></script>
+    <script src="js/main.js?v=1.3"></script>
+    
+    <!-- Hero Particles - Full System -->
+    <script>
+        function createParticle() {
+            const particle = document.createElement('div');
+            
+            // Particle appearance - varied sizes
+            particle.style.width = `${Math.random() * 8 + 3}px`;
+            particle.style.height = particle.style.width;
+            particle.style.borderRadius = '50%';
+            
+            // Ethereal colors (blues, purples, pinks)
+            const r = Math.floor(Math.random() * 50 + 100);
+            const g = Math.floor(Math.random() * 100 + 50); 
+            const b = Math.floor(Math.random() * 100 + 155);
+            particle.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${Math.random() * 0.7 + 0.3})`;
+            
+            // Positioning - full viewport coverage
+            particle.style.position = 'fixed';
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.bottom = `${-50 + Math.random() * 100}px`;
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '1';
+            
+            // Animation properties
+            const duration = Math.random() * 15 + 10; // 10-25 seconds
+            const drift = (Math.random() - 0.5) * window.innerWidth * 0.3; // 30% of screen width drift
+            
+            particle.style.transition = `transform ${duration}s linear, opacity ${duration}s ease-out`;
+            
+            document.body.appendChild(particle);
+            
+            // Start animation
+            requestAnimationFrame(() => {
+                particle.style.transform = `translateY(-${window.innerHeight + 200}px) translateX(${drift}px) rotate(360deg)`;
+                particle.style.opacity = '0';
+            });
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, duration * 1000);
+        }
+        
+        function initParticles() {
+            // Initial burst for immediate visual impact
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createParticle, Math.random() * 3000);
+            }
+            
+            // Continuous creation for ongoing effect
+            setInterval(createParticle, 250);
+        }
+        
+        document.addEventListener('DOMContentLoaded', initParticles);
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroSignupButton = document.getElementById('heroSignupButton');
+            const heroLoginButton = document.getElementById('heroLoginButton');
+            
+            // Check if user is logged in
+            const token = localStorage.getItem('sessionToken');
+            
+            if (token) {
+                // User is logged in - update buttons to be proper links
+                try {
+                    const userData = JSON.parse(localStorage.getItem('user'));
+                    
+                    if (heroSignupButton && heroLoginButton) {
+                        heroSignupButton.textContent = 'View My Soul';
+                        heroSignupButton.href = '/profile';
+                        
+                        heroLoginButton.textContent = 'Enter Eternal Hearth';
+                        heroLoginButton.href = '/lander.html';
+                        
+                        // Remove any existing event listeners by cloning and replacing the elements
+                        const newSignupButton = heroSignupButton.cloneNode(true);
+                        const newLoginButton = heroLoginButton.cloneNode(true);
+                        heroSignupButton.parentNode.replaceChild(newSignupButton, heroSignupButton);
+                        heroLoginButton.parentNode.replaceChild(newLoginButton, heroLoginButton);
+                        
+                        console.log('[index.html] Hero buttons updated for logged-in user');
+                    }
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            } else {
+                // User is not logged in - add modal event listeners
+                if (heroSignupButton) {
+                    heroSignupButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.MLNF && window.MLNF.openSoulModal) {
+                            window.MLNF.openSoulModal('register');
+                        }
+                    });
+                }
+                
+                if (heroLoginButton) {
+                    heroLoginButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.MLNF && window.MLNF.openSoulModal) {
+                            window.MLNF.openSoulModal('login');
+                        }
+                    });
+                }
+                
+                console.log('[index.html] Hero buttons configured for logged-out user');
+            }
+            
+            // Active users sidebar toggle is handled by components/shared/activeUsers.js
+            // Message modal close is handled by components/shared/messageModal.js
+        });
+    </script>
+    
+    <script>
+    // Dynamic Chronicles Highlights
+    async function loadChroniclesHighlights() {
+        try {
+            // Wait for MLNFAvatars to be available
+            if (!window.MLNFAvatars) {
+                console.log('[index.html] Waiting for MLNFAvatars to load...');
+                setTimeout(loadChroniclesHighlights, 200);
+                return;
+            }
+            
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/chronicles?limit=2`);
+            if (!response.ok) throw new Error('Failed to fetch');
+            
+            const data = await response.json();
+            const chronicles = data.docs || data;
+            
+            const highlightsContainer = document.getElementById('chroniclesHighlights');
+            if (!highlightsContainer || chronicles.length === 0) return;
+            
+            // Clear existing content and build with unified avatar system
+            highlightsContainer.innerHTML = '';
+            
+            chronicles.forEach(post => {
+                const date = new Date(post.eventDate || post.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                const author = post.author || {};
+                
+                // Create highlight card container
+                const highlightCard = document.createElement('a');
+                highlightCard.href = 'pages/news.html';
+                highlightCard.className = 'highlight-item chronicle-highlight-card chronicle-link';
+                highlightCard.setAttribute('data-chronicle-id', post._id);
+                
+                // Create title
+                const title = document.createElement('h4');
+                title.className = 'chronicle-title-prominent';
+                title.textContent = post.title;
+                
+                // Create excerpt
+                const excerpt = document.createElement('p');
+                excerpt.className = 'chronicle-excerpt';
+                excerpt.textContent = post.content.substring(0, 120) + '...';
+                
+                // Create unified user display
+                const userDisplay = window.MLNFAvatars.createUserDisplay({
+                    username: author.username || 'Anonymous',
+                    title: 'Eternal Chronicler',
+                    avatarSize: 'sm',
+                    displaySize: 'sm',
+                    compact: true,
+                    mystical: author.isVIP || author.role === 'admin',
+                    online: author.online,
+                    customAvatar: author.avatar,
+                    usernameStyle: 'immortal',
+                    enableUnifiedNavigation: true
+                });
+                
+                // Create meta section
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'highlight-meta';
+                metaDiv.innerHTML = `
+                    <span class="date">${date}</span>
+                    <span class="read-more-indicator">Read full story →</span>
+                `;
+                
+                // Assemble highlight card
+                highlightCard.appendChild(title);
+                highlightCard.appendChild(excerpt);
+                highlightCard.appendChild(userDisplay);
+                highlightCard.appendChild(metaDiv);
+                
+                highlightsContainer.appendChild(highlightCard);
+            });
+            
+            // Add "Read More Stories" button
+            const readMoreBtn = document.createElement('a');
+            readMoreBtn.href = 'pages/news.html';
+            readMoreBtn.className = 'btn btn-primary';
+            readMoreBtn.textContent = 'Read More Stories';
+            highlightsContainer.appendChild(readMoreBtn);
+            
+        } catch (error) {
+            console.error('Failed to load chronicles:', error);
+            console.error('Error details:', error.message);
+            // Keep fallback content
+        }
+    }
+    
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', loadChroniclesHighlights);
+    </script>
+    
+    <script>
+    // Dynamic Soul Scrolls Highlights
+    async function loadScrollsHighlights() {
+        try {
+            // Wait for MLNFAvatars to be available
+            if (!window.MLNFAvatars) {
+                console.log('[index.html] Waiting for MLNFAvatars to load...');
+                setTimeout(loadScrollsHighlights, 200);
+                return;
+            }
+            
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs?limit=2`);
+            if (!response.ok) throw new Error('Failed to fetch');
+            
+            const data = await response.json();
+            const scrolls = data.docs || data;
+            
+            const highlightsContainer = document.getElementById('scrollsHighlights');
+            if (!highlightsContainer || scrolls.length === 0) return;
+            
+            // Clear existing content and build with unified avatar system
+            highlightsContainer.innerHTML = '';
+            
+            scrolls.forEach(scroll => {
+                const date = new Date(scroll.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                const author = scroll.author || {};
+                
+                // Create highlight card container with click navigation
+                const highlightCard = document.createElement('a');
+                highlightCard.href = 'pages/blog.html';
+                highlightCard.className = 'highlight-item scroll-highlight-card scroll-link';
+                highlightCard.setAttribute('data-scroll-id', scroll._id);
+                
+                // Add click handler to open specific scroll
+                highlightCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Store scroll ID for blog page to auto-open
+                    sessionStorage.setItem('openScrollId', scroll._id);
+                    window.location.href = 'pages/blog.html';
+                });
+                
+                // Create title
+                const title = document.createElement('h4');
+                title.className = 'scroll-title-prominent';
+                title.textContent = scroll.title;
+                
+                // Create excerpt (strip HTML and limit length)
+                const excerpt = document.createElement('p');
+                excerpt.className = 'scroll-excerpt';
+                const textContent = scroll.content.replace(/<[^>]*>/g, '');
+                excerpt.textContent = textContent.length > 120 ? textContent.substring(0, 120) + '...' : textContent;
+                
+                // Create unified user display
+                const userDisplay = window.MLNFAvatars.createUserDisplay({
+                    username: author.username || 'Anonymous',
+                    title: 'Scroll Weaver',
+                    avatarSize: 'sm',
+                    displaySize: 'sm',
+                    compact: true,
+                    mystical: author.isVIP || author.role === 'admin',
+                    online: author.online,
+                    customAvatar: author.avatar,
+                    usernameStyle: 'immortal',
+                    enableUnifiedNavigation: true
+                });
+                
+                // Create meta section
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'highlight-meta';
+                metaDiv.innerHTML = `
+                    <span class="date">${date}</span>
+                    <span class="read-more-indicator">Read full scroll →</span>
+                `;
+                
+                // Assemble highlight card
+                highlightCard.appendChild(title);
+                highlightCard.appendChild(excerpt);
+                highlightCard.appendChild(userDisplay);
+                highlightCard.appendChild(metaDiv);
+                
+                highlightsContainer.appendChild(highlightCard);
+            });
+            
+            // Add "Explore All Scrolls" button
+            const exploreBtn = document.createElement('a');
+            exploreBtn.href = 'pages/blog.html';
+            exploreBtn.className = 'btn btn-primary';
+            exploreBtn.textContent = 'Explore All Scrolls';
+            highlightsContainer.appendChild(exploreBtn);
+            
+        } catch (error) {
+            console.error('Failed to load soul scrolls:', error);
+            // Keep fallback content
+        }
+    }
+    
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', loadScrollsHighlights);
+    </script>
+</body>
+</html>
