@@ -58,9 +58,9 @@
     <style>
         /* INLINE TEST STYLES - Higher priority */
         
-        /* Fix the body background - keep parallax but ensure visibility */
+        /* Background with reverse scroll transparency effect */
         body {
-            background: linear-gradient(180deg, transparent, rgba(13, 13, 26, 0.3)), 
+            background: linear-gradient(180deg, transparent 0%, transparent 30%, rgba(13, 13, 26, 0.7) 70%, rgba(13, 13, 26, 0.95) 100%), 
                         url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover !important;
             background-attachment: fixed !important; /* Keep parallax effect */
             background-repeat: no-repeat !important;
@@ -69,7 +69,7 @@
         }
         
         body.light-theme {
-            background: linear-gradient(180deg, transparent, rgba(240, 240, 245, 0.3)), 
+            background: linear-gradient(180deg, transparent 0%, transparent 30%, rgba(240, 240, 245, 0.7) 70%, rgba(240, 240, 245, 0.95) 100%), 
                         url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover !important;
             background-attachment: fixed !important;
             background-repeat: no-repeat !important;
@@ -129,31 +129,47 @@
             text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8) !important;
         }
         
-        /* Make other sections slightly transparent too */
+        /* Make content sections more opaque to complement fading background */
         .features, .highlights, .debate-arena, .mindmap-section {
-            background: rgba(13, 13, 26, 0.8) !important;
-            backdrop-filter: blur(2px) !important;
+            background: rgba(13, 13, 26, 0.9) !important;
+            backdrop-filter: blur(5px) !important;
+            border-radius: 0 !important;
         }
         
         body.light-theme .features, 
         body.light-theme .highlights, 
         body.light-theme .debate-arena, 
         body.light-theme .mindmap-section {
-            background: rgba(240, 240, 245, 0.8) !important;
+            background: rgba(240, 240, 245, 0.9) !important;
+        }
+        
+        /* Update hero content to be less prominent since background is now the star */
+        .hero-content {
+            background: rgba(0, 0, 0, 0.2) !important;
+            padding: 2rem !important;
+            border-radius: 15px !important;
+            backdrop-filter: blur(1px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+        
+        body.light-theme .hero-content {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
         
         /* Visual indicator that this is test page */
         .hero::after {
-            content: "🧪 TEST PAGE - Background Transparency Test";
+            content: "🌌 TEST PAGE - Reverse Scroll Transparency";
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255, 0, 0, 0.8);
+            background: rgba(102, 51, 153, 0.8);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 5px;
             font-size: 0.8rem;
             z-index: 10;
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
