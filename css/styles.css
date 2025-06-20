@@ -427,8 +427,8 @@ body.light-theme .hero p {
     flex-wrap: wrap;
 }
 
-.hero .particle {
-    position: absolute;
+.particle {
+    position: fixed;
     bottom: -20px;
     border-radius: 50%;
     pointer-events: none;
@@ -436,6 +436,7 @@ body.light-theme .hero p {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     opacity: 0;
+    z-index: 1;
 }
 
 @keyframes floatUp {

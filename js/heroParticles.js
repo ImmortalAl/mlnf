@@ -22,14 +22,9 @@ function createParticle() {
     // Add a random horizontal drift to each particle using a CSS variable
     particle.style.setProperty('--drift', `${Math.random() * 100 - 50}`); // -50px to +50px drift
 
-    const heroSection = document.querySelector('.hero');
-    if (heroSection) {
-        heroSection.appendChild(particle);
-    } else {
-        // Fallback to body, but ideally, a .hero section should exist
-        console.warn('[heroParticles.js] .hero section not found. Appending to body.');
-        document.body.appendChild(particle);
-    }
+    // Append to body for full viewport width coverage
+    // Particles should not be constrained by hero section padding/overflow
+    document.body.appendChild(particle);
 
     // The CSS animation will now handle the lifecycle due to animation-iteration-count: infinite
     // and opacity changes within the animation.
@@ -37,11 +32,7 @@ function createParticle() {
 
 function initHeroParticles(creationInterval = 300) {
     console.log(`[heroParticles.js] Initializing continuous hero particles every ${creationInterval}ms...`);
-    const heroSection = document.querySelector('.hero');
-    if (!heroSection) {
-        console.warn("[heroParticles.js] Hero section (.hero) not found. Particles may not display correctly or at all if CSS relies on this parent.");
-        // Optionally, still try to create them on body if that's desired fallback
-    }
+    // Particles now append to body for full viewport coverage
 
     // Create an initial small burst so it doesn't feel empty at the start
     for (let i = 0; i < 10; i++) { 
