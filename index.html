@@ -457,14 +457,18 @@
     <!-- Hero Particles - Full System -->
     <script>
         function createParticle() {
-            console.log('[Particles] Creating particle...');
             const particle = document.createElement('div');
             
-            // Particle appearance - larger and brighter for visibility
-            particle.style.width = '15px';
-            particle.style.height = '15px';
+            // Particle appearance - varied sizes
+            particle.style.width = `${Math.random() * 8 + 3}px`;
+            particle.style.height = particle.style.width;
             particle.style.borderRadius = '50%';
-            particle.style.backgroundColor = 'cyan'; // Bright cyan for visibility
+            
+            // Ethereal colors (blues, purples, pinks)
+            const r = Math.floor(Math.random() * 50 + 100);
+            const g = Math.floor(Math.random() * 100 + 50); 
+            const b = Math.floor(Math.random() * 100 + 155);
+            particle.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${Math.random() * 0.7 + 0.3})`;
             
             // Positioning - full viewport coverage
             particle.style.position = 'fixed';
@@ -496,23 +500,16 @@
         }
         
         function initParticles() {
-            console.log('[Particles] Initializing particles...');
-            // Initial burst
-            for (let i = 0; i < 15; i++) {
-                setTimeout(createParticle, Math.random() * 2000);
+            // Initial burst for immediate visual impact
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createParticle, Math.random() * 3000);
             }
             
-            // Continuous creation
-            setInterval(createParticle, 300);
-            
-            // Also create one immediately for testing
-            createParticle();
+            // Continuous creation for ongoing effect
+            setInterval(createParticle, 250);
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('[Particles] DOM loaded, starting particles...');
-            initParticles();
-        });
+        document.addEventListener('DOMContentLoaded', initParticles);
     </script>
     
     <script>
