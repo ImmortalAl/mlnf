@@ -58,17 +58,30 @@
     <style>
         /* INLINE TEST STYLES - Higher priority */
         
-        /* Fix the body background to be visible from the top */
+        /* Fix the body background - keep parallax but ensure visibility */
         body {
             background: linear-gradient(180deg, transparent, rgba(13, 13, 26, 0.3)), 
                         url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover !important;
-            background-attachment: scroll !important; /* Change from fixed to scroll */
+            background-attachment: fixed !important; /* Keep parallax effect */
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+            background-position: center center !important;
         }
         
         body.light-theme {
             background: linear-gradient(180deg, transparent, rgba(240, 240, 245, 0.3)), 
                         url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover !important;
-            background-attachment: scroll !important;
+            background-attachment: fixed !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+            background-position: center center !important;
+        }
+        
+        /* Ensure header doesn't block background */
+        header {
+            background: transparent !important;
+            backdrop-filter: blur(10px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
         /* Make hero overlay completely transparent */
