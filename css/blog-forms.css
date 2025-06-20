@@ -1,0 +1,391 @@
+/* Blog Forms and Rich Text Editor Styles */
+/* Enhanced Blog Form section, rich text editor integration, form validation and error states */
+
+/* Enhanced Blog Form */
+.blog-form {
+    background: linear-gradient(135deg, var(--parchment-light), var(--parchment));
+    border: 2px solid var(--aged-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 6px solid var(--gold);
+    box-shadow: 0 8px 24px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+    opacity: 0.6;
+}
+
+.blog-form input, .blog-form textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid var(--aged-border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--ink);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1rem;
+    transition: var(--transition-quick);
+}
+
+.blog-form input:focus, .blog-form textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.blog-form textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+.blog-form button {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.blog-form button:hover {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+}
+
+.blog-form button:active {
+    transform: translateY(0);
+    transition: var(--transition-quick);
+}
+
+.blog-form .error {
+    color: var(--danger, #ff4444);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    background: rgba(255, 68, 68, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius, 10px);
+    border-left: 4px solid var(--danger, #ff4444);
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.1);
+}
+
+/* Light theme form error */
+body.light-theme .blog-form .error {
+    background: rgba(255, 68, 68, 0.05);
+    color: #dc2626;
+    border-left-color: #ef4444;
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.05);
+}
+
+/* Comment Form Styles */
+.comment-form-container {
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(42, 64, 102, 0.85) 100%);
+    border: 2px solid rgba(255, 94, 120, 0.4);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border-left: 4px solid var(--accent);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.2),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+}
+
+.comment-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 1rem;
+    border: 2px solid rgba(255, 94, 120, 0.4);
+    border-radius: 10px;
+    background: rgba(13, 13, 26, 0.9);
+    color: var(--text);
+    resize: vertical;
+    margin-bottom: 1.5rem;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    transition: var(--transition-quick);
+    backdrop-filter: blur(5px);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(240, 230, 255, 0.05);
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 
+        0 0 0 3px rgba(255, 94, 120, 0.2),
+        0 4px 20px rgba(255, 94, 120, 0.3),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+    background: rgba(26, 26, 51, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.comment-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+    text-shadow: none;
+}
+
+/* Consistent button styling across all components */
+.blog-post button,
+.scroll-footer button {
+    background: linear-gradient(135deg, 
+        rgba(255, 94, 120, 0.9) 0%, 
+        rgba(255, 202, 40, 0.8) 50%,
+        rgba(255, 94, 120, 0.9) 100%);
+    border: 2px solid rgba(255, 94, 120, 0.4);
+    color: var(--primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    min-height: 44px;
+    box-shadow: 
+        0 4px 16px rgba(255, 94, 120, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(240, 230, 255, 0.15);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.blog-post button:hover,
+.scroll-footer button:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 94, 120, 1) 0%, 
+        rgba(255, 202, 40, 1) 50%,
+        rgba(255, 94, 120, 1) 100%);
+    border-color: rgba(255, 94, 120, 0.8);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+        0 6px 20px rgba(255, 94, 120, 0.5),
+        0 3px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(240, 230, 255, 0.25),
+        0 0 20px rgba(255, 94, 120, 0.4);
+    text-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.blog-post button:active,
+.scroll-footer button:active {
+    transform: translateY(0);
+    transition: var(--transition-quick);
+}
+
+.blog-post button:focus,
+.scroll-footer button:focus {
+    outline: none;
+    border-color: rgba(255, 94, 120, 0.8);
+    box-shadow: 
+        0 0 0 4px rgba(255, 94, 120, 0.3),
+        0 4px 16px rgba(255, 94, 120, 0.3);
+}
+
+/* Rich Text Editor Integration */
+.ql-toolbar {
+    border-top: 2px solid var(--aged-border);
+    border-left: 2px solid var(--aged-border);
+    border-right: 2px solid var(--aged-border);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(135deg, var(--parchment-light), var(--parchment));
+    padding: 0.75rem;
+}
+
+.ql-container {
+    border-bottom: 2px solid var(--aged-border);
+    border-left: 2px solid var(--aged-border);
+    border-right: 2px solid var(--aged-border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.ql-editor {
+    min-height: 200px;
+    padding: 1rem;
+    color: var(--ink);
+}
+
+.ql-editor:focus {
+    outline: none;
+}
+
+.ql-toolbar .ql-formats {
+    margin-right: 0.75rem;
+}
+
+.ql-toolbar button {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0.25rem;
+    margin: 0 0.125rem;
+    transition: var(--transition-quick);
+}
+
+.ql-toolbar button:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--gold-light);
+}
+
+.ql-toolbar button.ql-active {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: white;
+    border-color: var(--gold-dark);
+}
+
+/* Form validation states */
+.form-field {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-field.has-error input,
+.form-field.has-error textarea {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-field.has-success input,
+.form-field.has-success textarea {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-field .field-message {
+    position: absolute;
+    bottom: -1.25rem;
+    left: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.form-field .field-message.error {
+    color: #ef4444;
+}
+
+.form-field .field-message.success {
+    color: #10b981;
+}
+
+/* Loading states for forms */
+.form-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.form-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    border: 3px solid transparent;
+    border-top: 3px solid var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Enhanced Loading and Error States */
+.loading-comments, .no-comments {
+    text-align: center;
+    padding: 3.5rem 2.5rem;
+    color: var(--text-secondary);
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.95) 0%, 
+        rgba(42, 64, 102, 0.85) 100%);
+    border: 2px solid rgba(255, 94, 120, 0.3);
+    border-radius: 16px;
+    margin: 2.5rem 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 32px rgba(255, 94, 120, 0.2),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-comments i, .no-comments i {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+    text-shadow: 
+        0 0 15px rgba(255, 94, 120, 0.5),
+        0 0 30px rgba(255, 202, 40, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+.loading-comments {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.loading-comments .loading-text {
+    opacity: 0.9;
+    animation: fadeInOut 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+.no-comments {
+    font-size: 1.05rem;
+    font-style: italic;
+    opacity: 0.8;
+}

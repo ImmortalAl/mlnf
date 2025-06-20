@@ -1,0 +1,127 @@
+/* Critical above-fold styles for Soul Scrolls page */
+/* Essential styles that must load immediately for initial render */
+
+/* Enhanced Parchment Theme Variables */
+:root {
+    --parchment: #f9f6ef;
+    --parchment-light: #fefcf7;
+    --ink: #3a2e28;
+    --ink-light: #5d4e43;
+    --gold: #d4af37;
+    --gold-light: #e6c96f;
+    --gold-dark: #b8941f;
+    --aged-border: #e0d6c3;
+    --aged-border-dark: #d4c3a6;
+    --shadow: rgba(58, 46, 40, 0.1);
+    --shadow-heavy: rgba(58, 46, 40, 0.15);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-quick: all 0.2s ease;
+}
+
+/* Blog-specific container */
+.scroll-archive {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 200px);
+}
+
+/* Archive Header */
+.archive-title {
+    font-family: 'MedievalSharp', cursive;
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: 2rem 0 3rem 0;
+    position: relative;
+    color: var(--ink);
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px var(--shadow);
+    background: linear-gradient(135deg, var(--ink), var(--ink-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.archive-title::after {
+    content: '';
+    display: block;
+    width: min(300px, 80%);
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    margin: 1.5rem auto;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+/* Enhanced Scroll Grid - Basic Layout */
+.scroll-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0;
+    align-items: start;
+}
+
+/* Essential responsive grid - first breakpoint only */
+@media (min-width: 640px) {
+    .scroll-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.5rem;
+    }
+}
+
+/* Enhanced Empty and Error Messages */
+.empty-message, .error-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.1));
+    border: 2px solid var(--aged-border);
+    border-radius: 16px;
+    margin: 3rem 0;
+    color: var(--ink-light);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.empty-message::before {
+    content: '📜';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.error-message {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.1));
+    border-left: 6px solid #ef4444;
+    color: #dc2626;
+}
+
+.error-message::before {
+    content: '⚠️';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* Basic loading styles for immediate display */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--ink-light);
+    font-size: 1.1rem;
+}
+
+.loading i {
+    margin-right: 0.5rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

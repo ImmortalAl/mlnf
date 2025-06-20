@@ -24,8 +24,20 @@
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <!-- Rich Text Editor Component -->
     <link rel="stylesheet" href="../components/shared/rich-text-editor.css?v=1.0">
-    <!-- Page specific styles -->
-    <link rel="stylesheet" href="../css/blog.css?v=2.6">
+    <!-- Critical blog styles - load immediately for initial render -->
+    <link rel="stylesheet" href="../css/blog-critical.css?v=1.0">
+    <!-- Non-critical blog modules - lazy load for better performance -->
+    <link rel="stylesheet" href="../css/blog-cards.css?v=1.0" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../css/blog-forms.css?v=1.0" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../css/blog-comments.css?v=1.0" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../css/blog-responsive.css?v=1.0" media="print" onload="this.media='all'">
+    <noscript>
+        <!-- Fallback for when JS is disabled -->
+        <link rel="stylesheet" href="../css/blog-cards.css?v=1.0">
+        <link rel="stylesheet" href="../css/blog-forms.css?v=1.0">
+        <link rel="stylesheet" href="../css/blog-comments.css?v=1.0">
+        <link rel="stylesheet" href="../css/blog-responsive.css?v=1.0">
+    </noscript>
 </head>
 <body>
     <header>
