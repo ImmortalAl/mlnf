@@ -1,42 +1,36 @@
 // MLNF/js/heroParticles.js
 
 function createParticle() {
+    console.log('[heroParticles.js] Creating particle...');
+    
     const particle = document.createElement('div');
-    particle.className = 'particle'; // CSS will define animation and base styles
-
-    // Inline styles for variety
-    particle.style.width = `${Math.random() * 6 + 3}px`; // Slightly smaller particles: 3px to 9px
-    particle.style.height = particle.style.width;
+    particle.className = 'particle';
     
-    // Vibrant, ethereal colors (blues, purples, pinks with good opacity)
-    const r = Math.floor(Math.random() * 50 + 100); // More blue/purple biased
-    const g = Math.floor(Math.random() * 100 + 50); 
-    const b = Math.floor(Math.random() * 100 + 155);
-    particle.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${Math.random() * 0.5 + 0.3})`; // Opacity 0.3 to 0.8
-
-    // Simple full-viewport coverage
+    // Make particles more visible for debugging
+    particle.style.width = '10px';
+    particle.style.height = '10px';
+    particle.style.backgroundColor = 'red'; // Bright red for visibility
+    particle.style.position = 'fixed';
     particle.style.left = `${Math.random() * 100}%`;
-    particle.style.bottom = `${-20 - Math.random() * 30}px`;
+    particle.style.bottom = '50px'; // Start higher for visibility
+    particle.style.borderRadius = '50%';
+    particle.style.zIndex = '9999'; // High z-index for visibility
+    particle.style.pointerEvents = 'none';
     
-    // Much larger drift for full viewport coverage
-    particle.style.setProperty('--drift', `${(Math.random() - 0.5) * window.innerWidth * 0.5}`);
+    // Simple animation
+    particle.style.animation = 'floatUp 10s linear infinite';
     
-    // Animation duration
-    particle.style.animationDuration = `${Math.random() * 10 + 8}s`;
-
-    // Get or create dedicated particle container
-    let particleContainer = document.getElementById('particle-container');
-    if (!particleContainer) {
-        particleContainer = document.createElement('div');
-        particleContainer.id = 'particle-container';
-        particleContainer.className = 'particle-container';
-        document.body.appendChild(particleContainer);
-    }
+    // Append directly to body for testing
+    document.body.appendChild(particle);
     
-    particleContainer.appendChild(particle);
-
-    // The CSS animation will now handle the lifecycle due to animation-iteration-count: infinite
-    // and opacity changes within the animation.
+    console.log('[heroParticles.js] Particle created and added to body');
+    
+    // Remove after animation
+    setTimeout(() => {
+        if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+        }
+    }, 10000);
 }
 
 function initHeroParticles(creationInterval = 200) {

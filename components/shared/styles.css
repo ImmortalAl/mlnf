@@ -394,7 +394,7 @@ header {
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 100000;
+    z-index: 100000 !important;
     opacity: 0;
     transition: opacity 0.3s ease;
     backdrop-filter: blur(5px);
@@ -409,7 +409,7 @@ header {
 
 .modal .modal-content {
     position: relative;
-    z-index: 100001;
+    z-index: 100001 !important;
     pointer-events: auto;
 }
 
@@ -427,7 +427,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100000;
+    z-index: 100000 !important;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
