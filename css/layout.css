@@ -112,8 +112,20 @@ body.light-theme .hero p {
     flex-wrap: wrap;
 }
 
-.particle {
+/* Particle Container - covers full viewport */
+.particle-container {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+.particle {
+    position: absolute;
     bottom: -20px;
     border-radius: 50%;
     pointer-events: none;
@@ -121,14 +133,19 @@ body.light-theme .hero p {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     opacity: 0;
-    z-index: 1;
 }
 
 @keyframes floatUp {
-    0% { transform: translateY(0vh) translateX(0px) rotate(0deg); opacity: 0; }
+    0% { 
+        transform: translateY(0vh) translateX(0px) rotate(0deg); 
+        opacity: 0; 
+    }
     10% { opacity: 1; }
     90% { opacity: 1; }
-    100% { transform: translateY(-105vh) translateX(calc(var(--drift, 0) * 1px)) rotate(360deg); opacity: 0; }
+    100% { 
+        transform: translateY(-105vh) translateX(calc(var(--drift, 0) * 1px)) rotate(360deg); 
+        opacity: 0; 
+    }
 }
 
 /* ==========================================
