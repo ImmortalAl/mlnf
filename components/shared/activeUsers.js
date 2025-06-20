@@ -11,9 +11,6 @@ function injectActiveUsersSidebar() {
         const overlayContainer = document.createElement('div');
         overlayContainer.innerHTML = overlayHTML;
         document.body.appendChild(overlayContainer.firstChild);
-        console.log('[activeUsers.js] Overlay injected.');
-    } else {
-        console.log('[activeUsers.js] Overlay already exists.');
     }
 }
 
@@ -70,21 +67,18 @@ function setupActiveUsersEvents() {
         };
 
         const closeUsersBtnHandler = (event) => {
-            console.log('[activeUsers.js] X BUTTON CLICKED.');
             closeActiveSidebar(event); // Utilize the main closing logic
         };
 
         if (closeUsersBtn) {
             closeUsersBtn.onclick = null;
             closeUsersBtn.onclick = closeUsersBtnHandler;
-            console.log('[activeUsers.js] Close button (X) click handler attached.');
         } else {
             console.warn('[activeUsers.js] Close button (#closeUsers) not found.');
         }
         
         activeUsersOverlay.onclick = null;
         activeUsersOverlay.onclick = closeActiveSidebar;
-        console.log('[activeUsers.js] Overlay click handler attached.');
 
     } else {
         console.warn('[activeUsers.js] Could not find one or more required elements for active users sidebar. Events not fully attached.');
@@ -103,7 +97,6 @@ async function populateActiveUsersList() {
 
     const token = localStorage.getItem('sessionToken');
     if (!token) {
-        console.log('[activeUsers.js] No session token found. Skipping fetch for active users.');
         userListDiv.innerHTML = '<p class="login-required">Please log in to see active souls.</p>';
         return;
     }
@@ -130,7 +123,6 @@ async function populateActiveUsersList() {
             return;
         }
         
-        console.log('[activeUsers.js] Attempting to fetch from:', `${window.MLNF_CONFIG.API_BASE_URL}/users/online`);
         
         // Try the online users endpoint first
         let response;
@@ -146,7 +138,6 @@ async function populateActiveUsersList() {
             
             if (response.ok) {
                 fetchedUsers = await response.json();
-                console.log('[activeUsers.js] Successfully fetched from /users/online:', fetchedUsers);
             } else {
                 throw new Error(`Online users endpoint failed: ${response.status}`);
             }
@@ -166,7 +157,6 @@ async function populateActiveUsersList() {
             }
             
             const allUsers = await response.json();
-            console.log('[activeUsers.js] Fallback /users response:', allUsers);
             
             // Filter for online users or take first few users as active
             if (Array.isArray(allUsers)) {
@@ -184,7 +174,6 @@ async function populateActiveUsersList() {
                 throw new Error('Unexpected users response format');
             }
             
-            console.log('[activeUsers.js] Processed fallback users:', fetchedUsers);
         }
 
         if (fetchedUsers && fetchedUsers.length > 0) {
@@ -197,15 +186,6 @@ async function populateActiveUsersList() {
                 const isOnline = user.online === true;
                 const statusMessage = user.status && user.status.trim() !== '' ? user.status : 'Wandering the eternal realms...';
                 
-                // Debug user data
-                console.log(`[ActiveUsers] Processing user:`, {
-                    username: username,
-                    displayName: displayName,
-                    avatar: user.avatar,
-                    online: isOnline,
-                    isVIP: user.isVIP,
-                    role: user.role
-                });
                 
                 // Create unified user display using MLNF Avatar System
                 const userDisplay = window.MLNFAvatars.createUserDisplay({
@@ -257,7 +237,6 @@ async function populateActiveUsersList() {
                 }
             });
         });
-        console.log('[activeUsers.js] User list populated with fetched data.');
 
     } catch (error) {
         console.error('[activeUsers.js] Error populating active users list:', error);
@@ -271,7 +250,6 @@ async function populateActiveUsersList() {
         if (userListDiv) { 
             // Check if it's a network error and provide fallback
             if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
-                console.log('[activeUsers.js] Network error detected, showing fallback message');
                 userListDiv.innerHTML = `
                     <div class="error-users">
                         <p>⚡ Connection to the eternal realm is unstable</p>
