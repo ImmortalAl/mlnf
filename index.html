@@ -457,18 +457,14 @@
     <!-- Hero Particles - Full System -->
     <script>
         function createParticle() {
+            console.log('[Particles] Creating particle...');
             const particle = document.createElement('div');
             
-            // Particle appearance
-            particle.style.width = `${Math.random() * 8 + 4}px`;
-            particle.style.height = particle.style.width;
+            // Particle appearance - larger and brighter for visibility
+            particle.style.width = '15px';
+            particle.style.height = '15px';
             particle.style.borderRadius = '50%';
-            
-            // Ethereal colors
-            const r = Math.floor(Math.random() * 50 + 100);
-            const g = Math.floor(Math.random() * 100 + 50); 
-            const b = Math.floor(Math.random() * 100 + 155);
-            particle.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${Math.random() * 0.6 + 0.4})`;
+            particle.style.backgroundColor = 'cyan'; // Bright cyan for visibility
             
             // Positioning - full viewport coverage
             particle.style.position = 'fixed';
@@ -500,6 +496,7 @@
         }
         
         function initParticles() {
+            console.log('[Particles] Initializing particles...');
             // Initial burst
             for (let i = 0; i < 15; i++) {
                 setTimeout(createParticle, Math.random() * 2000);
@@ -507,9 +504,15 @@
             
             // Continuous creation
             setInterval(createParticle, 300);
+            
+            // Also create one immediately for testing
+            createParticle();
         }
         
-        document.addEventListener('DOMContentLoaded', initParticles);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('[Particles] DOM loaded, starting particles...');
+            initParticles();
+        });
     </script>
     
     <script>
