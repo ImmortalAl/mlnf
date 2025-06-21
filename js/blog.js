@@ -150,12 +150,16 @@ async function fetchBlogPosts(page = 1) {
                 
                 // Make post clickable with proper event handling
                 const handlePostClick = function(e) {
+                    console.log('[Blog] Post clicked:', post._id, 'Target:', e.target.tagName);
+                    
                     // Don't open modal if clicking on links or buttons
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
+                        console.log('[Blog] Click ignored - button/link clicked');
                         return;
                     }
                     e.preventDefault();
                     e.stopPropagation();
+                    console.log('[Blog] Opening modal for post:', post._id);
                     openBlogModal(post._id);
                 };
 
@@ -242,8 +246,11 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 1.0 });
 
 function initBlog() {
+    console.log('[Blog] initBlog called');
     blogList = document.getElementById('blogList');
     scrollObserver = document.getElementById('scroll-observer');
+    console.log('[Blog] blogList element:', blogList);
+    console.log('[Blog] scrollObserver element:', scrollObserver);
 
     // Safety check: ensure blog modal isn't blocking clicks on page load
     const blogModal = document.getElementById('blogModal');
@@ -374,8 +381,11 @@ async function fetchBlogPost(postId) {
 
 // Open blog modal
 async function openBlogModal(postId) {
+    console.log('[Blog] openBlogModal called with postId:', postId);
+    
     // Prevent duplicate calls
     if (window._blogModalOpening) {
+        console.log('[Blog] Modal already opening, skipping');
         return;
     }
     
@@ -976,7 +986,11 @@ if (document.readyState === 'loading') {
 window.addEventListener('load', checkAutoOpen);
 
 // Auto-initialization disabled for pages like profile where blog is not the main feature
+console.log('[Blog] Current pathname:', window.location.pathname);
+console.log('[Blog] Should initialize:', !window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/'));
+
 if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {
+    console.log('[Blog] Initializing blog functionality');
     // Initialize blog functionality when DOM is loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -985,6 +999,8 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
     } else {
         initBlog();
     }
+} else {
+    console.log('[Blog] Skipping blog initialization due to pathname exclusion');
 }
 
 // Separate function to handle auto-opening from highlights
