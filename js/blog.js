@@ -1035,10 +1035,23 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
 
 // Separate function to handle auto-opening from highlights
 function checkAutoOpen() {
-    const autoOpenScrollId = sessionStorage.getItem('openScrollId');
+    // Check for URL parameter first (from profile links)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPostId = urlParams.get('id');
+    
+    // Check for sessionStorage (from internal navigation)
+    const sessionPostId = sessionStorage.getItem('openScrollId');
+    
+    // Use URL parameter if present, otherwise use session storage
+    const autoOpenScrollId = urlPostId || sessionPostId;
     
     if (autoOpenScrollId) {
-        sessionStorage.removeItem('openScrollId');
+        // Clear session storage if we used it
+        if (sessionPostId) {
+            sessionStorage.removeItem('openScrollId');
+        }
+        
+        console.log('[Blog] Auto-opening post:', autoOpenScrollId, 'from', urlPostId ? 'URL' : 'session');
         
         // Wait for all systems to be ready
         const attemptAutoOpen = (attempts = 0) => {
@@ -1060,6 +1073,13 @@ function checkAutoOpen() {
             
             try {
                 openBlogModal(autoOpenScrollId);
+                
+                // Clean up URL if we used URL parameter
+                if (urlPostId) {
+                    // Remove the ?id= parameter from URL without page reload
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, newUrl);
+                }
             } catch (error) {
                 console.error('Error opening modal:', error);
             }
