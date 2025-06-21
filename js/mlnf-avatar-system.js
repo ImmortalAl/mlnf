@@ -14,8 +14,8 @@ class MLNFProfileRouter {
     static navigateToProfile(username, options = {}) {
         const { newTab = false, trackInteraction = true } = options;
         
-        // Use the template profile page with username parameter
-        const profileUrl = `/souls/[username].html?user=${encodeURIComponent(username)}`;
+        // Use Netlify redirect system: /souls/username -> /souls/[username].html
+        const profileUrl = `/souls/${encodeURIComponent(username)}`;
         
         if (newTab) {
             window.open(profileUrl, '_blank');
