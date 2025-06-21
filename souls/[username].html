@@ -639,6 +639,11 @@
                 const pathParts = window.location.pathname.split('/');
                 let username = pathParts[pathParts.length - 1]; // Get last part of path
                 
+                // Remove .html extension if present
+                if (username && username.endsWith('.html')) {
+                    username = username.slice(0, -5); // Remove last 5 characters (.html)
+                }
+                
                 console.log('[Profile] URL debug:', {
                     pathname: window.location.pathname,
                     pathParts: pathParts,
