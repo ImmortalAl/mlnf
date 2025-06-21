@@ -1419,15 +1419,6 @@ body.light-theme .mlnf-avatar {
     position: relative;
 }
 
-#newsHeading::after {
-    content: '📜';
-    position: absolute;
-    right: -3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    opacity: 0.6;
-}
 
 /* Debate Arena Specific Section */
 .debate-arena {

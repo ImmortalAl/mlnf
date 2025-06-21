@@ -195,20 +195,6 @@ body.light-theme .debate-position h4 {
     overflow: hidden;
 }
 
-#news::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        var(--accent), 
-        rgba(255, 202, 40, 0.8), 
-        var(--accent), 
-        transparent);
-}
 
 #newsHeading {
     font-family: 'Cinzel', serif;
@@ -220,15 +206,6 @@ body.light-theme .debate-position h4 {
     position: relative;
 }
 
-#newsHeading::after {
-    content: '📜';
-    position: absolute;
-    right: -3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    opacity: 0.6;
-}
 
 /* ==========================================
    DEBATE ARENA SPECIFIC SECTION
@@ -731,8 +708,25 @@ body .floating-buttons button.theme-toggle#themeToggle {
     overflow: hidden;
 }
 
-/* Add subtle overlay effect to all highlight sections */
+/* Add top gradient line to all highlight sections */
 .highlights::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent), 
+        rgba(255, 202, 40, 0.8), 
+        var(--accent), 
+        transparent);
+    pointer-events: none;
+}
+
+/* Add subtle overlay effect to all highlight sections */
+.highlights::after {
     content: '';
     position: absolute;
     top: 0;
