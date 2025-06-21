@@ -22,11 +22,11 @@
     <link rel="stylesheet" href="css/critical.css?v=1.0">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
-    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <link rel="stylesheet" href="css/styles.css?v=1.1">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
-    <link rel="preload" href="css/layout.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/layout.css?v=1.0"></noscript>
+    <link rel="preload" href="css/layout.css?v=1.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/layout.css?v=1.1"></noscript>
     
     <link rel="preload" href="css/components.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/components.css?v=1.0"></noscript>
@@ -190,6 +190,19 @@
         
         .features-grid {
             padding: 0 1rem !important;
+        }
+        
+        /* Mobile fix for features section */
+        @media (max-width: 768px) {
+            .features {
+                padding: 3rem 1rem !important;
+            }
+            
+            .features-grid {
+                padding: 0 !important;
+                margin: 1.5rem auto !important;
+                max-width: 100% !important;
+            }
         }
         
         body.light-theme .features, 
