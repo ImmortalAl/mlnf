@@ -1284,212 +1284,212 @@ body.modal-open {
 }
 
 /* Modal Redesign - Proper Window Style */
+/* ===== MODAL COMPONENT - Redesigned from CSS Guide ===== */
 #blogModal.modal {
+    /* Modal overlay following CSS Guide patterns */
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    z-index: 1000;
+    animation: modalOverlayAppear 0.2s ease;
 }
 
 #blogModal.modal.show {
     display: flex;
-    opacity: 1;
 }
 
 .blog-modal-content {
-    width: 90%;
-    max-width: 850px;
-    max-height: 85vh;
-    background: linear-gradient(135deg, 
-        rgba(26, 26, 51, 0.98) 0%, 
-        rgba(42, 64, 102, 0.95) 50%,
-        rgba(26, 26, 51, 0.98) 100%);
-    border-radius: 20px;
-    border: 3px solid rgba(255, 94, 120, 0.5);
-    border-top: 6px solid var(--accent);
-    box-shadow: 
-        0 30px 60px rgba(0, 0, 0, 0.6),
-        0 15px 35px rgba(255, 94, 120, 0.3),
-        inset 0 2px 0 rgba(240, 230, 255, 0.15),
-        0 0 0 1px rgba(255, 94, 120, 0.2);
-    overflow: hidden;
-    position: relative;
-    animation: modalSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Clean modal content following design system */
+    background: var(--background-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 100%;
+    max-width: 800px;
+    overflow-y: auto;
+    animation: modalContentAppear 0.3s ease;
+    box-shadow: 0 8px 15px var(--shadow);
 }
 
-@keyframes modalSlideIn {
-    0% {
+/* ===== MODAL ANIMATIONS ===== */
+@keyframes modalOverlayAppear {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalContentAppear {
+    from {
         opacity: 0;
-        transform: scale(0.9) translateY(-20px);
+        transform: scale(0.95) translateY(-10px);
     }
-    100% {
+    to {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
 }
 
-/* Simplified Modal Header Controls */
+/* ===== MODAL HEADER ===== */
 .modal-header-controls {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, 
-        rgba(42, 64, 102, 0.8) 0%, 
-        rgba(26, 26, 51, 0.9) 100%);
-    border-bottom: 2px solid rgba(255, 94, 120, 0.3);
+    margin: calc(var(--space-8) * -1) calc(var(--space-8) * -1) var(--space-6) calc(var(--space-8) * -1);
+    padding: var(--space-4) var(--space-6);
+    background: var(--background-secondary);
+    border-bottom: 1px solid var(--border-light);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-/* Enhanced Modal Body - Better Spacing */
+/* ===== MODAL BODY ===== */
 .modal-body {
-    padding: 2rem;
-    max-height: calc(85vh - 120px);
+    padding: 0;
+    flex: 1;
     overflow-y: auto;
     scroll-behavior: smooth;
 }
 
-/* Remove the confusing clock emoji */
-.blog-modal-header .date::before {
-    display: none;
-}
-
-/* Better Modal Title Spacing */
+/* ===== MODAL CONTENT ===== */
 #modal-title {
-    margin-bottom: 2rem;
+    color: var(--text);
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    margin: 0 0 var(--space-6) 0;
+    line-height: var(--leading-tight);
     text-align: center;
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
 }
 
-/* Improved Content Spacing */
 #modal-content {
-    margin-bottom: 0;
-    line-height: 1.7;
-    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-8);
 }
 
-/* Improved Modal Actions - Cleaner Layout */
+#modal-content p {
+    margin-bottom: var(--space-4);
+}
+
+#modal-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    margin: var(--space-4) 0;
+}
+
+/* ===== MODAL ACTIONS ===== */
 .modal-actions {
     display: flex;
-    gap: 1rem;
+    gap: var(--space-4);
     justify-content: center;
-    margin-top: 2.5rem;
-    padding: 2rem 0 0 0;
-    border-top: 2px solid rgba(255, 94, 120, 0.2);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-light);
+    flex-wrap: wrap;
 }
 
 .modal-actions button {
-    flex: 1;
-    max-width: 200px;
+    flex: 0 1 auto;
+    min-width: 120px;
 }
 
-/* Enhanced Copy Link Button with Better Icon */
-.copy-link-btn {
-    background: linear-gradient(135deg, 
-        rgba(42, 64, 102, 0.8) 0%, 
-        rgba(26, 26, 51, 0.9) 100%);
-    border: 2px solid rgba(255, 94, 120, 0.4);
-    border-radius: 8px;
-    padding: 0.75rem 1.25rem;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    white-space: nowrap;
-    position: relative;
-    overflow: hidden;
-}
-
-.copy-link-btn i {
-    font-size: 1.1rem;
-    background: linear-gradient(135deg, var(--accent), rgba(255, 202, 40, 0.8));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 4px rgba(255, 94, 120, 0.3));
-}
-
-.copy-link-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 94, 120, 0.2) 50%, 
-        transparent 100%);
-    transition: left 0.5s ease;
-}
-
-.copy-link-btn:hover::before {
-    left: 100%;
-}
-
-.copy-link-btn:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 94, 120, 0.2) 0%, 
-        rgba(42, 64, 102, 0.9) 100%);
-    border-color: rgba(255, 94, 120, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 94, 120, 0.3);
-}
-
-.copy-link-btn:hover i {
-    filter: drop-shadow(0 0 8px rgba(255, 94, 120, 0.5));
-    animation: linkPulse 0.6s ease;
-}
-
-@keyframes linkPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-}
-
-/* Consistent styling for other buttons */
+/* ===== MODAL BUTTONS ===== */
+.copy-link-btn,
 .edit-post-btn,
 .whisper-link {
-    background: linear-gradient(135deg, 
-        rgba(42, 64, 102, 0.8) 0%, 
-        rgba(26, 26, 51, 0.9) 100%);
-    border: 2px solid rgba(255, 94, 120, 0.4);
-    border-radius: 8px;
-    padding: 0.75rem 1.25rem;
+    /* Button styling following CSS Guide */
+    background: var(--primary);
     color: var(--text);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
+    border: 1px solid var(--border);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
     font-weight: 600;
-    display: flex;
+    text-decoration: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    text-decoration: none;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px; /* Touch target */
     white-space: nowrap;
 }
 
+.copy-link-btn:hover,
 .edit-post-btn:hover,
 .whisper-link:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 94, 120, 0.2) 0%, 
-        rgba(42, 64, 102, 0.9) 100%);
-    border-color: rgba(255, 94, 120, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 94, 120, 0.3);
+    background: var(--hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.copy-link-btn:focus,
+.edit-post-btn:focus,
+.whisper-link:focus {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.copy-link-btn:active,
+.edit-post-btn:active,
+.whisper-link:active {
+    transform: translateY(0);
+    background: var(--active);
+}
+
+/* ===== MODAL RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .blog-modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+        padding: var(--space-6);
+    }
+    
+    .modal-header-controls {
+        margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-4) calc(var(--space-6) * -1);
+        padding: var(--space-3) var(--space-4);
+    }
+    
+    #modal-title {
+        font-size: var(--text-2xl);
+    }
+    
+    #modal-content {
+        font-size: var(--text-base);
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+    
+    .modal-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .blog-modal-content {
+        padding: var(--space-4);
+    }
+    
+    .modal-header-controls {
+        margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-3) calc(var(--space-4) * -1);
+    }
+    
+    .close-modal {
+        width: 36px;
+        height: 36px;
+        font-size: var(--text-lg);
+    }
 }
 
 /* Comments Section Integration */
@@ -2123,70 +2123,33 @@ body.modal-open {
     }
 }
 
-/* Enhanced Close Button - Immortal Theme */
+/* ===== CLOSE BUTTON ===== */
 .close-modal {
-    position: absolute;
-    top: -15px;
-    right: -15px;
-    background: linear-gradient(135deg, 
-        rgba(26, 26, 51, 0.95) 0%, 
-        rgba(42, 64, 102, 0.9) 100%);
-    border: 2px solid rgba(255, 94, 120, 0.4);
-    font-size: 1.5rem;
-    color: var(--text-secondary);
+    background: var(--background-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--text-xl);
     cursor: pointer;
-    transition: var(--transition-smooth);
-    width: 48px;
-    height: 48px;
+    padding: var(--space-2);
+    border-radius: var(--radius-full);
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    z-index: 10002;
-    pointer-events: all;
-    box-shadow: 
-        0 6px 20px rgba(255, 94, 120, 0.3),
-        0 3px 10px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(240, 230, 255, 0.1);
-    font-weight: bold;
-    backdrop-filter: blur(10px);
-    position: absolute;
-    overflow: hidden;
-}
-
-.close-modal::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 50%;
-    background: var(--gradient-accent);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .close-modal:hover {
-    color: var(--accent);
-    transform: scale(1.15) rotate(90deg);
-    background: linear-gradient(135deg, 
-        rgba(42, 64, 102, 1) 0%, 
-        rgba(26, 26, 51, 0.98) 100%);
-    border-color: rgba(255, 94, 120, 0.5);
-    box-shadow: 
-        0 8px 25px rgba(255, 94, 120, 0.4),
-        0 4px 15px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(240, 230, 255, 0.15),
-        0 0 20px rgba(255, 94, 120, 0.3);
-    text-shadow: 0 0 10px rgba(255, 94, 120, 0.6);
+    background: var(--error);
+    color: white;
+    border-color: var(--error);
+    transform: scale(1.05);
 }
 
-.close-modal:hover::before {
-    opacity: 0.3;
-}
-
-.close-modal:active {
-    transform: scale(1.05) rotate(90deg);
-    transition: var(--transition-quick);
+.close-modal:focus {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
 }
 
 @media (max-width: 768px) {
