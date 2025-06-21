@@ -390,10 +390,7 @@ async function fetchBlogPost(postId) {
     }
 }
 
-// Enhanced modal functionality variables (declared once at module level)
-var currentTextSize = 'normal';
-var bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts') || '[]');
-let readingProgress = 0;
+// Enhanced modal functionality variables
 
 // Enhanced openBlogModal with loading states and new features
 async function openBlogModal(postId) {
@@ -447,9 +444,7 @@ async function openBlogModal(postId) {
     populateModalContent(modal, post);
     
     // Setup enhanced features
-    setupReadingProgress();
     setupKeyboardNavigation();
-    updateBookmarkState(postId);
     
     // Initialize comments system
     initializeCommentsSystem(postId);
@@ -515,8 +510,7 @@ function populateModalContent(modal, post) {
         essentialElements['modal-title'].textContent = post.title;
         essentialElements['modal-content'].innerHTML = post.content;
         
-        // Update reading time and word count
-        updateReadingStats(post.content);
+        // Content updated
         
         // Update author info (existing logic)
         updateAuthorInfo(post);
@@ -672,29 +666,6 @@ function handleModalKeyboard(e) {
         case 'Escape':
             e.preventDefault();
             closeBlogModal();
-            break;
-        case 'ArrowLeft':
-            e.preventDefault();
-            // TODO: Navigate to previous post
-            break;
-        case 'ArrowRight':
-            e.preventDefault();
-            // TODO: Navigate to next post
-            break;
-        case 'b':
-            if (e.ctrlKey || e.metaKey) {
-                e.preventDefault();
-                bookmarkPost();
-            }
-            break;
-        case '=':
-        case '+':
-            e.preventDefault();
-            toggleTextSize('larger');
-            break;
-        case '-':
-            e.preventDefault();
-            toggleTextSize('smaller');
             break;
     }
 }
@@ -855,13 +826,6 @@ function closeBlogModal() {
     
     // Clean up event listeners
     document.removeEventListener('keydown', handleModalKeyboard);
-    
-    // Reset text size
-    const modalBody = document.getElementById('modalBody');
-    if (modalBody) {
-        modalBody.classList.remove('large-text');
-    }
-    currentTextSize = 'normal';
     
     // Clean up comments system
     if (commentsSystem) {
@@ -1201,8 +1165,6 @@ window.cancelPostEdit = cancelPostEdit;
 
 // Export new enhanced functions
 window.copyPostLink = copyPostLink;
-window.toggleTextSize = toggleTextSize;
-window.bookmarkPost = bookmarkPost;
 
 // ALWAYS check for auto-open regardless of page type - multiple triggers to ensure it runs
 // Immediate check
@@ -1304,6 +1266,4 @@ function checkAutoOpen() {
 
 // Export new functions to global scope
 window.copyPostLink = copyPostLink;
-window.toggleTextSize = toggleTextSize;
-window.bookmarkPost = bookmarkPost;
 
