@@ -2488,26 +2488,7 @@ nav a {
     opacity: 0.7;
 }
 
-/* Enhanced Greek Theming */
-.echoes-unbound-agora::after {
-    content: '🏛️';
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    font-size: 1.5rem;
-    opacity: 0.3;
-    pointer-events: none;
-}
 
-.agora-preview::before {
-    content: '🏛️';
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-    opacity: 0.4;
-}
 
 /* Enhanced Mobile Experience */
 @media (max-width: 480px) {
