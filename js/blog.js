@@ -390,7 +390,12 @@ async function fetchBlogPost(postId) {
     }
 }
 
-// Open blog modal
+// Enhanced modal functionality variables (declared once at module level)
+var currentTextSize = 'normal';
+var bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts') || '[]');
+let readingProgress = 0;
+
+// Enhanced openBlogModal with loading states and new features
 async function openBlogModal(postId) {
     console.log('[Blog] openBlogModal called with postId:', postId);
     
@@ -409,17 +414,20 @@ async function openBlogModal(postId) {
     if (!modal) {
         console.error('[Blog] blogModal element not found in DOM!');
         window._blogModalOpening = false;
-        // Ensure body scroll is not locked
         document.body.classList.remove('modal-open');
         return;
     }
+
+    // Show modal and loading state immediately
+    showModalWithLoading(modal);
     
     // Fetch the post data
     let post;
     try {
         post = await fetchBlogPost(postId);
     } catch (error) {
-        console.error('Error fetching post:', error);
+        console.error('[Blog] Error fetching post:', error);
+        hideModalLoading(modal);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
@@ -427,30 +435,67 @@ async function openBlogModal(postId) {
     
     if (!post) {
         console.error('[Blog] No post data returned for ID:', postId);
+        hideModalLoading(modal);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
     console.log('[Blog] Post data available:', post.title);
+
+    // Hide loading and show content
+    hideModalLoading(modal);
+    populateModalContent(modal, post);
     
-    // Check essential modal elements (only title and content are truly required)
+    // Setup enhanced features
+    setupReadingProgress();
+    setupKeyboardNavigation();
+    updateBookmarkState(postId);
+    
+    // Initialize comments system
+    initializeCommentsSystem(postId);
+    
+    window._blogModalOpening = false;
+}
+
+function showModalWithLoading(modal) {
+    console.log('[Blog] Showing modal with loading...');
+    
+    // Remove any inline display style
+    modal.removeAttribute('style');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.style.zIndex = '10000';
+    document.body.classList.add('modal-open');
+    
+    // Show loading state
+    const modalLoading = document.getElementById('modalLoading');
+    const modalBody = document.getElementById('modalBody');
+    
+    if (modalLoading) modalLoading.style.display = 'flex';
+    if (modalBody) modalBody.style.display = 'none';
+    
+    console.log('[Blog] Modal loading state shown');
+}
+
+function hideModalLoading(modal) {
+    const modalLoading = document.getElementById('modalLoading');
+    const modalBody = document.getElementById('modalBody');
+    
+    if (modalLoading) modalLoading.style.display = 'none';
+    if (modalBody) modalBody.style.display = 'block';
+    
+    console.log('[Blog] Modal loading state hidden');
+}
+
+function populateModalContent(modal, post) {
+    console.log('[Blog] Populating modal content...');
+    
+    // Check essential modal elements
     const essentialElements = {
         'modal-title': document.getElementById('modal-title'),
         'modal-content': document.getElementById('modal-content')
     };
     
-    // Check fallback elements (only needed if MLNF Avatar System isn't available)
-    const fallbackElements = {
-        'modal-author-avatar': document.getElementById('modal-author-avatar'),
-        'modal-author-link': document.getElementById('modal-author-link'),
-        'modal-author-name-link': document.getElementById('modal-author-name-link'),
-        'modal-date': document.getElementById('modal-date')
-    };
-    
-    // Combine for compatibility
-    const requiredElements = { ...essentialElements, ...fallbackElements };
-    
-    // Log missing essential elements
     const missingEssential = [];
     for (const [id, element] of Object.entries(essentialElements)) {
         if (!element) {
@@ -460,207 +505,346 @@ async function openBlogModal(postId) {
     
     if (missingEssential.length > 0) {
         console.error('[Blog] Missing essential modal elements:', missingEssential);
-        window._blogModalOpening = false;
-        document.body.classList.remove('modal-open');
         return;
     }
     console.log('[Blog] All essential modal elements found');
-    
+
     // Update modal content
     try {
         console.log('[Blog] Updating modal content...');
-        requiredElements['modal-title'].textContent = post.title;
-        requiredElements['modal-content'].innerHTML = post.content;
+        essentialElements['modal-title'].textContent = post.title;
+        essentialElements['modal-content'].innerHTML = post.content;
+        
+        // Update reading time and word count
+        updateReadingStats(post.content);
+        
+        // Update author info (existing logic)
+        updateAuthorInfo(post);
+        
+        // Show edit button if user is the author
+        updateEditButton(post);
+        
         console.log('[Blog] Modal content updated successfully');
         
-        // Update author info using MLNF Avatar System
-        const modalAuthorContainer = document.querySelector('.modal-author-info');
-        const fallbackContainer = document.querySelector('.scroll-author');
+    } catch (error) {
+        console.error('[Blog] Error updating modal content:', error);
+        return;
+    }
+}
+
+function updateReadingStats(content) {
+    const textContent = content.replace(/<[^>]*>/g, ''); // Strip HTML
+    const wordCount = textContent.split(/\s+/).filter(word => word.length > 0).length;
+    const readingTime = Math.ceil(wordCount / 200); // Average reading speed
+    
+    const readingTimeEl = document.getElementById('readingTime');
+    const wordCountEl = document.getElementById('wordCount');
+    
+    if (readingTimeEl) {
+        readingTimeEl.textContent = `${readingTime} min read`;
+    }
+    
+    if (wordCountEl) {
+        wordCountEl.textContent = `${wordCount} words`;
+    }
+}
+
+function updateAuthorInfo(post) {
+    // Existing author info logic from the original function
+    const modalAuthorContainer = document.querySelector('.modal-author-info');
+    const fallbackContainer = document.querySelector('.scroll-author');
+    
+    if (modalAuthorContainer && window.MLNFAvatars) {
+        modalAuthorContainer.innerHTML = '';
+        const modalAuthorDisplay = window.MLNFAvatars.createUserDisplay({
+            username: post.author.username,
+            displayName: post.author.displayName || post.author.username,
+            title: post.author.title || 'Scroll Author',
+            status: `Chronicled on ${new Date(post.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })}`,
+            avatarSize: 'xl',
+            displaySize: 'lg',
+            mystical: post.author.isVIP || post.author.role === 'admin',
+            online: post.author.online,
+            customAvatar: post.author.avatar,
+            usernameStyle: 'immortal',
+            enableUnifiedNavigation: true,
+            showStatus: true,
+            compact: false
+        });
         
-        if (modalAuthorContainer && window.MLNFAvatars) {
-            // Clear existing content
-            modalAuthorContainer.innerHTML = '';
-            
-            // Create unified author display for modal
-            const modalAuthorDisplay = window.MLNFAvatars.createUserDisplay({
-                username: post.author.username,
-                displayName: post.author.displayName || post.author.username,
-                title: post.author.title || 'Scroll Author',
-                status: `Chronicled on ${new Date(post.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                })}`,
-                avatarSize: 'xl',
-                displaySize: 'lg',
-                mystical: post.author.isVIP || post.author.role === 'admin',
-                online: post.author.online,
-                customAvatar: post.author.avatar,
-                usernameStyle: 'immortal',
-                enableUnifiedNavigation: true,
-                showStatus: true,
-                compact: false
-            });
-            
-            modalAuthorContainer.appendChild(modalAuthorDisplay);
-            
-            // Hide fallback container and clear its content to prevent any display issues
-            if (fallbackContainer) {
-                fallbackContainer.style.display = 'none';
-                // Clear fallback elements to prevent any rendering
-                if (fallbackElements['modal-date']) {
-                    fallbackElements['modal-date'].textContent = '';
-                }
-            }
-        } else {
-            // Fallback to existing elements if MLNF Avatar System is not available
-            console.warn('MLNF Avatar System not available, using fallback author display');
-            
-            // Show fallback container
-            if (fallbackContainer) {
-                fallbackContainer.style.display = 'flex';
-            }
-            
-            const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
-            const authorDisplayName = post.author.displayName || post.author.username;
-            const authorLink = `/souls/${post.author.username}.html`;
-            
-            if (requiredElements['modal-author-avatar']) {
-                requiredElements['modal-author-avatar'].src = authorAvatar;
-                requiredElements['modal-author-avatar'].alt = `${authorDisplayName}'s avatar`;
-            }
-            if (requiredElements['modal-author-link']) {
-                requiredElements['modal-author-link'].href = authorLink;
-            }
-            if (requiredElements['modal-author-name-link']) {
-                requiredElements['modal-author-name-link'].href = authorLink;
-                requiredElements['modal-author-name-link'].textContent = authorDisplayName;
-            }
-            
-            // Hide the MLNF container if it exists but system isn't available
-            if (modalAuthorContainer) {
-                modalAuthorContainer.style.display = 'none';
-            }
+        modalAuthorContainer.appendChild(modalAuthorDisplay);
+        
+        if (fallbackContainer) {
+            fallbackContainer.style.display = 'none';
+        }
+    } else {
+        console.warn('MLNF Avatar System not available, using fallback author display');
+        
+        if (fallbackContainer) {
+            fallbackContainer.style.display = 'flex';
         }
         
-        // Update date (only for fallback, MLNF Avatar System handles this internally)
-        if (requiredElements['modal-date'] && fallbackContainer && fallbackContainer.style.display !== 'none') {
-            requiredElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
+        const fallbackElements = {
+            'modal-author-avatar': document.getElementById('modal-author-avatar'),
+            'modal-author-link': document.getElementById('modal-author-link'),
+            'modal-author-name-link': document.getElementById('modal-author-name-link'),
+            'modal-date': document.getElementById('modal-date')
+        };
+        
+        const authorAvatar = post.author.avatar || '/assets/images/default.jpg';
+        const authorDisplayName = post.author.displayName || post.author.username;
+        const authorLink = `/souls/${post.author.username}.html`;
+        
+        if (fallbackElements['modal-author-avatar']) {
+            fallbackElements['modal-author-avatar'].src = authorAvatar;
+            fallbackElements['modal-author-avatar'].alt = `${authorDisplayName}'s avatar`;
+        }
+        if (fallbackElements['modal-author-link']) {
+            fallbackElements['modal-author-link'].href = authorLink;
+        }
+        if (fallbackElements['modal-author-name-link']) {
+            fallbackElements['modal-author-name-link'].href = authorLink;
+            fallbackElements['modal-author-name-link'].textContent = authorDisplayName;
+        }
+        if (fallbackElements['modal-date']) {
+            fallbackElements['modal-date'].textContent = new Date(post.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
         }
         
-        // Show edit button if user is the author
-        const editBtn = document.getElementById('editPostBtn');
-        const token = localStorage.getItem('sessionToken');
-        if (editBtn && isTokenValid(token)) {
-            try {
-                const decodedToken = jwt_decode(token);
-                if (post.author.username === decodedToken.username || post.author._id === decodedToken.id) {
-                    editBtn.style.display = 'inline-flex';
-                } else {
-                    editBtn.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('[blog.js] Error checking edit permissions:', error);
+        if (modalAuthorContainer) {
+            modalAuthorContainer.style.display = 'none';
+        }
+    }
+}
+
+function updateEditButton(post) {
+    const editBtn = document.getElementById('editPostBtn');
+    const token = localStorage.getItem('sessionToken');
+    if (editBtn && isTokenValid(token)) {
+        try {
+            const decodedToken = jwt_decode(token);
+            if (post.author.username === decodedToken.username || post.author._id === decodedToken.id) {
+                editBtn.style.display = 'inline-flex';
+            } else {
                 editBtn.style.display = 'none';
             }
-        } else if (editBtn) {
+        } catch (error) {
+            console.error('[blog.js] Error checking edit permissions:', error);
             editBtn.style.display = 'none';
         }
-        
-    } catch (error) {
-        console.error('[Blog] Error updating modal content:', error);
-        window._blogModalOpening = false;
-        document.body.classList.remove('modal-open');
-        return;
+    } else if (editBtn) {
+        editBtn.style.display = 'none';
     }
-    console.log('[Blog] About to show modal...');
+}
 
-    // Remove any existing event listeners by using a data attribute
-    if (modal.dataset.listenersAttached !== 'true') {
-        // First time setup - add event listeners
+function setupReadingProgress() {
+    const modalBody = document.getElementById('modalBody');
+    const progressFill = document.querySelector('.progress-fill');
+    
+    if (!modalBody || !progressFill) return;
+    
+    modalBody.addEventListener('scroll', () => {
+        const scrollTop = modalBody.scrollTop;
+        const scrollHeight = modalBody.scrollHeight - modalBody.clientHeight;
+        const progress = (scrollTop / scrollHeight) * 100;
         
-        // Add backdrop click listener
-        modal.addEventListener('click', function(e) {
-            // Only close if clicking the backdrop itself
-            if (e.target === modal) {
-                closeBlogModal();
-            }
-        });
-        
-        // Add close button listener
-        const closeButton = modal.querySelector('.close-modal');
-        if (closeButton) {
-            // Remove inline onclick and use addEventListener
-            closeButton.removeAttribute('onclick');
-            closeButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                closeBlogModal();
-            });
-        }
-        
-        // Mark that listeners are attached
-        modal.dataset.listenersAttached = 'true';
-    }
-    
-    // Show the modal
-    console.log('[Blog] Showing modal...');
-    // Remove any inline display style that might be overriding our CSS
-    modal.style.removeProperty('display');
-    modal.removeAttribute('style'); // Remove entire style attribute to be sure
-    
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', 'false');
-    modal.style.zIndex = '10000'; // Re-add z-index after clearing styles
-    document.body.classList.add('modal-open');
-    console.log('[Blog] Modal classes and styles applied');
-    
-    // Force a reflow to ensure the modal is visible
-    modal.offsetHeight;
-    
-    // Get computed styles to check visibility
-    const computedStyle = window.getComputedStyle(modal);
-    
-    // Fallback: If the modal is still not visible after adding the show class, force it
-    console.log('[Blog] Modal computed styles:', {
-        display: computedStyle.display,
-        opacity: computedStyle.opacity,
-        visibility: computedStyle.visibility,
-        zIndex: computedStyle.zIndex
+        progressFill.style.width = `${Math.min(progress, 100)}%`;
+        progressFill.parentElement.setAttribute('aria-valuenow', Math.round(progress));
     });
+}
+
+function setupKeyboardNavigation() {
+    document.addEventListener('keydown', handleModalKeyboard);
+}
+
+function handleModalKeyboard(e) {
+    const modal = document.getElementById('blogModal');
+    if (!modal || !modal.classList.contains('show')) return;
     
-    if (computedStyle.display === 'none') {
-        console.log('[Blog] Modal still hidden, forcing display...');
-        modal.style.display = 'flex';
-        modal.style.opacity = '1';
-        modal.style.visibility = 'visible';
-    } else {
-        console.log('[Blog] Modal should be visible now');
+    switch(e.key) {
+        case 'Escape':
+            e.preventDefault();
+            closeBlogModal();
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            // TODO: Navigate to previous post
+            break;
+        case 'ArrowRight':
+            e.preventDefault();
+            // TODO: Navigate to next post
+            break;
+        case 'b':
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                bookmarkPost();
+            }
+            break;
+        case '=':
+        case '+':
+            e.preventDefault();
+            toggleTextSize('larger');
+            break;
+        case '-':
+            e.preventDefault();
+            toggleTextSize('smaller');
+            break;
     }
-    
+}
+
+function initializeCommentsSystem(postId) {
     // Initialize comments system
-    if (commentsSystem) {
-        commentsSystem = null;
-    }
-    
-    // Small delay to ensure DOM is ready
     setTimeout(() => {
         if (window.MLNF && window.MLNF.CommentsSystem) {
             try {
+                if (commentsSystem) {
+                    commentsSystem = null;
+                }
                 commentsSystem = new window.MLNF.CommentsSystem('blog', postId, 'blogComments');
             } catch (error) {
                 console.error('Error initializing comments:', error);
             }
         }
-        window._blogModalOpening = false;
     }, 100);
 }
 
-// Close blog modal
+// New enhanced features
+function copyPostLink() {
+    const postUrl = `${window.location.origin}/pages/blog.html?id=${currentPostId}`;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(postUrl).then(() => {
+            showNotification('✨ Link copied to clipboard!', 'success');
+        }).catch(() => {
+            fallbackCopyText(postUrl);
+        });
+    } else {
+        fallbackCopyText(postUrl);
+    }
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showNotification('✨ Link copied to clipboard!', 'success');
+    } catch (err) {
+        showNotification('📋 Copy failed. Link: ' + text, 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+function toggleTextSize(direction) {
+    const modalBody = document.getElementById('modalBody');
+    if (!modalBody) return;
+    
+    if (direction === 'larger' || (direction === undefined && currentTextSize === 'normal')) {
+        modalBody.classList.add('large-text');
+        currentTextSize = 'large';
+        showNotification('📖 Text size increased', 'info');
+    } else {
+        modalBody.classList.remove('large-text');
+        currentTextSize = 'normal';
+        showNotification('📖 Text size reset', 'info');
+    }
+}
+
+function bookmarkPost() {
+    if (!currentPostId) return;
+    
+    const isBookmarked = bookmarkedPosts.includes(currentPostId);
+    const bookmarkBtn = document.querySelector('.bookmark-btn');
+    
+    if (isBookmarked) {
+        bookmarkedPosts = bookmarkedPosts.filter(id => id !== currentPostId);
+        if (bookmarkBtn) {
+            bookmarkBtn.classList.remove('bookmarked');
+            bookmarkBtn.innerHTML = '<i class="far fa-bookmark"></i>';
+        }
+        showNotification('🔖 Bookmark removed', 'info');
+    } else {
+        bookmarkedPosts.push(currentPostId);
+        if (bookmarkBtn) {
+            bookmarkBtn.classList.add('bookmarked');
+            bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
+        }
+        showNotification('🔖 Post bookmarked!', 'success');
+    }
+    
+    localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarkedPosts));
+}
+
+function updateBookmarkState(postId) {
+    const bookmarkBtn = document.querySelector('.bookmark-btn');
+    if (!bookmarkBtn) return;
+    
+    const isBookmarked = bookmarkedPosts.includes(postId);
+    if (isBookmarked) {
+        bookmarkBtn.classList.add('bookmarked');
+        bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
+    } else {
+        bookmarkBtn.classList.remove('bookmarked');
+        bookmarkBtn.innerHTML = '<i class="far fa-bookmark"></i>';
+    }
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `modal-notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'rgba(76, 175, 80, 0.9)' : 
+                     type === 'error' ? 'rgba(244, 67, 54, 0.9)' : 'rgba(255, 94, 120, 0.9)'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        z-index: 10002;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Remove after delay
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Enhanced closeBlogModal
 function closeBlogModal() {
     const modal = document.getElementById('blogModal');
     if (modal) {
@@ -668,6 +852,16 @@ function closeBlogModal() {
         modal.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('modal-open');
     }
+    
+    // Clean up event listeners
+    document.removeEventListener('keydown', handleModalKeyboard);
+    
+    // Reset text size
+    const modalBody = document.getElementById('modalBody');
+    if (modalBody) {
+        modalBody.classList.remove('large-text');
+    }
+    currentTextSize = 'normal';
     
     // Clean up comments system
     if (commentsSystem) {
@@ -988,6 +1182,10 @@ function cancelPostEdit(postId, originalTitle, originalContent) {
 }
 
 
+// Enhanced modal functionality - remove duplicate declarations
+
+// Duplicate functions removed - kept the enhanced versions above
+
 // Export functions to global scope for compatibility
 window.createBlog = createBlog;
 window.openBlogModal = openBlogModal;
@@ -1000,6 +1198,11 @@ window.editCurrentPost = editCurrentPost;
 window.editPost = editPost;
 window.savePostEdit = savePostEdit;
 window.cancelPostEdit = cancelPostEdit;
+
+// Export new enhanced functions
+window.copyPostLink = copyPostLink;
+window.toggleTextSize = toggleTextSize;
+window.bookmarkPost = bookmarkPost;
 
 // ALWAYS check for auto-open regardless of page type - multiple triggers to ensure it runs
 // Immediate check
@@ -1097,4 +1300,10 @@ function checkAutoOpen() {
         setTimeout(() => attemptAutoOpen(), 2000);
     }
 }
+
+
+// Export new functions to global scope
+window.copyPostLink = copyPostLink;
+window.toggleTextSize = toggleTextSize;
+window.bookmarkPost = bookmarkPost;
 

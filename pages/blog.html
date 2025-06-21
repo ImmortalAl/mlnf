@@ -132,37 +132,87 @@
     </div>
 
     <!-- Full Blog Post Modal -->
-    <div id="blogModal" class="modal" aria-hidden="true" style="display:none;">
-        <div class="blog-modal-content">
-            <button class="close-modal" onclick="closeBlogModal()" aria-label="Close modal">×</button>
-            <div class="blog-modal-header">
-                <div class="modal-author-info">
-                    <!-- MLNF Avatar System will populate this -->
+    <div id="blogModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-content" style="display:none;">
+        <div class="blog-modal-content" role="document">
+            <!-- Modal Header with improved navigation -->
+            <div class="modal-header-controls">
+                <button class="modal-nav-btn" id="modalPrevBtn" aria-label="Previous post" style="display:none;">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="modal-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-fill"></div>
                 </div>
-                <!-- Fallback structure for compatibility -->
-                <div class="scroll-author" style="display: none;">
-                    <a href="#" id="modal-author-link" class="author-avatar">
-                        <img id="modal-author-avatar" src="" alt="">
-                    </a>
-                    <div>
-                        <a href="#" id="modal-author-name-link" class="author-name"></a>
-                        <p id="modal-date" class="date"></p>
+                <button class="modal-nav-btn" id="modalNextBtn" aria-label="Next post" style="display:none;">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="close-modal" onclick="closeBlogModal()" aria-label="Close modal">×</button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="modal-loading" id="modalLoading" style="display:none;">
+                <div class="modal-spinner">
+                    <div class="relic-spinner"></div>
+                </div>
+                <p>Unfurling ancient scroll...</p>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="modal-body" id="modalBody">
+                <div class="blog-modal-header">
+                    <div class="modal-author-info">
+                        <!-- MLNF Avatar System will populate this -->
+                    </div>
+                    <!-- Fallback structure for compatibility -->
+                    <div class="scroll-author" style="display: none;">
+                        <a href="#" id="modal-author-link" class="author-avatar">
+                            <img id="modal-author-avatar" src="" alt="">
+                        </a>
+                        <div>
+                            <a href="#" id="modal-author-name-link" class="author-name"></a>
+                            <p id="modal-date" class="date"></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <h2 id="modal-title" class="scroll-title"></h2>
-            <div id="modal-content" class="scroll-content"></div>
-            <div class="modal-actions">
-                <button id="editPostBtn" class="edit-post-btn" onclick="editCurrentPost()" style="display: none;">
-                    ✏️ Edit this scroll
-                </button>
-                <button class="whisper-link" onclick="shareCurrentPost()">
-                    🔗 Share this scroll
-                </button>
-            </div>
-            <!-- Comments Section -->
-            <div class="blog-comments">
-                <div id="blogComments"></div>
+                
+                <!-- Enhanced Title Section -->
+                <div class="modal-title-section">
+                    <h2 id="modal-title" class="scroll-title"></h2>
+                    <div class="modal-meta">
+                        <span class="reading-time" id="readingTime"></span>
+                        <span class="word-count" id="wordCount"></span>
+                    </div>
+                </div>
+                
+                <!-- Content with enhanced typography -->
+                <article id="modal-content" class="scroll-content" role="main"></article>
+                
+                <!-- Enhanced Action Buttons -->
+                <div class="modal-actions">
+                    <div class="action-group primary-actions">
+                        <button id="editPostBtn" class="edit-post-btn" onclick="editCurrentPost()" style="display: none;">
+                            <i class="fas fa-edit"></i> Edit this scroll
+                        </button>
+                        <button class="whisper-link" onclick="shareCurrentPost()">
+                            <i class="fas fa-share"></i> Share this scroll
+                        </button>
+                        <button class="copy-link-btn" onclick="copyPostLink()">
+                            <i class="fas fa-link"></i> Copy link
+                        </button>
+                    </div>
+                    <div class="action-group secondary-actions">
+                        <button class="text-size-btn" onclick="toggleTextSize()" aria-label="Adjust text size">
+                            <i class="fas fa-text-height"></i>
+                        </button>
+                        <button class="bookmark-btn" onclick="bookmarkPost()" aria-label="Bookmark post">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comments Section -->
+                <div class="blog-comments">
+                    <div id="blogComments"></div>
+                </div>
             </div>
         </div>
     </div>
