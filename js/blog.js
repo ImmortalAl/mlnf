@@ -189,8 +189,6 @@ async function fetchBlogPosts(page = 1) {
                     }
                 }, { passive: false });
                 
-                // Add hover effect class
-                postElement.classList.add('blog-post-hover');
                 
                 blogList.appendChild(postElement);
             });
@@ -338,20 +336,17 @@ async function createBlog() {
 async function fetchBlogPost(postId) {
     // Check if we have it cached
     if (blogPosts[postId] && blogPosts[postId].content) {
-        console.log('[Blog] Using cached post data for:', postId);
         return blogPosts[postId];
     }
     
     // Check if it exists in window.blogPosts (from profile page)
     if (window.blogPosts && window.blogPosts[postId]) {
         blogPosts[postId] = window.blogPosts[postId];
-        console.log('[Blog] Using window.blogPosts data for:', postId);
         return window.blogPosts[postId];
     }
     
     try {
         const url = `${BLOG_API_BASE_URL}/blogs/${postId}`;
-        console.log('[Blog] Fetching post from:', url);
         
         const response = await fetch(url, {
             headers: {
@@ -371,7 +366,6 @@ async function fetchBlogPost(postId) {
         }
         
         const post = await response.json();
-        console.log('[Blog] Successfully fetched post:', post.title);
         
         blogPosts[post._id] = post;
         return post;
@@ -1154,11 +1148,8 @@ if (document.readyState === 'loading') {
 window.addEventListener('load', checkAutoOpen);
 
 // Auto-initialization disabled for pages like profile where blog is not the main feature
-console.log('[Blog] Current pathname:', window.location.pathname);
-console.log('[Blog] Should initialize:', !window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/'));
 
 if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {
-    console.log('[Blog] Initializing blog functionality');
     // Initialize blog functionality when DOM is loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -1168,7 +1159,6 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
         initBlog();
     }
 } else {
-    console.log('[Blog] Skipping blog initialization due to pathname exclusion');
 }
 
 // Separate function to handle auto-opening from highlights
@@ -1189,7 +1179,6 @@ function checkAutoOpen() {
             sessionStorage.removeItem('openScrollId');
         }
         
-        console.log('[Blog] Auto-opening post:', autoOpenScrollId, 'from', urlPostId ? 'URL' : 'session');
         
         // Wait for all systems to be ready
         const attemptAutoOpen = (attempts = 0) => {
