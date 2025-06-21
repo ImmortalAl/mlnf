@@ -405,8 +405,9 @@ async function openBlogModal(postId) {
     
     // Get modal element first and check if it exists
     const modal = document.getElementById('blogModal');
+    console.log('[Blog] Modal element found:', !!modal);
     if (!modal) {
-        console.error('blogModal element not found in DOM!');
+        console.error('[Blog] blogModal element not found in DOM!');
         window._blogModalOpening = false;
         // Ensure body scroll is not locked
         document.body.classList.remove('modal-open');
@@ -425,11 +426,12 @@ async function openBlogModal(postId) {
     }
     
     if (!post) {
-        console.error('No post data returned for ID:', postId);
+        console.error('[Blog] No post data returned for ID:', postId);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
+    console.log('[Blog] Post data available:', post.title);
     
     // Check essential modal elements (only title and content are truly required)
     const essentialElements = {
@@ -457,16 +459,19 @@ async function openBlogModal(postId) {
     }
     
     if (missingEssential.length > 0) {
-        console.error('Missing essential modal elements:', missingEssential);
+        console.error('[Blog] Missing essential modal elements:', missingEssential);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
+    console.log('[Blog] All essential modal elements found');
     
     // Update modal content
     try {
+        console.log('[Blog] Updating modal content...');
         requiredElements['modal-title'].textContent = post.title;
         requiredElements['modal-content'].innerHTML = post.content;
+        console.log('[Blog] Modal content updated successfully');
         
         // Update author info using MLNF Avatar System
         const modalAuthorContainer = document.querySelector('.modal-author-info');
@@ -567,11 +572,12 @@ async function openBlogModal(postId) {
         }
         
     } catch (error) {
-        console.error('Error updating modal content:', error);
+        console.error('[Blog] Error updating modal content:', error);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
+    console.log('[Blog] About to show modal...');
 
     // Remove any existing event listeners by using a data attribute
     if (modal.dataset.listenersAttached !== 'true') {
@@ -602,6 +608,7 @@ async function openBlogModal(postId) {
     }
     
     // Show the modal
+    console.log('[Blog] Showing modal...');
     // Remove any inline display style that might be overriding our CSS
     modal.style.removeProperty('display');
     
@@ -609,6 +616,7 @@ async function openBlogModal(postId) {
     modal.setAttribute('aria-hidden', 'false');
     modal.style.zIndex = '10000';
     document.body.classList.add('modal-open');
+    console.log('[Blog] Modal classes and styles applied');
     
     // Force a reflow to ensure the modal is visible
     modal.offsetHeight;
@@ -618,9 +626,12 @@ async function openBlogModal(postId) {
     
     // Fallback: If the modal is still not visible after adding the show class, force it
     if (computedStyle.display === 'none') {
+        console.log('[Blog] Modal still hidden, forcing display...');
         modal.style.display = 'flex';
         modal.style.opacity = '1';
         modal.style.visibility = 'visible';
+    } else {
+        console.log('[Blog] Modal should be visible now');
     }
     
     // Initialize comments system
