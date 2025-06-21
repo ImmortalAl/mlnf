@@ -14,6 +14,7 @@ function jwt_decode(token) {
 }
 
 const BLOG_API_BASE_URL = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+console.log('[Blog] Using API base URL:', BLOG_API_BASE_URL);
 
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
@@ -345,17 +346,20 @@ async function createBlog() {
 async function fetchBlogPost(postId) {
     // Check if we have it cached
     if (blogPosts[postId] && blogPosts[postId].content) {
+        console.log('[Blog] Using cached post data for:', postId);
         return blogPosts[postId];
     }
     
     // Check if it exists in window.blogPosts (from profile page)
     if (window.blogPosts && window.blogPosts[postId]) {
         blogPosts[postId] = window.blogPosts[postId];
+        console.log('[Blog] Using window.blogPosts data for:', postId);
         return window.blogPosts[postId];
     }
     
     try {
         const url = `${BLOG_API_BASE_URL}/blogs/${postId}`;
+        console.log('[Blog] Fetching post from:', url);
         
         const response = await fetch(url, {
             headers: {
@@ -366,15 +370,22 @@ async function fetchBlogPost(postId) {
         
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Failed to fetch blog post: ${response.status}`);
+            console.error(`[Blog] API request failed:`, {
+                status: response.status,
+                url: url,
+                error: errorText
+            });
+            throw new Error(`Failed to fetch blog post: ${response.status} - ${errorText}`);
         }
         
         const post = await response.json();
+        console.log('[Blog] Successfully fetched post:', post.title);
         
         blogPosts[post._id] = post;
         return post;
     } catch (error) {
-        console.error('Error fetching post:', error);
+        console.error('[Blog] Error fetching post:', error);
+        console.error('[Blog] Current API base URL:', BLOG_API_BASE_URL);
         return null;
     }
 }
