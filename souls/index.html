@@ -219,9 +219,14 @@
                 return;
             }
 
-            profilesGrid.innerHTML = users.map(user => {
-                const avatarHtml = window.MLNFAvatars ? 
-                    window.MLNFAvatars.createUserDisplay({
+            // Clear existing content
+            profilesGrid.innerHTML = '';
+
+            // Create and append DOM elements to preserve event listeners
+            users.forEach(user => {
+                if (window.MLNFAvatars) {
+                    // Create DOM element with event listeners intact
+                    const userDisplay = window.MLNFAvatars.createUserDisplay({
                         username: user.username,
                         title: user.displayName || user.username,
                         status: user.status || 'Eternal seeker',
@@ -232,15 +237,22 @@
                         customAvatar: user.avatar,
                         usernameStyle: 'immortal',
                         enableUnifiedNavigation: true
-                    }).outerHTML :
-                    `<div class="profile-card">
+                    });
+                    
+                    // Append the DOM element directly to preserve event listeners
+                    profilesGrid.appendChild(userDisplay);
+                } else {
+                    // Fallback for when avatar system isn't loaded
+                    const fallbackCard = document.createElement('div');
+                    fallbackCard.className = 'profile-card';
+                    fallbackCard.innerHTML = `
                         <img src="${user.avatar || '../assets/images/default.jpg'}" alt="${user.username}">
                         <h3>${user.displayName || user.username}</h3>
                         <p>@${user.username}</p>
-                    </div>`;
-                
-                return avatarHtml;
-            }).join('');
+                    `;
+                    profilesGrid.appendChild(fallbackCard);
+                }
+            });
         }
     </script>
 </body>
