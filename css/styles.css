@@ -1407,35 +1407,7 @@ body.light-theme .mlnf-avatar {
     transform: translateX(3px);
 }
 
-/* Enhanced Chronicles Section */
-#news {
-    background: linear-gradient(135deg, 
-        rgba(13, 13, 26, 0.95) 0%,
-        rgba(26, 26, 51, 0.9) 50%,
-        rgba(42, 64, 102, 0.8) 100%);
-    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-    border-radius: 20px;
-    padding: 4rem 2rem;
-    margin: 3rem auto;
-    max-width: 1440px;
-    position: relative;
-    overflow: hidden;
-}
-
-#news::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        var(--accent), 
-        rgba(255, 202, 40, 0.8), 
-        var(--accent), 
-        transparent);
-}
+/* Chronicles Section - inherits unified styling from .highlights, keeps unique heading styling */
 
 #newsHeading {
     font-family: 'Cinzel', serif;
