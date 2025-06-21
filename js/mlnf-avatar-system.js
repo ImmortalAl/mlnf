@@ -14,8 +14,8 @@ class MLNFProfileRouter {
     static navigateToProfile(username, options = {}) {
         const { newTab = false, trackInteraction = true } = options;
         
-        
-        const profileUrl = `/souls/${username}`;
+        // Use the template profile page with username parameter
+        const profileUrl = `/souls/[username].html?user=${encodeURIComponent(username)}`;
         
         if (newTab) {
             window.open(profileUrl, '_blank');

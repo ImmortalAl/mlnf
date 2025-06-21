@@ -620,7 +620,7 @@
     <script src="../components/shared/messageModal.js?v=1.2"></script>
     
     <!-- Avatar System -->
-    <script src="../js/mlnf-avatar-system.js?v=1.0"></script>
+    <script src="../js/mlnf-avatar-system.js?v=1.1"></script>
     
     <!-- Initialize MLNF -->
     <script>
@@ -630,17 +630,54 @@
         });
 
         async function loadProfile() {
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const profileContent = document.getElementById('profileContent');
+            
             try {
-                const username = window.location.pathname.split('/').pop();
+                // Get username from URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get('user');
+                
+                if (!username) {
+                    throw new Error('No username provided');
+                }
+                
+                // Show loading state
+                if (loadingState) loadingState.style.display = 'block';
+                if (errorState) errorState.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'none';
+                
                 const response = await window.apiClient.get(`/users/${username}`);
                 const userData = response;
+                
+                // Hide loading and show content
+                if (loadingState) loadingState.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'block';
+                
                 renderProfile(userData);
                 loadUserBlogs(username);
+                
+                // Set up message button
+                setupMessageButton(username, userData);
+                
+                // Update page title
+                document.title = `${userData.displayName || userData.username} - Eternal Soul`;
+                
             } catch (error) {
                 console.error('Error fetching profile:', error);
-                const profileContainer = document.querySelector('.profile-container');
-                if (profileContainer) {
-                    profileContainer.innerHTML = '<p class="error">Failed to load eternal soul. Please try again later.</p>';
+                
+                // Hide loading and show error
+                if (loadingState) loadingState.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'none';
+                if (errorState) {
+                    errorState.style.display = 'block';
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message === 'No username provided' ? 
+                            'No username specified in URL parameters.' :
+                            'This eternal soul has not manifested in our realm.';
+                    }
                 }
             }
         }
@@ -709,6 +746,15 @@
                     </div>
                 </div>
             `).join('');
+        }
+        
+        function setupMessageButton(username, userData) {
+            const messageBtn = document.getElementById('messageBtn');
+            if (messageBtn && window.openMessageModal) {
+                messageBtn.addEventListener('click', () => {
+                    window.openMessageModal(username, userData.displayName || username);
+                });
+            }
         }
     </script>
 </body>
