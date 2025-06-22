@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../css/blog-critical.css?v=1.0">
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <link rel="stylesheet" href="../css/souls-listing.css">
+    <link rel="stylesheet" href="../css/soul-comments.css">
     <script src="/components/shared/messageModal.js"></script>
     <script src="/components/shared/mlnf-core.js"></script>
     <style>
@@ -536,6 +537,14 @@
                     </a>
                 </div>
 
+                <!-- Soul Comments Section -->
+                <div class="soul-comments">
+                    <h3><i class="fas fa-comments"></i> Soul Whispers</h3>
+                    <div id="profileComments" class="comments-container">
+                        <!-- Profile comments will be loaded here -->
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
@@ -647,6 +656,11 @@
                 
                 renderProfile(userData);
                 loadUserBlogs(username);
+                
+                // Initialize profile comments
+                if (window.MLNF && window.MLNF.CommentsSystem) {
+                    new window.MLNF.CommentsSystem('profile', username, 'profileComments');
+                }
                 
                 // Set up message button
                 setupMessageButton(username, userData);
