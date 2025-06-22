@@ -5,9 +5,10 @@ Welcome to the **Manifest Liberation, Naturally Free** documentation center. All
 ## 📚 Documentation Structure
 
 ### **🚀 Getting Started**
-- **[FEATURES.md](./FEATURES.md)** - Feature roadmap, TODOs, and implementation status
+- **[FEATURES.md](./FEATURES.md)** - Complete feature overview and development roadmap
+  - **Contains**: All completed features (messaging, blogging, feedback)
+  - **Contains**: Current development priorities and implementation status
   - **Contains**: Owl messaging email setup instructions
-  - **Contains**: Development priorities and completed features
 
 ### **🛠️ Development** *(Coming Soon)*
 - **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Setup instructions, workflow, deployment
