@@ -14,7 +14,6 @@ function jwt_decode(token) {
 }
 
 const BLOG_API_BASE_URL = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
-console.log('[Blog] Using API base URL:', BLOG_API_BASE_URL);
 
 // const activeUsers = document.getElementById('activeUsers'); // Handled by activeUsers.js
 // const showUsersBtn = document.getElementById('showUsersBtn'); // Handled by activeUsers.js
@@ -151,16 +150,12 @@ async function fetchBlogPosts(page = 1) {
                 
                 // Make post clickable with proper event handling
                 const handlePostClick = function(e) {
-                    console.log('[Blog] Post clicked:', post._id, 'Target:', e.target.tagName);
-                    
                     // Don't open modal if clicking on links or buttons
                     if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a')) {
-                        console.log('[Blog] Click ignored - button/link clicked');
                         return;
                     }
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('[Blog] Opening modal for post:', post._id);
                     openBlogModal(post._id);
                 };
 
@@ -194,8 +189,6 @@ async function fetchBlogPosts(page = 1) {
                     }
                 }, { passive: false });
                 
-                // Add hover effect class
-                postElement.classList.add('blog-post-hover');
                 
                 blogList.appendChild(postElement);
             });
@@ -247,11 +240,8 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 1.0 });
 
 function initBlog() {
-    console.log('[Blog] initBlog called');
     blogList = document.getElementById('blogList');
     scrollObserver = document.getElementById('scroll-observer');
-    console.log('[Blog] blogList element:', blogList);
-    console.log('[Blog] scrollObserver element:', scrollObserver);
 
     // Safety check: ensure blog modal isn't blocking clicks on page load
     const blogModal = document.getElementById('blogModal');
@@ -346,20 +336,17 @@ async function createBlog() {
 async function fetchBlogPost(postId) {
     // Check if we have it cached
     if (blogPosts[postId] && blogPosts[postId].content) {
-        console.log('[Blog] Using cached post data for:', postId);
         return blogPosts[postId];
     }
     
     // Check if it exists in window.blogPosts (from profile page)
     if (window.blogPosts && window.blogPosts[postId]) {
         blogPosts[postId] = window.blogPosts[postId];
-        console.log('[Blog] Using window.blogPosts data for:', postId);
         return window.blogPosts[postId];
     }
     
     try {
         const url = `${BLOG_API_BASE_URL}/blogs/${postId}`;
-        console.log('[Blog] Fetching post from:', url);
         
         const response = await fetch(url, {
             headers: {
@@ -379,7 +366,6 @@ async function fetchBlogPost(postId) {
         }
         
         const post = await response.json();
-        console.log('[Blog] Successfully fetched post:', post.title);
         
         blogPosts[post._id] = post;
         return post;
@@ -394,11 +380,8 @@ async function fetchBlogPost(postId) {
 
 // Enhanced openBlogModal with loading states and new features
 async function openBlogModal(postId) {
-    console.log('[Blog] openBlogModal called with postId:', postId);
-    
     // Prevent duplicate calls
     if (window._blogModalOpening) {
-        console.log('[Blog] Modal already opening, skipping');
         return;
     }
     
@@ -407,9 +390,8 @@ async function openBlogModal(postId) {
     
     // Get modal element first and check if it exists
     const modal = document.getElementById('blogModal');
-    console.log('[Blog] Modal element found:', !!modal);
     if (!modal) {
-        console.error('[Blog] blogModal element not found in DOM!');
+        console.error('Blog modal element not found');
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
@@ -431,13 +413,12 @@ async function openBlogModal(postId) {
     }
     
     if (!post) {
-        console.error('[Blog] No post data returned for ID:', postId);
+        console.error('No post data returned for ID:', postId);
         hideModalLoading(modal);
         window._blogModalOpening = false;
         document.body.classList.remove('modal-open');
         return;
     }
-    console.log('[Blog] Post data available:', post.title);
 
     // Hide loading and show content
     hideModalLoading(modal);
@@ -453,8 +434,6 @@ async function openBlogModal(postId) {
 }
 
 function showModalWithLoading(modal) {
-    console.log('[Blog] Showing modal with loading...');
-    
     // Remove any inline display style
     modal.removeAttribute('style');
     modal.classList.add('show');
@@ -468,8 +447,6 @@ function showModalWithLoading(modal) {
     
     if (modalLoading) modalLoading.style.display = 'flex';
     if (modalBody) modalBody.style.display = 'none';
-    
-    console.log('[Blog] Modal loading state shown');
 }
 
 function hideModalLoading(modal) {
@@ -478,13 +455,9 @@ function hideModalLoading(modal) {
     
     if (modalLoading) modalLoading.style.display = 'none';
     if (modalBody) modalBody.style.display = 'block';
-    
-    console.log('[Blog] Modal loading state hidden');
 }
 
 function populateModalContent(modal, post) {
-    console.log('[Blog] Populating modal content...');
-    
     // Check essential modal elements
     const essentialElements = {
         'modal-title': document.getElementById('modal-title'),
@@ -499,29 +472,23 @@ function populateModalContent(modal, post) {
     }
     
     if (missingEssential.length > 0) {
-        console.error('[Blog] Missing essential modal elements:', missingEssential);
+        console.error('Missing essential modal elements:', missingEssential);
         return;
     }
-    console.log('[Blog] All essential modal elements found');
 
     // Update modal content
     try {
-        console.log('[Blog] Updating modal content...');
         essentialElements['modal-title'].textContent = post.title;
         essentialElements['modal-content'].innerHTML = post.content;
         
-        // Content updated
-        
-        // Update author info (existing logic)
+        // Update author info
         updateAuthorInfo(post);
         
         // Show edit button if user is the author
         updateEditButton(post);
         
-        console.log('[Blog] Modal content updated successfully');
-        
     } catch (error) {
-        console.error('[Blog] Error updating modal content:', error);
+        console.error('Error updating modal content:', error);
         return;
     }
 }
@@ -1181,11 +1148,8 @@ if (document.readyState === 'loading') {
 window.addEventListener('load', checkAutoOpen);
 
 // Auto-initialization disabled for pages like profile where blog is not the main feature
-console.log('[Blog] Current pathname:', window.location.pathname);
-console.log('[Blog] Should initialize:', !window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/'));
 
 if (!window.location.pathname.includes('/souls/') && !window.location.pathname.includes('/profile/')) {
-    console.log('[Blog] Initializing blog functionality');
     // Initialize blog functionality when DOM is loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -1195,7 +1159,6 @@ if (!window.location.pathname.includes('/souls/') && !window.location.pathname.i
         initBlog();
     }
 } else {
-    console.log('[Blog] Skipping blog initialization due to pathname exclusion');
 }
 
 // Separate function to handle auto-opening from highlights
@@ -1216,7 +1179,6 @@ function checkAutoOpen() {
             sessionStorage.removeItem('openScrollId');
         }
         
-        console.log('[Blog] Auto-opening post:', autoOpenScrollId, 'from', urlPostId ? 'URL' : 'session');
         
         // Wait for all systems to be ready
         const attemptAutoOpen = (attempts = 0) => {

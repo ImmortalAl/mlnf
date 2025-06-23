@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../css/blog-critical.css?v=1.0">
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
     <link rel="stylesheet" href="../css/souls-listing.css">
+    <link rel="stylesheet" href="../css/soul-comments.css">
     <script src="/components/shared/messageModal.js"></script>
     <script src="/components/shared/mlnf-core.js"></script>
     <style>
@@ -197,22 +198,6 @@
             color: var(--accent);
         }
 
-        /* Comments Section Styles */
-        .profile-comments {
-            background: var(--secondary);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--accent);
-        }
-
-        .profile-comments h3 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
 
         .profile-actions {
             display: flex;
@@ -540,10 +525,6 @@
                     </div>
                 </div>
 
-                <!-- Comments Section -->
-                <div class="profile-comments">
-                    <div id="profileComments"></div>
-                </div>
 
                 <div class="profile-actions">
                     <button id="messageBtn" class="action-btn btn-primary">
@@ -556,19 +537,14 @@
                     </a>
                 </div>
 
-                <!-- User's Blog Posts -->
-                <div id="userBlogsSection" class="profile-section" style="display: none;">
-                    <h3 class="section-title">
-                        <i class="fas fa-scroll"></i>
-                        Soul Scrolls
-                    </h3>
-                    <div id="userBlogsList" class="user-blogs-list">
-                        <!-- Blog posts will be loaded here -->
-                    </div>
-                    <div id="noBlogsMessage" class="no-content-message" style="display: none;">
-                        <p>This soul has not yet shared any scrolls.</p>
+                <!-- Soul Comments Section -->
+                <div class="soul-comments">
+                    <h3><i class="fas fa-comments"></i> Soul Whispers</h3>
+                    <div id="profileComments" class="comments-container">
+                        <!-- Profile comments will be loaded here -->
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
@@ -680,6 +656,11 @@
                 
                 renderProfile(userData);
                 loadUserBlogs(username);
+                
+                // Initialize profile comments
+                if (window.MLNF && window.MLNF.CommentsSystem) {
+                    new window.MLNF.CommentsSystem('profile', username, 'profileComments');
+                }
                 
                 // Set up message button
                 setupMessageButton(username, userData);

@@ -249,7 +249,7 @@ body.light-theme .section-title p {
     gap: 2.5rem;
     max-width: 1440px;
     margin: 2.5rem auto;
-    align-items: start;
+    align-items: stretch; /* Ensure equal height cards */
 }
 
 /* ==========================================
