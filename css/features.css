@@ -235,9 +235,33 @@ body.light-theme .debate-position h4 {
     text-decoration: none !important;
 }
 
-/* Echo Highlight Cards - Consistent with other highlights */
+/* Echo Highlight Cards - Enhanced Visibility */
 .echo-highlight-card {
+    background: linear-gradient(135deg,
+        rgba(26, 26, 51, 0.9) 0%,
+        rgba(42, 64, 102, 0.85) 50%,
+        rgba(26, 26, 51, 0.95) 100%);
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.4);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     text-decoration: none !important;
+}
+
+.echo-highlight-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.6);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.7),
+        0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Remove underlines from all elements inside echo highlight cards */
@@ -245,9 +269,8 @@ body.light-theme .debate-position h4 {
     text-decoration: none !important;
 }
 
-/* Echo Title - Consistent Typography */
+/* Echo Title - Enhanced Typography */
 .echo-title-prominent {
-    /* Use consistent styling with other highlight item h4 elements */
     font-family: 'Lato', sans-serif !important;
     font-size: 1.75rem !important;
     font-weight: 700 !important;
@@ -260,6 +283,56 @@ body.light-theme .debate-position h4 {
     letter-spacing: 0.02em !important;
     transition: var(--transition);
     text-decoration: none !important;
+    text-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+}
+
+/* Echo Excerpt - Enhanced Readability */
+.echo-excerpt {
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin-bottom: 1.5rem !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    font-style: italic;
+    position: relative;
+}
+
+/* Echo Author - Enhanced Styling */
+.echo-author {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Enhanced metadata section for echo cards */
+.echo-highlight-card .highlight-meta {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.echo-highlight-card .date {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.echo-highlight-card .read-more-indicator {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.echo-highlight-card:hover .read-more-indicator {
+    color: var(--text);
+    transform: translateX(3px);
+    opacity: 1;
 }
 
 /* Mystical scroll border effect */
