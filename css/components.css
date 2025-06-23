@@ -68,6 +68,16 @@
     align-items: center;
     text-align: center;
     box-shadow: none;
+    height: 100%; /* Ensure full height */
+}
+
+.feature-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1; /* Allow content to grow and fill available space */
+    width: 100%;
 }
 
 .feature-card:hover {
@@ -102,8 +112,10 @@
     font-size: 1rem;
     line-height: 1.6;
     opacity: 0.9;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
+    margin-bottom: 2rem;
+    flex-grow: 1; /* Allow text to take available space */
+    display: flex;
+    align-items: center; /* Center text vertically in its container */
 }
 
 body.light-theme .feature-card p {
