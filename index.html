@@ -769,9 +769,17 @@
                 
                 // Create highlight card container
                 const highlightCard = document.createElement('a');
-                highlightCard.href = 'pages/news.html';
+                highlightCard.href = `pages/news.html?chronicle=${post._id}`;
                 highlightCard.className = 'highlight-item chronicle-highlight-card chronicle-link';
                 highlightCard.setAttribute('data-chronicle-id', post._id);
+                
+                // Add click handler to open specific chronicle modal
+                highlightCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Store chronicle ID for news page to auto-open modal
+                    sessionStorage.setItem('openChronicleId', post._id);
+                    window.location.href = 'pages/news.html';
+                });
                 
                 // Create title
                 const title = document.createElement('h4');

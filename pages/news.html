@@ -398,6 +398,22 @@
                 window.ChroniclesFeed.init();
                 
                 console.log('All news page components initialized successfully');
+                
+                // Check for chronicle ID to auto-open modal (from front page highlights)
+                const openChronicleId = sessionStorage.getItem('openChronicleId');
+                if (openChronicleId) {
+                    console.log('[news.html] Auto-opening chronicle modal for ID:', openChronicleId);
+                    sessionStorage.removeItem('openChronicleId'); // Clean up
+                    
+                    // Wait for chronicles feed to be fully loaded, then open modal
+                    setTimeout(() => {
+                        if (window.ChroniclesFeed && window.ChroniclesFeed.openChronicleModal) {
+                            window.ChroniclesFeed.openChronicleModal(openChronicleId);
+                        } else {
+                            console.warn('[news.html] ChroniclesFeed not available for auto-open');
+                        }
+                    }, 1500); // Give extra time for feed to load
+                }
             } catch (error) {
                 console.error('Error initializing news page components:', error);
             }
