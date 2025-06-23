@@ -776,9 +776,9 @@
                 // Add click handler to open specific chronicle modal
                 highlightCard.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Store chronicle ID for news page to auto-open modal
-                    sessionStorage.setItem('openChronicleId', post._id);
-                    window.location.href = 'pages/news.html';
+                    console.log('[index.html] Chronicle highlight clicked, ID:', post._id);
+                    // Use URL parameter instead of sessionStorage for more reliable delivery
+                    window.location.href = `pages/news.html?openChronicle=${post._id}`;
                 });
                 
                 // Create title
