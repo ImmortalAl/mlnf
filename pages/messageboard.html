@@ -229,26 +229,34 @@
             // Clear URL parameter for cleaner experience
             window.history.replaceState({}, document.title, window.location.pathname);
             
-            // Wait for threads to load, then scroll to the specific thread
+            // Wait for threads to load, then open the specific thread in column 3
             const tryFindThread = () => {
                 console.log('[messageboard.html] Looking for thread with ID:', openThreadId);
                 const threadElement = document.querySelector(`[data-id="${openThreadId}"]`);
                 
                 if (threadElement) {
-                    console.log('[messageboard.html] SUCCESS! Found thread, scrolling to it');
+                    console.log('[messageboard.html] SUCCESS! Found thread, opening in third column');
+                    
+                    // Scroll to the thread in the list
                     threadElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     
-                    // Add a highlight effect
-                    threadElement.style.border = '3px solid var(--accent)';
-                    threadElement.style.borderRadius = '12px';
-                    threadElement.style.boxShadow = '0 0 20px rgba(255, 94, 120, 0.5)';
+                    // Remove active class from all threads
+                    document.querySelectorAll('.thread.active').forEach(t => t.classList.remove('active'));
                     
-                    // Remove highlight after 3 seconds
-                    setTimeout(() => {
-                        threadElement.style.border = '';
-                        threadElement.style.borderRadius = '';
-                        threadElement.style.boxShadow = '';
-                    }, 3000);
+                    // Add active class to the clicked thread
+                    threadElement.classList.add('active');
+                    
+                    // Show the third column
+                    const activeThreadContainer = document.getElementById('lyceum-active-thread');
+                    if (activeThreadContainer) {
+                        activeThreadContainer.style.display = 'block';
+                        console.log('[messageboard.html] Third column shown');
+                    }
+                    
+                    // Load and display the full thread content in column 3
+                    loadAndDisplayActiveThread(openThreadId, activeThreadContainer);
+                    console.log('[messageboard.html] Thread content loaded in third column');
+                    
                 } else {
                     console.log('[messageboard.html] Thread not found yet, trying again...');
                     setTimeout(tryFindThread, 1000);
