@@ -227,6 +227,12 @@ body.light-theme .debate-position h4 {
     backdrop-filter: blur(12px);
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     z-index: 1;
+    text-decoration: none !important;
+}
+
+/* Remove underlines from all elements inside scroll highlight cards */
+.scroll-highlight-card * {
+    text-decoration: none !important;
 }
 
 /* Mystical scroll border effect */
