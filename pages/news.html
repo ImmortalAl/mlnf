@@ -397,6 +397,12 @@
                 window.CommentsSystem.init();
                 window.ChroniclesFeed.init();
                 
+                // Ensure chroniclesFeed is properly exposed (compatibility fix)
+                if (window.ChroniclesFeed && !window.chroniclesFeed) {
+                    window.chroniclesFeed = window.ChroniclesFeed;
+                    console.log('[news.html] ChroniclesFeed exposed as chroniclesFeed for compatibility');
+                }
+                
                 console.log('All news page components initialized successfully');
                 
                 // Check for chronicle ID to auto-open modal (from front page highlights)
@@ -407,9 +413,21 @@
                     
                     // Wait for chronicles feed to be fully loaded, then open modal
                     const attemptAutoOpen = (attempts = 0) => {
-                        if (window.chroniclesFeed && window.chroniclesFeed.openChronicleModal) {
-                            console.log('[news.html] Attempting to auto-open chronicle modal');
-                            window.chroniclesFeed.openChronicleModal(openChronicleId);
+                        console.log(`[news.html] Auto-open attempt ${attempts + 1}/10`);
+                        console.log('[news.html] Available objects:', {
+                            'window.ChroniclesFeed': !!window.ChroniclesFeed,
+                            'window.chroniclesFeed': !!window.chroniclesFeed,
+                            'has openChronicleModal': !!(window.chroniclesFeed && window.chroniclesFeed.openChronicleModal)
+                        });
+                        
+                        if (window.chroniclesFeed && typeof window.chroniclesFeed.openChronicleModal === 'function') {
+                            console.log('[news.html] ChroniclesFeed found! Opening modal for ID:', openChronicleId);
+                            try {
+                                window.chroniclesFeed.openChronicleModal(openChronicleId);
+                                console.log('[news.html] Modal opening attempted successfully');
+                            } catch (error) {
+                                console.error('[news.html] Error opening chronicle modal:', error);
+                            }
                         } else {
                             console.warn(`[news.html] ChroniclesFeed not ready (attempt ${attempts + 1})`);
                             if (attempts < 10) {
