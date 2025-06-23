@@ -141,6 +141,330 @@ body.light-theme .debate-position h4 {
     opacity: 0.8;
 }
 
+/* ==========================================
+   SOUL SCROLLS HIGHLIGHT SECTION - Enhanced Design
+   ========================================== */
+
+/* Soul Scrolls Section - Mystical Theme */
+#blog {
+    background: linear-gradient(135deg, 
+        rgba(13, 13, 26, 0.95) 0%,
+        rgba(26, 26, 51, 0.92) 30%,
+        rgba(42, 64, 102, 0.88) 70%,
+        rgba(26, 26, 51, 0.95) 100%);
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.25);
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    margin: 3rem auto;
+    max-width: 1440px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mystical glow effect for Soul Scrolls section */
+#blog::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center,
+        rgba(var(--accent-rgb, 255, 94, 120), 0.08) 0%,
+        rgba(255, 202, 40, 0.05) 30%,
+        transparent 60%);
+    animation: soulScrollsGlow 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes soulScrollsGlow {
+    0%, 100% { 
+        transform: rotate(0deg) scale(1);
+        opacity: 0.6;
+    }
+    33% { 
+        transform: rotate(120deg) scale(1.1);
+        opacity: 0.8;
+    }
+    66% { 
+        transform: rotate(240deg) scale(0.9);
+        opacity: 0.5;
+    }
+}
+
+/* Enhanced section title for Soul Scrolls */
+#blogHeading {
+    font-family: 'Caesar Dressing', serif;
+    background: linear-gradient(135deg, 
+        var(--accent) 0%, 
+        rgba(255, 202, 40, 0.9) 50%, 
+        var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.6);
+    position: relative;
+    z-index: 1;
+    animation: soulTitlePulse 4s ease-in-out infinite;
+}
+
+@keyframes soulTitlePulse {
+    0%, 100% { 
+        text-shadow: 0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.4);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 
+            0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.8),
+            0 0 50px rgba(255, 202, 40, 0.4);
+        transform: scale(1.02);
+    }
+}
+
+/* Soul Scroll Highlight Cards - Artistic Treatment */
+.scroll-highlight-card {
+    background: linear-gradient(135deg,
+        rgba(26, 26, 51, 0.85) 0%,
+        rgba(42, 64, 102, 0.75) 50%,
+        rgba(26, 26, 51, 0.9) 100%);
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 1;
+}
+
+/* Mystical scroll border effect */
+.scroll-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(45deg, 
+        rgba(255, 94, 120, 0.6) 0%,
+        rgba(255, 202, 40, 0.4) 25%,
+        rgba(255, 94, 120, 0.6) 50%,
+        rgba(255, 202, 40, 0.4) 75%,
+        rgba(255, 94, 120, 0.6) 100%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: scrollBorderGlow 6s linear infinite;
+}
+
+@keyframes scrollBorderGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.scroll-highlight-card:hover::before {
+    opacity: 1;
+}
+
+/* Enhanced hover effects */
+.scroll-highlight-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.6);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        0 10px 30px rgba(var(--accent-rgb, 255, 94, 120), 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Soul Scroll Title - Enhanced Typography */
+.scroll-title-prominent {
+    font-family: 'Caesar Dressing', serif !important;
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    line-height: 1.2 !important;
+    background: linear-gradient(135deg, 
+        rgba(255, 94, 120, 0.95) 0%,
+        rgba(255, 202, 40, 0.9) 50%,
+        rgba(255, 94, 120, 0.95) 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    text-shadow: 0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.3) !important;
+    position: relative;
+    letter-spacing: 0.02em !important;
+}
+
+/* Add mystical underline to scroll titles */
+.scroll-title-prominent::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 94, 120, 0.6) 20%,
+        rgba(255, 202, 40, 0.8) 50%,
+        rgba(255, 94, 120, 0.6) 80%,
+        transparent 100%);
+    border-radius: 2px;
+    animation: scrollTitleUnderline 3s ease-in-out infinite;
+}
+
+@keyframes scrollTitleUnderline {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: scaleX(1);
+    }
+    50% { 
+        opacity: 0.9;
+        transform: scaleX(1.02);
+    }
+}
+
+/* Enhanced Scroll Excerpt */
+.scroll-excerpt {
+    font-size: 1.1rem !important;
+    line-height: 1.7 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin-bottom: 2rem !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    position: relative;
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 0.01em;
+}
+
+/* Enhanced metadata section */
+.scroll-highlight-card .highlight-meta {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: none; /* Remove harsh line */
+    position: relative;
+    z-index: 2;
+}
+
+/* Elegant separator for metadata */
+.scroll-highlight-card .highlight-meta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 94, 120, 0.3) 20%,
+        rgba(255, 202, 40, 0.5) 50%,
+        rgba(255, 94, 120, 0.3) 80%,
+        transparent 100%);
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+}
+
+/* Enhanced date styling */
+.scroll-highlight-card .date {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Enhanced read more indicator */
+.scroll-highlight-card .read-more-indicator {
+    color: rgba(255, 202, 40, 0.9);
+    font-family: 'Caesar Dressing', serif;
+    font-weight: 400;
+    font-size: 1rem;
+    text-shadow: 0 0 10px rgba(255, 202, 40, 0.4);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.scroll-highlight-card:hover .read-more-indicator {
+    color: rgba(255, 202, 40, 1);
+    text-shadow: 0 0 15px rgba(255, 202, 40, 0.6);
+    transform: translateX(3px);
+}
+
+/* Enhanced avatar styling for scroll highlights */
+.scroll-highlight-card .mlnf-user-display {
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.08);
+    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.2);
+    border-radius: 12px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.scroll-highlight-card:hover .mlnf-user-display {
+    background: rgba(var(--accent-rgb, 255, 94, 120), 0.12);
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.3);
+    transform: translateY(-2px);
+}
+
+.scroll-highlight-card .mlnf-avatar {
+    border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.4);
+    box-shadow: 
+        0 0 12px rgba(var(--accent-rgb, 255, 94, 120), 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.scroll-highlight-card:hover .mlnf-avatar {
+    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.7);
+    box-shadow: 
+        0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced username styling in scroll highlights */
+.scroll-highlight-card .mlnf-username {
+    color: rgba(255, 202, 40, 0.9);
+    text-shadow: 0 0 8px rgba(255, 202, 40, 0.3);
+}
+
+.scroll-highlight-card .mlnf-user-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}
+
+/* Floating particle effect for scroll highlights */
+.scroll-highlight-card::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(255, 202, 40, 0.8), transparent);
+    border-radius: 50%;
+    animation: soulParticle 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes soulParticle {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+    25% {
+        transform: translate(-10px, -15px) scale(1.2);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translate(5px, -25px) scale(0.8);
+        opacity: 0.4;
+    }
+    75% {
+        transform: translate(15px, -10px) scale(1.1);
+        opacity: 0.7;
+    }
+}
+
 .highlight-item p,
 .debate-position p {
     font-size: 1.1rem;
@@ -1108,6 +1432,85 @@ body .floating-buttons button.theme-toggle#themeToggle {
         0 0 12px rgba(255, 94, 120, 0.5),
         0 0 25px rgba(255, 94, 120, 0.3),
         inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==========================================
+   SOUL SCROLLS RESPONSIVE DESIGN
+   ========================================== */
+
+/* Tablet responsive adjustments for Soul Scrolls */
+@media (max-width: 1024px) {
+    #blog {
+        padding: 3rem 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .scroll-title-prominent {
+        font-size: 1.7rem !important;
+    }
+    
+    .scroll-highlight-card {
+        padding: 2rem;
+    }
+}
+
+/* Mobile responsive adjustments for Soul Scrolls */
+@media (max-width: 768px) {
+    #blog {
+        padding: 2.5rem 1rem;
+        margin: 2rem auto;
+        border-radius: 16px;
+    }
+    
+    #blogHeading {
+        font-size: 2.2rem;
+    }
+    
+    .scroll-title-prominent {
+        font-size: 1.5rem !important;
+        margin-bottom: 1.2rem !important;
+    }
+    
+    .scroll-excerpt {
+        font-size: 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .scroll-highlight-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .scroll-highlight-card .highlight-meta::before {
+        width: 80%;
+    }
+}
+
+@media (max-width: 480px) {
+    #blog {
+        padding: 2rem 0.75rem;
+        border-radius: 12px;
+    }
+    
+    #blogHeading {
+        font-size: 1.8rem;
+    }
+    
+    .scroll-title-prominent {
+        font-size: 1.3rem !important;
+    }
+    
+    .scroll-highlight-card {
+        padding: 1.2rem;
+    }
+    
+    .scroll-highlight-card .mlnf-user-display {
+        padding: 0.5rem;
+    }
+    
+    .scroll-highlight-card .read-more-indicator {
+        font-size: 0.9rem;
+    }
 }
 
 /* ==========================================
