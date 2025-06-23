@@ -459,16 +459,12 @@
                     Hot Threads from the Eternal Tapestry - Future Agora Awaits
                 </p>
             </div>
-            <div class="highlight-grid">
+            <div class="highlight-grid" id="echoesHighlights">
+                <!-- Dynamic content will load here -->
                 <div class="highlight-item">
-                    <h4>Thread: Is Privacy Dead?</h4>
-                    <p>"In 2025, every click is watched—how do we fight back?"</p>
-                    <p class="author">— ImmortalAl (12 replies)</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Thread: The Power of Collective Truth</h4>
-                    <p>"Can we crowdsource our way to freedom?"</p>
-                    <p class="author">— TruthSeeker (8 replies)</p>
+                    <h4>Loading Echoes...</h4>
+                    <p>Gathering the latest threads from eternal minds...</p>
+                    <p class="author">— System</p>
                 </div>
                 <a href="pages/messageboard.html" class="btn btn-primary">Join the Discussion</a>
             </div>
@@ -936,6 +932,114 @@
     
     // Load on page ready
     document.addEventListener('DOMContentLoaded', loadScrollsHighlights);
+    </script>
+    
+    <script>
+    // Dynamic Echoes Unbound Highlights
+    async function loadEchoesHighlights() {
+        try {
+            // Wait for MLNFAvatars to be available
+            if (!window.MLNFAvatars) {
+                console.log('[index.html] Waiting for MLNFAvatars to load...');
+                setTimeout(loadEchoesHighlights, 200);
+                return;
+            }
+            
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages?limit=2&sort=-createdAt`);
+            if (!response.ok) throw new Error('Failed to fetch');
+            
+            const data = await response.json();
+            const messages = data.docs || data;
+            
+            const highlightsContainer = document.getElementById('echoesHighlights');
+            if (!highlightsContainer || messages.length === 0) return;
+            
+            // Clear existing content and build with unified avatar system
+            highlightsContainer.innerHTML = '';
+            
+            messages.forEach(message => {
+                const date = new Date(message.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                const author = message.author || {};
+                const replyCount = message.replies ? message.replies.length : 0;
+                
+                // Create highlight card container
+                const highlightCard = document.createElement('a');
+                highlightCard.href = 'pages/messageboard.html';
+                highlightCard.className = 'highlight-item echo-highlight-card echo-link';
+                highlightCard.setAttribute('data-message-id', message._id);
+                
+                // Add click handler to open specific thread
+                highlightCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Store message ID for messageboard page to auto-open
+                    sessionStorage.setItem('openMessageId', message._id);
+                    window.location.href = 'pages/messageboard.html';
+                });
+                
+                // Create title
+                const title = document.createElement('h4');
+                title.className = 'echo-title-prominent';
+                title.textContent = `Thread: ${message.title || message.content.substring(0, 50) + '...'}`;
+                
+                // Create excerpt (strip HTML and limit length)
+                const excerpt = document.createElement('p');
+                excerpt.className = 'echo-excerpt';
+                const textContent = message.content.replace(/<[^>]*>/g, '');
+                excerpt.textContent = `"${textContent.length > 80 ? textContent.substring(0, 80) + '...' : textContent}"`;
+                
+                // Create unified user display
+                const userDisplay = window.MLNFAvatars.createUserDisplay({
+                    username: author.username || 'Anonymous',
+                    title: 'Echo Weaver',
+                    avatarSize: 'sm',
+                    displaySize: 'sm',
+                    compact: true,
+                    mystical: author.isVIP || author.role === 'admin',
+                    online: author.online,
+                    customAvatar: author.avatar,
+                    usernameStyle: 'immortal',
+                    enableUnifiedNavigation: true
+                });
+                
+                // Create author section with reply count
+                const authorSection = document.createElement('p');
+                authorSection.className = 'author echo-author';
+                authorSection.innerHTML = `— ${author.username || 'Anonymous'} (${replyCount} replies)`;
+                
+                // Create meta section
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'highlight-meta';
+                metaDiv.innerHTML = `
+                    <span class="date">${date}</span>
+                    <span class="read-more-indicator">Join thread →</span>
+                `;
+                
+                // Assemble highlight card
+                highlightCard.appendChild(title);
+                highlightCard.appendChild(excerpt);
+                highlightCard.appendChild(userDisplay);
+                highlightCard.appendChild(metaDiv);
+                
+                highlightsContainer.appendChild(highlightCard);
+            });
+            
+            // Add "Join the Discussion" button
+            const joinBtn = document.createElement('a');
+            joinBtn.href = 'pages/messageboard.html';
+            joinBtn.className = 'btn btn-primary';
+            joinBtn.textContent = 'Join the Discussion';
+            highlightsContainer.appendChild(joinBtn);
+            
+        } catch (error) {
+            console.error('Failed to load echoes:', error);
+            // Keep fallback content
+        }
+    }
+    
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', loadEchoesHighlights);
     </script>
 </body>
 </html>
