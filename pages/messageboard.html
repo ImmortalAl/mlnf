@@ -221,6 +221,44 @@
             fetchThreads();
         });
 
+        // Check for thread ID to auto-open (from front page Echoes Unbound highlights)
+        const urlParams = new URLSearchParams(window.location.search);
+        const openThreadId = urlParams.get('openThread');
+        if (openThreadId) {
+            console.log('[messageboard.html] Auto-opening thread for ID:', openThreadId);
+            // Clear URL parameter for cleaner experience
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Wait for threads to load, then scroll to the specific thread
+            const tryFindThread = () => {
+                console.log('[messageboard.html] Looking for thread with ID:', openThreadId);
+                const threadElement = document.querySelector(`[data-id="${openThreadId}"]`);
+                
+                if (threadElement) {
+                    console.log('[messageboard.html] SUCCESS! Found thread, scrolling to it');
+                    threadElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Add a highlight effect
+                    threadElement.style.border = '3px solid var(--accent)';
+                    threadElement.style.borderRadius = '12px';
+                    threadElement.style.boxShadow = '0 0 20px rgba(255, 94, 120, 0.5)';
+                    
+                    // Remove highlight after 3 seconds
+                    setTimeout(() => {
+                        threadElement.style.border = '';
+                        threadElement.style.borderRadius = '';
+                        threadElement.style.boxShadow = '';
+                    }, 3000);
+                } else {
+                    console.log('[messageboard.html] Thread not found yet, trying again...');
+                    setTimeout(tryFindThread, 1000);
+                }
+            };
+            
+            // Start looking for the thread after a delay to let it load
+            setTimeout(tryFindThread, 2000);
+        }
+
         async function fetchThreads(searchTerm = '') {
             console.log('[DEBUG] fetchThreads called with searchTerm:', searchTerm);
             console.log('[DEBUG] User logged in:', window.authManager.isLoggedIn());

@@ -981,9 +981,9 @@
                 // Add click handler to open specific thread
                 highlightCard.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Store message ID for messageboard page to auto-open
-                    sessionStorage.setItem('openMessageId', message._id);
-                    window.location.href = 'pages/messageboard.html';
+                    console.log('[index.html] Echo highlight clicked, ID:', message._id);
+                    // Use URL parameter for reliable delivery
+                    window.location.href = `pages/messageboard.html?openThread=${message._id}`;
                 });
                 
                 // Create title
