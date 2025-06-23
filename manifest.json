@@ -1,0 +1,135 @@
+{
+  "name": "Manifest Liberation, Naturally Free",
+  "short_name": "MLNF",
+  "description": "An immortal sanctuary for uncensored thought and eternal truth",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d1a",
+  "theme_color": "#ff5e78",
+  "orientation": "portrait-primary",
+  "categories": ["social", "lifestyle", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Soul Scrolls",
+      "short_name": "Scrolls",
+      "description": "Create and read eternal scrolls",
+      "url": "/pages/blog.html",
+      "icons": [{ "src": "assets/icons/scroll-icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Celestial Commons",
+      "short_name": "Chat",
+      "description": "Join the eternal conversation",
+      "url": "/pages/celestial-commons.html",
+      "icons": [{ "src": "assets/icons/chat-icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Echoes Unbound",
+      "short_name": "Echoes",
+      "description": "Community message board",
+      "url": "/pages/messageboard.html",
+      "icons": [{ "src": "assets/icons/echo-icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Eternal Souls",
+      "short_name": "Souls",
+      "description": "Discover immortal beings",
+      "url": "/souls",
+      "icons": [{ "src": "assets/icons/souls-icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/homepage-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MLNF Homepage - Desktop View"
+    },
+    {
+      "src": "assets/screenshots/homepage-narrow.png",
+      "sizes": "640x1136",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "MLNF Homepage - Mobile View"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope": "/",
+  "id": "mlnf-pwa",
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/compose?to=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "text/*"]
+        }
+      ]
+    }
+  }
+}
