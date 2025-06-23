@@ -945,11 +945,11 @@
                 return;
             }
             
-            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/messages?limit=2&sort=-createdAt`);
+            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/threads?limit=2`);
             if (!response.ok) throw new Error('Failed to fetch');
             
             const data = await response.json();
-            const messages = data.docs || data;
+            const messages = data.threads || data;
             
             const highlightsContainer = document.getElementById('echoesHighlights');
             if (!highlightsContainer || messages.length === 0) return;
