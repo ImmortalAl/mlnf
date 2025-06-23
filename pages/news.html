@@ -406,13 +406,21 @@
                     sessionStorage.removeItem('openChronicleId'); // Clean up
                     
                     // Wait for chronicles feed to be fully loaded, then open modal
-                    setTimeout(() => {
-                        if (window.ChroniclesFeed && window.ChroniclesFeed.openChronicleModal) {
-                            window.ChroniclesFeed.openChronicleModal(openChronicleId);
+                    const attemptAutoOpen = (attempts = 0) => {
+                        if (window.chroniclesFeed && window.chroniclesFeed.openChronicleModal) {
+                            console.log('[news.html] Attempting to auto-open chronicle modal');
+                            window.chroniclesFeed.openChronicleModal(openChronicleId);
                         } else {
-                            console.warn('[news.html] ChroniclesFeed not available for auto-open');
+                            console.warn(`[news.html] ChroniclesFeed not ready (attempt ${attempts + 1})`);
+                            if (attempts < 10) {
+                                setTimeout(() => attemptAutoOpen(attempts + 1), 500);
+                            } else {
+                                console.error('[news.html] ChroniclesFeed failed to initialize after 10 attempts');
+                            }
                         }
-                    }, 1500); // Give extra time for feed to load
+                    };
+                    
+                    setTimeout(() => attemptAutoOpen(), 1000);
                 }
             } catch (error) {
                 console.error('Error initializing news page components:', error);
