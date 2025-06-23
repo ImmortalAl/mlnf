@@ -195,18 +195,9 @@ body.light-theme .debate-position h4 {
 
 /* Enhanced section title for Soul Scrolls */
 #blogHeading {
-    font-family: 'Caesar Dressing', serif;
-    background: linear-gradient(135deg, 
-        var(--accent) 0%, 
-        rgba(255, 202, 40, 0.9) 50%, 
-        var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.6);
+    /* Use consistent styling with other section headings */
     position: relative;
     z-index: 1;
-    animation: soulTitlePulse 4s ease-in-out infinite;
 }
 
 @keyframes soulTitlePulse {
@@ -280,52 +271,23 @@ body.light-theme .debate-position h4 {
         inset 0 2px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* Soul Scroll Title - Enhanced Typography */
+/* Soul Scroll Title - Consistent Typography */
 .scroll-title-prominent {
-    font-family: 'Caesar Dressing', serif !important;
-    font-size: 2rem !important;
-    margin-bottom: 1.5rem !important;
-    line-height: 1.2 !important;
-    background: linear-gradient(135deg, 
-        rgba(255, 94, 120, 0.95) 0%,
-        rgba(255, 202, 40, 0.9) 50%,
-        rgba(255, 94, 120, 0.95) 100%) !important;
+    /* Use consistent styling with other highlight item h4 elements */
+    font-family: 'Lato', sans-serif !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    background: var(--gradient-accent) !important;
     -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
-    text-shadow: 0 0 15px rgba(var(--accent-rgb, 255, 94, 120), 0.3) !important;
-    position: relative;
+    color: transparent !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.3 !important;
     letter-spacing: 0.02em !important;
+    transition: var(--transition);
 }
 
-/* Add mystical underline to scroll titles */
-.scroll-title-prominent::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(255, 94, 120, 0.6) 20%,
-        rgba(255, 202, 40, 0.8) 50%,
-        rgba(255, 94, 120, 0.6) 80%,
-        transparent 100%);
-    border-radius: 2px;
-    animation: scrollTitleUnderline 3s ease-in-out infinite;
-}
-
-@keyframes scrollTitleUnderline {
-    0%, 100% { 
-        opacity: 0.6;
-        transform: scaleX(1);
-    }
-    50% { 
-        opacity: 0.9;
-        transform: scaleX(1.02);
-    }
-}
+/* Remove inconsistent underline animation for consistency */
 
 /* Enhanced Scroll Excerpt */
 .scroll-excerpt {
