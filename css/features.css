@@ -346,18 +346,17 @@ body.light-theme .debate-position h4 {
 
 /* Enhanced read more indicator */
 .scroll-highlight-card .read-more-indicator {
-    color: rgba(255, 202, 40, 0.9);
-    font-family: 'Caesar Dressing', serif;
-    font-weight: 400;
-    font-size: 1rem;
-    text-shadow: 0 0 10px rgba(255, 202, 40, 0.4);
+    color: var(--accent);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0.8;
     position: relative;
     transition: all 0.3s ease;
 }
 
 .scroll-highlight-card:hover .read-more-indicator {
-    color: rgba(255, 202, 40, 1);
-    text-shadow: 0 0 15px rgba(255, 202, 40, 0.6);
+    color: var(--text);
     transform: translateX(3px);
 }
 
