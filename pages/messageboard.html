@@ -353,11 +353,11 @@
             const threads = response.threads || response;
             console.log('[DEBUG] Threads to render:', threads);
             
-            renderThreads(threads);
+            window.renderThreads(threads);
             console.log('[DEBUG] Threads rendered successfully');
             
             // Update category display
-            updateCategoryDisplay(category, threads.length);
+            window.updateCategoryDisplay(category, threads.length);
             
         } catch (error) {
             console.error('[ERROR] Failed to fetch threads:', error);
@@ -405,7 +405,7 @@
             const proposals = response.proposals || [];
             
             // Update category display
-            updateCategoryDisplay('Governance', proposals.length);
+            window.updateCategoryDisplay('Governance', proposals.length);
             
             // Render governance-specific interface
             window.renderGovernanceProposals(proposals);
@@ -589,6 +589,127 @@
             showNotification('Could not load proposal details', 'error');
         }
     }
+
+    // Global helper functions needed by fetchThreads
+    window.renderThreads = function(threads) {
+        if (!threadList) threadList = document.getElementById('threadList');
+        
+        if (!threads || threads.length === 0) {
+            threadList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h4>No echoes found</h4>
+                    <p>Be the first to start a conversation in this category!</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('newThreadBtn').click()">
+                        <i class="fas fa-plus"></i> Create First Echo
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        const isAuthenticated = window.authManager.isLoggedIn();
+        threadList.innerHTML = threads.map(thread => {
+            const isAuthor = isAuthenticated && window.authManager.getUser()?._id === thread.author?._id;
+            const createdDate = new Date(thread.createdAt).toLocaleDateString();
+            const lastActive = thread.updatedAt ? new Date(thread.updatedAt).toLocaleDateString() : createdDate;
+            
+            return `
+            <div class="thread ${thread.isAnonymous ? 'anonymous' : ''}" data-id="${thread._id}">
+                <div class="thread-voting">
+                    <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="upvote-thread" aria-label="Upvote" ${!isAuthenticated ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <span class="vote-count">${thread.score || 0}</span>
+                    <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="downvote-thread" aria-label="Downvote" ${!isAuthenticated ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </div>
+                <div class="thread-main">
+                    <h4 class="thread-title">
+                        ${escapeHTML(thread.title)}
+                        ${thread.isAnonymous ? '<span class="thread-anonymous-indicator"><i class="fas fa-mask"></i> Anonymous</span>' : ''}
+                    </h4>
+                    <div class="thread-preview">${getThreadPreview(thread.content)}</div>
+                    <div class="thread-author-info"></div>
+                    <div class="thread-meta">
+                        <span class="replies-count">
+                            <i class="fas fa-comment"></i> ${thread.replies ? thread.replies.length : 0} replies
+                        </span>
+                        <span class="category-tag">${thread.category || 'Ideas'}</span>
+                        <span class="date-info">
+                            <i class="fas fa-clock"></i> Last active: ${lastActive}
+                        </span>
+                    </div>
+                    <div class="thread-actions">
+                        ${isAuthor && !thread.isAnonymous ? '<button class="btn btn-secondary btn-sm edit-thread-btn" data-action="edit-thread"><i class="fas fa-edit"></i> Edit</button>' : ''}
+                        ${thread.tags && thread.tags.length > 0 ? `
+                            <div class="thread-tags">
+                                ${thread.tags.map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `}).join('');
+        
+        // After creating the HTML, add unified user displays
+        setTimeout(() => {
+            if (!window.MLNFAvatars) {
+                console.log('[messageboard] MLNFAvatars not available yet');
+                return;
+            }
+            
+            threads.forEach((thread, index) => {
+                const threadElement = threadList.children[index];
+                if (threadElement && thread.author) {
+                    const authorContainer = threadElement.querySelector('.thread-author-info');
+                    if (authorContainer) {
+                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                            username: thread.author.username || 'Anonymous',
+                            title: 'Echo Contributor',
+                            avatarSize: 'sm',
+                            displaySize: 'xs',
+                            compact: true,
+                            mystical: thread.author.isVIP || thread.author.role === 'admin',
+                            online: thread.author.online,
+                            customAvatar: thread.author.avatar,
+                            usernameStyle: 'immortal',
+                            enableUnifiedNavigation: true
+                        });
+                        authorContainer.appendChild(authorDisplay);
+                    }
+                }
+            });
+        }, 100);
+    };
+
+    window.updateCategoryDisplay = function(category, threadCount) {
+        const threadsColumn = document.getElementById('lyceum-threads');
+        let existingHeader = threadsColumn.querySelector('.category-header');
+        
+        if (!existingHeader) {
+            existingHeader = document.createElement('div');
+            existingHeader.className = 'category-header';
+            threadsColumn.insertBefore(existingHeader, threadsColumn.querySelector('.thread-controls'));
+        }
+        
+        const categoryName = category === 'all' || category === '' ? 'All Echoes' : category;
+        existingHeader.innerHTML = `
+            <h3>${categoryName}</h3>
+            <span class="thread-count">${threadCount} echo${threadCount !== 1 ? 's' : ''}</span>
+        `;
+    };
+
+    function getThreadPreview(content) {
+        // Remove HTML tags and get first 100 characters
+        const textOnly = content.replace(/<[^>]*>/g, '').trim();
+        return textOnly.length > 100 ? textOnly.substring(0, 100) + '...' : textOnly;
+    }
+
+    window.escapeHTML = function(str) {
+        return str ? str.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match])) : '';
+    };
 
     document.addEventListener('DOMContentLoaded', () => {
         threadList = document.getElementById('threadList');
@@ -778,120 +899,6 @@
 
         // Duplicate fetchThreads function removed - using global one
         
-        function updateCategoryDisplay(category, threadCount) {
-            const threadsColumn = document.getElementById('lyceum-threads');
-            let existingHeader = threadsColumn.querySelector('.category-header');
-            
-            if (!existingHeader) {
-                existingHeader = document.createElement('div');
-                existingHeader.className = 'category-header';
-                threadsColumn.insertBefore(existingHeader, threadsColumn.querySelector('.thread-controls'));
-            }
-            
-            const categoryName = category === 'all' || category === '' ? 'All Echoes' : category;
-            existingHeader.innerHTML = `
-                <h3>${categoryName}</h3>
-                <span class="thread-count">${threadCount} echo${threadCount !== 1 ? 's' : ''}</span>
-            `;
-        }
-
-        function renderThreads(threads) {
-            if (!threads || threads.length === 0) {
-                threadList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-comments"></i>
-                        <h4>No echoes found</h4>
-                        <p>Be the first to start a conversation in this category!</p>
-                        <button class="btn btn-primary" onclick="document.getElementById('newThreadBtn').click()">
-                            <i class="fas fa-plus"></i> Create First Echo
-                        </button>
-                    </div>
-                `;
-                return;
-            }
-            
-            const isAuthenticated = window.authManager.isLoggedIn();
-            threadList.innerHTML = threads.map(thread => {
-                const isAuthor = isAuthenticated && window.authManager.getUser()?._id === thread.author?._id;
-                const createdDate = new Date(thread.createdAt).toLocaleDateString();
-                const lastActive = thread.updatedAt ? new Date(thread.updatedAt).toLocaleDateString() : createdDate;
-                
-                return `
-                <div class="thread ${thread.isAnonymous ? 'anonymous' : ''}" data-id="${thread._id}">
-                    <div class="thread-voting">
-                        <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="upvote-thread" aria-label="Upvote" ${!isAuthenticated ? 'disabled' : ''}>
-                            <i class="fas fa-arrow-up"></i>
-                        </button>
-                        <span class="vote-count">${thread.score || 0}</span>
-                        <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="downvote-thread" aria-label="Downvote" ${!isAuthenticated ? 'disabled' : ''}>
-                            <i class="fas fa-arrow-down"></i>
-                        </button>
-                    </div>
-                    <div class="thread-main">
-                        <h4 class="thread-title">
-                            ${escapeHTML(thread.title)}
-                            ${thread.isAnonymous ? '<span class="thread-anonymous-indicator"><i class="fas fa-mask"></i> Anonymous</span>' : ''}
-                        </h4>
-                        <div class="thread-preview">${getThreadPreview(thread.content)}</div>
-                        <div class="thread-author-info"></div>
-                        <div class="thread-meta">
-                            <span class="replies-count">
-                                <i class="fas fa-comment"></i> ${thread.replies ? thread.replies.length : 0} replies
-                            </span>
-                            <span class="category-tag">${thread.category || 'Ideas'}</span>
-                            <span class="date-info">
-                                <i class="fas fa-clock"></i> Last active: ${lastActive}
-                            </span>
-                        </div>
-                        <div class="thread-actions">
-                            ${isAuthor && !thread.isAnonymous ? '<button class="btn btn-secondary btn-sm edit-thread-btn" data-action="edit-thread"><i class="fas fa-edit"></i> Edit</button>' : ''}
-                            ${thread.tags && thread.tags.length > 0 ? `
-                                <div class="thread-tags">
-                                    ${thread.tags.map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            `}).join('');
-            
-            // After creating the HTML, add unified user displays
-            setTimeout(() => {
-                if (!window.MLNFAvatars) {
-                    console.log('[messageboard] MLNFAvatars not available yet');
-                    return;
-                }
-                
-                threads.forEach((thread, index) => {
-                    const threadElement = threadList.children[index];
-                    if (threadElement && thread.author) {
-                        const authorContainer = threadElement.querySelector('.thread-author-info');
-                        if (authorContainer) {
-                            const authorDisplay = window.MLNFAvatars.createUserDisplay({
-                                username: thread.author.username || 'Anonymous',
-                                title: 'Echo Contributor',
-                                avatarSize: 'sm',
-                                displaySize: 'xs',
-                                compact: true,
-                                mystical: thread.author.isVIP || thread.author.role === 'admin',
-                                online: thread.author.online,
-                                customAvatar: thread.author.avatar,
-                                usernameStyle: 'immortal',
-                                enableUnifiedNavigation: true
-                            });
-                            authorContainer.appendChild(authorDisplay);
-                        }
-                    }
-                });
-            }, 100);
-        }
-        
-        function getThreadPreview(content) {
-            // Remove HTML tags and get first 100 characters
-            const textOnly = content.replace(/<[^>]*>/g, '').trim();
-            return textOnly.length > 100 ? textOnly.substring(0, 100) + '...' : textOnly;
-        }
-
         threadList.addEventListener('click', async (e) => {
             const toggleBtn = e.target.closest('[data-action="toggle-replies"]');
             const threadElement = e.target.closest('.thread');
@@ -950,9 +957,9 @@
                 }
                 
                 container.innerHTML = `
-                    <h3>${escapeHTML(threadData.title)}</h3>
+                    <h3>${window.escapeHTML(threadData.title)}</h3>
                     <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
-                    ${threadData.author && threadData.author.signature ? `<div class="signature">${escapeHTML(threadData.author.signature)}</div>` : ''}
+                    ${threadData.author && threadData.author.signature ? `<div class="signature">${window.escapeHTML(threadData.author.signature)}</div>` : ''}
                     ${proposalInterface}
                     <div class="replies-container">
                         ${renderReplies(threadData.replies, threadId)}
