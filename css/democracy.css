@@ -1,0 +1,607 @@
+/* Democracy 3.0 Styles */
+/* Constitutional Direct Democracy Interface */
+
+/* Governance Proposals */
+.proposal-item {
+    background: linear-gradient(135deg, rgba(83, 109, 254, 0.1), rgba(181, 172, 246, 0.05));
+    border-left: 4px solid var(--accent-purple);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.proposal-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(83, 109, 254, 0.15);
+}
+
+.proposal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.proposal-title {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.proposal-title i {
+    color: var(--accent-purple);
+}
+
+.proposal-meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.proposal-type {
+    background: var(--surface-secondary);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.proposal-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.proposal-status.active {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.proposal-status.passed {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.proposal-status.rejected {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.voting-active {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.voting-ended {
+    background: rgba(156, 163, 175, 0.2);
+    color: #9ca3af;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.proposal-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* Voting Interface */
+.proposal-voting {
+    background: var(--surface-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.vote-counts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.vote-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.vote-count.yes {
+    color: #22c55e;
+}
+
+.vote-count.no {
+    color: #ef4444;
+}
+
+.vote-count.abstain {
+    color: #f59e0b;
+}
+
+.vote-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--surface-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.progress-yes {
+    background: #22c55e;
+    transition: width 0.5s ease;
+}
+
+.progress-no {
+    background: #ef4444;
+    transition: width 0.5s ease;
+}
+
+.progress-abstain {
+    background: #f59e0b;
+    transition: width 0.5s ease;
+}
+
+.total-votes {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.voting-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.vote-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.vote-btn.yes {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border: 2px solid rgba(34, 197, 94, 0.3);
+}
+
+.vote-btn.yes:hover {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+}
+
+.vote-btn.no {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+.vote-btn.no:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+}
+
+.vote-btn.abstain {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+}
+
+.vote-btn.abstain:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #f59e0b;
+}
+
+.proposal-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* No Proposals State */
+.no-proposals {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--surface-secondary);
+    border-radius: 12px;
+    border: 2px dashed var(--border-color);
+}
+
+.no-proposals h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.no-proposals p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Login Prompt */
+.login-prompt {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(83, 109, 254, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(83, 109, 254, 0.3);
+}
+
+.login-prompt p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Proposal Modal */
+#proposalModal .modal-content {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#proposalModal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+#proposalModal label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+#proposalModal input,
+#proposalModal select,
+#proposalModal textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--surface-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+#proposalModal input:focus,
+#proposalModal select:focus,
+#proposalModal textarea:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+}
+
+#proposalModal textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+/* Anonymous Submissions */
+.anonymous-toggle {
+    background: var(--surface-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    background: var(--surface-tertiary);
+    border-radius: 12px;
+    transition: background 0.3s ease;
+}
+
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+input[type="checkbox"]:checked + .toggle-slider {
+    background: var(--accent-gold);
+}
+
+input[type="checkbox"]:checked + .toggle-slider::after {
+    transform: translateX(26px);
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.anonymous-info {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.anonymous-author-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent-gold);
+    font-style: italic;
+}
+
+.anonymous-submission {
+    border-left: 4px solid var(--accent-gold);
+}
+
+.anonymous-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.anonymous-name {
+    font-weight: 500;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.anonymous-timestamp {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.anonymous-content {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.anonymous-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease;
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Community Moderation */
+.moderation-case {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+    border-left: 4px solid #ef4444;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.case-title {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.case-meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.case-type {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Highlight Cards */
+.highlight-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.highlight-card {
+    background: var(--surface-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.highlight-card.community {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+}
+
+.highlight-card.admin {
+    border-color: rgba(83, 109, 254, 0.3);
+    background: linear-gradient(135deg, rgba(83, 109, 254, 0.1), rgba(83, 109, 254, 0.05));
+}
+
+.highlight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.highlight-type {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.highlight-type.community {
+    color: #22c55e;
+}
+
+.highlight-type.admin {
+    color: var(--accent-purple);
+}
+
+.highlight-votes {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .proposal-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .proposal-meta {
+        justify-content: flex-start;
+    }
+
+    .vote-counts {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .voting-buttons {
+        flex-direction: column;
+    }
+
+    .vote-btn {
+        width: 100%;
+    }
+
+    .proposal-actions {
+        flex-direction: column;
+    }
+
+    .highlight-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .notification {
+        left: 20px;
+        right: 20px;
+        top: auto;
+        bottom: 20px;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
