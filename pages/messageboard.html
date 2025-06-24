@@ -312,8 +312,7 @@
     <script src="../components/shared/messageModal.js?v=1.2"></script>
 
     <!-- Democracy 3.0 JavaScript -->
-    <script src="../js/democracy/governance.js?v=1.0"></script>
-    <script src="../js/democracy/anonymous-submissions.js?v=1.0"></script>
+    <script src="../js/democracy/anonymous-submissions.js?v=1.1"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -330,11 +329,17 @@
             modules: { toolbar: [['bold', 'italic', 'underline'], ['link', 'blockquote'],[{ 'list': 'ordered'}, { 'list': 'bullet' }]] }
         });
 
-        // Initialize Democracy 3.0 systems
-        if (window.GovernanceSystem) {
-            const governance = new window.GovernanceSystem();
-            governance.init();
-        }
+        // Democracy 3.0 governance is now integrated directly into the messageboard
+        console.log('[messageboard] Democracy 3.0 governance system integrated successfully');
+        
+        // Debug function to test governance functionality
+        window.testGovernance = function() {
+            console.log('Available governance functions:', {
+                renderProposalInterface: typeof renderProposalInterface,
+                castProposalVote: typeof castProposalVote,
+                startProposalVoting: typeof startProposalVoting
+            });
+        };
 
         // Initialize Anonymous Submissions system
         if (window.AnonymousSubmissions) {
@@ -702,10 +707,26 @@
                 const threadData = await window.apiClient.get(`/threads/${threadId}`);
                 console.log('[messageboard] Thread data loaded successfully:', threadData);
                 
+                // Check if this is a governance proposal
+                let proposalInterface = '';
+                if (threadData.isProposal) {
+                    try {
+                        // Try to get proposal data
+                        const proposalData = await window.apiClient.get(`/governance/proposals?threadId=${threadId}`);
+                        if (proposalData.proposals && proposalData.proposals.length > 0) {
+                            const proposal = proposalData.proposals[0];
+                            proposalInterface = await renderProposalInterface(proposal);
+                        }
+                    } catch (error) {
+                        console.log('[messageboard] Could not load proposal data:', error);
+                    }
+                }
+                
                 container.innerHTML = `
                     <h3>${escapeHTML(threadData.title)}</h3>
                     <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
                     ${threadData.author && threadData.author.signature ? `<div class="signature">${escapeHTML(threadData.author.signature)}</div>` : ''}
+                    ${proposalInterface}
                     <div class="replies-container">
                         ${renderReplies(threadData.replies, threadId)}
                     </div>
@@ -1064,6 +1085,248 @@
 
         function escapeHTML(str) {
             return str ? str.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match])) : '';
+        }
+
+        // Governance Proposal Interface
+        async function renderProposalInterface(proposal) {
+            const isLoggedIn = window.authManager.isLoggedIn();
+            
+            // Get user's vote status if logged in
+            let userVote = null;
+            if (isLoggedIn) {
+                try {
+                    const proposalDetails = await window.apiClient.get(`/governance/proposals/${proposal._id}`);
+                    userVote = proposalDetails.userVote;
+                } catch (error) {
+                    console.log('[messageboard] Could not load user vote status:', error);
+                }
+            }
+
+            const statusClass = proposal.status.toLowerCase();
+            const isVotingActive = proposal.status === 'voting' && proposal.isVotingActive;
+            
+            return `
+                <div class="proposal-voting">
+                    <div class="voting-header">
+                        <h4><i class="fas fa-vote-yea"></i> Community Proposal</h4>
+                        <div class="proposal-status ${statusClass}">
+                            <i class="fas fa-${getStatusIcon(proposal.status)}"></i>
+                            ${proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
+                        </div>
+                    </div>
+                    
+                    <div class="proposal-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Type</div>
+                            <div class="meta-value">${formatProposalType(proposal.type)}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">${proposal.implementation?.priority || 'Medium'}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Effort</div>
+                            <div class="meta-value">${proposal.implementation?.estimatedEffort || 'Medium'}</div>
+                        </div>
+                        ${proposal.votingEndDate ? `
+                            <div class="meta-item">
+                                <div class="meta-label">${isVotingActive ? 'Voting Ends' : 'Voting Ended'}</div>
+                                <div class="meta-value">${new Date(proposal.votingEndDate).toLocaleDateString()}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    ${isVotingActive ? renderVotingInterface(proposal, userVote) : ''}
+                    ${renderVoteResults(proposal)}
+                    
+                    ${proposal.status === 'discussion' && isLoggedIn ? `
+                        <div class="proposal-actions">
+                            <button class="btn btn-primary" onclick="startProposalVoting('${proposal._id}')">
+                                <i class="fas fa-play"></i> Start Voting Period
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function renderVotingInterface(proposal, userVote) {
+            if (!window.authManager.isLoggedIn()) {
+                return `
+                    <div class="login-prompt">
+                        <p><i class="fas fa-info-circle"></i> Please log in to vote on this proposal</p>
+                        <button class="btn btn-primary" onclick="window.authManager.showLogin()">
+                            <i class="fas fa-sign-in-alt"></i> Log In to Vote
+                        </button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="vote-options">
+                    <div class="vote-option approve ${userVote === 'approve' ? 'selected' : ''}" 
+                         onclick="castProposalVote('${proposal._id}', 'approve')">
+                        <i class="fas fa-thumbs-up"></i>
+                        <div>Approve</div>
+                        <small>Support this proposal</small>
+                    </div>
+                    <div class="vote-option reject ${userVote === 'reject' ? 'selected' : ''}" 
+                         onclick="castProposalVote('${proposal._id}', 'reject')">
+                        <i class="fas fa-thumbs-down"></i>
+                        <div>Reject</div>
+                        <small>Oppose this proposal</small>
+                    </div>
+                    <div class="vote-option abstain ${userVote === 'abstain' ? 'selected' : ''}" 
+                         onclick="castProposalVote('${proposal._id}', 'abstain')">
+                        <i class="fas fa-minus"></i>
+                        <div>Abstain</div>
+                        <small>No strong opinion</small>
+                    </div>
+                </div>
+                ${userVote ? `<p class="vote-status"><i class="fas fa-check"></i> You voted: <strong>${userVote}</strong> (you can change your vote)</p>` : ''}
+            `;
+        }
+
+        function renderVoteResults(proposal) {
+            const totalVotes = proposal.votes.approve + proposal.votes.reject + proposal.votes.abstain;
+            
+            if (totalVotes === 0) {
+                return `
+                    <div class="vote-results">
+                        <h5>No votes yet</h5>
+                        <p>Be the first to vote on this proposal!</p>
+                    </div>
+                `;
+            }
+
+            const approvePercent = Math.round((proposal.votes.approve / totalVotes) * 100);
+            const rejectPercent = Math.round((proposal.votes.reject / totalVotes) * 100);
+            const abstainPercent = Math.round((proposal.votes.abstain / totalVotes) * 100);
+
+            return `
+                <div class="vote-results">
+                    <h5>Voting Results</h5>
+                    <div class="result-bar">
+                        <div class="result-label">
+                            <span>Approve: ${proposal.votes.approve} votes</span>
+                            <span>${approvePercent}%</span>
+                        </div>
+                        <div class="result-progress">
+                            <div class="result-fill approve" style="width: ${approvePercent}%"></div>
+                        </div>
+                    </div>
+                    <div class="result-bar">
+                        <div class="result-label">
+                            <span>Reject: ${proposal.votes.reject} votes</span>
+                            <span>${rejectPercent}%</span>
+                        </div>
+                        <div class="result-progress">
+                            <div class="result-fill reject" style="width: ${rejectPercent}%"></div>
+                        </div>
+                    </div>
+                    <div class="result-bar">
+                        <div class="result-label">
+                            <span>Abstain: ${proposal.votes.abstain} votes</span>
+                            <span>${abstainPercent}%</span>
+                        </div>
+                        <div class="result-progress">
+                            <div class="result-fill abstain" style="width: ${abstainPercent}%"></div>
+                        </div>
+                    </div>
+                    <div class="vote-summary">
+                        <div class="participation-rate">
+                            <i class="fas fa-users"></i> ${totalVotes} total votes
+                        </div>
+                        <div class="result-status ${approvePercent >= proposal.passThreshold ? 'passing' : 'failing'}">
+                            ${approvePercent >= proposal.passThreshold ? 'Currently Passing' : 'Currently Failing'} 
+                            (${proposal.passThreshold}% needed)
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStatusIcon(status) {
+            const icons = {
+                discussion: 'comments',
+                voting: 'clock',
+                passed: 'check',
+                failed: 'times',
+                implemented: 'rocket',
+                blocked: 'ban'
+            };
+            return icons[status] || 'question';
+        }
+
+        function formatProposalType(type) {
+            return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // Governance voting functions
+        async function castProposalVote(proposalId, choice) {
+            if (!window.authManager.isLoggedIn()) {
+                window.authManager.showLogin();
+                return;
+            }
+
+            try {
+                await window.apiClient.post(`/governance/proposals/${proposalId}/vote`, { choice });
+                
+                // Show success message
+                showNotification(`Vote cast: ${choice}`, 'success');
+                
+                // Reload the active thread to show updated results
+                const activeThreadContainer = document.getElementById('lyceum-active-thread');
+                const activeThread = document.querySelector('.thread.active');
+                if (activeThread && activeThreadContainer) {
+                    await loadAndDisplayActiveThread(activeThread.dataset.id, activeThreadContainer);
+                }
+                
+            } catch (error) {
+                console.error('Error casting vote:', error);
+                showNotification(`Error: ${error.error || 'Could not cast vote'}`, 'error');
+            }
+        }
+
+        async function startProposalVoting(proposalId) {
+            if (!window.authManager.isLoggedIn()) {
+                window.authManager.showLogin();
+                return;
+            }
+
+            try {
+                await window.apiClient.post(`/governance/proposals/${proposalId}/start-voting`);
+                
+                showNotification('Voting period started!', 'success');
+                
+                // Reload the active thread to show voting interface
+                const activeThreadContainer = document.getElementById('lyceum-active-thread');
+                const activeThread = document.querySelector('.thread.active');
+                if (activeThread && activeThreadContainer) {
+                    await loadAndDisplayActiveThread(activeThread.dataset.id, activeThreadContainer);
+                }
+                
+            } catch (error) {
+                console.error('Error starting voting:', error);
+                showNotification(`Error: ${error.error || 'Could not start voting'}`, 'error');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
         }
 
         // Reply editing functions

@@ -294,11 +294,11 @@ class CommunityModerationSystem {
 
     async voteModerationCase(caseId, choice) {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.authManager.showModal('login');
+            if (!window.authManager.isLoggedIn()) {
+                window.authManager.showLogin();
                 return;
             }
+            const token = window.authManager.getToken();
 
             const response = await fetch('/api/community-mod/vote-case', {
                 method: 'POST',
@@ -334,9 +334,21 @@ class CommunityModerationSystem {
     }
 
     showNotification(message, type = 'info') {
-        if (window.governanceSystem) {
-            window.governanceSystem.showNotification(message, type);
-        }
+        // Create notification using the same system as the messageboard
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
     }
 
     // Add flag buttons to user displays
