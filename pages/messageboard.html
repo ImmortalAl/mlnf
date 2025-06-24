@@ -402,8 +402,13 @@
                 // Hide active thread column when switching categories
                 document.getElementById('lyceum-active-thread').style.display = 'none';
                 
-                // Fetch threads for this category
-                fetchThreads('', currentCategory);
+                // Special handling for Governance category
+                if (categoryName === 'Governance') {
+                    displayGovernanceInterface();
+                } else {
+                    // Fetch regular threads for other categories
+                    fetchThreads('', currentCategory);
+                }
             });
         });
 
@@ -1327,6 +1332,224 @@
             setTimeout(() => {
                 notification.remove();
             }, 5000);
+        }
+
+        // Governance Interface Display
+        async function displayGovernanceInterface() {
+            threadList.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading governance proposals...</div>';
+            
+            try {
+                // Fetch proposals from the governance API
+                const response = await window.apiClient.get('/governance/proposals');
+                const proposals = response.proposals || [];
+                
+                // Update category display
+                updateCategoryDisplay('Governance', proposals.length);
+                
+                // Render governance-specific interface
+                renderGovernanceProposals(proposals);
+                
+            } catch (error) {
+                console.error('Error loading governance proposals:', error);
+                threadList.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Failed to load governance proposals. ${error.error || 'Please try again.'}
+                    </div>
+                `;
+            }
+        }
+
+        function renderGovernanceProposals(proposals) {
+            const isAuthenticated = window.authManager.isLoggedIn();
+            
+            if (!proposals || proposals.length === 0) {
+                threadList.innerHTML = `
+                    <div class="governance-empty-state">
+                        <div class="governance-welcome">
+                            <i class="fas fa-vote-yea governance-icon"></i>
+                            <h3>Community Governance</h3>
+                            <p>Participate in platform decisions through democratic proposals and voting.</p>
+                        </div>
+                        
+                        <div class="governance-actions">
+                            ${isAuthenticated ? `
+                                <button class="btn btn-primary governance-create-btn" onclick="openGovernanceModal()">
+                                    <i class="fas fa-plus"></i> Create Proposal
+                                </button>
+                                <button class="btn btn-secondary" onclick="fetchThreads('', 'Governance')">
+                                    <i class="fas fa-comments"></i> View Discussions
+                                </button>
+                            ` : `
+                                <p class="login-prompt-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Log in to create proposals and participate in governance
+                                </p>
+                                <button class="btn btn-primary" onclick="window.authManager.showLogin()">
+                                    <i class="fas fa-sign-in-alt"></i> Log In
+                                </button>
+                            `}
+                        </div>
+                        
+                        <div class="governance-info-panel">
+                            <h4>How Democracy 3.0 Works</h4>
+                            <ul>
+                                <li><strong>Proposals:</strong> Suggest new features, policies, or changes</li>
+                                <li><strong>Discussion:</strong> Community discusses proposals before voting</li>
+                                <li><strong>Voting:</strong> Democratic decisions with transparent results</li>
+                                <li><strong>Implementation:</strong> Approved proposals are tracked to completion</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render proposals
+            threadList.innerHTML = `
+                <div class="governance-header">
+                    <div class="governance-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">${proposals.filter(p => p.status === 'voting').length}</span>
+                            <span class="stat-label">Active Votes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${proposals.filter(p => p.status === 'passed').length}</span>
+                            <span class="stat-label">Passed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${proposals.filter(p => p.status === 'implemented').length}</span>
+                            <span class="stat-label">Implemented</span>
+                        </div>
+                    </div>
+                    
+                    ${isAuthenticated ? `
+                        <button class="btn btn-primary governance-create-btn" onclick="openGovernanceModal()">
+                            <i class="fas fa-plus"></i> Create Proposal
+                        </button>
+                    ` : `
+                        <button class="btn btn-primary" onclick="window.authManager.showLogin()">
+                            <i class="fas fa-sign-in-alt"></i> Log In to Participate
+                        </button>
+                    `}
+                </div>
+                
+                <div class="proposals-list">
+                    ${proposals.map(proposal => renderProposalCard(proposal)).join('')}
+                </div>
+            `;
+        }
+
+        function renderProposalCard(proposal) {
+            const totalVotes = proposal.votes.approve + proposal.votes.reject + proposal.votes.abstain;
+            const approvePercent = totalVotes > 0 ? Math.round((proposal.votes.approve / totalVotes) * 100) : 0;
+            const statusClass = proposal.status.toLowerCase();
+            const isVotingActive = proposal.status === 'voting' && proposal.isVotingActive;
+            
+            return `
+                <div class="proposal-card ${statusClass}" data-id="${proposal._id}" onclick="viewProposalDetails('${proposal._id}')">
+                    <div class="proposal-card-header">
+                        <h4 class="proposal-title">
+                            <i class="fas fa-${getStatusIcon(proposal.status)}"></i>
+                            ${escapeHTML(proposal.title)}
+                        </h4>
+                        <div class="proposal-status ${statusClass}">
+                            ${proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
+                        </div>
+                    </div>
+                    
+                    <div class="proposal-card-meta">
+                        <span class="proposal-type">${formatProposalType(proposal.type)}</span>
+                        <span class="proposal-priority">Priority: ${proposal.implementation?.priority || 'Medium'}</span>
+                        ${proposal.votingEndDate ? `
+                            <span class="proposal-deadline">
+                                ${isVotingActive ? 'Ends' : 'Ended'}: ${new Date(proposal.votingEndDate).toLocaleDateString()}
+                            </span>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="proposal-description">
+                        ${proposal.description.substring(0, 150)}${proposal.description.length > 150 ? '...' : ''}
+                    </div>
+                    
+                    ${totalVotes > 0 ? `
+                        <div class="proposal-voting-preview">
+                            <div class="vote-progress-mini">
+                                <div class="vote-bar">
+                                    <div class="vote-fill approve" style="width: ${approvePercent}%"></div>
+                                </div>
+                                <span class="vote-stats">${approvePercent}% approval (${totalVotes} votes)</span>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="proposal-card-actions" onclick="event.stopPropagation();">
+                        ${isVotingActive && window.authManager.isLoggedIn() ? `
+                            <button class="btn btn-sm btn-success" onclick="castProposalVote('${proposal._id}', 'approve')">
+                                <i class="fas fa-thumbs-up"></i> Approve
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="castProposalVote('${proposal._id}', 'reject')">
+                                <i class="fas fa-thumbs-down"></i> Reject
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-sm btn-secondary" onclick="viewProposalDetails('${proposal._id}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openGovernanceModal() {
+            if (!window.authManager.isLoggedIn()) {
+                window.authManager.showLogin();
+                return;
+            }
+            
+            // Set the category to Governance and governance type to proposal
+            document.getElementById('newThreadBtn').click();
+            setTimeout(() => {
+                const categorySelect = document.getElementById('threadCategory');
+                const governanceOptions = document.getElementById('governanceOptions');
+                const proposalRadio = document.querySelector('input[name="governanceType"][value="proposal"]');
+                
+                if (categorySelect) categorySelect.value = 'Governance';
+                if (governanceOptions) governanceOptions.style.display = 'block';
+                if (proposalRadio) {
+                    proposalRadio.checked = true;
+                    proposalRadio.dispatchEvent(new Event('change'));
+                }
+            }, 100);
+        }
+
+        function viewProposalDetails(proposalId) {
+            // Find the corresponding thread for this proposal and open it
+            console.log('Viewing proposal details for:', proposalId);
+            // This will be implemented to open the proposal's discussion thread
+            fetchProposalThread(proposalId);
+        }
+
+        async function fetchProposalThread(proposalId) {
+            try {
+                const response = await window.apiClient.get(`/governance/proposals/${proposalId}`);
+                const proposal = response.proposal;
+                
+                if (proposal.discussionThreadId) {
+                    // Find and open the discussion thread
+                    const threadElement = document.querySelector(`[data-id="${proposal.discussionThreadId}"]`);
+                    if (threadElement) {
+                        threadElement.click();
+                    } else {
+                        // Load the thread directly if not in current view
+                        const activeThreadContainer = document.getElementById('lyceum-active-thread');
+                        activeThreadContainer.style.display = 'block';
+                        await loadAndDisplayActiveThread(proposal.discussionThreadId, activeThreadContainer);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching proposal thread:', error);
+                showNotification('Could not load proposal details', 'error');
+            }
         }
 
         // Reply editing functions
