@@ -586,8 +586,18 @@
 
         async function loadAndDisplayActiveThread(threadId, container) {
             container.innerHTML = '<p class="thread-meta">Summoning eternal echo...</p>';
+            
+            // Debug logging
+            console.log('[messageboard] Loading thread ID:', threadId);
+            console.log('[messageboard] API base URL:', window.apiClient?.baseURL);
+            
             try {
+                if (!threadId) {
+                    throw new Error('Thread ID is undefined or null');
+                }
+                
                 const threadData = await window.apiClient.get(`/threads/${threadId}`);
+                console.log('[messageboard] Thread data loaded successfully:', threadData);
                 
                 container.innerHTML = `
                     <h3>${escapeHTML(threadData.title)}</h3>
@@ -604,7 +614,23 @@
                 }
 
             } catch (error) {
-                container.innerHTML = '<p class="error">Failed to summon replies.</p>';
+                console.error('[messageboard] Error loading thread:', error);
+                console.error('[messageboard] Thread ID that failed:', threadId);
+                console.error('[messageboard] Full error details:', {
+                    message: error.message,
+                    error: error.error,
+                    stack: error.stack,
+                    details: error.details
+                });
+                
+                let errorMessage = 'Failed to summon replies.';
+                if (error.error) {
+                    errorMessage += ` (${error.error})`;
+                } else if (error.message) {
+                    errorMessage += ` (${error.message})`;
+                }
+                
+                container.innerHTML = `<p class="error">${errorMessage}</p>`;
             }
         }
 
