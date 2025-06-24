@@ -313,6 +313,7 @@
 
     <!-- Democracy 3.0 JavaScript -->
     <script src="../js/democracy/anonymous-submissions.js?v=1.1"></script>
+    <script src="../js/democracy/community-moderation.js?v=1.0"></script>
 
     <script>
     // Global variables and functions for accessibility
@@ -681,6 +682,13 @@
                     }
                 }
             });
+            
+            // Enhance with flag buttons after avatar displays are added
+            if (window.moderationSystem) {
+                setTimeout(() => {
+                    window.moderationSystem.enhanceUserDisplays();
+                }, 200);
+            }
         }, 100);
     };
 
@@ -1163,6 +1171,13 @@
                         }
                     }
                 });
+                
+                // Add flag buttons to reply author displays
+                if (window.moderationSystem) {
+                    setTimeout(() => {
+                        window.moderationSystem.enhanceUserDisplays();
+                    }, 200);
+                }
             }, 100);
             
             return repliesHTML;
@@ -1723,6 +1738,19 @@
                 alert(`Error: ${error.error || 'Could not cast vote.'}`);
             }
         });
+
+        // Initialize Community Moderation System
+        if (typeof CommunityModerationSystem !== 'undefined') {
+            window.moderationSystem = new CommunityModerationSystem();
+            console.log('[messageboard] Community moderation system initialized');
+            
+            // Enhance user displays with flag buttons after content loads
+            setTimeout(() => {
+                window.moderationSystem.enhanceUserDisplays();
+            }, 1000);
+        } else {
+            console.log('[messageboard] Community moderation system not available');
+        }
     });
     </script>
     
