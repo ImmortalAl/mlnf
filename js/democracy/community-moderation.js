@@ -383,37 +383,69 @@ document.addEventListener('DOMContentLoaded', () => {
 // CSS for moderation system
 const moderationCSS = `
 .user-context-menu {
-    background: var(--surface-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: rgba(26, 26, 51, 0.95);
+    border: 1px solid rgba(255, 94, 120, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     padding: 0.5rem 0;
-    min-width: 160px;
+    min-width: 180px;
+    backdrop-filter: blur(10px);
 }
 
 .context-menu-item {
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: var(--text-primary);
-    transition: background 0.2s ease;
+    gap: 0.75rem;
+    color: #f0e6ff;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .context-menu-item:hover {
-    background: var(--surface-secondary);
+    background: rgba(255, 94, 120, 0.1);
+    color: #ff5e78;
+}
+
+.context-menu-item i {
+    width: 16px;
+    text-align: center;
+    color: #ff5e78;
 }
 
 .flag-user-btn {
-    opacity: 0.6;
-    padding: 0.25rem;
+    background: transparent;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: rgba(245, 158, 11, 0.8);
+    padding: 0.4rem 0.6rem;
     margin-left: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
 }
 
 .flag-user-btn:hover {
-    opacity: 1;
+    background: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
     color: #f59e0b;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.flag-user-btn:active {
+    transform: translateY(0);
+}
+
+.flag-user-btn i {
+    font-size: 0.875rem;
 }
 
 .flag-warning {
@@ -428,19 +460,50 @@ const moderationCSS = `
     position: fixed;
     top: 20px;
     right: 20px;
-    background: var(--surface-primary);
+    background: rgba(26, 26, 51, 0.95);
     border: 2px solid #f59e0b;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
     z-index: 10000;
-    max-width: 300px;
+    max-width: 320px;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .moderation-notification .notification-content {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
+    color: #f0e6ff;
+}
+
+.moderation-notification .notification-content i {
+    color: #f59e0b;
+    font-size: 1.25rem;
+    margin-top: 0.125rem;
+}
+
+.moderation-notification .notification-content strong {
+    color: #ff5e78;
+    font-size: 1rem;
+}
+
+.moderation-notification .notification-content p {
+    margin: 0.25rem 0 0.75rem 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
 }
 
 .moderation-case {
