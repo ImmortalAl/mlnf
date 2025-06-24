@@ -139,6 +139,7 @@
                         <li><a href="#" data-category="Trades">Trades</a></li>
                         <li><a href="#" data-category="Events">Events</a></li>
                         <li><a href="#" data-category="Governance">Governance</a></li>
+                        <li><a href="#" data-category="Anonymous">Anonymous Whispers</a></li>
                     </ul>
                 </nav>
             </aside>
@@ -180,11 +181,26 @@
                         <option value="Trades">Trades</option>
                         <option value="Events">Events</option>
                         <option value="Governance">Governance</option>
+                        <option value="Anonymous">Anonymous Whispers</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="threadTags">Tags (comma-separated)</label>
                     <input type="text" id="threadTags" name="tags">
+                </div>
+                
+                <!-- Anonymous Toggle (will be shown/hidden by JavaScript) -->
+                <div id="threadComposerAnonymous" class="anonymous-toggle" style="display: none;">
+                    <label class="toggle-container">
+                        <input type="checkbox" id="threadAnonymousMode">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">
+                            <i class="fas fa-mask"></i> Submit Anonymously
+                        </span>
+                    </label>
+                    <div class="anonymous-info">
+                        <small>Your identity will be hidden from other users while maintaining accountability.</small>
+                    </div>
                 </div>
                     <div class="form-group">
                         <label>Content</label>

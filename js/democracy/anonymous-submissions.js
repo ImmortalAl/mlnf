@@ -36,8 +36,15 @@ class AnonymousSubmissionSystem {
 
         // Handle anonymous submission toggle
         document.addEventListener('click', (e) => {
-            if (e.target.matches('#toggleAnonymousMode')) {
+            if (e.target.matches('#toggleAnonymousMode') || e.target.matches('#threadAnonymousMode')) {
                 this.toggleAnonymousMode();
+            }
+        });
+
+        // Listen for category changes in thread composer
+        document.addEventListener('change', (e) => {
+            if (e.target.matches('#threadCategory')) {
+                this.handleComposerCategoryChange(e.target.value);
             }
         });
     }
@@ -63,39 +70,25 @@ class AnonymousSubmissionSystem {
     }
 
     showAnonymousOption() {
-        const composer = document.getElementById('threadComposer');
-        if (!composer) return;
-
-        // Add anonymous toggle if not exists
-        let anonymousToggle = document.getElementById('anonymousToggle');
-        if (!anonymousToggle) {
-            anonymousToggle = document.createElement('div');
-            anonymousToggle.id = 'anonymousToggle';
-            anonymousToggle.className = 'anonymous-toggle';
-            anonymousToggle.innerHTML = `
-                <label class="toggle-container">
-                    <input type="checkbox" id="toggleAnonymousMode">
-                    <span class="toggle-slider"></span>
-                    <span class="toggle-label">
-                        <i class="fas fa-mask"></i> Submit Anonymously
-                    </span>
-                </label>
-                <div class="anonymous-info">
-                    <small>Your identity will be hidden from other users while maintaining accountability.</small>
-                </div>
-            `;
-            
-            composer.insertBefore(anonymousToggle, composer.firstChild);
+        const composerAnonymous = document.getElementById('threadComposerAnonymous');
+        if (composerAnonymous) {
+            composerAnonymous.style.display = 'block';
         }
-
-        anonymousToggle.style.display = 'block';
     }
 
     hideAnonymousOption() {
-        const anonymousToggle = document.getElementById('anonymousToggle');
-        if (anonymousToggle) {
-            anonymousToggle.style.display = 'none';
+        const composerAnonymous = document.getElementById('threadComposerAnonymous');
+        if (composerAnonymous) {
+            composerAnonymous.style.display = 'none';
+            // Reset checkbox
+            const checkbox = document.getElementById('threadAnonymousMode');
+            if (checkbox) checkbox.checked = false;
         }
+    }
+
+    handleComposerCategoryChange(category) {
+        // Check if current category allows anonymous submissions
+        this.handleSectionChange(category);
     }
 
     toggleAnonymousMode() {
@@ -258,7 +251,7 @@ class AnonymousSubmissionSystem {
 
     // Integrate with existing thread submission
     isAnonymousMode() {
-        const checkbox = document.getElementById('toggleAnonymousMode');
+        const checkbox = document.getElementById('threadAnonymousMode') || document.getElementById('toggleAnonymousMode');
         return checkbox && checkbox.checked;
     }
 
