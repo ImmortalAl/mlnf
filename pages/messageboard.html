@@ -666,19 +666,25 @@
                 if (threadElement && thread.author) {
                     const authorContainer = threadElement.querySelector('.thread-author-info');
                     if (authorContainer) {
-                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
-                            username: thread.author.username || 'Anonymous',
-                            title: 'Echo Contributor',
-                            avatarSize: 'sm',
-                            displaySize: 'xs',
-                            compact: true,
-                            mystical: thread.author.isVIP || thread.author.role === 'admin',
-                            online: thread.author.online,
-                            customAvatar: thread.author.avatar,
-                            usernameStyle: 'immortal',
-                            enableUnifiedNavigation: true
-                        });
-                        authorContainer.appendChild(authorDisplay);
+                                                    const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                                username: thread.author.username || 'Anonymous',
+                                title: 'Echo Contributor',
+                                avatarSize: 'sm',
+                                displaySize: 'xs',
+                                compact: true,
+                                mystical: thread.author.isVIP || thread.author.role === 'admin',
+                                online: thread.author.online,
+                                customAvatar: thread.author.avatar,
+                                usernameStyle: 'immortal',
+                                enableUnifiedNavigation: true
+                            });
+                            
+                            // Add user ID attribute for moderation system
+                            if (thread.author._id) {
+                                authorDisplay.setAttribute('data-user-id', thread.author._id);
+                            }
+                            
+                            authorContainer.appendChild(authorDisplay);
                     }
                 }
             });
@@ -1167,6 +1173,12 @@
                                 usernameStyle: 'immortal',
                                 enableUnifiedNavigation: true
                             });
+                            
+                            // Add user ID attribute for moderation system
+                            if (reply.author._id) {
+                                authorDisplay.setAttribute('data-user-id', reply.author._id);
+                            }
+                            
                             authorContainer.appendChild(authorDisplay);
                         }
                     }
