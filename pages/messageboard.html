@@ -284,6 +284,13 @@
             });
         });
 
+        // Set first section as active by default
+        const firstSection = document.querySelector('.message-section');
+        if (firstSection) {
+            firstSection.classList.add('active');
+            currentCategory = firstSection.querySelector('span').textContent;
+        }
+
         window.authManager.subscribe((isLoggedIn, user) => {
             fetchThreads();
         });
