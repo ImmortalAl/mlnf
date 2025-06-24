@@ -1,15 +1,16 @@
 // Anonymous Submissions System
 // Handles anonymous content submission for designated sections
 
-class AnonymousSubmissionSystem {
+class AnonymousSubmissions {
     constructor() {
-        this.currentSection = null;
+        this.anonymousSections = [];
         this.fingerprintData = null;
-        this.init();
     }
 
-    init() {
+    async init() {
+        console.log('[Anonymous] Initializing anonymous submissions system');
         this.generateFingerprint();
+        await this.loadAnonymousSections();
         this.setupEventListeners();
     }
 
@@ -25,140 +26,60 @@ class AnonymousSubmissionSystem {
         this.fingerprintData = btoa(fingerprint.substring(0, 100));
     }
 
-    setupEventListeners() {
-        // Listen for section changes to show/hide anonymous form
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('[data-category]')) {
-                const category = e.target.getAttribute('data-category');
-                this.handleSectionChange(category);
-            }
-        });
-
-        // Handle anonymous submission toggle
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('#toggleAnonymousMode') || e.target.matches('#threadAnonymousMode')) {
-                this.toggleAnonymousMode();
-            }
-        });
-
-        // Listen for category changes in thread composer
-        document.addEventListener('change', (e) => {
-            if (e.target.matches('#threadCategory')) {
-                this.handleComposerCategoryChange(e.target.value);
-            }
-        });
-    }
-
-    async handleSectionChange(category) {
-        // Check if current section allows anonymous submissions
+    async loadAnonymousSections() {
         try {
             const response = await fetch('/api/anonymous/sections');
             const data = await response.json();
             
             if (data.success) {
-                const section = data.sections.find(s => s.category === category);
-                if (section && section.allowsAnonymous) {
-                    this.currentSection = section;
-                    this.showAnonymousOption();
-                } else {
-                    this.hideAnonymousOption();
-                }
+                this.anonymousSections = data.sections;
+                console.log('[Anonymous] Loaded anonymous sections:', this.anonymousSections);
             }
         } catch (error) {
-            console.error('Error checking section permissions:', error);
+            console.error('[Anonymous] Error loading sections:', error);
         }
     }
 
-    showAnonymousOption() {
-        const composerAnonymous = document.getElementById('threadComposerAnonymous');
-        if (composerAnonymous) {
-            composerAnonymous.style.display = 'block';
-        }
-    }
-
-    hideAnonymousOption() {
-        const composerAnonymous = document.getElementById('threadComposerAnonymous');
-        if (composerAnonymous) {
-            composerAnonymous.style.display = 'none';
-            // Reset checkbox
-            const checkbox = document.getElementById('threadAnonymousMode');
-            if (checkbox) checkbox.checked = false;
-        }
-    }
-
-    handleComposerCategoryChange(category) {
-        // Check if current category allows anonymous submissions
-        this.handleSectionChange(category);
-    }
-
-    toggleAnonymousMode() {
-        const checkbox = document.getElementById('toggleAnonymousMode');
+    setupEventListeners() {
+        console.log('[Anonymous] Setting up event listeners');
         
-        if (checkbox.checked) {
-            this.showAnonymousPreview();
-        } else {
-            this.hideAnonymousPreview();
-        }
-    }
-
-    showAnonymousPreview() {
-        const authorContainer = document.querySelector('.thread-author-preview');
-        if (authorContainer) {
-            authorContainer.innerHTML = `
-                <div class="anonymous-author-preview">
-                    <i class="fas fa-mask" style="color: var(--accent-gold);"></i>
-                    <span>Anonymous Contributor</span>
-                </div>
-            `;
-        }
-    }
-
-    hideAnonymousPreview() {
-        const authorContainer = document.querySelector('.thread-author-preview');
-        if (authorContainer && window.authManager.isLoggedIn()) {
-            const user = window.authManager.getUser();
-            if (user) {
-                authorContainer.innerHTML = `
-                    <div class="registered-author-preview">
-                        <i class="fas fa-user-circle"></i>
-                        <span>${user.username}</span>
-                    </div>
-                `;
-            }
-        }
-    }
-
-    async submitAnonymousContent(title, content) {
-        if (!this.currentSection) {
-            throw new Error('No anonymous section selected');
-        }
-
-        try {
-            const response = await fetch('/api/anonymous/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    sectionId: this.currentSection.id,
-                    title: title,
-                    content: content,
-                    displayName: this.generateAnonymousName(),
-                    fingerprint: this.fingerprintData
-                })
+        // Listen for category changes in thread composer
+        const categorySelect = document.querySelector('#threadForm select[name="category"]');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                this.updateAnonymousToggleVisibility();
             });
+        }
+    }
 
-            const data = await response.json();
-            
-            if (data.success) {
-                this.showNotification('Anonymous submission posted successfully!', 'success');
-                return data.submission;
-            } else {
-                throw new Error(data.error || 'Failed to submit anonymously');
+    updateAnonymousToggleVisibility() {
+        const categorySelect = document.querySelector('#threadForm select[name="category"]');
+        const anonymousContainer = document.getElementById('threadComposerAnonymous');
+        
+        if (!categorySelect || !anonymousContainer) {
+            console.log('[Anonymous] Missing elements for toggle visibility');
+            return;
+        }
+
+        const selectedCategory = categorySelect.value;
+        console.log('[Anonymous] Checking category for anonymous option:', selectedCategory);
+        
+        // Check if the selected category allows anonymous submissions
+        const allowsAnonymous = this.anonymousSections.some(section => 
+            section.category === selectedCategory && section.allowsAnonymous
+        );
+
+        console.log('[Anonymous] Category allows anonymous:', allowsAnonymous);
+
+        if (allowsAnonymous) {
+            anonymousContainer.style.display = 'block';
+        } else {
+            anonymousContainer.style.display = 'none';
+            // Reset checkbox when hiding
+            const checkbox = document.getElementById('anonymousToggle');
+            if (checkbox) {
+                checkbox.checked = false;
             }
-        } catch (error) {
-            console.error('Error submitting anonymous content:', error);
-            throw error;
         }
     }
 
@@ -179,94 +100,21 @@ class AnonymousSubmissionSystem {
         return `${adjective} ${noun}`;
     }
 
-    displayAnonymousSubmissions(submissions) {
-        const threadList = document.getElementById('threadList');
-        if (!threadList) return;
-
-        submissions.forEach(submission => {
-            const element = this.createAnonymousElement(submission);
-            threadList.appendChild(element);
-        });
-    }
-
-    createAnonymousElement(submission) {
-        const div = document.createElement('div');
-        div.className = 'thread anonymous-submission';
-        div.innerHTML = `
-            <div class="anonymous-header">
-                <div class="anonymous-name">
-                    <i class="fas fa-mask"></i>
-                    ${submission.displayName}
-                </div>
-                <div class="anonymous-timestamp">
-                    ${new Date(submission.createdAt).toLocaleDateString()}
-                </div>
-            </div>
-            
-            <div class="anonymous-content">
-                ${submission.content}
-            </div>
-            
-            <div class="anonymous-actions">
-                <button class="btn btn-sm btn-secondary" onclick="anonymousSystem.flagContent('${submission._id}')">
-                    <i class="fas fa-flag"></i> Flag
-                </button>
-            </div>
-        `;
-        
-        return div;
-    }
-
-    async flagContent(submissionId) {
-        try {
-            const reason = prompt('Reason for flagging (optional):');
-            if (reason === null) return; // User cancelled
-
-            const response = await fetch(`/api/anonymous/flag/${submissionId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ reason })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                this.showNotification('Content flagged for review', 'info');
-            } else {
-                this.showNotification(data.error || 'Failed to flag content', 'error');
-            }
-        } catch (error) {
-            console.error('Error flagging content:', error);
-            this.showNotification('Error flagging content', 'error');
-        }
-    }
-
     showNotification(message, type = 'info') {
-        if (window.governanceSystem) {
-            window.governanceSystem.showNotification(message, type);
-        }
-    }
-
-    // Integrate with existing thread submission
-    isAnonymousMode() {
-        const checkbox = document.getElementById('threadAnonymousMode') || document.getElementById('toggleAnonymousMode');
-        return checkbox && checkbox.checked;
-    }
-
-    async handleThreadSubmission(title, content) {
-        if (this.isAnonymousMode() && this.currentSection) {
-            return await this.submitAnonymousContent(title, content);
-        }
-        return null; // Let normal submission process handle it
+        // Simple notification system
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000);
     }
 }
 
-// Initialize system when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.anonymousSystem = new AnonymousSubmissionSystem();
-});
+// Make it available globally
+window.AnonymousSubmissions = AnonymousSubmissions;
 
 // CSS for anonymous submissions (to be added to democracy.css)
 const anonymousCSS = `

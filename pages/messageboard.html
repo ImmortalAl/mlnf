@@ -235,10 +235,53 @@
         const threadComposer = document.getElementById('threadComposer');
         const threadForm = document.getElementById('threadForm');
         
+        // Track current category filter
+        let currentCategory = '';
+        
         const quill = new Quill('#editor', {
             theme: 'snow',
             placeholder: 'Compose your eternal echo here...',
             modules: { toolbar: [['bold', 'italic', 'underline'], ['link', 'blockquote'],[{ 'list': 'ordered'}, { 'list': 'bullet' }]] }
+        });
+
+        // Initialize Democracy 3.0 systems
+        if (window.GovernanceSystem) {
+            const governance = new window.GovernanceSystem();
+            governance.init();
+        }
+
+        // Initialize Anonymous Submissions system
+        if (window.AnonymousSubmissions) {
+            const anonymousSystem = new window.AnonymousSubmissions();
+            anonymousSystem.init();
+            
+            // Add category change handler to composer
+            const categorySelect = threadForm.elements.category;
+            categorySelect.addEventListener('change', () => {
+                anonymousSystem.updateAnonymousToggleVisibility();
+            });
+        }
+
+        // Add click handlers for sidebar categories
+        document.querySelectorAll('.message-section').forEach(section => {
+            section.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active state from all sections
+                document.querySelectorAll('.message-section').forEach(s => s.classList.remove('active'));
+                
+                // Add active state to clicked section
+                section.classList.add('active');
+                
+                // Get category name
+                const categoryName = section.querySelector('span').textContent;
+                currentCategory = categoryName;
+                
+                console.log('[Category Filter] Selected category:', categoryName);
+                
+                // Fetch threads for this category
+                fetchThreads('', categoryName);
+            });
         });
 
         window.authManager.subscribe((isLoggedIn, user) => {
@@ -291,14 +334,29 @@
             setTimeout(tryFindThread, 2000);
         }
 
-        async function fetchThreads(searchTerm = '') {
-            console.log('[DEBUG] fetchThreads called with searchTerm:', searchTerm);
+        async function fetchThreads(searchTerm = '', category = '') {
+            console.log('[DEBUG] fetchThreads called with searchTerm:', searchTerm, 'category:', category);
             console.log('[DEBUG] User logged in:', window.authManager.isLoggedIn());
             console.log('[DEBUG] Auth token present:', localStorage.getItem('sessionToken') ? 'Yes' : 'No');
             
             threadList.innerHTML = '<p>Summoning eternal echoes...</p>';
             try {
-                const endpoint = searchTerm ? `/threads/search?term=${encodeURIComponent(searchTerm)}` : '/threads';
+                let endpoint = '/threads';
+                const params = new URLSearchParams();
+                
+                if (searchTerm) {
+                    params.append('term', searchTerm);
+                    endpoint = '/threads/search';
+                }
+                
+                if (category && category !== 'All Sections') {
+                    params.append('category', category);
+                }
+                
+                if (params.toString()) {
+                    endpoint += '?' + params.toString();
+                }
+                
                 console.log('[DEBUG] Making request to endpoint:', endpoint);
                 
                 const response = await window.apiClient.get(endpoint);
@@ -533,8 +591,19 @@
         }
         
         document.getElementById('newThreadBtn').addEventListener('click', () => {
+            // Set category to current selected category
+            if (currentCategory && currentCategory !== 'All Sections') {
+                threadForm.elements.category.value = currentCategory;
+            }
+            
             composerModal.classList.add('active');
             composerModal.setAttribute('aria-hidden', 'false');
+            
+            // Trigger anonymous toggle update based on category
+            if (window.AnonymousSubmissions) {
+                const anonymousSystem = new window.AnonymousSubmissions();
+                anonymousSystem.updateAnonymousToggleVisibility();
+            }
         });
 
         document.getElementById('closeComposer').addEventListener('click', () => {
@@ -590,6 +659,12 @@
                 content: quill.root.innerHTML
             };
 
+            // Check for anonymous posting
+            const anonymousToggle = document.getElementById('anonymousToggle');
+            if (anonymousToggle && anonymousToggle.checked) {
+                data.isAnonymous = true;
+            }
+
             if (!data.title || !data.content || data.content === '<p><br></p>') {
                 alert('Title and content are required.');
                 submitButton.disabled = false;
@@ -607,7 +682,8 @@
                 quill.setContents([]);
                 closeComposerModal();
                 
-                fetchThreads(); // Refresh the thread list
+                // Refresh the thread list with current category filter
+                fetchThreads('', currentCategory); 
             } catch (error) {
                 alert(`Error: ${error.error || 'Could not post thread.'}`);
             } finally {
