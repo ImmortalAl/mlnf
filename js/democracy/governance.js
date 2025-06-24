@@ -24,8 +24,7 @@ class GovernanceSystem {
 
     async loadActiveProposals() {
         try {
-            const response = await fetch('/api/governance/proposals?status=active');
-            const data = await response.json();
+            const data = await window.apiClient.get('/governance/proposals?status=active');
             
             if (data.success) {
                 this.currentProposals = data.proposals;
@@ -157,25 +156,15 @@ class GovernanceSystem {
 
     async castVote(proposalId, choice) {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                authManager.showModal('login');
+            if (!window.authManager.isLoggedIn()) {
+                window.authManager.showModal('login');
                 return;
             }
 
-            const response = await fetch('/api/governance/vote', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    proposalId,
-                    choice
-                })
+            const data = await window.apiClient.post('/governance/vote', {
+                proposalId,
+                choice
             });
-
-            const data = await response.json();
             
             if (data.success) {
                 this.showNotification('Vote cast successfully!', 'success');
@@ -275,17 +264,7 @@ class GovernanceSystem {
         };
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('/api/governance/propose', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(proposalData)
-            });
-
-            const data = await response.json();
+            const data = await window.apiClient.post('/governance/propose', proposalData);
             
             if (data.success) {
                 this.showNotification('Proposal submitted successfully!', 'success');

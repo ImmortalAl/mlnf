@@ -28,8 +28,7 @@ class AnonymousSubmissions {
 
     async loadAnonymousSections() {
         try {
-            const response = await fetch('/api/anonymous/sections');
-            const data = await response.json();
+            const data = await window.apiClient.get('/anonymous/sections');
             
             if (data.success) {
                 this.anonymousSections = data.sections;
