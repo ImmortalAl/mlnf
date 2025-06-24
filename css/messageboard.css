@@ -461,13 +461,16 @@ section {
 
 /* Composer Modal */
 #threadComposerModal .modal-content-lg {
-    width: 90%;
+    width: 90vw;
     max-width: 700px;
+    max-height: 90vh;
     padding: 1.5rem;
     background: var(--secondary);
     border-radius: var(--border-radius);
     border: 1px solid var(--highlight);
     position: relative; /* For absolute positioning of close button */
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 #threadComposerModal .modal-header {
@@ -567,6 +570,50 @@ section {
     }
     .messageboard-container {
         height: auto;
+    }
+    
+    /* Modal responsive adjustments */
+    #threadComposerModal .modal-content-lg {
+        width: 95vw;
+        max-height: 85vh;
+        padding: 1rem;
+        margin: 2.5vh auto;
+    }
+    
+    #threadComposerModal .modal-header {
+        padding-right: 2.5rem;
+    }
+    
+    #threadComposerModal #editor {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    #threadComposerModal .modal-content-lg {
+        width: 98vw;
+        max-height: 90vh;
+        padding: 0.75rem;
+        margin: 1vh auto;
+        border-radius: 8px;
+    }
+    
+    #threadComposerModal .modal-header {
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    #threadComposerModal .modal-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    #threadComposerModal #editor {
+        height: 120px;
+    }
+    
+    #threadComposerModal .form-group {
+        margin-bottom: 0.75rem;
     }
 }
 
