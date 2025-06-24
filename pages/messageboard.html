@@ -689,6 +689,32 @@
                     e.target.textContent = 'Submit Reply';
                 }
             }
+
+            // Handle edit reply button
+            if (e.target.matches('[data-action="edit-reply"]')) {
+                const replyId = e.target.dataset.replyId;
+                const threadId = e.target.dataset.threadId;
+                openReplyEditor(replyId, threadId);
+            }
+
+            // Handle view edit history button
+            if (e.target.matches('[data-action="view-edit-history"]')) {
+                const replyId = e.target.dataset.replyId;
+                showEditHistory(replyId);
+            }
+
+            // Handle update reply button
+            if (e.target.matches('[data-action="update-reply"]')) {
+                const replyId = e.target.dataset.replyId;
+                const threadId = e.target.dataset.threadId;
+                await updateReply(replyId, threadId);
+            }
+
+            // Handle cancel edit button
+            if (e.target.matches('[data-action="cancel-edit-reply"]')) {
+                const replyId = e.target.dataset.replyId;
+                cancelReplyEdit(replyId);
+            }
         });
 
         function renderReplies(replies, threadId) {
@@ -696,7 +722,12 @@
                 return '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
             }
             
-            const repliesHTML = replies.map(reply => `
+            const repliesHTML = replies.map((reply, index) => {
+                const isAuthor = window.authManager.isLoggedIn() && window.authManager.getUser()?._id === reply.author?._id;
+                const hasSubsequentReplies = index < replies.length - 1; // Check if there are replies after this one
+                const canEdit = isAuthor && !reply.isAnonymous && !hasSubsequentReplies;
+                
+                return `
                 <div class="reply ${reply.isAnonymous ? 'anonymous' : ''}" data-id="${reply._id}">
                      <div class="thread-voting reply-voting">
                         <button class="vote-btn" data-action="upvote-reply" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
@@ -705,14 +736,19 @@
                     </div>
                     <div class="reply-main" data-thread-id="${threadId}">
                         <div class="reply-author-info"></div>
-                        <div class="reply-content">
+                        <div class="reply-content" id="reply-content-${reply._id}">
                             ${DOMPurify.sanitize(reply.content)}
                             ${reply.isAnonymous ? '<span class="reply-anonymous-indicator"><i class="fas fa-mask"></i> Anonymous Reply</span>' : ''}
+                            ${reply.editedAt ? `<span class="reply-edited-indicator"><i class="fas fa-edit"></i> Edited ${new Date(reply.editedAt).toLocaleString()}</span>` : ''}
+                        </div>
+                        <div class="reply-actions">
+                            ${canEdit ? `<button class="btn btn-secondary btn-xs edit-reply-btn" data-action="edit-reply" data-reply-id="${reply._id}" data-thread-id="${threadId}"><i class="fas fa-edit"></i> Edit</button>` : ''}
+                            ${reply.editHistory && reply.editHistory.length > 0 ? `<button class="btn btn-secondary btn-xs view-edit-history-btn" data-action="view-edit-history" data-reply-id="${reply._id}"><i class="fas fa-history"></i> History (${reply.editHistory.length})</button>` : ''}
                         </div>
                         ${reply.author && reply.author.signature && !reply.isAnonymous ? `<div class="signature">${escapeHTML(reply.author.signature)}</div>` : ''}
                     </div>
                 </div>
-            `);
+            `}).join('');
             
             // After creating the HTML, add unified user displays for replies
             setTimeout(() => {
@@ -865,6 +901,121 @@
 
         function escapeHTML(str) {
             return str ? str.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match])) : '';
+        }
+
+        // Reply editing functions
+        function openReplyEditor(replyId, threadId) {
+            const replyContentElement = document.getElementById(`reply-content-${replyId}`);
+            if (!replyContentElement) return;
+
+            // Get current content (strip out indicators first)
+            const currentContent = replyContentElement.innerHTML
+                .replace(/<span class="reply-anonymous-indicator">.*?<\/span>/g, '')
+                .replace(/<span class="reply-edited-indicator">.*?<\/span>/g, '')
+                .trim();
+
+            // Store original content for cancellation
+            replyContentElement.dataset.originalContent = currentContent;
+
+            // Create edit form
+            replyContentElement.innerHTML = `
+                <div class="reply-edit-form">
+                    <div id="replyEditEditor-${replyId}"></div>
+                    <div class="reply-edit-actions">
+                        <button class="btn btn-primary btn-sm" data-action="update-reply" data-reply-id="${replyId}" data-thread-id="${threadId}">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="btn btn-secondary btn-sm" data-action="cancel-edit-reply" data-reply-id="${replyId}">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Quill editor
+            const quill = new Quill(`#replyEditEditor-${replyId}`, {
+                theme: 'snow',
+                placeholder: 'Edit your reply...',
+                modules: { 
+                    toolbar: [['bold', 'italic', 'underline'], ['link', 'blockquote']] 
+                }
+            });
+
+            // Set current content
+            quill.root.innerHTML = currentContent;
+
+            // Store quill instance for later use
+            replyContentElement.dataset.quillId = `replyEditEditor-${replyId}`;
+
+            // Hide edit button to prevent multiple edits
+            const editButton = document.querySelector(`[data-action="edit-reply"][data-reply-id="${replyId}"]`);
+            if (editButton) {
+                editButton.style.display = 'none';
+            }
+        }
+
+        async function updateReply(replyId, threadId) {
+            const replyContentElement = document.getElementById(`reply-content-${replyId}`);
+            const quillId = replyContentElement.dataset.quillId;
+            const quill = Quill.find(document.getElementById(quillId));
+
+            if (!quill) {
+                alert('Editor not found');
+                return;
+            }
+
+            const content = quill.root.innerHTML.trim();
+
+            if (!content || content === '<p><br></p>') {
+                alert('Reply content cannot be empty');
+                return;
+            }
+
+            try {
+                const updateButton = document.querySelector(`[data-action="update-reply"][data-reply-id="${replyId}"]`);
+                updateButton.disabled = true;
+                updateButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                await window.apiClient.put(`/threads/${threadId}/replies/${replyId}`, { content });
+
+                // Reload the active thread view to show the updated reply
+                await loadAndDisplayActiveThread(threadId, document.getElementById('lyceum-active-thread'));
+
+            } catch (error) {
+                alert(`Error: ${error.error || 'Could not update reply.'}`);
+                
+                // Re-enable button
+                const updateButton = document.querySelector(`[data-action="update-reply"][data-reply-id="${replyId}"]`);
+                if (updateButton) {
+                    updateButton.disabled = false;
+                    updateButton.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                }
+            }
+        }
+
+        function cancelReplyEdit(replyId) {
+            const replyContentElement = document.getElementById(`reply-content-${replyId}`);
+            const originalContent = replyContentElement.dataset.originalContent;
+
+            // Restore original content
+            replyContentElement.innerHTML = originalContent;
+
+            // Show edit button again
+            const editButton = document.querySelector(`[data-action="edit-reply"][data-reply-id="${replyId}"]`);
+            if (editButton) {
+                editButton.style.display = 'inline-block';
+            }
+
+            // Clean up data attributes
+            delete replyContentElement.dataset.originalContent;
+            delete replyContentElement.dataset.quillId;
+        }
+
+        function showEditHistory(replyId) {
+            // This would show a modal with edit history - for now, just alert
+            // TODO: Implement full edit history modal
+            alert('Edit history feature - coming soon!');
+            console.log('Show edit history for reply:', replyId);
         }
 
         // Event delegation for voting
