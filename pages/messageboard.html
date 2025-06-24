@@ -482,7 +482,7 @@
                 const lastActive = thread.updatedAt ? new Date(thread.updatedAt).toLocaleDateString() : createdDate;
                 
                 return `
-                <div class="thread" data-id="${thread._id}">
+                <div class="thread ${thread.isAnonymous ? 'anonymous' : ''}" data-id="${thread._id}">
                     <div class="thread-voting">
                         <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="upvote-thread" aria-label="Upvote" ${!isAuthenticated ? 'disabled' : ''}>
                             <i class="fas fa-arrow-up"></i>
@@ -493,7 +493,10 @@
                         </button>
                     </div>
                     <div class="thread-main">
-                        <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
+                        <h4 class="thread-title">
+                            ${escapeHTML(thread.title)}
+                            ${thread.isAnonymous ? '<span class="thread-anonymous-indicator"><i class="fas fa-mask"></i> Anonymous</span>' : ''}
+                        </h4>
                         <div class="thread-preview">${getThreadPreview(thread.content)}</div>
                         <div class="thread-author-info"></div>
                         <div class="thread-meta">
@@ -506,7 +509,7 @@
                             </span>
                         </div>
                         <div class="thread-actions">
-                            ${isAuthor ? '<button class="btn btn-secondary btn-sm edit-thread-btn" data-action="edit-thread"><i class="fas fa-edit"></i> Edit</button>' : ''}
+                            ${isAuthor && !thread.isAnonymous ? '<button class="btn btn-secondary btn-sm edit-thread-btn" data-action="edit-thread"><i class="fas fa-edit"></i> Edit</button>' : ''}
                             ${thread.tags && thread.tags.length > 0 ? `
                                 <div class="thread-tags">
                                     ${thread.tags.map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}
@@ -609,13 +612,36 @@
             container.innerHTML = `
                 <h4>Your Reply</h4>
                 <div id="replyEditor-${threadId}"></div>
+                <div class="reply-options">
+                    <label class="anonymous-reply-toggle">
+                        <input type="checkbox" id="anonymousReplyToggle-${threadId}">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">
+                            <i class="fas fa-mask"></i> Reply Anonymously
+                        </span>
+                    </label>
+                    <div class="anonymous-reply-preview" id="anonymousReplyPreview-${threadId}" style="display: none;">
+                        <small><i class="fas fa-mask"></i> You will appear as an anonymous user</small>
+                    </div>
+                </div>
                 <button class="btn btn-primary btn-sm" data-action="submit-reply" data-thread-id="${threadId}">Submit Reply</button>
             `;
+            
             new Quill(`#replyEditor-${threadId}`, {
                 theme: 'snow',
                 placeholder: 'Add your echo to the discourse...',
                 modules: { toolbar: [['bold', 'italic', 'underline'], ['link', 'blockquote']] }
             });
+
+            // Handle anonymous reply toggle
+            const anonymousToggle = document.getElementById(`anonymousReplyToggle-${threadId}`);
+            const anonymousPreview = document.getElementById(`anonymousReplyPreview-${threadId}`);
+            
+            if (anonymousToggle && anonymousPreview) {
+                anonymousToggle.addEventListener('change', () => {
+                    anonymousPreview.style.display = anonymousToggle.checked ? 'block' : 'none';
+                });
+            }
         }
 
         document.getElementById('lyceum-active-thread').addEventListener('click', async (e) => {
@@ -628,14 +654,39 @@
                 if (!content || content === '<p><br></p>') {
                     return alert('Reply content is required.');
                 }
+
+                // Check if replying anonymously
+                const anonymousToggle = document.getElementById(`anonymousReplyToggle-${threadId}`);
+                const isAnonymous = anonymousToggle && anonymousToggle.checked;
+
+                const replyData = {
+                    content,
+                    isAnonymous
+                };
                 
                 try {
-                    await window.apiClient.post(`/threads/${threadId}/replies`, { content });
+                    e.target.disabled = true;
+                    e.target.textContent = 'Posting...';
+                    
+                    await window.apiClient.post(`/threads/${threadId}/replies`, replyData);
                     quill.setContents([]);
+                    
+                    // Reset anonymous toggle
+                    if (anonymousToggle) {
+                        anonymousToggle.checked = false;
+                        const anonymousPreview = document.getElementById(`anonymousReplyPreview-${threadId}`);
+                        if (anonymousPreview) {
+                            anonymousPreview.style.display = 'none';
+                        }
+                    }
+                    
                     // Reload the active thread view to show the new reply
                     await loadAndDisplayActiveThread(threadId, document.getElementById('lyceum-active-thread'));
                 } catch(error) {
                     alert(`Error: ${error.error || 'Could not post reply.'}`);
+                } finally {
+                    e.target.disabled = false;
+                    e.target.textContent = 'Submit Reply';
                 }
             }
         });
@@ -646,7 +697,7 @@
             }
             
             const repliesHTML = replies.map(reply => `
-                <div class="reply" data-id="${reply._id}">
+                <div class="reply ${reply.isAnonymous ? 'anonymous' : ''}" data-id="${reply._id}">
                      <div class="thread-voting reply-voting">
                         <button class="vote-btn" data-action="upvote-reply" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
                         <span class="vote-count">${reply.score || 0}</span>
@@ -654,8 +705,11 @@
                     </div>
                     <div class="reply-main" data-thread-id="${threadId}">
                         <div class="reply-author-info"></div>
-                        <div class="reply-content">${DOMPurify.sanitize(reply.content)}</div>
-                        ${reply.author && reply.author.signature ? `<div class="signature">${escapeHTML(reply.author.signature)}</div>` : ''}
+                        <div class="reply-content">
+                            ${DOMPurify.sanitize(reply.content)}
+                            ${reply.isAnonymous ? '<span class="reply-anonymous-indicator"><i class="fas fa-mask"></i> Anonymous Reply</span>' : ''}
+                        </div>
+                        ${reply.author && reply.author.signature && !reply.isAnonymous ? `<div class="signature">${escapeHTML(reply.author.signature)}</div>` : ''}
                     </div>
                 </div>
             `);

@@ -63,15 +63,14 @@ class AnonymousSubmissions {
         const selectedCategory = categorySelect.value;
         console.log('[Anonymous] Checking category for anonymous option:', selectedCategory);
         
-        // Check if the selected category allows anonymous submissions
-        const allowsAnonymous = this.anonymousSections.some(section => 
-            section.category === selectedCategory && section.allowsAnonymous
-        );
+        // For the unified messageboard system, allow anonymous posting in specific categories
+        const allowsAnonymous = ['Anonymous Whispers', 'Debates', 'Ideas'].includes(selectedCategory);
 
         console.log('[Anonymous] Category allows anonymous:', allowsAnonymous);
 
         if (allowsAnonymous) {
             anonymousContainer.style.display = 'block';
+            this.showAnonymousPreview();
         } else {
             anonymousContainer.style.display = 'none';
             // Reset checkbox when hiding
@@ -80,6 +79,36 @@ class AnonymousSubmissions {
                 checkbox.checked = false;
             }
         }
+    }
+
+    showAnonymousPreview() {
+        const checkbox = document.getElementById('anonymousToggle');
+        const anonymousContainer = document.getElementById('threadComposerAnonymous');
+        
+        if (!checkbox || !anonymousContainer) return;
+
+        // Add preview for anonymous name
+        let previewElement = anonymousContainer.querySelector('.anonymous-preview');
+        if (!previewElement) {
+            previewElement = document.createElement('div');
+            previewElement.className = 'anonymous-preview';
+            anonymousContainer.appendChild(previewElement);
+        }
+
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                const anonymousName = this.generateAnonymousName();
+                previewElement.innerHTML = `
+                    <div class="anonymous-author-preview">
+                        <i class="fas fa-mask"></i>
+                        <span>You will appear as: <strong>${anonymousName}</strong></span>
+                    </div>
+                `;
+                previewElement.style.display = 'block';
+            } else {
+                previewElement.style.display = 'none';
+            }
+        });
     }
 
     generateAnonymousName() {
