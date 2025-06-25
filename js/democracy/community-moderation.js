@@ -184,8 +184,7 @@ class CommunityModerationSystem {
 
     async loadActiveCases() {
         try {
-            const response = await fetch('/api/community-mod/cases?status=voting');
-            const data = await response.json();
+            const data = await window.apiClient.get('/community-mod/cases?status=voting');
             
             if (data.success) {
                 this.activeCases = data.cases;
@@ -306,33 +305,18 @@ class CommunityModerationSystem {
                 window.authManager.showLogin();
                 return;
             }
-            const token = window.authManager.getToken();
 
-                                    const response = await fetch('/api/community-mod/vote-case', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ caseId, choice })
-            });
-
-            const data = await response.json();
+            const data = await window.apiClient.post('/community-mod/vote-case', { caseId, choice });
             
             if (data.success) {
-                this.showNotification(`Vote cast: ${choice}`, 'success');
-                this.loadActiveCases();
-                // Refresh the panel
-                const casesContainer = document.getElementById('moderationCases');
-                if (casesContainer) {
-                    casesContainer.innerHTML = this.renderModerationCases();
-                }
+                this.showNotification('Vote cast successfully!', 'success');
+                this.loadActiveCases(); // Refresh cases
             } else {
-                this.showNotification(data.error || 'Failed to cast vote', 'error');
+                this.showNotification('Error: ' + (data.error || 'Failed to cast vote'), 'error');
             }
         } catch (error) {
             console.error('Error voting on moderation case:', error);
-            this.showNotification('Error voting on case', 'error');
+            this.showNotification('Error casting vote. Please try again.', 'error');
         }
     }
 
@@ -365,4 +349,3 @@ class CommunityModerationSystem {
 document.addEventListener('DOMContentLoaded', () => {
     window.moderationSystem = new CommunityModerationSystem();
 });
- 
