@@ -99,8 +99,17 @@ const apiClient = {
                      window.authManager.showLogin();
                 }
 
-                // Reject the promise with the structured error
-                return Promise.reject(errorData);
+                // Create an error object with the response data and status
+                const error = new Error(errorData.error || 'Request failed');
+                error.response = {
+                    data: errorData,
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries())
+                };
+                
+                // Reject the promise with the enhanced error
+                return Promise.reject(error);
             }
 
             // For 204 No Content, there's no body to parse
