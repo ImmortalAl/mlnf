@@ -910,8 +910,7 @@
         });
 
         async function loadAndDisplayActiveThread(threadId, container) {
-            container.innerHTML = '<p class="thread-meta">Summoning eternal echo...</p>';
-            
+            container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Echo...</div>';
             
             try {
                 if (!threadId) {
@@ -920,35 +919,46 @@
                 
                 const threadData = await window.apiClient.get(`/threads/${threadId}`);
                 
-                // Check if this is a governance proposal
                 let proposalInterface = '';
                 if (threadData.isProposal) {
-                    try {
-                        // Try to get proposal data
+                     try {
                         const proposalData = await window.apiClient.get(`/governance/proposals?threadId=${threadId}`);
                         if (proposalData.proposals && proposalData.proposals.length > 0) {
                             const proposal = proposalData.proposals[0];
                             proposalInterface = await renderProposalInterface(proposal);
                         }
                     } catch (error) {
-                        // Proposal data not available
+                        console.error('Could not load proposal data for thread.');
                     }
                 }
-                
+
                 container.innerHTML = `
+                    <h3>${window.escapeHTML(threadData.title)}</h3>
+                    <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
+                    ${threadData.author && threadData.author.signature ? `<div class="signature">${window.escapeHTML(threadData.author.signature)}</div>` : ''}
+                    ${proposalInterface}
+                    <div class="replies-container">
+                        ${renderReplies(threadData.replies, threadId)}
+                    </div>
+                    <div class="reply-form-container" id="mainReplyFormContainer"></div>
+                `;
+                
+                if (threadData.replies && threadData.replies.length > 0) {
+                    enhanceReplies(threadData.replies);
+                }
+                
+                if (window.authManager.isLoggedIn()) {
                     createReplyForm(container.querySelector('#mainReplyFormContainer'), threadId);
                 }
 
             } catch (error) {
                 console.error('Error loading thread:', error);
-                
                 let errorMessage = 'Failed to summon replies.';
                 if (error.error) {
                     errorMessage += ` (${error.error})`;
                 } else if (error.message) {
                     errorMessage += ` (${error.message})`;
                 }
-                
                 container.innerHTML = `<p class="error">${errorMessage}</p>`;
             }
         }

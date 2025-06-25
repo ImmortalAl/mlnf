@@ -182,7 +182,7 @@ class CommunityModerationSystem {
 
     async loadActiveCases() {
         try {
-            const response = await fetch('/api/community-mod/cases?status=active');
+            const response = await fetch('/api/community-mod/cases?status=voting');
             const data = await response.json();
             
             if (data.success) {
