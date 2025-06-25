@@ -399,14 +399,14 @@ class SubmissionModal {
         successElement.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
 
         // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
+        const submissionStyle = document.createElement('style');
+        submissionStyle.textContent = `
             @keyframes slideInRight {
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
             }
         `;
-        document.head.appendChild(style);
+        document.head.appendChild(submissionStyle);
 
         document.body.appendChild(successElement);
 

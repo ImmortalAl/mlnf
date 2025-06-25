@@ -236,6 +236,6 @@ input[type="checkbox"] {
 `;
 
 // Inject CSS
-const style = document.createElement('style');
-style.textContent = anonymousCSS;
-document.head.appendChild(style); 
+const anonymousStyle = document.createElement('style');
+anonymousStyle.textContent = anonymousCSS;
+document.head.appendChild(anonymousStyle); 

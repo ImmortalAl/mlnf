@@ -609,6 +609,6 @@ const moderationCSS = `
 `;
 
 // Inject CSS
-const style = document.createElement('style');
-style.textContent = moderationCSS;
-document.head.appendChild(style); 
+const moderationStyle = document.createElement('style');
+moderationStyle.textContent = moderationCSS;
+document.head.appendChild(moderationStyle); 
