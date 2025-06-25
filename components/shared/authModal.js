@@ -173,13 +173,20 @@ async function handleSoulModalSubmit(event) {
       body: JSON.stringify(payload)
     });
     
-    const data = await response.json();
-    
     if (!response.ok) {
-      modalFeedback.textContent = data.message || `Error: ${response.status}`;
+      let errorMessage = `Error: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch (jsonError) {
+        // If JSON parsing fails, use the status-based message
+      }
+      modalFeedback.textContent = errorMessage;
       modalFeedback.classList.add('error');
-      return; // Exit early instead of throwing
+      return; // Exit early for HTTP errors
     }
+    
+    const data = await response.json();
     
     if (mode === 'login') {
       if (data.token) {
@@ -257,10 +264,17 @@ async function handleSoulModalSubmit(event) {
   } catch (error) {
     console.error(`[Auth Modal Error - ${mode}]:`, error);
     
-    if (!modalFeedback.textContent || modalFeedback.textContent === 'Processing...') {
-      modalFeedback.textContent = 'An unexpected disturbance occurred.';
+    // Handle different types of network errors
+    let errorMessage = 'An unexpected disturbance occurred.';
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      errorMessage = 'Network connection failed. Please check your internet connection.';
+    } else if (error.message.includes('CORS')) {
+      errorMessage = 'Cross-origin request blocked. Please try again.';
+    } else if (error.message.includes('NetworkError')) {
+      errorMessage = 'Network error occurred. Please try again.';
     }
     
+    modalFeedback.textContent = errorMessage;
     modalFeedback.classList.add('error');
   } finally {
     if (mode !== 'register' || !modalFeedback.classList.contains('success')) {
