@@ -91,8 +91,7 @@ function setupActiveUsersEvents() {
 async function populateActiveUsersList() {
     const userListDiv = document.getElementById('userList');
     if (!userListDiv) {
-        console.warn('[activeUsers.js] userList div not found.');
-        return;
+        return; // Silently fail if userList not found
     }
 
     const token = localStorage.getItem('sessionToken');
@@ -188,6 +187,11 @@ async function populateActiveUsersList() {
                 
                 
                 // Create unified user display using MLNF Avatar System
+                if (!window.MLNFAvatars) {
+                    console.warn('[activeUsers.js] MLNFAvatars not available yet');
+                    continue;
+                }
+                
                 const userDisplay = window.MLNFAvatars.createUserDisplay({
                     username: username,
                     title: null, // Don't show title to avoid duplicate names
