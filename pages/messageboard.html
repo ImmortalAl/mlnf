@@ -321,9 +321,7 @@
     
     // Global functions that need to be accessible to onclick handlers
     window.fetchThreads = async function(searchTerm = '', category = '') {
-        console.log('[DEBUG] fetchThreads called with searchTerm:', searchTerm, 'category:', category);
-        console.log('[DEBUG] User logged in:', window.authManager.isLoggedIn());
-        console.log('[DEBUG] Auth token present:', localStorage.getItem('sessionToken') ? 'Yes' : 'No');
+        // Authentication validation handled by authManager
         
         if (!threadList) threadList = document.getElementById('threadList');
         threadList.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Summoning eternal echoes...</div>';
@@ -346,16 +344,12 @@
                 endpoint += '?' + params.toString();
             }
             
-            console.log('[DEBUG] Making request to endpoint:', endpoint);
             
             const response = await window.apiClient.get(endpoint);
-            console.log('[DEBUG] API response received:', response);
             
             const threads = response.threads || response;
-            console.log('[DEBUG] Threads to render:', threads);
             
             window.renderThreads(threads);
-            console.log('[DEBUG] Threads rendered successfully');
             
             // Update category display
             window.updateCategoryDisplay(category, threads.length);
@@ -657,7 +651,6 @@
         // After creating the HTML, add unified user displays
         setTimeout(() => {
             if (!window.MLNFAvatars) {
-                console.log('[messageboard] MLNFAvatars not available yet');
                 return;
             }
             
@@ -737,16 +730,6 @@
         });
 
         // Democracy 3.0 governance is now integrated directly into the messageboard
-        console.log('[messageboard] Democracy 3.0 governance system integrated successfully');
-        
-        // Debug function to test governance functionality
-        window.testGovernance = function() {
-            console.log('Available governance functions:', {
-                renderProposalInterface: typeof renderProposalInterface,
-                castProposalVote: typeof castProposalVote,
-                startProposalVoting: typeof startProposalVoting
-            });
-        };
 
         // Initialize Anonymous Submissions system
         if (window.AnonymousSubmissions) {
@@ -804,7 +787,6 @@
                 const categoryName = categoryLink.dataset.category;
                 currentCategory = categoryName === 'all' ? '' : categoryName;
                 
-                console.log('[Category Filter] Selected category:', categoryName);
                 
                 // Hide active thread column when switching categories
                 document.getElementById('lyceum-active-thread').style.display = 'none';
@@ -869,17 +851,14 @@
         const urlParams = new URLSearchParams(window.location.search);
         const openThreadId = urlParams.get('openThread');
         if (openThreadId) {
-            console.log('[messageboard.html] Auto-opening thread for ID:', openThreadId);
             // Clear URL parameter for cleaner experience
             window.history.replaceState({}, document.title, window.location.pathname);
             
             // Wait for threads to load, then open the specific thread in column 3
             const tryFindThread = () => {
-                console.log('[messageboard.html] Looking for thread with ID:', openThreadId);
                 const threadElement = document.querySelector(`[data-id="${openThreadId}"]`);
                 
                 if (threadElement) {
-                    console.log('[messageboard.html] SUCCESS! Found thread, opening in third column');
                     
                     // Scroll to the thread in the list
                     threadElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -894,15 +873,12 @@
                     const activeThreadContainer = document.getElementById('lyceum-active-thread');
                     if (activeThreadContainer) {
                         activeThreadContainer.style.display = 'block';
-                        console.log('[messageboard.html] Third column shown');
                     }
                     
                     // Load and display the full thread content in column 3
                     loadAndDisplayActiveThread(openThreadId, activeThreadContainer);
-                    console.log('[messageboard.html] Thread content loaded in third column');
                     
                 } else {
-                    console.log('[messageboard.html] Thread not found yet, trying again...');
                     setTimeout(tryFindThread, 1000);
                 }
             };
@@ -943,9 +919,6 @@
         async function loadAndDisplayActiveThread(threadId, container) {
             container.innerHTML = '<p class="thread-meta">Summoning eternal echo...</p>';
             
-            // Debug logging
-            console.log('[messageboard] Loading thread ID:', threadId);
-            console.log('[messageboard] API base URL:', window.apiClient?.baseURL);
             
             try {
                 if (!threadId) {
@@ -953,7 +926,6 @@
                 }
                 
                 const threadData = await window.apiClient.get(`/threads/${threadId}`);
-                console.log('[messageboard] Thread data loaded successfully:', threadData);
                 
                 // Check if this is a governance proposal
                 let proposalInterface = '';
@@ -966,7 +938,7 @@
                             proposalInterface = await renderProposalInterface(proposal);
                         }
                     } catch (error) {
-                        console.log('[messageboard] Could not load proposal data:', error);
+                        // Proposal data not available
                     }
                 }
                 
@@ -1151,7 +1123,6 @@
             // After creating the HTML, add unified user displays for replies
             setTimeout(() => {
                 if (!window.MLNFAvatars) {
-                    console.log('[messageboard] MLNFAvatars not available for replies yet');
                     return;
                 }
                 
@@ -1359,7 +1330,7 @@
                     const proposalDetails = await window.apiClient.get(`/governance/proposals/${proposal._id}`);
                     userVote = proposalDetails.userVote;
                 } catch (error) {
-                    console.log('[messageboard] Could not load user vote status:', error);
+                    // User vote status not available
                 }
             }
 
@@ -1704,7 +1675,6 @@
             // This would show a modal with edit history - for now, just alert
             // TODO: Implement full edit history modal
             alert('Edit history feature - coming soon!');
-            console.log('Show edit history for reply:', replyId);
         }
 
         // Event delegation for voting
@@ -1754,14 +1724,11 @@
         // Initialize Community Moderation System
         if (typeof CommunityModerationSystem !== 'undefined') {
             window.moderationSystem = new CommunityModerationSystem();
-            console.log('[messageboard] Community moderation system initialized');
             
             // Enhance user displays with flag buttons after content loads
             setTimeout(() => {
                 window.moderationSystem.enhanceUserDisplays();
             }, 1000);
-        } else {
-            console.log('[messageboard] Community moderation system not available');
         }
     });
     </script>
