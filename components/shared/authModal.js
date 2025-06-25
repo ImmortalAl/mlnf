@@ -178,7 +178,7 @@ async function handleSoulModalSubmit(event) {
     if (!response.ok) {
       modalFeedback.textContent = data.message || `Error: ${response.status}`;
       modalFeedback.classList.add('error');
-      throw new Error(data.message || `HTTP error ${response.status}`);
+      return; // Exit early instead of throwing
     }
     
     if (mode === 'login') {
