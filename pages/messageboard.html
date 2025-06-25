@@ -674,6 +674,16 @@
                             flagBtn.setAttribute('data-user-id', thread.author._id);
                             flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
                             flagBtn.title = 'Flag for community review';
+                            
+                            // Add click handler to prevent event bubbling and show flag modal
+                            flagBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                if (window.moderationSystem) {
+                                    window.moderationSystem.showFlagModal(thread.author._id);
+                                }
+                            });
+                            
                             authorDisplay.appendChild(flagBtn);
                         }
                         
@@ -1103,9 +1113,19 @@
                             flagBtn.setAttribute('data-user-id', reply.author._id);
                             flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
                             flagBtn.title = 'Flag for community review';
+                            
+                            // Add click handler to prevent event bubbling and show flag modal
+                            flagBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                if (window.moderationSystem) {
+                                    window.moderationSystem.showFlagModal(reply.author._id);
+                                }
+                            });
+                            
                             authorDisplay.appendChild(flagBtn);
                         }
-
+                        
                         authorContainer.appendChild(authorDisplay);
                     }
                 }
@@ -1762,4 +1782,4 @@
     <!-- Required Scripts for MLNF Avatar System -->
     <script src="../js/mlnf-avatar-system.js"></script>
 </body>
-</html> 
+</html>

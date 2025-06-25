@@ -15,8 +15,10 @@ class CommunityModerationSystem {
     setupEventListeners() {
         // Add flag user buttons to user displays
         document.addEventListener('click', (e) => {
-            if (e.target.matches('.flag-user-btn')) {
-                const userId = e.target.getAttribute('data-user-id');
+            const flagBtn = e.target.closest('.flag-user-btn');
+            if (flagBtn) {
+                e.stopPropagation();
+                const userId = flagBtn.getAttribute('data-user-id');
                 this.showFlagModal(userId);
             }
             
