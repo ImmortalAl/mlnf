@@ -353,18 +353,38 @@ class CommunityModerationSystem {
 
     // Add flag buttons to user displays
     enhanceUserDisplays() {
-        const userDisplays = document.querySelectorAll('.user-display');
+        const userDisplays = document.querySelectorAll('[data-user-id]');
+        console.log('[Moderation] Found', userDisplays.length, 'user displays to enhance');
+        
         userDisplays.forEach(display => {
             if (!display.querySelector('.flag-user-btn')) {
                 const userId = display.getAttribute('data-user-id');
-                if (userId && window.authManager.isLoggedIn()) {
+                const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
+                console.log('[Moderation] Processing user display:', userId, 'logged in:', isLoggedIn);
+                
+                if (userId && isLoggedIn) {
                     const flagBtn = document.createElement('button');
-                    flagBtn.className = 'flag-user-btn btn-ghost';
+                    flagBtn.className = 'flag-user-btn';
                     flagBtn.setAttribute('data-user-id', userId);
                     flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
                     flagBtn.title = 'Flag for community review';
+                    
+                    // Make sure button is visible by adding some inline styles as fallback
+                    flagBtn.style.cssText = `
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        margin-left: 0.5rem !important;
+                        opacity: 1 !important;
+                    `;
+                    
                     display.appendChild(flagBtn);
+                    console.log('[Moderation] Added flag button to user:', userId);
+                } else {
+                    console.log('[Moderation] Skipped user display - missing userId or not logged in');
                 }
+            } else {
+                console.log('[Moderation] User display already has flag button');
             }
         });
     }
@@ -374,10 +394,44 @@ class CommunityModerationSystem {
 document.addEventListener('DOMContentLoaded', () => {
     window.moderationSystem = new CommunityModerationSystem();
     
-    // Enhance user displays after they're created
-    setTimeout(() => {
-        window.moderationSystem.enhanceUserDisplays();
-    }, 2000);
+    // Enhance user displays with multiple attempts to catch dynamically loaded content
+    const enhanceWithRetry = () => {
+        if (window.moderationSystem) {
+            window.moderationSystem.enhanceUserDisplays();
+        }
+    };
+    
+    // Initial enhancement
+    setTimeout(enhanceWithRetry, 1000);
+    
+    // Retry enhancement for dynamically loaded content
+    setTimeout(enhanceWithRetry, 3000);
+    setTimeout(enhanceWithRetry, 5000);
+    
+    // Set up mutation observer to automatically enhance new user displays
+    const observer = new MutationObserver((mutations) => {
+        let hasNewUserDisplays = false;
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) { // Element node
+                    if (node.getAttribute && node.getAttribute('data-user-id')) {
+                        hasNewUserDisplays = true;
+                    } else if (node.querySelector && node.querySelector('[data-user-id]')) {
+                        hasNewUserDisplays = true;
+                    }
+                }
+            });
+        });
+        
+        if (hasNewUserDisplays) {
+            setTimeout(enhanceWithRetry, 100);
+        }
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 });
 
 // CSS for moderation system
@@ -416,36 +470,39 @@ const moderationCSS = `
 }
 
 .flag-user-btn {
-    background: transparent;
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    color: rgba(245, 158, 11, 0.8);
-    padding: 0.4rem 0.6rem;
-    margin-left: 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 28px;
+    background: transparent !important;
+    border: 1px solid rgba(245, 158, 11, 0.6) !important;
+    color: rgba(245, 158, 11, 0.9) !important;
+    padding: 0.4rem 0.6rem !important;
+    margin-left: 0.5rem !important;
+    border-radius: 6px !important;
+    font-size: 0.8rem !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    position: relative !important;
+    z-index: 10 !important;
 }
 
 .flag-user-btn:hover {
-    background: rgba(245, 158, 11, 0.1);
-    border-color: #f59e0b;
-    color: #f59e0b;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: #f59e0b !important;
+    color: #f59e0b !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4) !important;
 }
 
 .flag-user-btn:active {
-    transform: translateY(0);
+    transform: translateY(0) !important;
 }
 
 .flag-user-btn i {
-    font-size: 0.875rem;
+    font-size: 0.9rem !important;
+    pointer-events: none !important;
 }
 
 .flag-warning {
