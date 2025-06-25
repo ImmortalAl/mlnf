@@ -423,6 +423,7 @@
                 if (!response.ok) throw new Error(`Failed to fetch content: ${response.status}`);
                 
                 const data = await response.json();
+                console.log('API response data:', data);
                 
                 // Handle different API response formats
                 let content = [];
@@ -440,6 +441,8 @@
                     return;
                 }
                 
+                console.log('Processed content array:', content);
+                console.log('Content length:', content.length);
                 displayContentForCuration(content);
                 
             } catch (error) {
@@ -449,6 +452,7 @@
         }
         
         function displayContentForCuration(content) {
+            console.log('displayContentForCuration called with:', content);
             const contentList = document.getElementById('contentList');
             
             if (content.length === 0) {
@@ -598,12 +602,21 @@
                 
                 // Initialize active users with a delay to ensure dependencies are loaded
                 setTimeout(() => {
+                    console.log('MLNF object keys:', Object.keys(MLNF || {}));
+                    console.log('Available MLNF functions:', MLNF);
+                    
                     if (typeof MLNF !== 'undefined' && typeof MLNF.initActiveUsers === 'function') {
+                        console.log('Initializing active users...');
                         MLNF.initActiveUsers();
                     } else {
                         console.error('MLNF.initActiveUsers not available:', typeof MLNF, typeof MLNF?.initActiveUsers);
+                        // Try calling the function directly if it exists globally
+                        if (typeof initActiveUsers === 'function') {
+                            console.log('Calling initActiveUsers directly...');
+                            initActiveUsers();
+                        }
                     }
-                }, 1000);
+                }, 1500);
                 
                 try {
                     MLNF.initMessageModal();
