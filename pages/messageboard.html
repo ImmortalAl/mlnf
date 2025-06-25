@@ -1763,24 +1763,29 @@
         
         // Function to clean up flag button parade
         window.cleanupFlagButtons = () => {
-            console.log('[Cleanup] Removing duplicate flag buttons...');
-            const userDisplays = document.querySelectorAll('[data-user-id]');
-            let cleaned = 0;
+            console.log('[Cleanup] Removing ALL flag buttons...');
+            const allFlagButtons = document.querySelectorAll('.flag-user-btn');
+            console.log(`[Cleanup] Found ${allFlagButtons.length} flag buttons to remove`);
             
-            userDisplays.forEach(display => {
-                const flagButtons = display.querySelectorAll('.flag-user-btn');
-                if (flagButtons.length > 1) {
-                    // Keep only the first flag button, remove the rest
-                    for (let i = 1; i < flagButtons.length; i++) {
-                        flagButtons[i].remove();
-                        cleaned++;
-                    }
-                }
-                // Mark as enhanced to prevent future duplicates
-                display.setAttribute('data-flag-enhanced', 'true');
-            });
+            allFlagButtons.forEach(btn => btn.remove());
             
-            console.log(`[Cleanup] Removed ${cleaned} duplicate flag buttons`);
+            // Clear all enhancement markers
+            const allUserDisplays = document.querySelectorAll('[data-flag-enhanced]');
+            allUserDisplays.forEach(display => display.removeAttribute('data-flag-enhanced'));
+            
+            console.log(`[Cleanup] Removed all flag buttons and reset enhancement markers`);
+        };
+        
+        // Emergency function to check what's creating so many elements
+        window.debugUserDisplays = () => {
+            const all = document.querySelectorAll('[data-user-id]');
+            const specific = document.querySelectorAll('.thread-author-info [data-user-id], .reply-author-info [data-user-id], .user-display [data-user-id]');
+            
+            console.log(`[Debug] Total [data-user-id] elements: ${all.length}`);
+            console.log(`[Debug] Specific message board elements: ${specific.length}`);
+            
+            // Sample the first few to see what they are
+            console.log('[Debug] First 5 elements:', Array.from(all).slice(0, 5));
         };
         
         console.log('[Debug] Type "testFlagButtons()" in console to manually test');

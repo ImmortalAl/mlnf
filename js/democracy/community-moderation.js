@@ -369,31 +369,41 @@ class CommunityModerationSystem {
         }
         this.lastEnhancementTime = now;
         
+        // Use a more specific selector to avoid massive DOM queries
+        // Only target visible user displays in the message board area
+        const userDisplays = document.querySelectorAll('.thread-author-info [data-user-id], .reply-author-info [data-user-id], .user-display [data-user-id]');
+        console.log(`[Moderation] Found ${userDisplays.length} user displays to enhance`);
+        
+        // If we're still getting thousands, something is seriously wrong - bail out
+        if (userDisplays.length > 100) {
+            console.error(`[Moderation] TOO MANY user displays found (${userDisplays.length}), skipping to prevent performance issues`);
+            return;
+        }
+        
         // First, clean up any existing duplicate flags
         this.cleanupDuplicateFlags();
         
-        const userDisplays = document.querySelectorAll('[data-user-id]');
-        console.log(`[Moderation] Found ${userDisplays.length} user displays to enhance`);
-        
+        // Track processed user IDs to prevent duplicates within the same run
+        const processedUserIds = new Set();
         let buttonsAdded = 0;
+        
         userDisplays.forEach((display) => {
             const userId = display.getAttribute('data-user-id');
             
-            // Skip if already processed or no user ID
-            if (!userId || display.hasAttribute('data-flag-enhanced')) {
+            // Skip if no user ID, already processed in this run, or already enhanced
+            if (!userId || processedUserIds.has(userId) || display.hasAttribute('data-flag-enhanced')) {
                 return;
             }
             
             // Skip if flag button already exists
             if (display.querySelector('.flag-user-btn')) {
                 display.setAttribute('data-flag-enhanced', 'true');
+                processedUserIds.add(userId);
                 return;
             }
             
             const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
             const currentUser = window.authManager.getUser();
-            
-            console.log(`[Moderation] Checking user ${userId}, logged in: ${isLoggedIn}, current user: ${currentUser?._id}`);
             
             // Don't show flag button for user's own posts
             if (isLoggedIn && currentUser && userId !== currentUser._id) {
@@ -415,8 +425,9 @@ class CommunityModerationSystem {
                 console.log(`[Moderation] Added flag button for user ${userId}`);
             }
             
-            // Always mark as enhanced to prevent future processing
+            // Mark as enhanced and track as processed
             display.setAttribute('data-flag-enhanced', 'true');
+            processedUserIds.add(userId);
         });
         
         console.log(`[Moderation] Added ${buttonsAdded} flag buttons total`);
@@ -424,7 +435,8 @@ class CommunityModerationSystem {
     
     // Clean up duplicate flag buttons
     cleanupDuplicateFlags() {
-        const userDisplays = document.querySelectorAll('[data-user-id]');
+        // Use more specific selector to avoid processing thousands of elements
+        const userDisplays = document.querySelectorAll('.thread-author-info [data-user-id], .reply-author-info [data-user-id], .user-display [data-user-id]');
         let cleaned = 0;
         
         userDisplays.forEach(display => {
