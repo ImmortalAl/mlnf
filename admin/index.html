@@ -353,12 +353,25 @@
         let selectedContentData = null;
         
         function openCurationModal(section) {
+            console.log('openCurationModal called with section:', section);
             currentCurationSection = section;
             currentContentType = section === 'soul-scrolls' ? 'blogs' : 'threads';
             
-            document.getElementById('curationModal').style.display = 'block';
-            document.getElementById('curationModalTitle').textContent = 
-                section === 'soul-scrolls' ? 'Select Soul Scrolls Editorial Choice' : 'Select Echoes Unbound Editorial Choice';
+            const modal = document.getElementById('curationModal');
+            console.log('Modal element found:', modal);
+            if (modal) {
+                modal.style.display = 'flex';
+            } else {
+                console.error('Curation modal not found!');
+                return;
+            }
+            
+            const modalTitle = document.getElementById('curationModalTitle');
+            if (modalTitle) {
+                modalTitle.textContent = section === 'soul-scrolls' ? 'Select Soul Scrolls Editorial Choice' : 'Select Echoes Unbound Editorial Choice';
+            } else {
+                console.error('Modal title element not found');
+            }
             
             // Update tab visibility
             const tabs = document.querySelectorAll('.tab-btn');
@@ -379,17 +392,35 @@
         
         async function loadContentForCuration() {
             const contentList = document.getElementById('contentList');
+            if (!contentList) {
+                console.error('contentList element not found');
+                return;
+            }
+            
             contentList.innerHTML = '<div class="loading">Loading content...</div>';
             
             try {
+                if (!window.MLNF_CONFIG || !window.MLNF_CONFIG.API_BASE_URL) {
+                    throw new Error('API configuration not available');
+                }
+                
                 const endpoint = currentContentType === 'blogs' ? '/blogs' : '/threads';
+                const token = localStorage.getItem('sessionToken');
+                
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+                
+                console.log('Fetching content from:', `${window.MLNF_CONFIG.API_BASE_URL}${endpoint}`);
+                
                 const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}${endpoint}?limit=20`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 
-                if (!response.ok) throw new Error('Failed to fetch content');
+                console.log('Response status:', response.status);
+                if (!response.ok) throw new Error(`Failed to fetch content: ${response.status}`);
                 
                 const data = await response.json();
                 
@@ -567,8 +598,12 @@
                 
                 // Initialize active users with a delay to ensure dependencies are loaded
                 setTimeout(() => {
-                    MLNF.initActiveUsers();
-                }, 500);
+                    if (typeof MLNF !== 'undefined' && typeof MLNF.initActiveUsers === 'function') {
+                        MLNF.initActiveUsers();
+                    } else {
+                        console.error('MLNF.initActiveUsers not available:', typeof MLNF, typeof MLNF?.initActiveUsers);
+                    }
+                }, 1000);
                 
                 try {
                     MLNF.initMessageModal();
