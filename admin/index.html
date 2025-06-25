@@ -361,6 +361,14 @@
             console.log('Modal element found:', modal);
             if (modal) {
                 modal.style.display = 'flex';
+                modal.classList.add('active');
+                console.log('Modal display and active class set');
+                console.log('Modal computed styles:', {
+                    display: getComputedStyle(modal).display,
+                    position: getComputedStyle(modal).position,
+                    zIndex: getComputedStyle(modal).zIndex,
+                    visibility: getComputedStyle(modal).visibility
+                });
             } else {
                 console.error('Curation modal not found!');
                 return;
@@ -384,10 +392,17 @@
         }
         
         function closeCurationModal() {
-            document.getElementById('curationModal').style.display = 'none';
+            const modal = document.getElementById('curationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+            }
             selectedContentId = null;
             selectedContentData = null;
-            document.getElementById('featureContentBtn').disabled = true;
+            const featureBtn = document.getElementById('featureContentBtn');
+            if (featureBtn) {
+                featureBtn.disabled = true;
+            }
         }
         
         async function loadContentForCuration() {
