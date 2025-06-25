@@ -522,27 +522,71 @@
         }
         
         async function featureSelectedContent() {
-            if (!selectedContentId || !selectedContentData) {
+            if (!selectedContentId) {
                 alert('Please select content to feature');
                 return;
             }
             
+            console.log('Featuring content:', {
+                contentType: currentContentType === 'blogs' ? 'blog' : 'thread',
+                contentId: selectedContentId,
+                section: currentCurationSection
+            });
+            
             try {
+                const token = localStorage.getItem('sessionToken');
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+                
+                // Verify user is admin
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                console.log('Current user:', user);
+                console.log('User role:', user.role);
+                
+                if (user.role !== 'admin') {
+                    throw new Error('Admin role required for content curation');
+                }
+                
+                const requestBody = {
+                    contentType: currentContentType === 'blogs' ? 'blog' : 'thread',
+                    contentId: selectedContentId,
+                    section: currentCurationSection,
+                    adminNotes: 'Featured via admin curation interface'
+                };
+                
+                console.log('Request body:', requestBody);
+                console.log('API URL:', `${window.MLNF_CONFIG.API_BASE_URL}/highlights/admin-feature`);
+                console.log('Authorization token present:', !!token);
+                
                 const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/admin-feature`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({
-                        contentType: currentContentType === 'blogs' ? 'blog' : 'thread',
-                        contentId: selectedContentId,
-                        section: currentCurationSection,
-                        adminNotes: 'Featured via admin curation interface'
-                    })
+                    body: JSON.stringify(requestBody)
                 });
                 
-                if (!response.ok) throw new Error('Failed to feature content');
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                if (!response.ok) {
+                    let errorText;
+                    try {
+                        const errorJson = await response.json();
+                        errorText = errorJson.error || JSON.stringify(errorJson);
+                        console.error('API Error JSON:', errorJson);
+                    } catch (parseError) {
+                        errorText = await response.text();
+                        console.error('API Error Text:', errorText);
+                    }
+                    
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                console.log('Feature response:', result);
                 
                 alert('Content successfully featured!');
                 closeCurationModal();
@@ -550,20 +594,30 @@
                 
             } catch (error) {
                 console.error('Error featuring content:', error);
-                alert('Failed to feature content. Please try again.');
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
+                alert(`Failed to feature content: ${error.message}`);
             }
         }
         
         async function loadCurrentHighlights() {
             // Load current Soul Scrolls highlight
             try {
+                console.log('Loading current highlights...');
                 const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul-scrolls`);
+                console.log('Highlights response status:', response.status);
+                
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('Highlights data:', data);
+                    
                     const adminHighlight = data.highlights?.find(h => h.type === 'admin');
+                    console.log('Admin highlight found:', adminHighlight);
                     
                     const container = document.getElementById('currentSoulScrollsHighlight');
-                    if (adminHighlight) {
+                    if (adminHighlight && container) {
                         container.innerHTML = `
                             <div class="featured-content">
                                 <h4>${adminHighlight.content.title}</h4>
@@ -571,12 +625,42 @@
                                 <small>Featured: ${new Date(adminHighlight.content.createdAt).toLocaleDateString()}</small>
                             </div>
                         `;
-                    } else {
+                    } else if (container) {
                         container.innerHTML = '<div class="no-selection">No editorial selection</div>';
                     }
                 }
+                
+                // Load current Echoes Unbound highlight
+                const echoesResponse = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/echoes-unbound`);
+                console.log('Echoes response status:', echoesResponse.status);
+                
+                if (echoesResponse.ok) {
+                    const echoesData = await echoesResponse.json();
+                    console.log('Echoes data:', echoesData);
+                    
+                    const echoesAdminHighlight = echoesData.highlights?.find(h => h.type === 'admin');
+                    console.log('Echoes admin highlight found:', echoesAdminHighlight);
+                    
+                    const echoesContainer = document.getElementById('currentEchoesHighlight');
+                    if (echoesAdminHighlight && echoesContainer) {
+                        echoesContainer.innerHTML = `
+                            <div class="featured-content">
+                                <h4>${echoesAdminHighlight.content.title}</h4>
+                                <p>by ${echoesAdminHighlight.content.author?.username || 'Anonymous'}</p>
+                                <small>Featured: ${new Date(echoesAdminHighlight.content.createdAt).toLocaleDateString()}</small>
+                            </div>
+                        `;
+                    } else if (echoesContainer) {
+                        echoesContainer.innerHTML = '<div class="no-selection">No editorial selection</div>';
+                    }
+                }
+                
             } catch (error) {
-                console.error('Error loading Soul Scrolls highlight:', error);
+                console.error('Error loading current highlights:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
             }
         }
         
