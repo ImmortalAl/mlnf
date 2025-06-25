@@ -354,18 +354,11 @@ class CommunityModerationSystem {
     // Add flag buttons to user displays
     enhanceUserDisplays() {
         const userDisplays = document.querySelectorAll('[data-user-id]');
-        console.log('[Moderation] enhanceUserDisplays called, found:', userDisplays.length, 'elements');
         
-        userDisplays.forEach((display, index) => {
-            console.log('[Moderation] Processing element', index, ':', display);
-            console.log('[Moderation] Element data-user-id:', display.getAttribute('data-user-id'));
-            console.log('[Moderation] Element tag:', display.tagName);
-            console.log('[Moderation] Element classes:', display.className);
-            
+        userDisplays.forEach((display) => {
             if (!display.querySelector('.flag-user-btn')) {
                 const userId = display.getAttribute('data-user-id');
                 const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
-                console.log('[Moderation] userId:', userId, 'isLoggedIn:', isLoggedIn);
                 
                 if (userId && isLoggedIn) {
                     const flagBtn = document.createElement('button');
@@ -374,26 +367,15 @@ class CommunityModerationSystem {
                     flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
                     flagBtn.title = 'Flag for community review';
                     
-                    // Make sure button is visible by adding some inline styles as fallback
-                    flagBtn.style.cssText = `
-                        display: inline-flex !important;
-                        align-items: center !important;
-                        justify-content: center !important;
-                        margin-left: 0.5rem !important;
-                        opacity: 1 !important;
-                        background: red !important;
-                        color: white !important;
-                        border: 2px solid yellow !important;
-                        padding: 10px !important;
-                    `;
+                    // Add click handler for flag button
+                    flagBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.showFlagModal(userId);
+                    });
                     
                     display.appendChild(flagBtn);
-                    console.log('[Moderation] Flag button added to element:', display);
-                } else {
-                    console.log('[Moderation] Skipping - no userId or not logged in');
                 }
-            } else {
-                console.log('[Moderation] Element already has flag button');
             }
         });
     }
@@ -401,53 +383,12 @@ class CommunityModerationSystem {
 
 // Initialize system
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[Moderation] Starting initialization...');
     window.moderationSystem = new CommunityModerationSystem();
-    console.log('[Moderation] System created');
-    
-    // Add a visible test indicator
-    const testDiv = document.createElement('div');
-    testDiv.style.cssText = `
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        background: red;
-        color: white;
-        padding: 10px;
-        z-index: 9999;
-        border-radius: 5px;
-    `;
-    testDiv.textContent = 'Community Moderation Loaded';
-    document.body.appendChild(testDiv);
-    
-    // Remove test div after 3 seconds
-    setTimeout(() => testDiv.remove(), 3000);
     
     // Enhance user displays with multiple attempts to catch dynamically loaded content
     const enhanceWithRetry = () => {
         if (window.moderationSystem) {
-            console.log('[Moderation] Running enhancement...');
-            const userElements = document.querySelectorAll('[data-user-id]');
-            console.log('[Moderation] Found elements with data-user-id:', userElements.length);
-            const authStatus = window.authManager && window.authManager.isLoggedIn();
-            console.log('[Moderation] Auth status:', authStatus);
-            
             window.moderationSystem.enhanceUserDisplays();
-            
-            // Add a test flag button to body to verify CSS is working
-            if (userElements.length === 0) {
-                const testBtn = document.createElement('button');
-                testBtn.className = 'flag-user-btn';
-                testBtn.innerHTML = '<i class="fas fa-flag"></i> TEST FLAG';
-                testBtn.style.cssText = `
-                    position: fixed !important;
-                    top: 60px !important;
-                    left: 10px !important;
-                    z-index: 9999 !important;
-                `;
-                document.body.appendChild(testBtn);
-                console.log('[Moderation] Added test flag button');
-            }
         }
     };
     
@@ -466,10 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (node.nodeType === 1) { // Element node
                     if (node.getAttribute && node.getAttribute('data-user-id')) {
                         hasNewUserDisplays = true;
-                        console.log('[Moderation] New user display detected');
                     } else if (node.querySelector && node.querySelector('[data-user-id]')) {
                         hasNewUserDisplays = true;
-                        console.log('[Moderation] Container with user displays detected');
                     }
                 }
             });
@@ -485,8 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
         subtree: true
     });
 });
-
-// CSS for moderation system
 const moderationCSS = `
 .user-context-menu {
     background: rgba(26, 26, 51, 0.95);
