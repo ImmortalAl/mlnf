@@ -8,6 +8,9 @@
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+    /* Accessibility improvements */
+    position: relative;
+    z-index: 10;
 }
 
 .sidebar-header h2 {
@@ -30,7 +33,7 @@ main.messageboard-container {
 
 section {
     background: var(--gradient-secondary);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 2rem;
     margin-bottom: 2rem;
     border: 1px solid rgba(255, 94, 120, 0.25);
@@ -55,7 +58,7 @@ section {
 .thread {
     background: rgba(255, 255, 255, 0.03);
     padding: 1.5rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     margin-bottom: 1.5rem;
     border-left: 4px solid var(--accent);
     transition: all 0.3s ease;
@@ -117,7 +120,7 @@ section {
 .form-group input, .form-group select {
     width: 100%;
     padding: 0.8rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--highlight);
     background: var(--primary);
     color: var(--text);
@@ -128,16 +131,16 @@ section {
     height: 250px;
     background: var(--primary);
     border: 1px solid var(--highlight);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     color: var(--text);
 }
 .ql-toolbar {
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
 }
 .ql-container {
-    border-bottom-left-radius: var(--border-radius);
-    border-bottom-right-radius: var(--border-radius);
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
 }
 .ql-editor {
     color: var(--text);
@@ -147,7 +150,7 @@ section {
     text-align: center;
     margin-bottom: 1rem;
     padding: 1rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
 }
 .message.error {
     background: rgba(255, 68, 68, 0.2);
@@ -177,7 +180,7 @@ section {
     right: 1rem;
     background: var(--gradient-secondary);
     padding: 1rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--accent);
     z-index: 2000;
     animation: slideIn 0.5s ease-out;
@@ -243,7 +246,7 @@ section {
     background: rgba(13, 13, 26, 0.3); /* Much more transparent to let cosmic background shine */
     backdrop-filter: blur(2px) saturate(120%);
     -webkit-backdrop-filter: blur(2px) saturate(120%);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--highlight);
     padding: 1.5rem;
     overflow-y: auto; /* Enable scrolling within columns */
@@ -270,7 +273,7 @@ section {
     padding: 0.75rem 1rem;
     color: var(--text-muted);
     text-decoration: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     transition: background-color 0.2s, color 0.2s;
 }
 
@@ -289,6 +292,7 @@ section {
 .thread-list {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .thread {
@@ -296,11 +300,12 @@ section {
     gap: 1rem;
     background: transparent;
     padding: 1rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     margin-bottom: 1rem;
     border: 1px solid var(--highlight);
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease;
     cursor: pointer;
+    position: relative;
 }
 
 .thread:hover {
@@ -378,7 +383,7 @@ section {
     gap: 1rem;
     padding: 1rem;
     background: var(--primary-darkest);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     margin-bottom: 1rem;
 }
 
@@ -427,13 +432,13 @@ section {
 }
 .ql-toolbar.ql-snow {
     background: var(--primary);
-    border-top-left-radius: var(--border-radius-sm);
-    border-top-right-radius: var(--border-radius-sm);
+    border-top-left-radius: var(--radius-sm);
+    border-top-right-radius: var(--radius-sm);
 }
 .ql-container.ql-snow {
     background: var(--primary-darker);
-    border-bottom-left-radius: var(--border-radius-sm);
-    border-bottom-right-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
 }
 .ql-editor {
     color: var(--text);
@@ -466,7 +471,7 @@ section {
     max-height: 90vh;
     padding: 1.5rem;
     background: var(--secondary);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--highlight);
     position: relative; /* For absolute positioning of close button */
     overflow-y: auto;
@@ -528,7 +533,7 @@ section {
     padding: 0.6rem;
     background: var(--primary);
     border: 1px solid var(--highlight);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     color: var(--text);
     font-size: 0.95rem;
     transition: border-color 0.2s ease;
@@ -564,12 +569,28 @@ section {
 @media (max-width: 768px) {
     .lyceum-grid {
         grid-template-columns: 1fr; /* Stack columns */
+        gap: 1rem; /* Reduce gap on mobile */
     }
     #lyceum-categories {
         margin-bottom: 1rem; /* Add space when stacked */
+        max-height: 200px; /* Limit height on mobile */
+        overflow-y: auto;
     }
     .messageboard-container {
         height: auto;
+        padding: 1rem; /* Reduce padding on mobile */
+    }
+    
+    /* Improve touch targets */
+    .thread {
+        padding: 1.25rem 1rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .vote-btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.75rem;
     }
     
     /* Modal responsive adjustments */
@@ -632,7 +653,7 @@ section {
     flex: 1;
     padding: 0.5rem;
     border: 1px solid var(--highlight);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     background: var(--primary);
     color: var(--text);
     font-size: 0.9rem;
@@ -670,7 +691,7 @@ section {
     color: var(--text-muted);
     background: var(--highlight);
     padding: 0.25rem 0.5rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
 }
 
 /* Loading and Error States */
@@ -750,7 +771,7 @@ section {
     background: var(--accent);
     color: var(--text-bright);
     padding: 0.125rem 0.5rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
     font-weight: 600;
 }
@@ -772,7 +793,7 @@ section {
     background: var(--highlight);
     color: var(--text-muted);
     padding: 0.125rem 0.5rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     font-size: 0.7rem;
 }
 
@@ -812,7 +833,7 @@ section {
 .anonymous-toggle {
     background: rgba(74, 53, 105, 0.1);
     border: 1px solid var(--highlight);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     padding: 1rem;
     margin-bottom: 1rem;
 }
@@ -880,7 +901,7 @@ input[type="checkbox"] {
     margin-top: 0.75rem;
     padding: 0.5rem;
     background: rgba(74, 53, 105, 0.2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     border-left: 3px solid var(--accent);
 }
 
@@ -932,7 +953,7 @@ input[type="checkbox"] {
     margin-top: 0.5rem;
     padding: 0.5rem;
     background: rgba(74, 53, 105, 0.15);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     color: var(--text-muted);
     font-size: 0.8rem;
 }
@@ -974,7 +995,7 @@ input[type="checkbox"] {
     font-weight: 500;
     background: rgba(74, 53, 105, 0.2);
     padding: 0.125rem 0.5rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     margin-left: 0.5rem;
 }
 
@@ -1021,7 +1042,7 @@ input[type="checkbox"] {
 /* Reply Edit Form */
 .reply-edit-form {
     border: 1px solid var(--accent);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     padding: 1rem;
     background: rgba(74, 53, 105, 0.05);
     margin: 0.5rem 0;
@@ -1029,13 +1050,13 @@ input[type="checkbox"] {
 
 .reply-edit-form .ql-container {
     min-height: 80px;
-    border-bottom-left-radius: var(--border-radius-sm);
-    border-bottom-right-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
 }
 
 .reply-edit-form .ql-toolbar {
-    border-top-left-radius: var(--border-radius-sm);
-    border-top-right-radius: var(--border-radius-sm);
+    border-top-left-radius: var(--radius-sm);
+    border-top-right-radius: var(--radius-sm);
 }
 
 .reply-edit-actions {
@@ -1103,7 +1124,7 @@ input[type="checkbox"] {
 .edit-history-content {
     background: var(--highlight);
     padding: 0.75rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
     border-left: 3px solid var(--text-muted);
 }
 
@@ -1115,7 +1136,7 @@ input[type="checkbox"] {
 .governance-options {
     background: rgba(147, 51, 234, 0.1);
     border: 1px solid rgba(147, 51, 234, 0.3);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     margin: 1rem 0;
 }
@@ -1129,7 +1150,7 @@ input[type="checkbox"] {
     align-items: flex-start;
     padding: 1rem;
     border: 1px solid rgba(147, 51, 234, 0.2);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     margin-bottom: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1195,7 +1216,7 @@ input[type="radio"]:checked + .radio-custom::after {
 
 .proposal-details {
     background: rgba(255, 255, 255, 0.02);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     border: 1px solid rgba(147, 51, 234, 0.2);
 }
@@ -1215,7 +1236,7 @@ input[type="radio"]:checked + .radio-custom::after {
 .governance-info {
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1rem;
     margin-top: 1rem;
 }
@@ -1282,7 +1303,7 @@ input[type="radio"]:checked + .radio-custom::after {
 .proposal-voting {
     background: rgba(147, 51, 234, 0.05);
     border: 1px solid rgba(147, 51, 234, 0.2);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     margin: 1.5rem 0;
 }
@@ -1311,7 +1332,7 @@ input[type="radio"]:checked + .radio-custom::after {
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.02);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
 }
 
 .meta-item {
@@ -1341,7 +1362,7 @@ input[type="radio"]:checked + .radio-custom::after {
 .vote-option {
     background: rgba(255, 255, 255, 0.02);
     border: 2px solid rgba(147, 51, 234, 0.2);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem 1rem;
     text-align: center;
     cursor: pointer;
@@ -1408,7 +1429,7 @@ input[type="radio"]:checked + .radio-custom::after {
     padding: 0.75rem;
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.3);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     color: #22c55e;
     font-weight: 500;
 }
@@ -1418,7 +1439,7 @@ input[type="radio"]:checked + .radio-custom::after {
     padding: 2rem;
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     margin: 1rem 0;
 }
 
@@ -1518,7 +1539,7 @@ input[type="radio"]:checked + .radio-custom::after {
     right: 20px;
     z-index: 10000;
     padding: 1rem 1.5rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     color: white;
     font-weight: 500;
     animation: slideInRight 0.3s ease;
@@ -1641,7 +1662,7 @@ input[type="radio"]:checked + .radio-custom::after {
 .governance-info-panel {
     background: rgba(147, 51, 234, 0.05);
     border: 1px solid rgba(147, 51, 234, 0.2);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     text-align: left;
 }
@@ -1672,7 +1693,7 @@ input[type="radio"]:checked + .radio-custom::after {
     padding: 1.5rem;
     background: rgba(147, 51, 234, 0.05);
     border: 1px solid rgba(147, 51, 234, 0.2);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     margin-bottom: 1.5rem;
 }
 
@@ -1707,7 +1728,7 @@ input[type="radio"]:checked + .radio-custom::after {
 .proposal-card {
     background: var(--surface-secondary);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
