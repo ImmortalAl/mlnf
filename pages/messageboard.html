@@ -1709,8 +1709,12 @@
         });
 
         // Initialize Community Moderation System
+        console.log('[Debug] CommunityModerationSystem available:', typeof CommunityModerationSystem !== 'undefined');
+        console.log('[Debug] authManager state:', window.authManager?.isLoggedIn(), window.authManager?.getUser());
+        
         if (typeof CommunityModerationSystem !== 'undefined') {
             window.moderationSystem = new CommunityModerationSystem();
+            console.log('[Debug] Moderation system initialized:', !!window.moderationSystem);
             
             // Enhance user displays with flag buttons after content loads
             const enhanceWithRetry = () => {
@@ -1718,15 +1722,51 @@
                     console.log('[Moderation] Enhancing user displays...');
                     window.moderationSystem.enhanceUserDisplays();
                     
-                    // Retry after more content loads
+                    // Retry multiple times
                     setTimeout(() => {
+                        console.log('[Moderation] Retry 1...');
                         window.moderationSystem.enhanceUserDisplays();
                     }, 2000);
+                    
+                    setTimeout(() => {
+                        console.log('[Moderation] Retry 2...');
+                        window.moderationSystem.enhanceUserDisplays();
+                    }, 5000);
                 }
             };
             
             setTimeout(enhanceWithRetry, 1000);
+            
+            // Also try when auth state changes
+            if (window.authManager) {
+                window.authManager.subscribe((isLoggedIn, user) => {
+                    if (isLoggedIn) {
+                        console.log('[Moderation] User logged in, enhancing displays...');
+                        setTimeout(() => {
+                            window.moderationSystem.enhanceUserDisplays();
+                        }, 1000);
+                    }
+                });
+            }
+        } else {
+            console.error('[Debug] CommunityModerationSystem not loaded!');
         }
+        
+        // Debug function to manually test flag buttons
+        window.testFlagButtons = () => {
+            console.log('[Test] Manual flag button test...');
+            console.log('[Test] User displays found:', document.querySelectorAll('[data-user-id]').length);
+            console.log('[Test] Current user:', window.authManager?.getUser());
+            console.log('[Test] Is logged in:', window.authManager?.isLoggedIn());
+            
+            if (window.moderationSystem) {
+                window.moderationSystem.enhanceUserDisplays();
+            } else {
+                console.error('[Test] No moderation system available');
+            }
+        };
+        
+        console.log('[Debug] Type "testFlagButtons()" in console to manually test');
     });
     </script>
     
