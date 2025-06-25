@@ -33,6 +33,7 @@
             <ul>
                 <li><a href="#dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
                 <li><a href="#users"><i class="fas fa-users"></i> Soul Management</a></li>
+                <li><a href="#curation"><i class="fas fa-star"></i> Content Curation</a></li>
                 <li><a href="#analytics"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
                 <li><a href="#feedback"><i class="fas fa-heart"></i> Eternal Feedback</a></li>
                 <li><a href="/"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
@@ -151,6 +152,37 @@
             </div>
         </section>
 
+        <!-- Content Curation Section -->
+        <section id="curation" class="admin-section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> Content Curation
+            </h2>
+            
+            <div class="curation-overview">
+                <div class="current-highlights-grid">
+                    <div class="highlight-status-card">
+                        <h3><i class="fas fa-scroll"></i> Soul Scrolls Editorial</h3>
+                        <div id="currentSoulScrollsHighlight" class="current-highlight">
+                            <div class="loading">Loading current selection...</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCurationModal('soul-scrolls')">
+                            <i class="fas fa-edit"></i> Select Editorial Choice
+                        </button>
+                    </div>
+                    
+                    <div class="highlight-status-card">
+                        <h3><i class="fas fa-comments"></i> Echoes Unbound Editorial</h3>
+                        <div id="currentEchoesHighlight" class="current-highlight">
+                            <div class="loading">Loading current selection...</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCurationModal('echoes-unbound')">
+                            <i class="fas fa-edit"></i> Select Editorial Choice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Analytics Section -->
         <section id="analytics" class="admin-section">
             <h2 class="section-title">
@@ -243,6 +275,37 @@
         </div>
     </div>
 
+    <!-- Content Curation Modal -->
+    <div id="curationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="curationModalTitle">Select Editorial Choice</h3>
+                <button class="modal-close" onclick="closeCurationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="content-search">
+                    <input type="text" id="contentSearch" placeholder="Search content...">
+                    <button onclick="searchContent()"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <div class="content-type-tabs">
+                    <button class="tab-btn active" data-type="blogs">Soul Scrolls</button>
+                    <button class="tab-btn" data-type="threads">Echoes Unbound</button>
+                </div>
+                
+                <div class="content-list" id="contentList">
+                    <div class="loading">Loading content...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCurationModal()">Cancel</button>
+                <button class="btn btn-primary" id="featureContentBtn" onclick="featureSelectedContent()" disabled>
+                    <i class="fas fa-star"></i> Feature Content
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free. Administrator Access Only.</p>
         <p>With great power comes eternal responsibility.</p>
@@ -268,6 +331,194 @@
     <script src="../js/admin/analytics.js?v=1.2"></script>
     <script src="../js/admin/feedback.js?v=1.2"></script>
     
+    <!-- Content Curation System -->
+    <script>
+        // Content Curation System
+        let currentCurationSection = '';
+        let currentContentType = 'blogs';
+        let selectedContentId = null;
+        let selectedContentData = null;
+        
+        function openCurationModal(section) {
+            currentCurationSection = section;
+            currentContentType = section === 'soul-scrolls' ? 'blogs' : 'threads';
+            
+            document.getElementById('curationModal').style.display = 'block';
+            document.getElementById('curationModalTitle').textContent = 
+                section === 'soul-scrolls' ? 'Select Soul Scrolls Editorial Choice' : 'Select Echoes Unbound Editorial Choice';
+            
+            // Update tab visibility
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.style.display = section === 'soul-scrolls' && tab.dataset.type === 'threads' ? 'none' : 'block';
+                tab.classList.toggle('active', tab.dataset.type === currentContentType);
+            });
+            
+            loadContentForCuration();
+        }
+        
+        function closeCurationModal() {
+            document.getElementById('curationModal').style.display = 'none';
+            selectedContentId = null;
+            selectedContentData = null;
+            document.getElementById('featureContentBtn').disabled = true;
+        }
+        
+        async function loadContentForCuration() {
+            const contentList = document.getElementById('contentList');
+            contentList.innerHTML = '<div class="loading">Loading content...</div>';
+            
+            try {
+                const endpoint = currentContentType === 'blogs' ? '/blogs' : '/threads';
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}${endpoint}?limit=20`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to fetch content');
+                
+                const data = await response.json();
+                const content = data.docs || data;
+                
+                displayContentForCuration(content);
+                
+            } catch (error) {
+                console.error('Error loading content:', error);
+                contentList.innerHTML = '<div class="error">Failed to load content</div>';
+            }
+        }
+        
+        function displayContentForCuration(content) {
+            const contentList = document.getElementById('contentList');
+            
+            if (content.length === 0) {
+                contentList.innerHTML = '<div class="empty">No content available</div>';
+                return;
+            }
+            
+            contentList.innerHTML = content.map(item => {
+                const date = new Date(item.createdAt).toLocaleDateString();
+                const author = item.author?.username || 'Anonymous';
+                const excerpt = (item.content || '').replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+                
+                return `
+                    <div class="content-item" data-content-id="${item._id}" onclick="selectContent('${item._id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                        <div class="content-header">
+                            <h4>${item.title}</h4>
+                            <span class="content-meta">by ${author} • ${date}</span>
+                        </div>
+                        <p class="content-excerpt">${excerpt}</p>
+                        <div class="content-footer">
+                            <span class="content-type">${currentContentType === 'blogs' ? 'Soul Scroll' : 'Echo Thread'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function selectContent(contentId, contentData) {
+            // Remove previous selection
+            document.querySelectorAll('.content-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current item
+            document.querySelector(`[data-content-id="${contentId}"]`).classList.add('selected');
+            
+            selectedContentId = contentId;
+            selectedContentData = contentData;
+            
+            document.getElementById('featureContentBtn').disabled = false;
+        }
+        
+        async function featureSelectedContent() {
+            if (!selectedContentId || !selectedContentData) {
+                alert('Please select content to feature');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/admin-feature`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                    },
+                    body: JSON.stringify({
+                        contentType: currentContentType === 'blogs' ? 'blog' : 'thread',
+                        contentId: selectedContentId,
+                        section: currentCurationSection,
+                        adminNotes: 'Featured via admin curation interface'
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Failed to feature content');
+                
+                alert('Content successfully featured!');
+                closeCurationModal();
+                loadCurrentHighlights();
+                
+            } catch (error) {
+                console.error('Error featuring content:', error);
+                alert('Failed to feature content. Please try again.');
+            }
+        }
+        
+        async function loadCurrentHighlights() {
+            // Load current Soul Scrolls highlight
+            try {
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul-scrolls`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const adminHighlight = data.highlights?.find(h => h.type === 'admin');
+                    
+                    const container = document.getElementById('currentSoulScrollsHighlight');
+                    if (adminHighlight) {
+                        container.innerHTML = `
+                            <div class="featured-content">
+                                <h4>${adminHighlight.content.title}</h4>
+                                <p>by ${adminHighlight.content.author?.username || 'Anonymous'}</p>
+                                <small>Featured: ${new Date(adminHighlight.content.createdAt).toLocaleDateString()}</small>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = '<div class="no-selection">No editorial selection</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading Soul Scrolls highlight:', error);
+            }
+        }
+        
+        // Tab switching
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('tab-btn')) {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentContentType = e.target.dataset.type;
+                selectedContentId = null;
+                selectedContentData = null;
+                document.getElementById('featureContentBtn').disabled = true;
+                loadContentForCuration();
+            }
+        });
+        
+        // Search functionality
+        function searchContent() {
+            const searchTerm = document.getElementById('contentSearch').value;
+            // Could implement search API call here
+            loadContentForCuration();
+        }
+        
+        // Modal close on background click
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'curationModal') {
+                closeCurationModal();
+            }
+        });
+    </script>
+
     <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -292,6 +543,9 @@
             if (typeof AdminFeedback !== 'undefined') {
                 AdminFeedback.init();
             }
+            
+            // Initialize curation highlights
+            setTimeout(loadCurrentHighlights, 1000);
         });
     </script>
 </body>
