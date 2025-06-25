@@ -360,12 +360,16 @@ class CommunityModerationSystem {
     // Add flag buttons to user displays
     enhanceUserDisplays() {
         const userDisplays = document.querySelectorAll('[data-user-id]');
+        console.log(`[Moderation] Found ${userDisplays.length} user displays to enhance`);
         
+        let buttonsAdded = 0;
         userDisplays.forEach((display) => {
             if (!display.querySelector('.flag-user-btn')) {
                 const userId = display.getAttribute('data-user-id');
                 const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
                 const currentUser = window.authManager.getUser();
+                
+                console.log(`[Moderation] Checking user ${userId}, logged in: ${isLoggedIn}, current user: ${currentUser?._id}`);
                 
                 // Don't show flag button for user's own posts
                 if (userId && isLoggedIn && currentUser && userId !== currentUser._id) {
@@ -383,9 +387,13 @@ class CommunityModerationSystem {
                     });
                     
                     display.appendChild(flagBtn);
+                    buttonsAdded++;
+                    console.log(`[Moderation] Added flag button for user ${userId}`);
                 }
             }
         });
+        
+        console.log(`[Moderation] Added ${buttonsAdded} flag buttons total`);
     }
 }
 

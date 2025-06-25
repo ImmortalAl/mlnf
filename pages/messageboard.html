@@ -1713,9 +1713,19 @@
             window.moderationSystem = new CommunityModerationSystem();
             
             // Enhance user displays with flag buttons after content loads
-            setTimeout(() => {
-                window.moderationSystem.enhanceUserDisplays();
-            }, 1000);
+            const enhanceWithRetry = () => {
+                if (window.moderationSystem) {
+                    console.log('[Moderation] Enhancing user displays...');
+                    window.moderationSystem.enhanceUserDisplays();
+                    
+                    // Retry after more content loads
+                    setTimeout(() => {
+                        window.moderationSystem.enhanceUserDisplays();
+                    }, 2000);
+                }
+            };
+            
+            setTimeout(enhanceWithRetry, 1000);
         }
     });
     </script>
