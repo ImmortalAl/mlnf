@@ -652,26 +652,26 @@
                 const threadElement = threadList.children[index];
                 if (threadElement && thread.author) {
                     const authorContainer = threadElement.querySelector('.thread-author-info');
-                    if (authorContainer) {
-                                                    const authorDisplay = window.MLNFAvatars.createUserDisplay({
-                                username: thread.author.username || 'Anonymous',
-                                title: 'Echo Contributor',
-                                avatarSize: 'sm',
-                                displaySize: 'xs',
-                                compact: true,
-                                mystical: thread.author.isVIP || thread.author.role === 'admin',
-                                online: thread.author.online,
-                                customAvatar: thread.author.avatar,
-                                usernameStyle: 'immortal',
-                                enableUnifiedNavigation: true
-                            });
-                            
-                            // Add user ID attribute for moderation system
-                            if (thread.author._id) {
-                                authorDisplay.setAttribute('data-user-id', thread.author._id);
-                            }
-                            
-                            authorContainer.appendChild(authorDisplay);
+                    if (authorContainer && authorContainer.children.length === 0) { // Only add if container is empty
+                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                            username: thread.author.username || 'Anonymous',
+                            title: 'Echo Contributor',
+                            avatarSize: 'sm',
+                            displaySize: 'xs',
+                            compact: true,
+                            mystical: thread.author.isVIP || thread.author.role === 'admin',
+                            online: thread.author.online,
+                            customAvatar: thread.author.avatar,
+                            usernameStyle: 'immortal',
+                            enableUnifiedNavigation: true
+                        });
+                        
+                        // Add user ID attribute for moderation system
+                        if (thread.author._id) {
+                            authorDisplay.setAttribute('data-user-id', thread.author._id);
+                        }
+                        
+                        authorContainer.appendChild(authorDisplay);
                     }
                 }
             });
@@ -1118,7 +1118,7 @@
                     const replyElement = replyElements[index];
                     if (replyElement && reply.author) {
                         const authorContainer = replyElement.querySelector('.reply-author-info');
-                        if (authorContainer) {
+                        if (authorContainer && authorContainer.children.length === 0) { // Only add if container is empty
                             const authorDisplay = window.MLNFAvatars.createUserDisplay({
                                 username: reply.author.username || 'Anonymous',
                                 title: 'Echo Responder',
