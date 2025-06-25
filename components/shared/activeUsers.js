@@ -189,7 +189,7 @@ async function populateActiveUsersList() {
                 // Create unified user display using MLNF Avatar System
                 if (!window.MLNFAvatars) {
                     console.warn('[activeUsers.js] MLNFAvatars not available yet');
-                    continue;
+                    return;
                 }
                 
                 const userDisplay = window.MLNFAvatars.createUserDisplay({

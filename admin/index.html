@@ -696,56 +696,63 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize MLNF core components (gracefully handle missing elements on admin page)
+            
+            // Ensure MLNF object exists
+            window.MLNF = window.MLNF || {};
+            
             if (typeof MLNF !== 'undefined') {
                 try {
                     MLNF.initNavigation();
                 } catch (error) {
-                    // Skip navigation errors on admin page
+                    console.warn('Navigation init skipped on admin page:', error.message);
                 }
                 
                 try {
                     MLNF.initUserMenu();
                 } catch (error) {
-                    // Skip user menu errors on admin page
+                    console.warn('User menu init skipped on admin page:', error.message);
                 }
-                
-                // Initialize active users with a delay to ensure dependencies are loaded
-                setTimeout(() => {
-                    console.log('MLNF object keys:', Object.keys(MLNF || {}));
-                    console.log('Available MLNF functions:', MLNF);
-                    
-                    if (typeof MLNF !== 'undefined' && typeof MLNF.initActiveUsers === 'function') {
-                        console.log('Initializing active users...');
-                        MLNF.initActiveUsers();
-                    } else {
-                        console.error('MLNF.initActiveUsers not available:', typeof MLNF, typeof MLNF?.initActiveUsers);
-                        // Try calling the function directly if it exists globally
-                        if (typeof initActiveUsers === 'function') {
-                            console.log('Calling initActiveUsers directly...');
-                            initActiveUsers();
-                        } else {
-                            console.error('initActiveUsers function not found globally either');
-                            // Force reload the activeUsers script
-                            console.log('Attempting to reload activeUsers script...');
-                            const script = document.createElement('script');
-                            script.src = '../components/shared/activeUsers.js?v=' + Date.now();
-                            script.onload = () => {
-                                console.log('ActiveUsers script reloaded, trying again...');
-                                if (window.MLNF && window.MLNF.initActiveUsers) {
-                                    window.MLNF.initActiveUsers();
-                                }
-                            };
-                            document.head.appendChild(script);
-                        }
-                    }
-                }, 1500);
                 
                 try {
                     MLNF.initMessageModal();
                 } catch (error) {
-                    // Skip message modal errors if elements not found
+                    console.warn('Message modal init skipped on admin page:', error.message);
                 }
             }
+            
+            // Initialize active users with proper error handling
+            setTimeout(() => {
+                console.log('Initializing active users for admin panel...');
+                console.log('MLNF object:', typeof MLNF);
+                console.log('MLNF keys:', Object.keys(MLNF || {}));
+                
+                // Try multiple initialization approaches
+                if (typeof MLNF !== 'undefined' && typeof MLNF.initActiveUsers === 'function') {
+                    console.log('Using MLNF.initActiveUsers...');
+                    try {
+                        MLNF.initActiveUsers();
+                        console.log('Active users initialized successfully');
+                    } catch (error) {
+                        console.error('Error initializing active users:', error);
+                    }
+                } else if (typeof initActiveUsers === 'function') {
+                    console.log('Using global initActiveUsers...');
+                    try {
+                        initActiveUsers();
+                        console.log('Active users initialized via global function');
+                    } catch (error) {
+                        console.error('Error with global initActiveUsers:', error);
+                    }
+                } else {
+                    console.warn('Active users initialization not available - this is expected on admin page');
+                    // Don't try to reload the script - just gracefully degrade
+                    const showUsersBtn = document.getElementById('showUsersBtn');
+                    if (showUsersBtn) {
+                        showUsersBtn.style.display = 'none';
+                        console.log('Hidden active users button since functionality is not available');
+                    }
+                }
+            }, 1000);
             
             // Initialize admin components
             if (typeof AdminDashboard !== 'undefined') {
