@@ -69,11 +69,9 @@ class AuthManager {
         }
 
         try {
-            console.log('[AuthManager] Verifying token with API...');
             // Use the global apiClient to verify the user
             const user = await window.apiClient.get('/users/me');
             this.currentUser = user;
-            console.log('[AuthManager] Token verified successfully, user loaded:', user.username);
         } catch (error) {
             console.warn('[AuthManager] Token verification failed:', error);
             // Only logout if it's specifically a 401 Unauthorized error

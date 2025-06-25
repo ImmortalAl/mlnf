@@ -5,7 +5,6 @@ const AdminAnalytics = {
     apiBaseUrl: null,
 
     init() {
-        console.log('Initializing Admin Analytics...');
         this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
         this.loadAnalytics();
         this.initCharts();

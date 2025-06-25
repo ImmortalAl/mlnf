@@ -5,7 +5,6 @@ window.MLNF = window.MLNF || {};
 
 // Centralized component initialization
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('[mlnf-core.js] Initializing all MLNF components...');
 
   // The order of initialization can be important.
   // For example, user menu should be initialized before components that might use it.
@@ -32,14 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  console.log(`[mlnf-core.js] Initialized ${successfulInits}/${components.length} components.`);
   
   // Optional components
   if (typeof window.MLNF.initHeroParticles === 'function') {
     window.MLNF.initHeroParticles(350);
   }
 
-  console.log('[mlnf-core.js] All components initialized.');
 });
 
 // Listen for authentication state changes

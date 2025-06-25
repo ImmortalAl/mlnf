@@ -54,7 +54,6 @@ class MLNFRichTextEditor {
         // Apply custom styling
         this.applyCustomStyling();
         
-        console.log('MLNF Rich Text Editor initialized successfully');
     }
     
     applyCustomStyling() {

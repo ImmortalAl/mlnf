@@ -87,7 +87,6 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     }
 
 function initMessageModal() {
-    console.log('[messageModal.js] Initializing...');
     messageModal = document.getElementById('messageModal');
         recipientNameElement = document.getElementById('recipientName'); 
         messageInputElement = document.getElementById('messageInput'); 
@@ -116,7 +115,6 @@ function initMessageModal() {
         messageInputElement.addEventListener('input', handleTyping);
     }
         isInitialized = true;
-    console.log('[messageModal.js] Initialized.');
 }
 
 async function openMessageModal(username) {
@@ -129,7 +127,6 @@ async function openMessageModal(username) {
         }
     }
 
-    console.log(`[messageModal.js] Opening message modal for ${username}`);
 
     currentRecipientUsername = username;
         if(recipientNameElement) recipientNameElement.textContent = `To: ${username}`;

@@ -37,7 +37,6 @@ class MLNFWebSocket {
             const wsUrl = MLNF_CONFIG.API_BASE_URL.replace('https://', 'wss://').replace('http://', 'ws://').replace('/api', '');
             const fullUrl = `${wsUrl}?token=${encodeURIComponent(token)}`;
             
-            console.log('[WebSocket] Connecting to:', wsUrl);
             
             this.ws = new WebSocket(fullUrl);
             this.ws.onopen = this.onOpen;
@@ -82,7 +81,6 @@ class MLNFWebSocket {
      * Handle WebSocket open event
      */
     onOpen() {
-        console.log('[WebSocket] Connected successfully');
         this.isConnected = true;
         this.reconnectAttempts = 0;
         this.reconnectDelay = 1000;
@@ -98,7 +96,6 @@ class MLNFWebSocket {
     onMessage(event) {
         try {
             const data = JSON.parse(event.data);
-            console.log('[WebSocket] Received:', data);
             
             switch (data.type) {
                 case 'connection':
@@ -128,7 +125,6 @@ class MLNFWebSocket {
      * Handle WebSocket close event
      */
     onClose(event) {
-        console.log('[WebSocket] Connection closed:', event.code, event.reason);
         this.isConnected = false;
         
         // Attempt to reconnect if not intentionally closed
@@ -152,7 +148,6 @@ class MLNFWebSocket {
      */
     attemptReconnect() {
         this.reconnectAttempts++;
-        console.log(`[WebSocket] Reconnect attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${this.reconnectDelay}ms`);
         
         setTimeout(() => {
             this.connect();
@@ -265,4 +260,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('[WebSocket] Client manager loaded'); 
+ 

@@ -2,7 +2,6 @@
 // Handles the profile setup form functionality
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Profile Setup page loaded');
     
     // Get form elements
     const usernameInput = document.getElementById('username');
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const token = localStorage.getItem('sessionToken');
             if (!token) {
-                console.log('No token found, starting fresh profile setup');
                 return;
             }
 

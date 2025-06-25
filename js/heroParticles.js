@@ -1,9 +1,6 @@
 // MLNF/js/heroParticles.js
-console.log('[heroParticles.js] Script loaded!');
-alert('Hero particles script loaded!'); // Very obvious test
 
 function createParticle() {
-    console.log('[heroParticles.js] Creating particle...');
     
     const particle = document.createElement('div');
     particle.className = 'particle';
@@ -25,7 +22,6 @@ function createParticle() {
     // Append directly to body for testing
     document.body.appendChild(particle);
     
-    console.log('[heroParticles.js] Particle created and added to body');
     
     // Remove after animation
     setTimeout(() => {
@@ -36,7 +32,6 @@ function createParticle() {
 }
 
 function initHeroParticles(creationInterval = 200) {
-    console.log(`[heroParticles.js] Initializing continuous hero particles every ${creationInterval}ms...`);
     // Particles now append to body for full viewport coverage
 
     // Create an initial larger burst for immediate visual impact
