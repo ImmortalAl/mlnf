@@ -306,7 +306,7 @@ class CommunityModerationSystem {
             }
             const token = window.authManager.getToken();
 
-            const response = await fetch('/api/community-mod/vote-case', {
+                                    const response = await fetch('/api/community-mod/vote-case', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

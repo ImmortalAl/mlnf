@@ -644,25 +644,44 @@
         
         // After creating the HTML, add unified user displays
         setTimeout(() => {
-            if (!window.MLNFAvatars) {
-                return;
-            }
+            if (!window.MLNFAvatars) return;
+
+            threads.forEach(thread => {
+                const threadElement = threadList.querySelector(`.thread[data-id='${thread._id}']`);
+                if (threadElement && thread.author) {
+                    const authorContainer = threadElement.querySelector('.thread-author-info');
+                    if (authorContainer && authorContainer.children.length === 0) {
+                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                            username: thread.author.username || 'Anonymous',
+                            title: thread.author.title || 'Echo Author',
+                            avatarSize: 'xs',
+                            displaySize: 'xs',
+                            compact: true,
+                            mystical: thread.author.isVIP || thread.author.role === 'admin',
+                            online: thread.author.online,
+                            customAvatar: thread.author.avatar,
+                            usernameStyle: 'immortal',
+                            enableUnifiedNavigation: true
+                        });
+
+                        if (thread.author._id) {
+                            authorDisplay.setAttribute('data-user-id', thread.author._id);
+                        }
+
+                        if (window.authManager.isLoggedIn() && window.authManager.getUser()?._id !== thread.author._id) {
+                            const flagBtn = document.createElement('button');
+                            flagBtn.className = 'flag-user-btn btn-ghost';
+                            flagBtn.setAttribute('data-user-id', thread.author._id);
+                            flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
+                            flagBtn.title = 'Flag for community review';
+                            authorDisplay.appendChild(flagBtn);
+                        }
+                        
+                        authorContainer.appendChild(authorDisplay);
                     }
-                    
-                    // Add flag button if viewer is not the author
-                    if (window.authManager.isLoggedIn() && window.authManager.getUser()?._id !== thread.author._id) {
-                        const flagBtn = document.createElement('button');
-                        flagBtn.className = 'flag-user-btn btn-ghost';
-                        flagBtn.setAttribute('data-user-id', thread.author._id);
-                        flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
-                        flagBtn.title = 'Flag for community review';
-                        authorDisplay.appendChild(flagBtn);
-                    }
-                    
-                    authorContainer.appendChild(authorDisplay);
                 }
-            }
-        });
+            });
+        }, 0);
     };
 
     window.updateCategoryDisplay = function(category, threadCount) {
@@ -917,17 +936,6 @@
                 }
                 
                 container.innerHTML = `
-                    <h3>${window.escapeHTML(threadData.title)}</h3>
-                    <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
-                    ${threadData.author && threadData.author.signature ? `<div class="signature">${window.escapeHTML(threadData.author.signature)}</div>` : ''}
-                    ${proposalInterface}
-                    <div class="replies-container">
-                        ${renderReplies(threadData.replies, threadId)}
-                    </div>
-                    <div class="reply-form-container" id="mainReplyFormContainer"></div>
-                `;
-                
-                if (window.authManager.isLoggedIn()) {
                     createReplyForm(container.querySelector('#mainReplyFormContainer'), threadId);
                 }
 
@@ -1054,6 +1062,46 @@
             }
         });
 
+        function enhanceReplies(replies) {
+            if (!window.MLNFAvatars) return;
+
+            replies.forEach((reply) => {
+                const replyElement = document.querySelector(`.reply[data-id='${reply._id}']`);
+                if (replyElement && reply.author) {
+                    const authorContainer = replyElement.querySelector('.reply-author-info');
+                    if (authorContainer && authorContainer.children.length === 0) {
+                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                            username: reply.author.username || 'Anonymous',
+                            title: 'Echo Responder',
+                            avatarSize: 'xs',
+                            displaySize: 'xs',
+                            compact: true,
+                            mystical: reply.author.isVIP || reply.author.role === 'admin',
+                            online: reply.author.online,
+                            customAvatar: reply.author.avatar,
+                            usernameStyle: 'immortal',
+                            enableUnifiedNavigation: true
+                        });
+
+                        if (reply.author._id) {
+                            authorDisplay.setAttribute('data-user-id', reply.author._id);
+                        }
+
+                        if (window.authManager.isLoggedIn() && window.authManager.getUser()?._id !== reply.author._id) {
+                            const flagBtn = document.createElement('button');
+                            flagBtn.className = 'flag-user-btn btn-ghost';
+                            flagBtn.setAttribute('data-user-id', reply.author._id);
+                            flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
+                            flagBtn.title = 'Flag for community review';
+                            authorDisplay.appendChild(flagBtn);
+                        }
+
+                        authorContainer.appendChild(authorDisplay);
+                    }
+                }
+            });
+        }
+
         function renderReplies(replies, threadId) {
             if (!replies || replies.length === 0) {
                 return '<p class="thread-meta">No replies yet. Be the first to echo back.</p>';
@@ -1087,45 +1135,8 @@
                 </div>
             `}).join('');
             
-            // After creating the HTML, add unified user displays for replies
-            replies.forEach((reply, index) => {
-                const replyElements = document.querySelectorAll('.reply');
-                const replyElement = replyElements[index];
-                if (replyElement && reply.author) {
-                    const authorContainer = replyElement.querySelector('.reply-author-info');
-                    if (authorContainer) {
-                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
-                            username: reply.author.username || 'Anonymous',
-                            title: 'Echo Responder',
-                            avatarSize: 'xs',
-                            displaySize: 'xs',
-                            compact: true,
-                            mystical: reply.author.isVIP || reply.author.role === 'admin',
-                            online: reply.author.online,
-                            customAvatar: reply.author.avatar,
-                            usernameStyle: 'immortal',
-                            enableUnifiedNavigation: true
-                        });
-                        
-                        // Add user ID attribute for moderation system
-                        if (reply.author._id) {
-                            authorDisplay.setAttribute('data-user-id', reply.author._id);
-                        }
-                        
-                        // Add flag button if viewer is not the author
-                        if (window.authManager.isLoggedIn() && window.authManager.getUser()?._id !== reply.author._id) {
-                            const flagBtn = document.createElement('button');
-                            flagBtn.className = 'flag-user-btn btn-ghost';
-                            flagBtn.setAttribute('data-user-id', reply.author._id);
-                            flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
-                            flagBtn.title = 'Flag for community review';
-                            authorDisplay.appendChild(flagBtn);
-                        }
-                        
-                        authorContainer.appendChild(authorDisplay);
-                    }
-                }
-            });
+
+
             
             return repliesHTML;
         }
