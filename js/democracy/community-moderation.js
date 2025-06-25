@@ -31,8 +31,14 @@ class CommunityModerationSystem {
         document.addEventListener('contextmenu', (e) => {
             const userElement = e.target.closest('[data-user-id]');
             if (userElement && window.authManager.isLoggedIn()) {
-                e.preventDefault();
-                this.showUserContextMenu(e, userElement.getAttribute('data-user-id'));
+                const userId = userElement.getAttribute('data-user-id');
+                const currentUser = window.authManager.getUser();
+                
+                // Don't show context menu for user's own posts
+                if (currentUser && userId !== currentUser._id) {
+                    e.preventDefault();
+                    this.showUserContextMenu(e, userId);
+                }
             }
         });
     }
@@ -359,8 +365,10 @@ class CommunityModerationSystem {
             if (!display.querySelector('.flag-user-btn')) {
                 const userId = display.getAttribute('data-user-id');
                 const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
+                const currentUser = window.authManager.getUser();
                 
-                if (userId && isLoggedIn) {
+                // Don't show flag button for user's own posts
+                if (userId && isLoggedIn && currentUser && userId !== currentUser._id) {
                     const flagBtn = document.createElement('button');
                     flagBtn.className = 'flag-user-btn';
                     flagBtn.setAttribute('data-user-id', userId);
