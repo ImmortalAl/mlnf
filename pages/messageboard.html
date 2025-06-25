@@ -647,42 +647,22 @@
             if (!window.MLNFAvatars) {
                 return;
             }
-            
-            threads.forEach((thread, index) => {
-                const threadElement = threadList.children[index];
-                if (threadElement && thread.author) {
-                    const authorContainer = threadElement.querySelector('.thread-author-info');
-                    if (authorContainer && authorContainer.children.length === 0) { // Only add if container is empty
-                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
-                            username: thread.author.username || 'Anonymous',
-                            title: 'Echo Contributor',
-                            avatarSize: 'sm',
-                            displaySize: 'xs',
-                            compact: true,
-                            mystical: thread.author.isVIP || thread.author.role === 'admin',
-                            online: thread.author.online,
-                            customAvatar: thread.author.avatar,
-                            usernameStyle: 'immortal',
-                            enableUnifiedNavigation: true
-                        });
-                        
-                        // Add user ID attribute for moderation system
-                        if (thread.author._id) {
-                            authorDisplay.setAttribute('data-user-id', thread.author._id);
-                        }
-                        
-                        authorContainer.appendChild(authorDisplay);
                     }
+                    
+                    // Add flag button if viewer is not the author
+                    if (window.authManager.isLoggedIn() && window.authManager.getUser()?._id !== thread.author._id) {
+                        const flagBtn = document.createElement('button');
+                        flagBtn.className = 'flag-user-btn btn-ghost';
+                        flagBtn.setAttribute('data-user-id', thread.author._id);
+                        flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
+                        flagBtn.title = 'Flag for community review';
+                        authorDisplay.appendChild(flagBtn);
+                    }
+                    
+                    authorContainer.appendChild(authorDisplay);
                 }
-            });
-            
-            // Enhance with flag buttons after avatar displays are added
-            if (window.moderationSystem) {
-                setTimeout(() => {
-                    window.moderationSystem.enhanceUserDisplays();
-                }, 200);
             }
-        }, 100);
+        });
     };
 
     window.updateCategoryDisplay = function(category, threadCount) {
@@ -1108,47 +1088,44 @@
             `}).join('');
             
             // After creating the HTML, add unified user displays for replies
-            setTimeout(() => {
-                if (!window.MLNFAvatars) {
-                    return;
-                }
-                
-                replies.forEach((reply, index) => {
-                    const replyElements = document.querySelectorAll('.reply');
-                    const replyElement = replyElements[index];
-                    if (replyElement && reply.author) {
-                        const authorContainer = replyElement.querySelector('.reply-author-info');
-                        if (authorContainer && authorContainer.children.length === 0) { // Only add if container is empty
-                            const authorDisplay = window.MLNFAvatars.createUserDisplay({
-                                username: reply.author.username || 'Anonymous',
-                                title: 'Echo Responder',
-                                avatarSize: 'xs',
-                                displaySize: 'xs',
-                                compact: true,
-                                mystical: reply.author.isVIP || reply.author.role === 'admin',
-                                online: reply.author.online,
-                                customAvatar: reply.author.avatar,
-                                usernameStyle: 'immortal',
-                                enableUnifiedNavigation: true
-                            });
-                            
-                            // Add user ID attribute for moderation system
-                            if (reply.author._id) {
-                                authorDisplay.setAttribute('data-user-id', reply.author._id);
-                            }
-                            
-                            authorContainer.appendChild(authorDisplay);
+            replies.forEach((reply, index) => {
+                const replyElements = document.querySelectorAll('.reply');
+                const replyElement = replyElements[index];
+                if (replyElement && reply.author) {
+                    const authorContainer = replyElement.querySelector('.reply-author-info');
+                    if (authorContainer) {
+                        const authorDisplay = window.MLNFAvatars.createUserDisplay({
+                            username: reply.author.username || 'Anonymous',
+                            title: 'Echo Responder',
+                            avatarSize: 'xs',
+                            displaySize: 'xs',
+                            compact: true,
+                            mystical: reply.author.isVIP || reply.author.role === 'admin',
+                            online: reply.author.online,
+                            customAvatar: reply.author.avatar,
+                            usernameStyle: 'immortal',
+                            enableUnifiedNavigation: true
+                        });
+                        
+                        // Add user ID attribute for moderation system
+                        if (reply.author._id) {
+                            authorDisplay.setAttribute('data-user-id', reply.author._id);
                         }
+                        
+                        // Add flag button if viewer is not the author
+                        if (window.authManager.isLoggedIn() && window.authManager.getUser()?._id !== reply.author._id) {
+                            const flagBtn = document.createElement('button');
+                            flagBtn.className = 'flag-user-btn btn-ghost';
+                            flagBtn.setAttribute('data-user-id', reply.author._id);
+                            flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
+                            flagBtn.title = 'Flag for community review';
+                            authorDisplay.appendChild(flagBtn);
+                        }
+                        
+                        authorContainer.appendChild(authorDisplay);
                     }
-                });
-                
-                // Add flag buttons to reply author displays
-                if (window.moderationSystem) {
-                    setTimeout(() => {
-                        window.moderationSystem.enhanceUserDisplays();
-                    }, 200);
                 }
-            }, 100);
+            });
             
             return repliesHTML;
         }
@@ -1709,42 +1686,11 @@
         });
 
         // Initialize Community Moderation System
-        console.log('[Debug] CommunityModerationSystem available:', typeof CommunityModerationSystem !== 'undefined');
-        console.log('[Debug] authManager state:', window.authManager?.isLoggedIn(), window.authManager?.getUser());
-        
         if (typeof CommunityModerationSystem !== 'undefined') {
             window.moderationSystem = new CommunityModerationSystem();
-            console.log('[Debug] Moderation system initialized:', !!window.moderationSystem);
-            
-            // Enhance user displays with flag buttons after content loads
-            const enhanceWithRetry = () => {
-                if (window.moderationSystem) {
-                    console.log('[Moderation] Enhancing user displays...');
-                    window.moderationSystem.enhanceUserDisplays();
-                    
-                    // Single retry for dynamic content
-                    setTimeout(() => {
-                        console.log('[Moderation] Retry once...');
-                        window.moderationSystem.enhanceUserDisplays();
-                    }, 3000);
-                }
-            };
-            
-            setTimeout(enhanceWithRetry, 1000);
-            
-            // Also try when auth state changes
-            if (window.authManager) {
-                window.authManager.subscribe((isLoggedIn, user) => {
-                    if (isLoggedIn) {
-                        console.log('[Moderation] User logged in, enhancing displays...');
-                        setTimeout(() => {
-                            window.moderationSystem.enhanceUserDisplays();
-                        }, 1000);
-                    }
-                });
-            }
+            console.log('[messageboard] Community moderation system initialized');
         } else {
-            console.error('[Debug] CommunityModerationSystem not loaded!');
+            console.error('[messageboard] CommunityModerationSystem not loaded!');
         }
         
         // Debug function to manually test flag buttons
