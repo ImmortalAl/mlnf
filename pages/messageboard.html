@@ -1722,16 +1722,11 @@
                     console.log('[Moderation] Enhancing user displays...');
                     window.moderationSystem.enhanceUserDisplays();
                     
-                    // Retry multiple times
+                    // Single retry for dynamic content
                     setTimeout(() => {
-                        console.log('[Moderation] Retry 1...');
+                        console.log('[Moderation] Retry once...');
                         window.moderationSystem.enhanceUserDisplays();
-                    }, 2000);
-                    
-                    setTimeout(() => {
-                        console.log('[Moderation] Retry 2...');
-                        window.moderationSystem.enhanceUserDisplays();
-                    }, 5000);
+                    }, 3000);
                 }
             };
             
@@ -1764,6 +1759,28 @@
             } else {
                 console.error('[Test] No moderation system available');
             }
+        };
+        
+        // Function to clean up flag button parade
+        window.cleanupFlagButtons = () => {
+            console.log('[Cleanup] Removing duplicate flag buttons...');
+            const userDisplays = document.querySelectorAll('[data-user-id]');
+            let cleaned = 0;
+            
+            userDisplays.forEach(display => {
+                const flagButtons = display.querySelectorAll('.flag-user-btn');
+                if (flagButtons.length > 1) {
+                    // Keep only the first flag button, remove the rest
+                    for (let i = 1; i < flagButtons.length; i++) {
+                        flagButtons[i].remove();
+                        cleaned++;
+                    }
+                }
+                // Mark as enhanced to prevent future duplicates
+                display.setAttribute('data-flag-enhanced', 'true');
+            });
+            
+            console.log(`[Cleanup] Removed ${cleaned} duplicate flag buttons`);
         };
         
         console.log('[Debug] Type "testFlagButtons()" in console to manually test');

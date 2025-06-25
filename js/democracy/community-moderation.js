@@ -364,31 +364,38 @@ class CommunityModerationSystem {
         
         let buttonsAdded = 0;
         userDisplays.forEach((display) => {
-            if (!display.querySelector('.flag-user-btn')) {
-                const userId = display.getAttribute('data-user-id');
+            // More robust check to prevent duplicate buttons
+            const existingFlagBtn = display.querySelector('.flag-user-btn');
+            const userId = display.getAttribute('data-user-id');
+            
+            if (!existingFlagBtn && userId) {
                 const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
                 const currentUser = window.authManager.getUser();
                 
                 console.log(`[Moderation] Checking user ${userId}, logged in: ${isLoggedIn}, current user: ${currentUser?._id}`);
                 
                 // Don't show flag button for user's own posts
-                if (userId && isLoggedIn && currentUser && userId !== currentUser._id) {
-                    const flagBtn = document.createElement('button');
-                    flagBtn.className = 'flag-user-btn';
-                    flagBtn.setAttribute('data-user-id', userId);
-                    flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
-                    flagBtn.title = 'Flag for community review';
-                    
-                    // Add click handler for flag button
-                    flagBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.showFlagModal(userId);
-                    });
-                    
-                    display.appendChild(flagBtn);
-                    buttonsAdded++;
-                    console.log(`[Moderation] Added flag button for user ${userId}`);
+                if (isLoggedIn && currentUser && userId !== currentUser._id) {
+                    // Mark this display as processed to prevent future duplicates
+                    if (!display.hasAttribute('data-flag-enhanced')) {
+                        const flagBtn = document.createElement('button');
+                        flagBtn.className = 'flag-user-btn';
+                        flagBtn.setAttribute('data-user-id', userId);
+                        flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
+                        flagBtn.title = 'Flag for community review';
+                        
+                        // Add click handler for flag button
+                        flagBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            this.showFlagModal(userId);
+                        });
+                        
+                        display.appendChild(flagBtn);
+                        display.setAttribute('data-flag-enhanced', 'true');
+                        buttonsAdded++;
+                        console.log(`[Moderation] Added flag button for user ${userId}`);
+                    }
                 }
             }
         });
