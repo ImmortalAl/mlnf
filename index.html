@@ -439,16 +439,39 @@
         <section class="highlights" id="blog" aria-labelledby="blogHeading">
             <div class="section-title">
                 <h2 id="blogHeading" class="font-immortal-mystical text-immortal-gradient">Soul Scrolls</h2>
-                <p>Recent Reflections from Liberated Spirits</p>
+                <p>Featured Reflections from Liberated Spirits</p>
             </div>
-            <div class="highlight-grid" id="scrollsHighlights">
-                <!-- Dynamic content will load here -->
-                <div class="highlight-item">
-                    <h4>Loading Soul Scrolls...</h4>
-                    <p>Gathering the latest whispers from eternal minds...</p>
-                    <p class="author">— System</p>
+            <div class="dual-highlight-grid" id="scrollsHighlights">
+                <!-- Recent Posts Card -->
+                <div class="highlight-card recent-posts-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock"></i> Recent Posts</h3>
+                        <p>Latest whispers from eternal minds</p>
+                    </div>
+                    <div class="card-content" id="recentScrollsContent">
+                        <div class="highlight-item loading">
+                            <h4>Loading Recent Scrolls...</h4>
+                            <p>Gathering the latest reflections...</p>
+                        </div>
+                    </div>
                 </div>
-                <a href="pages/blog.html" class="btn btn-primary">Explore All Scrolls</a>
+                
+                <!-- Editorial Choice Card -->
+                <div class="highlight-card editorial-choice-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-star"></i> Editorial Choice</h3>
+                        <p>Curator's selection of timeless wisdom</p>
+                    </div>
+                    <div class="card-content" id="editorialScrollsContent">
+                        <div class="highlight-item loading">
+                            <h4>Loading Editorial Selection...</h4>
+                            <p>Gathering curated excellence...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-footer">
+                <a href="pages/blog.html" class="btn btn-primary">Explore All Soul Scrolls</a>
             </div>
         </section>
 
@@ -846,96 +869,138 @@
         try {
             // Wait for MLNFAvatars to be available
             if (!window.MLNFAvatars) {
-                console.log('[index.html] Waiting for MLNFAvatars to load...');
                 setTimeout(loadScrollsHighlights, 200);
                 return;
             }
             
-            const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs?limit=2`);
-            if (!response.ok) throw new Error('Failed to fetch');
+            // Load both recent posts and editorial highlights in parallel
+            const [recentResponse, highlightsResponse] = await Promise.all([
+                fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs?limit=1&sort=createdAt`),
+                fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul-scrolls`)
+            ]);
             
-            const data = await response.json();
-            const scrolls = data.docs || data;
+            // Load recent posts
+            if (recentResponse.ok) {
+                const recentData = await recentResponse.json();
+                const recentScrolls = recentData.docs || recentData;
+                loadRecentScrolls(recentScrolls.slice(0, 1));
+            }
             
-            const highlightsContainer = document.getElementById('scrollsHighlights');
-            if (!highlightsContainer || scrolls.length === 0) return;
-            
-            // Clear existing content and build with unified avatar system
-            highlightsContainer.innerHTML = '';
-            
-            scrolls.forEach(scroll => {
-                const date = new Date(scroll.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'long', day: 'numeric'
-                });
-                const author = scroll.author || {};
-                
-                // Create highlight card container with click navigation
-                const highlightCard = document.createElement('a');
-                highlightCard.href = 'pages/blog.html';
-                highlightCard.className = 'highlight-item scroll-highlight-card scroll-link';
-                highlightCard.setAttribute('data-scroll-id', scroll._id);
-                
-                // Add click handler to open specific scroll
-                highlightCard.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Store scroll ID for blog page to auto-open
-                    sessionStorage.setItem('openScrollId', scroll._id);
-                    window.location.href = 'pages/blog.html';
-                });
-                
-                // Create title
-                const title = document.createElement('h4');
-                title.className = 'scroll-title-prominent';
-                title.textContent = scroll.title;
-                
-                // Create excerpt (strip HTML and limit length)
-                const excerpt = document.createElement('p');
-                excerpt.className = 'scroll-excerpt';
-                const textContent = scroll.content.replace(/<[^>]*>/g, '');
-                excerpt.textContent = textContent.length > 120 ? textContent.substring(0, 120) + '...' : textContent;
-                
-                // Create unified user display
-                const userDisplay = window.MLNFAvatars.createUserDisplay({
-                    username: author.username || 'Anonymous',
-                    title: 'Scroll Weaver',
-                    avatarSize: 'sm',
-                    displaySize: 'sm',
-                    compact: true,
-                    mystical: author.isVIP || author.role === 'admin',
-                    online: author.online,
-                    customAvatar: author.avatar,
-                    usernameStyle: 'immortal',
-                    enableUnifiedNavigation: true
-                });
-                
-                // Create meta section
-                const metaDiv = document.createElement('div');
-                metaDiv.className = 'highlight-meta';
-                metaDiv.innerHTML = `
-                    <span class="date">${date}</span>
-                    <span class="read-more-indicator">Read full scroll →</span>
-                `;
-                
-                // Assemble highlight card
-                highlightCard.appendChild(title);
-                highlightCard.appendChild(excerpt);
-                highlightCard.appendChild(userDisplay);
-                highlightCard.appendChild(metaDiv);
-                
-                highlightsContainer.appendChild(highlightCard);
-            });
-            
-            // Add "Explore All Scrolls" button
-            const exploreBtn = document.createElement('a');
-            exploreBtn.href = 'pages/blog.html';
-            exploreBtn.className = 'btn btn-primary';
-            exploreBtn.textContent = 'Explore All Scrolls';
-            highlightsContainer.appendChild(exploreBtn);
+            // Load editorial highlights
+            if (highlightsResponse.ok) {
+                const highlightsData = await highlightsResponse.json();
+                loadEditorialHighlights(highlightsData.highlights || []);
+            }
             
         } catch (error) {
-            console.error('Failed to load soul scrolls:', error);
+            console.error('Failed to load soul scrolls highlights:', error);
             // Keep fallback content
         }
+    }
+    
+    function loadRecentScrolls(scrolls) {
+        const container = document.getElementById('recentScrollsContent');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (scrolls.length === 0) {
+            container.innerHTML = '<div class="highlight-item empty"><p>No recent scrolls available</p></div>';
+            return;
+        }
+        
+        scrolls.forEach(scroll => {
+            const highlightCard = createScrollHighlightCard(scroll, 'recent');
+            container.appendChild(highlightCard);
+        });
+    }
+    
+    function loadEditorialHighlights(highlights) {
+        const container = document.getElementById('editorialScrollsContent');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Find admin (editorial) highlight for soul-scrolls section
+        const editorialHighlight = highlights.find(h => h.type === 'admin');
+        
+        if (!editorialHighlight) {
+            container.innerHTML = `
+                <div class="highlight-item empty">
+                    <p>No editorial selection available</p>
+                    <small>The immortal curators are reviewing timeless wisdom...</small>
+                </div>
+            `;
+            return;
+        }
+        
+        const highlightCard = createScrollHighlightCard(editorialHighlight.content, 'editorial');
+        container.appendChild(highlightCard);
+    }
+    
+    function createScrollHighlightCard(scroll, cardType) {
+        const date = new Date(scroll.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric'
+        });
+        const author = scroll.author || {};
+        
+        // Create highlight card container with click navigation
+        const highlightCard = document.createElement('a');
+        highlightCard.href = 'pages/blog.html';
+        highlightCard.className = `highlight-item scroll-highlight-card ${cardType}-highlight`;
+        highlightCard.setAttribute('data-scroll-id', scroll._id || scroll.id);
+        
+        // Add click handler to open specific scroll
+        highlightCard.addEventListener('click', function(e) {
+            e.preventDefault();
+            sessionStorage.setItem('openScrollId', scroll._id || scroll.id);
+            window.location.href = 'pages/blog.html';
+        });
+        
+        // Create title
+        const title = document.createElement('h4');
+        title.className = 'scroll-title-prominent';
+        title.textContent = scroll.title;
+        
+        // Create excerpt (strip HTML and limit length)
+        const excerpt = document.createElement('p');
+        excerpt.className = 'scroll-excerpt';
+        const textContent = (scroll.content || scroll.excerpt || '').replace(/<[^>]*>/g, '');
+        excerpt.textContent = textContent.length > 100 ? textContent.substring(0, 100) + '...' : textContent;
+        
+        // Create unified user display
+        const userDisplay = window.MLNFAvatars.createUserDisplay({
+            username: author.username || 'Anonymous',
+            title: cardType === 'editorial' ? 'Featured Scroll Weaver' : 'Scroll Weaver',
+            avatarSize: 'sm',
+            displaySize: 'sm',
+            compact: true,
+            mystical: author.isVIP || author.role === 'admin' || cardType === 'editorial',
+            online: author.online,
+            customAvatar: author.avatar,
+            usernameStyle: 'immortal',
+            enableUnifiedNavigation: true
+        });
+        
+        // Create meta section
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'highlight-meta';
+        let metaContent = `<span class="date">${date}</span>`;
+        
+        if (cardType === 'editorial') {
+            metaContent += '<span class="editorial-badge"><i class="fas fa-star"></i> Curator\'s Choice</span>';
+        }
+        
+        metaContent += '<span class="read-more-indicator">Read full scroll →</span>';
+        metaDiv.innerHTML = metaContent;
+        
+        // Assemble highlight card
+        highlightCard.appendChild(title);
+        highlightCard.appendChild(excerpt);
+        highlightCard.appendChild(userDisplay);
+        highlightCard.appendChild(metaDiv);
+        
+        return highlightCard;
     }
     
     // Load on page ready
