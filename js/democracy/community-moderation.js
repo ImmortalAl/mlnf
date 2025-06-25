@@ -4,6 +4,8 @@
 class CommunityModerationSystem {
     constructor() {
         this.activeCases = [];
+        this.lastEnhancementTime = 0;
+        this.enhancementCooldown = 1000; // 1 second cooldown
         this.init();
     }
 
@@ -359,48 +361,86 @@ class CommunityModerationSystem {
 
     // Add flag buttons to user displays
     enhanceUserDisplays() {
+        // Throttle enhancement calls to prevent rapid duplicates
+        const now = Date.now();
+        if (now - this.lastEnhancementTime < this.enhancementCooldown) {
+            console.log(`[Moderation] Enhancement throttled, too soon since last call`);
+            return;
+        }
+        this.lastEnhancementTime = now;
+        
+        // First, clean up any existing duplicate flags
+        this.cleanupDuplicateFlags();
+        
         const userDisplays = document.querySelectorAll('[data-user-id]');
         console.log(`[Moderation] Found ${userDisplays.length} user displays to enhance`);
         
         let buttonsAdded = 0;
         userDisplays.forEach((display) => {
-            // More robust check to prevent duplicate buttons
-            const existingFlagBtn = display.querySelector('.flag-user-btn');
             const userId = display.getAttribute('data-user-id');
             
-            if (!existingFlagBtn && userId) {
-                const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
-                const currentUser = window.authManager.getUser();
+            // Skip if already processed or no user ID
+            if (!userId || display.hasAttribute('data-flag-enhanced')) {
+                return;
+            }
+            
+            // Skip if flag button already exists
+            if (display.querySelector('.flag-user-btn')) {
+                display.setAttribute('data-flag-enhanced', 'true');
+                return;
+            }
+            
+            const isLoggedIn = window.authManager && window.authManager.isLoggedIn();
+            const currentUser = window.authManager.getUser();
+            
+            console.log(`[Moderation] Checking user ${userId}, logged in: ${isLoggedIn}, current user: ${currentUser?._id}`);
+            
+            // Don't show flag button for user's own posts
+            if (isLoggedIn && currentUser && userId !== currentUser._id) {
+                const flagBtn = document.createElement('button');
+                flagBtn.className = 'flag-user-btn';
+                flagBtn.setAttribute('data-user-id', userId);
+                flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
+                flagBtn.title = 'Flag for community review';
                 
-                console.log(`[Moderation] Checking user ${userId}, logged in: ${isLoggedIn}, current user: ${currentUser?._id}`);
+                // Add click handler for flag button
+                flagBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.showFlagModal(userId);
+                });
                 
-                // Don't show flag button for user's own posts
-                if (isLoggedIn && currentUser && userId !== currentUser._id) {
-                    // Mark this display as processed to prevent future duplicates
-                    if (!display.hasAttribute('data-flag-enhanced')) {
-                        const flagBtn = document.createElement('button');
-                        flagBtn.className = 'flag-user-btn';
-                        flagBtn.setAttribute('data-user-id', userId);
-                        flagBtn.innerHTML = '<i class="fas fa-flag"></i>';
-                        flagBtn.title = 'Flag for community review';
-                        
-                        // Add click handler for flag button
-                        flagBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            this.showFlagModal(userId);
-                        });
-                        
-                        display.appendChild(flagBtn);
-                        display.setAttribute('data-flag-enhanced', 'true');
-                        buttonsAdded++;
-                        console.log(`[Moderation] Added flag button for user ${userId}`);
-                    }
+                display.appendChild(flagBtn);
+                buttonsAdded++;
+                console.log(`[Moderation] Added flag button for user ${userId}`);
+            }
+            
+            // Always mark as enhanced to prevent future processing
+            display.setAttribute('data-flag-enhanced', 'true');
+        });
+        
+        console.log(`[Moderation] Added ${buttonsAdded} flag buttons total`);
+    }
+    
+    // Clean up duplicate flag buttons
+    cleanupDuplicateFlags() {
+        const userDisplays = document.querySelectorAll('[data-user-id]');
+        let cleaned = 0;
+        
+        userDisplays.forEach(display => {
+            const flagButtons = display.querySelectorAll('.flag-user-btn');
+            if (flagButtons.length > 1) {
+                // Keep only the first flag button, remove the rest
+                for (let i = 1; i < flagButtons.length; i++) {
+                    flagButtons[i].remove();
+                    cleaned++;
                 }
             }
         });
         
-        console.log(`[Moderation] Added ${buttonsAdded} flag buttons total`);
+        if (cleaned > 0) {
+            console.log(`[Moderation] Cleaned up ${cleaned} duplicate flag buttons`);
+        }
     }
 }
 
