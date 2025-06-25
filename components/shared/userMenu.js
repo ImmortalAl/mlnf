@@ -6,6 +6,11 @@
 
 // Update user dropdown menu based on authentication status
 function updateUserMenu() {
+  // Skip user menu updates on admin pages - they have their own auth UI
+  if (window.location.pathname.includes('/admin')) {
+    return;
+  }
+  
   const API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
   const DEFAULT_AVATAR = window.MLNF_CONFIG.DEFAULT_AVATAR;
   
@@ -13,8 +18,7 @@ function updateUserMenu() {
   const headerAuthButtonsContainer = document.getElementById('headerAuthButtonsContainer');
 
   if (!userMenuContainer || !headerAuthButtonsContainer) {
-    console.warn('[userMenu.js] #userMenuContainer or #headerAuthButtonsContainer not found. UI not fully updated.');
-    return;
+    return; // Silently skip if elements not found
   }
   
   const token = localStorage.getItem('sessionToken');
@@ -182,6 +186,11 @@ async function validateUserSession() {
 
 // Initialize user menu
 function initUserMenu() {
+  // Skip user menu initialization on admin pages
+  if (window.location.pathname.includes('/admin')) {
+    return;
+  }
+  
   validateUserSession(); // Validate and then update UI
   // updateUserMenu(); // This is now called by validateUserSession
 }

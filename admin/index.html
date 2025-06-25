@@ -381,6 +381,13 @@
                 const data = await response.json();
                 const content = data.docs || data;
                 
+                // Ensure content is an array
+                if (!Array.isArray(content)) {
+                    console.warn('Content response is not an array:', content);
+                    contentList.innerHTML = '<div class="error">Invalid content format received</div>';
+                    return;
+                }
+                
                 displayContentForCuration(content);
                 
             } catch (error) {
@@ -403,9 +410,9 @@
                 const excerpt = (item.content || '').replace(/<[^>]*>/g, '').substring(0, 150) + '...';
                 
                 return `
-                    <div class="content-item" data-content-id="${item._id}" onclick="selectContent('${item._id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                    <div class="content-item" data-content-id="${item._id}" onclick="selectContent('${item._id}')">
                         <div class="content-header">
-                            <h4>${item.title}</h4>
+                            <h4>${item.title || 'Untitled'}</h4>
                             <span class="content-meta">by ${author} • ${date}</span>
                         </div>
                         <p class="content-excerpt">${excerpt}</p>
@@ -417,19 +424,20 @@
             }).join('');
         }
         
-        function selectContent(contentId, contentData) {
+        function selectContent(contentId) {
             // Remove previous selection
             document.querySelectorAll('.content-item').forEach(item => {
                 item.classList.remove('selected');
             });
             
             // Select current item
-            document.querySelector(`[data-content-id="${contentId}"]`).classList.add('selected');
-            
-            selectedContentId = contentId;
-            selectedContentData = contentData;
-            
-            document.getElementById('featureContentBtn').disabled = false;
+            const selectedElement = document.querySelector(`[data-content-id="${contentId}"]`);
+            if (selectedElement) {
+                selectedElement.classList.add('selected');
+                selectedContentId = contentId;
+                selectedContentData = { _id: contentId }; // Store minimal data
+                document.getElementById('featureContentBtn').disabled = false;
+            }
         }
         
         async function featureSelectedContent() {
@@ -522,12 +530,31 @@
     <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize MLNF core components
+            // Initialize MLNF core components (gracefully handle missing elements on admin page)
             if (typeof MLNF !== 'undefined') {
-                MLNF.initNavigation();
-                MLNF.initUserMenu();
-                MLNF.initActiveUsers();
-                MLNF.initMessageModal();
+                try {
+                    MLNF.initNavigation();
+                } catch (error) {
+                    // Skip navigation errors on admin page
+                }
+                
+                try {
+                    MLNF.initUserMenu();
+                } catch (error) {
+                    // Skip user menu errors on admin page
+                }
+                
+                try {
+                    MLNF.initActiveUsers();
+                } catch (error) {
+                    // Skip active users errors on admin page
+                }
+                
+                try {
+                    MLNF.initMessageModal();
+                } catch (error) {
+                    // Skip message modal errors if elements not found
+                }
             }
             
             // Initialize admin components

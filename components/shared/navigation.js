@@ -174,6 +174,11 @@ function setupMobileNavLinkHandlers() {
 
 // Initialize navigation
 function initNavigation() {
+    // Skip navigation injection on admin pages
+    if (window.location.pathname.includes('/admin')) {
+        return;
+    }
+    
     injectNavigation();
     setupMobileNavEvents();
 }

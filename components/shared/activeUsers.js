@@ -265,10 +265,14 @@ async function populateActiveUsersList() {
 }
 
 function updateActiveUsersButtonVisibility() {
+    // Skip on admin pages
+    if (window.location.pathname.includes('/admin')) {
+        return;
+    }
+    
     const showUsersBtn = document.getElementById('showUsersBtn');
     if (!showUsersBtn) {
-        console.warn('[activeUsers.js] #showUsersBtn not found for visibility update.');
-        return;
+        return; // Silently skip if element not found
     }
 
     const token = localStorage.getItem('sessionToken');
@@ -280,6 +284,11 @@ function updateActiveUsersButtonVisibility() {
 }
 
 function initActiveUsers() {
+    // Skip active users on admin pages
+    if (window.location.pathname.includes('/admin')) {
+        return;
+    }
+    
     injectActiveUsersSidebar();
     setupActiveUsersEvents();
     updateActiveUsersButtonVisibility();
