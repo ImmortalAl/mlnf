@@ -411,9 +411,10 @@
                     throw new Error('No authentication token found');
                 }
                 
-                console.log('Fetching content from:', `${window.MLNF_CONFIG.API_BASE_URL}${endpoint}`);
+                const url = `${window.MLNF_CONFIG.API_BASE_URL}${endpoint}?limit=20&populate=author`;
+                console.log('Fetching content from:', url);
                 
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}${endpoint}?limit=20`, {
+                const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -461,14 +462,23 @@
             }
             
             contentList.innerHTML = content.map(item => {
-                const date = new Date(item.createdAt).toLocaleDateString();
+                console.log('Processing item:', item);
+                
+                // Handle missing or invalid items
+                if (!item || !item._id) {
+                    console.warn('Invalid item found:', item);
+                    return '<div class="content-item error">Invalid content item</div>';
+                }
+                
+                const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Unknown date';
                 const author = item.author?.username || 'Anonymous';
-                const excerpt = (item.content || '').replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+                const excerpt = (item.content || item.description || 'No content available').replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+                const title = item.title || 'Untitled';
                 
                 return `
                     <div class="content-item" data-content-id="${item._id}" onclick="selectContent('${item._id}')">
                         <div class="content-header">
-                            <h4>${item.title || 'Untitled'}</h4>
+                            <h4>${title}</h4>
                             <span class="content-meta">by ${author} • ${date}</span>
                         </div>
                         <p class="content-excerpt">${excerpt}</p>
@@ -614,6 +624,19 @@
                         if (typeof initActiveUsers === 'function') {
                             console.log('Calling initActiveUsers directly...');
                             initActiveUsers();
+                        } else {
+                            console.error('initActiveUsers function not found globally either');
+                            // Force reload the activeUsers script
+                            console.log('Attempting to reload activeUsers script...');
+                            const script = document.createElement('script');
+                            script.src = '../components/shared/activeUsers.js?v=' + Date.now();
+                            script.onload = () => {
+                                console.log('ActiveUsers script reloaded, trying again...');
+                                if (window.MLNF && window.MLNF.initActiveUsers) {
+                                    window.MLNF.initActiveUsers();
+                                }
+                            };
+                            document.head.appendChild(script);
                         }
                     }
                 }, 1500);
