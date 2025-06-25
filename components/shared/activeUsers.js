@@ -265,11 +265,6 @@ async function populateActiveUsersList() {
 }
 
 function updateActiveUsersButtonVisibility() {
-    // Skip on admin pages
-    if (window.location.pathname.includes('/admin')) {
-        return;
-    }
-    
     const showUsersBtn = document.getElementById('showUsersBtn');
     if (!showUsersBtn) {
         return; // Silently skip if element not found
@@ -284,11 +279,6 @@ function updateActiveUsersButtonVisibility() {
 }
 
 function initActiveUsers() {
-    // Skip active users on admin pages
-    if (window.location.pathname.includes('/admin')) {
-        return;
-    }
-    
     injectActiveUsersSidebar();
     setupActiveUsersEvents();
     updateActiveUsersButtonVisibility();

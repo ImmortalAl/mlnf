@@ -40,6 +40,9 @@
             </ul>
         </nav>
         <div class="admin-user">
+            <button id="showUsersBtn" class="btn btn-outline" title="Active Souls">
+                <i class="fas fa-users"></i>
+            </button>
             <span id="adminUsername">Administrator</span>
             <button id="logoutBtn" class="btn btn-outline">
                 <i class="fas fa-sign-out-alt" title="Log Out"></i> Transcend
@@ -379,12 +382,20 @@
                 if (!response.ok) throw new Error('Failed to fetch content');
                 
                 const data = await response.json();
-                const content = data.docs || data;
                 
-                // Ensure content is an array
-                if (!Array.isArray(content)) {
-                    console.warn('Content response is not an array:', content);
-                    contentList.innerHTML = '<div class="error">Invalid content format received</div>';
+                // Handle different API response formats
+                let content = [];
+                if (Array.isArray(data)) {
+                    content = data;
+                } else if (data.docs && Array.isArray(data.docs)) {
+                    content = data.docs;
+                } else if (data.threads && Array.isArray(data.threads)) {
+                    content = data.threads;
+                } else if (data.data && Array.isArray(data.data)) {
+                    content = data.data;
+                } else {
+                    console.warn('Unexpected content response format:', data);
+                    contentList.innerHTML = '<div class="error">No content available</div>';
                     return;
                 }
                 
@@ -544,11 +555,7 @@
                     // Skip user menu errors on admin page
                 }
                 
-                try {
-                    MLNF.initActiveUsers();
-                } catch (error) {
-                    // Skip active users errors on admin page
-                }
+                MLNF.initActiveUsers();
                 
                 try {
                     MLNF.initMessageModal();

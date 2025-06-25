@@ -8,6 +8,23 @@
     min-height: calc(100vh - 150px);
 }
 
+/* Admin User Area */
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-user #showUsersBtn {
+    padding: 0.5rem;
+    min-width: auto;
+    width: auto;
+}
+
+.admin-user #showUsersBtn i {
+    margin: 0;
+}
+
 /* Admin Navigation */
 .admin-nav ul {
     display: flex;
