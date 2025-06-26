@@ -926,7 +926,7 @@ footer {
 
 .footer-content {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0 auto !important;
 }
 
 .footer-main {
@@ -1000,6 +1000,8 @@ footer {
 
 .footer-bottom {
     text-align: center;
+    border-top: none !important;
+    padding-top: 0 !important;
 }
 
 .footer-bottom p {
