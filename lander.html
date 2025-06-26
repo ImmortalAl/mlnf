@@ -33,6 +33,318 @@
     <link rel="preload" href="css/lander.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/lander.css?v=1.0"></noscript>
     
+    <!-- Soul Management Modal Styles -->
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 26, 0.9);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .soul-modal {
+            background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
+            border-radius: 12px;
+            max-width: 800px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            border: 1px solid var(--accent, #ff5e78);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text, #f0e6ff);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent, #ff5e78);
+            transform: scale(1.1);
+        }
+        
+        .soul-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        
+        .soul-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text, #f0e6ff);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .soul-tab.active {
+            color: var(--accent, #ff5e78);
+            border-bottom-color: var(--accent, #ff5e78);
+        }
+        
+        .soul-tab:hover {
+            color: var(--accent, #ff5e78);
+        }
+        
+        .soul-tab-content {
+            display: none;
+        }
+        
+        .soul-tab-content.active {
+            display: block;
+        }
+        
+        .profile-header-mini {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 94, 120, 0.1);
+            border-radius: 12px;
+        }
+        
+        .profile-avatar-mini {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--accent, #ff5e78);
+            object-fit: cover;
+        }
+        
+        .profile-info-mini h3 {
+            color: var(--accent, #ff5e78);
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-info-mini p {
+            margin-bottom: 0.25rem;
+            opacity: 0.8;
+        }
+        
+        .profile-status-mini {
+            font-style: italic;
+            color: var(--warning, #ffca28);
+        }
+        
+        .profile-stats-mini {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .stat-mini {
+            text-align: center;
+        }
+        
+        .stat-mini .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent, #ff5e78);
+        }
+        
+        .stat-mini .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .profile-bio-mini {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .profile-bio-mini h4 {
+            color: var(--accent, #ff5e78);
+            margin-bottom: 1rem;
+        }
+        
+        .profile-edit-form {
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent, #ff5e78);
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 94, 120, 0.3);
+            border-radius: 8px;
+            color: var(--text, #f0e6ff);
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent, #ff5e78);
+            box-shadow: 0 0 10px rgba(255, 94, 120, 0.3);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .privacy-intro {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .privacy-settings {
+            max-width: 600px;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: rgba(255, 94, 120, 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-info h4 {
+            color: var(--accent, #ff5e78);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .setting-info p {
+            opacity: 0.8;
+            margin: 0;
+        }
+        
+        .setting-select {
+            padding: 0.5rem 1rem;
+            background: var(--secondary, #1a1a33);
+            border: 1px solid var(--accent, #ff5e78);
+            border-radius: 6px;
+            color: var(--text, #f0e6ff);
+            min-width: 150px;
+        }
+        
+        .privacy-actions {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent, #ff5e78), var(--warning, #ffca28));
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent, #ff5e78);
+            border: 1px solid var(--accent, #ff5e78);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .soul-modal {
+                padding: 1rem;
+                width: 98%;
+            }
+            
+            .soul-tabs {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .soul-tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+                padding: 0.5rem;
+            }
+            
+            .profile-header-mini {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .profile-stats-mini {
+                gap: 1rem;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .setting-select {
+                width: 100%;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    
     <!-- 6. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous"></noscript>
@@ -131,8 +443,9 @@
                     </div>
                     <p>View and manage your eternal presence</p>
                     <div class="hub-card-actions">
-                        <a href="/profile" class="btn btn-primary">View Profile</a>
-                        <a href="/pages/profile-setup.html" class="btn">Edit Profile</a>
+                        <button id="viewProfileBtn" class="btn btn-primary">View Profile</button>
+                        <button id="editProfileBtn" class="btn">Edit Profile</button>
+                        <button id="privacySettingsBtn" class="btn btn-secondary">Privacy Settings</button>
                     </div>
                 </div>
                 <div class="hub-card">
@@ -192,6 +505,127 @@
                 </div>
             </div>
         </section>
+
+        <!-- Soul Management Modal -->
+        <div id="soulManagementModal" class="modal" aria-hidden="true">
+            <div class="modal-content soul-modal">
+                <button class="close-modal" id="closeSoulModal" aria-label="Close modal">×</button>
+                
+                <!-- Tab Navigation -->
+                <div class="soul-tabs">
+                    <button class="soul-tab active" data-tab="profile">Profile Overview</button>
+                    <button class="soul-tab" data-tab="edit">Edit Profile</button>
+                    <button class="soul-tab" data-tab="privacy">Privacy Settings</button>
+                </div>
+                
+                <!-- Profile Overview Tab -->
+                <div id="profileTab" class="soul-tab-content active">
+                    <h2>My Eternal Soul</h2>
+                    <div class="profile-overview">
+                        <div class="profile-header-mini">
+                            <img id="modalProfileAvatar" src="/assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar-mini">
+                            <div class="profile-info-mini">
+                                <h3 id="modalProfileName">Loading...</h3>
+                                <p id="modalProfileUsername">@loading</p>
+                                <p id="modalProfileStatus" class="profile-status-mini">Setting eternal status...</p>
+                            </div>
+                        </div>
+                        <div class="profile-stats-mini">
+                            <div class="stat-mini">
+                                <span class="stat-value" id="modalPostsCount">0</span>
+                                <span class="stat-label">Scrolls</span>
+                            </div>
+                            <div class="stat-mini">
+                                <span class="stat-value" id="modalCommentsCount">0</span>
+                                <span class="stat-label">Echoes</span>
+                            </div>
+                            <div class="stat-mini">
+                                <span class="stat-value" id="modalConnectionsCount">0</span>
+                                <span class="stat-label">Connections</span>
+                            </div>
+                        </div>
+                        <div class="profile-bio-mini">
+                            <h4>Soul Biography</h4>
+                            <p id="modalProfileBio">Loading biographical essence...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Edit Profile Tab -->
+                <div id="editTab" class="soul-tab-content">
+                    <h2>Edit Your Eternal Soul</h2>
+                    <form id="profileEditForm" class="profile-edit-form">
+                        <div class="form-group">
+                            <label for="editDisplayName">Display Name</label>
+                            <input type="text" id="editDisplayName" placeholder="Your eternal name">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Status</label>
+                            <input type="text" id="editStatus" placeholder="Your eternal status" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBio">Biography</label>
+                            <textarea id="editBio" placeholder="Share your eternal essence..." rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAvatar">Avatar URL</label>
+                            <input type="url" id="editAvatar" placeholder="https://...">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetProfileForm()">Reset</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Privacy Settings Tab -->
+                <div id="privacyTab" class="soul-tab-content">
+                    <h2>Soul Privacy Settings</h2>
+                    <p class="privacy-intro">Control how your eternal soul manifests to others.</p>
+                    
+                    <div class="privacy-settings">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4><i class="fas fa-eye"></i> Profile Visibility</h4>
+                                <p>Who can view your profile</p>
+                            </div>
+                            <select id="privacyVisibilitySetting" class="setting-select">
+                                <option value="public">Public</option>
+                                <option value="connections">Connections Only</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4><i class="fas fa-envelope"></i> Soul Messaging</h4>
+                                <p>Allow other souls to message you</p>
+                            </div>
+                            <select id="privacyMessagingSetting" class="setting-select">
+                                <option value="enabled">Enabled</option>
+                                <option value="connections">Connections Only</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4><i class="fas fa-search"></i> Directory Listing</h4>
+                                <p>Include your profile in the soul directory</p>
+                            </div>
+                            <select id="privacyDirectorySetting" class="setting-select">
+                                <option value="listed">Listed</option>
+                                <option value="unlisted">Unlisted</option>
+                            </select>
+                        </div>
+                        
+                        <div class="privacy-actions">
+                            <button id="savePrivacySettings" class="btn btn-primary">Save Privacy Settings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <section class="recent-activity">
             <h2>Recent Eternal Activity</h2>
@@ -589,10 +1023,247 @@
                 draftsSelector.addEventListener('change', loadSelectedDraft);
             }
             
-            // Message modal logic is now handled by front/components/shared/messageModal.js
-            // Old inline logic removed.
+            // Initialize Soul Management functionality
+            initSoulManagement();
             
         });
+        
+        // Soul Management System
+        function initSoulManagement() {
+            // Setup button event listeners
+            const viewProfileBtn = document.getElementById('viewProfileBtn');
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const privacySettingsBtn = document.getElementById('privacySettingsBtn');
+            const closeSoulModal = document.getElementById('closeSoulModal');
+            
+            if (viewProfileBtn) {
+                viewProfileBtn.addEventListener('click', () => openSoulModal('profile'));
+            }
+            
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', () => openSoulModal('edit'));
+            }
+            
+            if (privacySettingsBtn) {
+                privacySettingsBtn.addEventListener('click', () => openSoulModal('privacy'));
+            }
+            
+            if (closeSoulModal) {
+                closeSoulModal.addEventListener('click', closeSoulManagementModal);
+            }
+            
+            // Setup tab switching
+            const tabs = document.querySelectorAll('.soul-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    switchSoulTab(tabName);
+                });
+            });
+            
+            // Setup form submissions
+            const profileEditForm = document.getElementById('profileEditForm');
+            if (profileEditForm) {
+                profileEditForm.addEventListener('submit', handleProfileUpdate);
+            }
+            
+            const savePrivacySettings = document.getElementById('savePrivacySettings');
+            if (savePrivacySettings) {
+                savePrivacySettings.addEventListener('click', handlePrivacyUpdate);
+            }
+            
+            // Close modal on background click
+            const modal = document.getElementById('soulManagementModal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeSoulManagementModal();
+                    }
+                });
+            }
+        }
+        
+        function openSoulModal(tab = 'profile') {
+            const modal = document.getElementById('soulManagementModal');
+            if (modal) {
+                modal.classList.add('active');
+                switchSoulTab(tab);
+                loadUserProfile();
+            }
+        }
+        
+        function closeSoulManagementModal() {
+            const modal = document.getElementById('soulManagementModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        function switchSoulTab(tabName) {
+            // Update tab buttons
+            const tabs = document.querySelectorAll('.soul-tab');
+            tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            // Update tab content
+            const contents = document.querySelectorAll('.soul-tab-content');
+            contents.forEach(content => {
+                content.classList.toggle('active', content.id === tabName + 'Tab');
+            });
+        }
+        
+        async function loadUserProfile() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                alert('Please log in to view your profile');
+                return;
+            }
+            
+            try {
+                const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+                const response = await fetch(`${apiBaseUrl}/users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load profile');
+                }
+                
+                const userData = await response.json();
+                populateProfileModal(userData);
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Failed to load profile data');
+            }
+        }
+        
+        function populateProfileModal(userData) {
+            // Profile overview tab
+            const avatar = document.getElementById('modalProfileAvatar');
+            const name = document.getElementById('modalProfileName');
+            const username = document.getElementById('modalProfileUsername');
+            const status = document.getElementById('modalProfileStatus');
+            const bio = document.getElementById('modalProfileBio');
+            const postsCount = document.getElementById('modalPostsCount');
+            const commentsCount = document.getElementById('modalCommentsCount');
+            const connectionsCount = document.getElementById('modalConnectionsCount');
+            
+            if (avatar) avatar.src = userData.avatar || '/assets/images/default.jpg';
+            if (name) name.textContent = userData.displayName || userData.username;
+            if (username) username.textContent = `@${userData.username}`;
+            if (status) status.textContent = userData.status || 'Living eternally free';
+            if (bio) bio.textContent = userData.bio || 'No biography written yet';
+            if (postsCount) postsCount.textContent = userData.postsCount || 0;
+            if (commentsCount) commentsCount.textContent = userData.commentsCount || 0;
+            if (connectionsCount) connectionsCount.textContent = userData.connectionsCount || 0;
+            
+            // Edit profile tab
+            const editDisplayName = document.getElementById('editDisplayName');
+            const editStatus = document.getElementById('editStatus');
+            const editBio = document.getElementById('editBio');
+            const editAvatar = document.getElementById('editAvatar');
+            
+            if (editDisplayName) editDisplayName.value = userData.displayName || '';
+            if (editStatus) editStatus.value = userData.status || '';
+            if (editBio) editBio.value = userData.bio || '';
+            if (editAvatar) editAvatar.value = userData.avatar || '';
+            
+            // Privacy settings tab
+            const privacyVisibility = document.getElementById('privacyVisibilitySetting');
+            const privacyMessaging = document.getElementById('privacyMessagingSetting');
+            const privacyDirectory = document.getElementById('privacyDirectorySetting');
+            
+            if (privacyVisibility) privacyVisibility.value = userData.privacy?.profileVisibility || 'public';
+            if (privacyMessaging) privacyMessaging.value = userData.privacy?.allowMessages ? 'enabled' : 'disabled';
+            if (privacyDirectory) privacyDirectory.value = userData.privacy?.showInDirectory ? 'listed' : 'unlisted';
+        }
+        
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                alert('Please log in to update your profile');
+                return;
+            }
+            
+            const formData = {
+                displayName: document.getElementById('editDisplayName').value,
+                status: document.getElementById('editStatus').value,
+                bio: document.getElementById('editBio').value,
+                avatar: document.getElementById('editAvatar').value
+            };
+            
+            try {
+                const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+                const response = await fetch(`${apiBaseUrl}/users/me`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update profile');
+                }
+                
+                alert('Profile updated successfully!');
+                loadUserProfile(); // Refresh the profile data
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Failed to update profile: ' + error.message);
+            }
+        }
+        
+        async function handlePrivacyUpdate() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                alert('Please log in to update privacy settings');
+                return;
+            }
+            
+            const privacyData = {
+                privacy: {
+                    profileVisibility: document.getElementById('privacyVisibilitySetting').value,
+                    allowMessages: document.getElementById('privacyMessagingSetting').value === 'enabled',
+                    showInDirectory: document.getElementById('privacyDirectorySetting').value === 'listed'
+                }
+            };
+            
+            try {
+                const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+                const response = await fetch(`${apiBaseUrl}/users/me`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(privacyData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update privacy settings');
+                }
+                
+                alert('Privacy settings updated successfully!');
+                
+            } catch (error) {
+                console.error('Error updating privacy settings:', error);
+                alert('Failed to update privacy settings: ' + error.message);
+            }
+        }
+        
+        function resetProfileForm() {
+            loadUserProfile(); // Reload original data
+        }
     </script>
 
     <!-- Avatar System -->
