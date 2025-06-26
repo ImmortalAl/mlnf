@@ -1927,17 +1927,45 @@
         }
         
         function openSoulModal(tab = 'profile') {
+            console.log('[MODAL DEBUG] Opening soul modal with tab:', tab);
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
-                console.error('Soul management modal not found!');
+                console.error('[MODAL DEBUG] Soul management modal not found!');
                 return;
             }
+            
+            console.log('[MODAL DEBUG] Modal element found:', modal);
+            console.log('[MODAL DEBUG] Modal initial styles:', {
+                display: modal.style.display,
+                opacity: modal.style.opacity,
+                visibility: modal.style.visibility,
+                classList: modal.className
+            });
             
             // Force display and visibility to override CSS conflicts
             modal.style.display = 'flex';
             modal.style.opacity = '1';
             modal.style.visibility = 'visible';
+            modal.style.zIndex = '9999';
             modal.classList.add('active');
+            
+            console.log('[MODAL DEBUG] Modal after style application:', {
+                display: modal.style.display,
+                opacity: modal.style.opacity,
+                visibility: modal.style.visibility,
+                zIndex: modal.style.zIndex,
+                classList: modal.className
+            });
+            
+            // Check computed styles
+            const computedStyles = getComputedStyle(modal);
+            console.log('[MODAL DEBUG] Modal computed styles:', {
+                display: computedStyles.display,
+                opacity: computedStyles.opacity,
+                visibility: computedStyles.visibility,
+                zIndex: computedStyles.zIndex,
+                position: computedStyles.position
+            });
             
             // Prevent body scroll on mobile when modal is open
             document.body.style.overflow = 'hidden';
@@ -1955,6 +1983,8 @@
                     firstInput.focus();
                 }
             }, 100);
+            
+            console.log('[MODAL DEBUG] Modal should now be visible');
         }
         
         function closeSoulManagementModal() {
