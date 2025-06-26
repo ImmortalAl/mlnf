@@ -1719,10 +1719,17 @@
             }
             
             // Initialize Soul Management functionality
-            initSoulManagement();
+            // Delay to ensure DOM is fully ready
+            setTimeout(() => {
+                initSoulManagement();
+                console.log('[Debug] Soul management initialized');
+            }, 100);
             
-            // Initialize Mobile Features
-            initMobileFeatures();
+            // Initialize Mobile Features  
+            setTimeout(() => {
+                initMobileFeatures();
+                console.log('[Debug] Mobile features initialized');
+            }, 200);
             
         });
         
@@ -1735,24 +1742,40 @@
             const closeSoulModal = document.getElementById('closeSoulModal');
             
             if (viewProfileBtn) {
-                viewProfileBtn.addEventListener('click', (e) => {
+                // Add both click and touchend for mobile reliability
+                const viewHandler = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
+                    console.log('[Debug] View Profile button clicked');
                     openSoulModal('profile');
-                });
+                };
+                viewProfileBtn.addEventListener('click', viewHandler);
+                viewProfileBtn.addEventListener('touchend', viewHandler, { passive: false });
             }
             
             if (editProfileBtn) {
-                editProfileBtn.addEventListener('click', (e) => {
+                const editHandler = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
+                    console.log('[Debug] Edit Profile button clicked');
                     openSoulModal('edit');
-                });
+                };
+                editProfileBtn.addEventListener('click', editHandler);
+                editProfileBtn.addEventListener('touchend', editHandler, { passive: false });
             }
             
             if (privacySettingsBtn) {
-                privacySettingsBtn.addEventListener('click', (e) => {
+                const privacyHandler = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
+                    console.log('[Debug] Privacy Settings button clicked');
                     openSoulModal('privacy');
-                });
+                };
+                privacySettingsBtn.addEventListener('click', privacyHandler);
+                privacySettingsBtn.addEventListener('touchend', privacyHandler, { passive: false });
             }
             
             if (closeSoulModal) {
@@ -1821,22 +1844,34 @@
         }
         
         function openSoulModal(tab = 'profile') {
+            console.log('[Debug] Opening soul modal with tab:', tab);
             const modal = document.getElementById('soulManagementModal');
-            if (modal) {
-                modal.classList.add('active');
-                // Prevent body scroll on mobile when modal is open
-                document.body.style.overflow = 'hidden';
-                switchSoulTab(tab);
-                loadUserProfile();
-                
-                // Focus management for accessibility
-                setTimeout(() => {
-                    const firstInput = modal.querySelector('input, textarea, select, button');
-                    if (firstInput) {
-                        firstInput.focus();
-                    }
-                }, 100);
+            if (!modal) {
+                console.error('[Debug] Soul management modal not found!');
+                return;
             }
+            
+            console.log('[Debug] Modal found, adding active class');
+            modal.classList.add('active');
+            
+            // Prevent body scroll on mobile when modal is open
+            document.body.style.overflow = 'hidden';
+            
+            // Switch to the requested tab
+            switchSoulTab(tab);
+            
+            // Load user profile data
+            loadUserProfile();
+            
+            // Focus management for accessibility
+            setTimeout(() => {
+                const firstInput = modal.querySelector('input, textarea, select, button');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, 100);
+            
+            console.log('[Debug] Soul modal opened successfully');
         }
         
         function closeSoulManagementModal() {
@@ -2052,7 +2087,7 @@
         
         function handleHapticFeedback(e) {
             const target = e.target.closest('.btn, .quick-action-btn, .soul-tab, .hub-card');
-            if (target) {
+            if (target && navigator.vibrate) {
                 navigator.vibrate(50); // Light tap feedback
             }
         }

@@ -319,6 +319,16 @@ footer {
         overflow-wrap: break-word;
         text-align: center;
         line-height: 1.2;
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(255, 94, 120, 0.2);
+        tap-highlight-color: rgba(255, 94, 120, 0.2);
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        position: relative;
+        z-index: 1;
     }
     
     .quick-post-container {
