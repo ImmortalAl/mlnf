@@ -8,6 +8,7 @@ const API_CACHE = `mlnf-api-${CACHE_VERSION}`;
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/lander.html',
   '/pages/blog.html',
   '/pages/celestial-commons.html',
   '/pages/news.html',
@@ -16,6 +17,7 @@ const STATIC_ASSETS = [
   '/css/base-theme.css',
   '/css/styles.css',
   '/css/critical.css',
+  '/css/lander.css',
   '/components/shared/styles.css',
   '/components/shared/config.js',
   '/components/shared/mlnf-core.js',

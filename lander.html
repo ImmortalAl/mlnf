@@ -308,6 +308,427 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
+        /* Touch-First Interaction Design */
+        .btn:active,
+        .soul-tab:active,
+        .hub-card:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .hub-card:hover {
+                transform: none;
+                box-shadow: var(--shadow);
+            }
+        }
+        
+        /* Haptic Feedback Support */
+        .btn,
+        .soul-tab,
+        .hub-card {
+            -webkit-tap-highlight-color: rgba(255, 94, 120, 0.2);
+            tap-highlight-color: rgba(255, 94, 120, 0.2);
+        }
+        
+        /* Swipe Gesture Support */
+        .soul-tabs {
+            touch-action: pan-x;
+            scroll-behavior: smooth;
+        }
+        
+        .soul-tab-content {
+            touch-action: pan-y;
+        }
+        
+        /* Quick Actions Bar Styles */
+        .quick-actions-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+            padding: 0.75rem 1rem;
+            margin: 0 -2rem 1rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .quick-actions-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .quick-action-btn {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 94, 120, 0.1);
+            border: 1px solid rgba(255, 94, 120, 0.3);
+            color: var(--accent, #ff5e78);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .quick-action-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 94, 120, 0.2);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--accent, #ff5e78);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Soul Status Card Styles */
+        .soul-status-card {
+            background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.9)));
+            border-radius: 12px;
+            margin: 0 0 1.5rem 0;
+            border: 1px solid rgba(255, 94, 120, 0.25);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .soul-status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .soul-status-header:active {
+            background: rgba(255, 94, 120, 0.05);
+        }
+        
+        .soul-status-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .quick-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--accent, #ff5e78);
+            object-fit: cover;
+        }
+        
+        .soul-status-text h3 {
+            margin: 0 0 0.25rem 0;
+            color: var(--accent, #ff5e78);
+            font-size: 1.1rem;
+        }
+        
+        .soul-status-text p {
+            margin: 0;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .collapse-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent, #ff5e78);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .collapse-btn:active {
+            background: rgba(255, 94, 120, 0.1);
+            transform: scale(0.95);
+        }
+        
+        .collapse-btn.collapsed i {
+            transform: rotate(180deg);
+        }
+        
+        .soul-status-details {
+            padding: 0 1.5rem 1rem;
+            transition: all 0.3s ease;
+            max-height: 200px;
+            overflow: hidden;
+        }
+        
+        .soul-status-details.collapsed {
+            max-height: 0;
+            padding: 0 1.5rem;
+        }
+        
+        .soul-quick-stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(255, 94, 120, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .quick-stat {
+            text-align: center;
+        }
+        
+        .quick-stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent, #ff5e78);
+            margin-bottom: 0.25rem;
+        }
+        
+        .quick-stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        /* Bottom Sheet Styles */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.9)));
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 200;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+        
+        .bottom-sheet-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+            position: relative;
+        }
+        
+        .bottom-sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 94, 120, 0.5);
+            border-radius: 2px;
+            margin: 0 auto 1rem;
+        }
+        
+        .bottom-sheet-header h3 {
+            margin: 0;
+            color: var(--accent, #ff5e78);
+        }
+        
+        .bottom-sheet-content {
+            padding: 1.5rem;
+        }
+        
+        .secondary-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .secondary-tool-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem 1rem;
+            background: rgba(255, 94, 120, 0.1);
+            border: 1px solid rgba(255, 94, 120, 0.2);
+            border-radius: 12px;
+            color: var(--text, #f0e6ff);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .secondary-tool-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 94, 120, 0.2);
+        }
+        
+        .secondary-tool-btn i {
+            font-size: 1.5rem;
+            color: var(--accent, #ff5e78);
+        }
+        
+        /* Activity Section Enhancements */
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .refresh-activity-btn {
+            background: rgba(255, 94, 120, 0.1);
+            border: 1px solid rgba(255, 94, 120, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent, #ff5e78);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .refresh-activity-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 94, 120, 0.2);
+        }
+        
+        .refresh-activity-btn.spinning i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .pull-to-refresh-indicator {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: var(--accent, #ff5e78);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .pull-to-refresh-indicator.show {
+            display: block;
+        }
+        
+        .pull-to-refresh-indicator i {
+            margin-right: 0.5rem;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+        
+        /* PWA Install Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.9)));
+            border: 1px solid var(--accent, #ff5e78);
+            border-radius: 12px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .install-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .install-content i {
+            color: var(--accent, #ff5e78);
+            font-size: 1.2rem;
+        }
+        
+        .install-content span {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .install-btn {
+            background: var(--accent, #ff5e78);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .dismiss-btn {
+            background: transparent;
+            border: none;
+            color: var(--text, #f0e6ff);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Mobile-specific improvements */
+        @media (max-width: 768px) {
+            .quick-actions-bar {
+                margin: 0 -1rem 1rem;
+            }
+            
+            .soul-status-card {
+                margin: 0 0 1rem 0;
+            }
+            
+            .install-banner {
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+        
         /* Enhanced Mobile Optimization */
         @media (max-width: 768px) {
             .soul-modal {
@@ -619,6 +1040,56 @@
     </header>
 
     <main>
+        <!-- Quick Actions Bar (Sticky Top) -->
+        <div class="quick-actions-bar" id="quickActionsBar">
+            <div class="quick-actions-content">
+                <button class="quick-action-btn" id="quickProfileBtn" title="Quick Profile Access">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="quick-action-btn" id="quickPostBtn" title="Quick Post">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="quick-action-btn" id="quickNotificationsBtn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </button>
+                <button class="quick-action-btn" id="refreshBtn" title="Refresh Activity">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Soul Status Card (Collapsible) -->
+        <div class="soul-status-card" id="soulStatusCard">
+            <div class="soul-status-header" id="soulStatusHeader">
+                <div class="soul-status-info">
+                    <img id="quickAvatarImg" src="/assets/images/default.jpg" alt="Your Soul" class="quick-avatar">
+                    <div class="soul-status-text">
+                        <h3 id="quickDisplayName">Eternal Seeker</h3>
+                        <p id="quickStatus">Living eternally free</p>
+                    </div>
+                </div>
+                <button class="collapse-btn" id="collapseStatusBtn">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="soul-status-details" id="soulStatusDetails">
+                <div class="soul-quick-stats">
+                    <div class="quick-stat">
+                        <span class="quick-stat-value" id="quickScrollsCount">0</span>
+                        <span class="quick-stat-label">Scrolls</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-stat-value" id="quickEchoesCount">0</span>
+                        <span class="quick-stat-label">Echoes</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-stat-value" id="quickConnectionsCount">0</span>
+                        <span class="quick-stat-label">Connections</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <section class="welcome-section">
             <h2>Welcome to the Eternal Hearth</h2>
             <p>Your personal headquarters within the MLNF sanctuary</p>
@@ -814,8 +1285,45 @@
             </div>
         </div>
 
-        <section class="recent-activity">
-            <h2>Recent Eternal Activity</h2>
+        <!-- Bottom Sheet for Secondary Tools -->
+        <div class="bottom-sheet" id="bottomSheet">
+            <div class="bottom-sheet-header">
+                <div class="bottom-sheet-handle"></div>
+                <h3>More Tools</h3>
+            </div>
+            <div class="bottom-sheet-content">
+                <div class="secondary-tools-grid">
+                    <button class="secondary-tool-btn">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </button>
+                    <button class="secondary-tool-btn">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </button>
+                    <button class="secondary-tool-btn">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help</span>
+                    </button>
+                    <button class="secondary-tool-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <section class="recent-activity" id="recentActivitySection">
+            <div class="activity-header">
+                <h2>Recent Eternal Activity</h2>
+                <button class="refresh-activity-btn" id="refreshActivityBtn" title="Pull to refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="pull-to-refresh-indicator" id="pullToRefreshIndicator">
+                <i class="fas fa-arrow-down"></i>
+                <span>Pull to refresh</span>
+            </div>
             <div class="activity-grid">
                 <div class="activity-card">
                     <h3>Soul Activity</h3>
@@ -1213,6 +1721,9 @@
             // Initialize Soul Management functionality
             initSoulManagement();
             
+            // Initialize Mobile Features
+            initMobileFeatures();
+            
         });
         
         // Soul Management System
@@ -1508,6 +2019,316 @@
         
         function resetProfileForm() {
             loadUserProfile(); // Reload original data
+        }
+        
+        // Mobile-Specific Features
+        function initMobileFeatures() {
+            // Haptic Feedback Support
+            if ('vibrate' in navigator) {
+                document.addEventListener('click', handleHapticFeedback);
+            }
+            
+            // Pull-to-Refresh
+            initPullToRefresh();
+            
+            // Quick Actions Bar
+            initQuickActions();
+            
+            // Bottom Sheet
+            initBottomSheet();
+            
+            // Soul Status Collapse
+            initSoulStatusCollapse();
+            
+            // PWA Installation
+            initPWAInstallation();
+            
+            // Share API
+            initShareAPI();
+            
+            // Push Notifications
+            initPushNotifications();
+        }
+        
+        function handleHapticFeedback(e) {
+            const target = e.target.closest('.btn, .quick-action-btn, .soul-tab, .hub-card');
+            if (target) {
+                navigator.vibrate(50); // Light tap feedback
+            }
+        }
+        
+        function initPullToRefresh() {
+            let startY = 0;
+            let currentY = 0;
+            let isPulling = false;
+            const indicator = document.getElementById('pullToRefreshIndicator');
+            const activitySection = document.getElementById('recentActivitySection');
+            
+            if (!activitySection) return;
+            
+            activitySection.addEventListener('touchstart', (e) => {
+                if (activitySection.scrollTop === 0) {
+                    startY = e.touches[0].clientY;
+                    isPulling = true;
+                }
+            });
+            
+            activitySection.addEventListener('touchmove', (e) => {
+                if (!isPulling) return;
+                
+                currentY = e.touches[0].clientY;
+                const pullDistance = currentY - startY;
+                
+                if (pullDistance > 50) {
+                    indicator.classList.add('show');
+                }
+                
+                if (pullDistance > 100) {
+                    e.preventDefault();
+                }
+            });
+            
+            activitySection.addEventListener('touchend', async () => {
+                if (!isPulling) return;
+                
+                const pullDistance = currentY - startY;
+                isPulling = false;
+                
+                if (pullDistance > 100) {
+                    await refreshActivity();
+                }
+                
+                indicator.classList.remove('show');
+            });
+        }
+        
+        function initQuickActions() {
+            const quickProfileBtn = document.getElementById('quickProfileBtn');
+            const quickPostBtn = document.getElementById('quickPostBtn');
+            const quickNotificationsBtn = document.getElementById('quickNotificationsBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            if (quickProfileBtn) {
+                quickProfileBtn.addEventListener('click', () => {
+                    openSoulModal('profile');
+                    navigator.vibrate(100);
+                });
+            }
+            
+            if (quickPostBtn) {
+                quickPostBtn.addEventListener('click', () => {
+                    document.getElementById('postTitle').focus();
+                    navigator.vibrate(100);
+                });
+            }
+            
+            if (quickNotificationsBtn) {
+                quickNotificationsBtn.addEventListener('click', () => {
+                    showNotifications();
+                    navigator.vibrate(100);
+                });
+            }
+            
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', async () => {
+                    refreshBtn.classList.add('spinning');
+                    await refreshActivity();
+                    setTimeout(() => {
+                        refreshBtn.classList.remove('spinning');
+                    }, 1000);
+                    navigator.vibrate(150);
+                });
+            }
+        }
+        
+        function initBottomSheet() {
+            const bottomSheet = document.getElementById('bottomSheet');
+            let startY = 0;
+            let currentY = 0;
+            let isOpen = false;
+            
+            // Swipe up from bottom to open
+            document.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                if (touch.clientY > window.innerHeight - 50) {
+                    startY = touch.clientY;
+                }
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (startY === 0) return;
+                
+                currentY = e.touches[0].clientY;
+                const swipeDistance = startY - currentY;
+                
+                if (swipeDistance > 50 && !isOpen) {
+                    bottomSheet.classList.add('open');
+                    isOpen = true;
+                    navigator.vibrate(200);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                startY = 0;
+                currentY = 0;
+            });
+            
+            // Close on background tap
+            bottomSheet.addEventListener('click', (e) => {
+                if (e.target === bottomSheet) {
+                    bottomSheet.classList.remove('open');
+                    isOpen = false;
+                }
+            });
+        }
+        
+        function initSoulStatusCollapse() {
+            const statusHeader = document.getElementById('soulStatusHeader');
+            const statusDetails = document.getElementById('soulStatusDetails');
+            const collapseBtn = document.getElementById('collapseStatusBtn');
+            
+            if (statusHeader && statusDetails && collapseBtn) {
+                statusHeader.addEventListener('click', () => {
+                    const isCollapsed = statusDetails.classList.contains('collapsed');
+                    
+                    if (isCollapsed) {
+                        statusDetails.classList.remove('collapsed');
+                        collapseBtn.classList.remove('collapsed');
+                    } else {
+                        statusDetails.classList.add('collapsed');
+                        collapseBtn.classList.add('collapsed');
+                    }
+                    
+                    navigator.vibrate(75);
+                });
+            }
+        }
+        
+        function initPWAInstallation() {
+            let deferredPrompt;
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Show install button after user interaction
+                setTimeout(() => {
+                    showInstallPrompt();
+                }, 3000);
+            });
+            
+            function showInstallPrompt() {
+                if (!deferredPrompt) return;
+                
+                const installBanner = document.createElement('div');
+                installBanner.className = 'install-banner';
+                installBanner.innerHTML = `
+                    <div class="install-content">
+                        <i class="fas fa-download"></i>
+                        <span>Install MLNF for a better experience</span>
+                        <button class="install-btn">Install</button>
+                        <button class="dismiss-btn">×</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(installBanner);
+                
+                installBanner.querySelector('.install-btn').addEventListener('click', async () => {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    console.log('PWA install result:', result);
+                    deferredPrompt = null;
+                    installBanner.remove();
+                });
+                
+                installBanner.querySelector('.dismiss-btn').addEventListener('click', () => {
+                    installBanner.remove();
+                });
+            }
+        }
+        
+        function initShareAPI() {
+            // Check for Web Share API support
+            if ('share' in navigator) {
+                // Add share buttons to secondary tools
+                const shareBtn = document.querySelector('.secondary-tool-btn:last-child');
+                if (shareBtn) {
+                    shareBtn.addEventListener('click', async () => {
+                        try {
+                            await navigator.share({
+                                title: 'MLNF - Manifest Liberation, Naturally Free',
+                                text: 'Join me in the eternal sanctuary for free-thinking immortal souls',
+                                url: window.location.href
+                            });
+                            console.log('Shared successfully');
+                        } catch (error) {
+                            console.log('Error sharing:', error);
+                        }
+                    });
+                }
+            }
+        }
+        
+        function initPushNotifications() {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                // Request notification permission on user interaction
+                document.addEventListener('click', requestNotificationPermission, { once: true });
+            }
+        }
+        
+        async function requestNotificationPermission() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    console.log('Notification permission granted');
+                    // Subscribe to push notifications
+                    subscribeToPush();
+                }
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+            }
+        }
+        
+        async function subscribeToPush() {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array('your-vapid-public-key-here')
+                });
+                
+                console.log('Push subscription:', subscription);
+                // Send subscription to server
+            } catch (error) {
+                console.error('Error subscribing to push:', error);
+            }
+        }
+        
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+            
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+        
+        async function refreshActivity() {
+            // Simulate activity refresh
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await fetchActivities();
+            console.log('Activity refreshed');
+        }
+        
+        function showNotifications() {
+            // Placeholder for notifications display
+            alert('Notifications feature coming soon!');
         }
     </script>
 

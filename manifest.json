@@ -2,7 +2,7 @@
   "name": "Manifest Liberation, Naturally Free",
   "short_name": "MLNF",
   "description": "An immortal sanctuary for uncensored thought and eternal truth",
-  "start_url": "/",
+  "start_url": "/lander.html",
   "display": "standalone",
   "background_color": "#0d0d1a",
   "theme_color": "#ff5e78",
@@ -62,6 +62,13 @@
   ],
   "shortcuts": [
     {
+      "name": "Soul Management",
+      "short_name": "My Soul",
+      "description": "Access your profile and settings",
+      "url": "/lander.html#soul",
+      "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
       "name": "Soul Scrolls",
       "short_name": "Scrolls",
       "description": "Create and read eternal scrolls",
@@ -117,19 +124,19 @@
     }
   ],
   "share_target": {
-    "action": "/share",
+    "action": "/lander.html#share",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
       "title": "title",
       "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "files",
-          "accept": ["image/*", "text/*"]
-        }
-      ]
+      "url": "url"
     }
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
   }
 }
