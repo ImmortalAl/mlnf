@@ -19,28 +19,28 @@
     <link rel="stylesheet" href="css/base-theme.css">
     
     <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
-    <link rel="stylesheet" href="css/critical.css?v=1.0">
+    <link rel="stylesheet" href="css/critical.css?v=2.0">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
-    <link rel="stylesheet" href="css/styles.css?v=1.1">
+    <link rel="stylesheet" href="css/styles.css?v=2.0">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
-    <link rel="preload" href="css/layout.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/layout.css?v=1.2"></noscript>
+    <link rel="preload" href="css/layout.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/layout.css?v=2.0"></noscript>
     
-    <link rel="preload" href="css/components.css?v=1.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/components.css?v=1.1"></noscript>
+    <link rel="preload" href="css/components.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/components.css?v=2.0"></noscript>
     
-    <link rel="preload" href="css/features.css?v=1.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/features.css?v=1.1"></noscript>
+    <link rel="preload" href="css/features.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/features.css?v=2.0"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="components/shared/styles.css?v=1.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=1.6"></noscript>
+    <link rel="preload" href="components/shared/styles.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=2.0"></noscript>
     
     <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
-    <link rel="preload" href="css/active-users.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/active-users.css?v=1.2"></noscript>
+    <link rel="preload" href="css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/active-users.css?v=2.0"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded with high priority) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
@@ -565,38 +565,46 @@
 
     <footer class="site-footer">
         <div class="footer-content">
-            <div class="footer-column">
-                <h3>Eternal Links</h3>
-                <ul>
-                    <li><a href="pages/about.html">About Our Eternity</a></li>
-                    <li><a href="pages/faq.html">Immortal Questions</a></li>
-                    <li><a href="pages/contact.html">Contact the Beyond</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Community</h3>
-                <ul>
-                    <li><a href="pages/guidelines.html">Sanctuary Guidelines</a></li>
-                    <li><a href="pages/privacy.html">Eternal Privacy</a></li>
-                    <li><a href="pages/terms.html">Terms of Infinity</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Stay Connected</h3>
-                <div class="social-links">
-                    <a href="#" aria-label="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
-                    <a href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
+            <div class="footer-main">
+                <div class="footer-links-grid">
+                    <div class="footer-column">
+                        <h3>Eternal Links</h3>
+                        <ul>
+                            <li><a href="pages/about.html">About Our Eternity</a></li>
+                            <li><a href="pages/faq.html">Immortal Questions</a></li>
+                            <li><a href="pages/contact.html">Contact the Beyond</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Community</h3>
+                        <ul>
+                            <li><a href="pages/guidelines.html">Sanctuary Guidelines</a></li>
+                            <li><a href="pages/privacy.html">Eternal Privacy</a></li>
+                            <li><a href="pages/terms.html">Terms of Infinity</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Stay Connected</h3>
+                        <div class="social-links">
+                            <a href="#" aria-label="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
+                            <a href="#" aria-label="Telegram" title="Telegram"><i class="fab fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-feedback-section">
+                    <button type="button" class="feedback-btn footer" id="feedbackBtnFooter">
+                        <i class="fas fa-heart"></i> Share Your Eternal Feedback
+                    </button>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
-            <p>Embrace your infinite potential and connect across eternity.</p>
-            <div class="footer-feedback">
-                <button type="button" class="feedback-btn footer" id="feedbackBtnFooter">
-                    <i class="fas fa-heart"></i> Share Your Eternal Feedback
-                </button>
+            
+            <hr class="footer-divider">
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+                <p>Embrace your infinite potential and connect across eternity.</p>
             </div>
         </div>
     </footer>
