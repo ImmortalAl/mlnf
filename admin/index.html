@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../css/styles.css?v=1.4">
     <link rel="stylesheet" href="../components/shared/styles.css?v=1.6">
     <link rel="stylesheet" href="../css/active-users.css?v=1.2">
-    <link rel="stylesheet" href="../css/admin.css?v=1.0">
+    <link rel="stylesheet" href="../css/admin.css?v=1.1">
 </head>
 <body>
     <header>
@@ -405,10 +405,20 @@
             }
             selectedContentId = null;
             selectedContentData = null;
+            
+            // Reset button state
             const featureBtn = document.getElementById('featureContentBtn');
             if (featureBtn) {
                 featureBtn.disabled = true;
+                featureBtn.innerHTML = '<i class="fas fa-star"></i> Feature Content';
+                featureBtn.classList.remove('btn-ready');
+                featureBtn.style.animation = '';
             }
+            
+            // Clear all selections
+            document.querySelectorAll('.content-item').forEach(item => {
+                item.classList.remove('selected');
+            });
         }
         
         async function loadContentForCuration() {
@@ -512,18 +522,39 @@
         }
         
         function selectContent(contentId) {
-            // Remove previous selection
+            // Remove previous selection with smooth transition
             document.querySelectorAll('.content-item').forEach(item => {
                 item.classList.remove('selected');
             });
             
-            // Select current item
+            // Select current item with enhanced feedback
             const selectedElement = document.querySelector(`[data-content-id="${contentId}"]`);
             if (selectedElement) {
                 selectedElement.classList.add('selected');
                 selectedContentId = contentId;
                 selectedContentData = { _id: contentId }; // Store minimal data
-                document.getElementById('featureContentBtn').disabled = false;
+                
+                // Update button state with visual feedback
+                const featureBtn = document.getElementById('featureContentBtn');
+                featureBtn.disabled = false;
+                featureBtn.innerHTML = '<i class="fas fa-star"></i> Feature Selected Content';
+                featureBtn.classList.add('btn-ready');
+                
+                // Scroll selected item into view if needed
+                selectedElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+                
+                // Show confirmation message
+                const contentTitle = selectedElement.querySelector('.content-header h4')?.textContent || 'Content';
+                console.log(`Content selected: ${contentTitle}`);
+                
+                // Add subtle pulse effect to the button
+                featureBtn.style.animation = 'pulse-ready 1s ease';
+                setTimeout(() => {
+                    featureBtn.style.animation = '';
+                }, 1000);
             }
         }
         
@@ -678,7 +709,14 @@
                 currentContentType = e.target.dataset.type;
                 selectedContentId = null;
                 selectedContentData = null;
-                document.getElementById('featureContentBtn').disabled = true;
+                
+                // Reset button state when switching tabs
+                const featureBtn = document.getElementById('featureContentBtn');
+                featureBtn.disabled = true;
+                featureBtn.innerHTML = '<i class="fas fa-star"></i> Feature Content';
+                featureBtn.classList.remove('btn-ready');
+                featureBtn.style.animation = '';
+                
                 loadContentForCuration();
             }
         });
