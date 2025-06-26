@@ -394,22 +394,23 @@ header {
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 100000 !important;
+    z-index: 9999;
     opacity: 0;
     transition: opacity 0.3s ease;
     backdrop-filter: blur(5px);
     pointer-events: none;
 }
 
-.modal.active {
-    display: flex;
+.modal.active,
+.modal[aria-hidden="false"] {
+    display: flex !important;
     opacity: 1;
     pointer-events: auto;
 }
 
 .modal .modal-content {
     position: relative;
-    z-index: 100001 !important;
+    z-index: 10000;
     pointer-events: auto;
 }
 
@@ -427,7 +428,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100000 !important;
+    z-index: 9999;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -721,7 +722,7 @@ header {
 
 /* Ensure message modal has highest z-index */
 #messageModal {
-    z-index: 100001 !important; /* Higher than generic modal z-index to ensure it's always on top */
+    z-index: 10000; /* Higher than generic modal z-index to ensure it's always on top */
 }
 
 #messageModal .message-modal-content {
