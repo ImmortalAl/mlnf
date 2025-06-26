@@ -929,37 +929,25 @@ footer {
     margin: 0 auto !important;
 }
 
-.footer-main {
-    margin-bottom: 0;
-}
-
 .footer-links-grid {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 4rem;
+    gap: 3rem;
     flex-wrap: wrap;
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-6);
 }
 
 .footer-feedback-section {
     text-align: center;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-}
-
-.footer-feedback-section .feedback-btn.footer {
-    margin: 0 !important;
-    display: inline-block !important;
+    margin-bottom: var(--space-4);
 }
 
 .footer-divider {
     border: none;
-    height: 1px;
-    background: rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-    margin: 0 !important;
-    padding: 0 !important;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 94, 120, 0.4), transparent);
+    margin: var(--space-4) 0;
 }
 
 .footer-column {
