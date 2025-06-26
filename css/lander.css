@@ -98,6 +98,18 @@ h3 {
 .hub-card-actions {
     display: flex;
     gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.hub-card-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.hub-card-actions .btn:active {
+    transform: scale(0.98);
 }
 
 .quick-post-section {
@@ -228,17 +240,178 @@ footer {
     box-shadow: 0 5px 15px rgba(255, 94, 120, 0.4);
 }
 
-/* Responsive styles */
+/* Enhanced Mobile Responsive Styles */
 @media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+    
+    section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+    
+    .welcome-section h2 {
+        margin-bottom: 0.75rem;
+    }
+    
+    .welcome-section p {
+        text-align: center;
+        margin-bottom: 1.25rem;
+    }
+    
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        margin-top: 1.25rem;
+    }
+    
+    .hub-card {
+        padding: 1.25rem;
+    }
+    
+    .hub-card-header {
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .hub-card-header i {
+        font-size: 2rem;
+    }
+    
+    .hub-card p {
+        text-align: center;
+        margin-bottom: 1.25rem;
+    }
+    
+    .hub-card-actions.mobile-optimized {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .hub-card-actions.mobile-optimized .btn {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        font-size: 0.9rem;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .quick-post-container {
+        padding: 1.25rem;
+        margin-top: 1.25rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-group input {
+        padding: 0.75rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    #editor {
+        height: 250px;
+        margin-bottom: 1.25rem;
+    }
+    
     .form-actions {
         flex-direction: column;
         gap: 1rem;
         align-items: stretch;
     }
     
+    .form-actions .btn {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        min-height: 48px;
+    }
+    
     select {
         width: 100%;
         margin-bottom: 1rem;
+        padding: 0.75rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .activity-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    
+    .activity-card {
+        padding: 1.25rem;
+    }
+    
+    .activity-card h3 {
+        font-size: 1.1rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .activity-card li {
+        padding: 0.75rem 0;
+        font-size: 0.95rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    main {
+        padding: 0.75rem;
+    }
+    
+    section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+    }
+    
+    .hub-card {
+        padding: 1rem;
+    }
+    
+    .hub-card-header i {
+        font-size: 1.5rem;
+    }
+    
+    .hub-card-actions.mobile-optimized .btn {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.85rem;
+    }
+    
+    .quick-post-container {
+        padding: 1rem;
+    }
+    
+    #editor {
+        height: 200px;
+    }
+    
+    .activity-card {
+        padding: 1rem;
+    }
+    
+    .activity-card h3 {
+        font-size: 1rem;
+    }
+    
+    .activity-card li {
+        font-size: 0.9rem;
+        padding: 0.6rem 0;
     }
 }
 

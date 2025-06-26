@@ -301,46 +301,226 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
+        /* Enhanced Mobile Optimization */
         @media (max-width: 768px) {
             .soul-modal {
-                padding: 1rem;
-                width: 98%;
+                padding: 0.75rem;
+                width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .close-modal {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 1.8rem;
+                padding: 0.5rem;
+                z-index: 10;
             }
             
             .soul-tabs {
-                flex-wrap: wrap;
-                gap: 0.5rem;
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
+                z-index: 5;
+                margin: 0 -0.75rem 1rem;
+                padding: 0.75rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 0.25rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .soul-tabs::-webkit-scrollbar {
+                display: none;
             }
             
             .soul-tab {
-                flex: 1;
-                min-width: 120px;
+                flex: 0 0 auto;
+                min-width: 100px;
                 text-align: center;
-                padding: 0.5rem;
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+                white-space: nowrap;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+            
+            .soul-tab.active {
+                background: rgba(255, 94, 120, 0.2);
             }
             
             .profile-header-mini {
                 flex-direction: column;
                 text-align: center;
                 gap: 1rem;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .profile-avatar-mini {
+                width: 60px;
+                height: 60px;
+                border-width: 2px;
+            }
+            
+            .profile-info-mini h3 {
+                font-size: 1.1rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .profile-info-mini p {
+                font-size: 0.9rem;
+            }
+            
+            .profile-stats-mini {
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .stat-mini .stat-value {
+                font-size: 1.2rem;
+            }
+            
+            .stat-mini .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .profile-bio-mini {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .profile-bio-mini h4 {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .profile-edit-form {
+                max-width: 100%;
+            }
+            
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+            
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.4rem;
+            }
+            
+            .form-group input,
+            .form-group textarea {
+                padding: 0.75rem;
+                font-size: 16px; /* Prevents zoom on iOS */
+                border-radius: 6px;
+            }
+            
+            .form-group textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: left;
+                padding: 1rem;
+                border-radius: 6px;
+            }
+            
+            .setting-info h4 {
+                font-size: 0.95rem;
+                text-align: center;
+            }
+            
+            .setting-info p {
+                font-size: 0.85rem;
+                text-align: center;
+            }
+            
+            .setting-select {
+                width: 100%;
+                padding: 0.75rem;
+                font-size: 16px; /* Prevents zoom on iOS */
+                border-radius: 6px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-top: 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.85rem 1.5rem;
+                font-size: 0.95rem;
+                border-radius: 6px;
+                min-height: 48px; /* Touch target size */
+            }
+            
+            .privacy-actions {
+                margin-top: 1.5rem;
+            }
+            
+            .privacy-intro {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .soul-modal {
+                padding: 0.5rem;
+            }
+            
+            .soul-tabs {
+                margin: 0 -0.5rem 1rem;
+                padding: 0.5rem;
+            }
+            
+            .soul-tab {
+                min-width: 90px;
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            
+            .profile-header-mini {
+                padding: 0.75rem;
+            }
+            
+            .profile-avatar-mini {
+                width: 50px;
+                height: 50px;
             }
             
             .profile-stats-mini {
                 gap: 1rem;
             }
             
-            .setting-item {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
+            .form-group input,
+            .form-group textarea,
             .setting-select {
-                width: 100%;
+                padding: 0.6rem;
             }
             
-            .form-actions {
-                flex-direction: column;
+            .setting-item {
+                padding: 0.75rem;
+                gap: 0.6rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.2rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -442,7 +622,7 @@
                         <h3>My Soul</h3>
                     </div>
                     <p>View and manage your eternal presence</p>
-                    <div class="hub-card-actions">
+                    <div class="hub-card-actions mobile-optimized">
                         <button id="viewProfileBtn" class="btn btn-primary">View Profile</button>
                         <button id="editProfileBtn" class="btn">Edit Profile</button>
                         <button id="privacySettingsBtn" class="btn btn-secondary">Privacy Settings</button>
@@ -512,14 +692,14 @@
                 <button class="close-modal" id="closeSoulModal" aria-label="Close modal">×</button>
                 
                 <!-- Tab Navigation -->
-                <div class="soul-tabs">
-                    <button class="soul-tab active" data-tab="profile">Profile Overview</button>
-                    <button class="soul-tab" data-tab="edit">Edit Profile</button>
-                    <button class="soul-tab" data-tab="privacy">Privacy Settings</button>
+                <div class="soul-tabs" role="tablist" aria-label="Soul management options">
+                    <button class="soul-tab active" data-tab="profile" role="tab" aria-selected="true" aria-controls="profileTab">Profile Overview</button>
+                    <button class="soul-tab" data-tab="edit" role="tab" aria-selected="false" aria-controls="editTab">Edit Profile</button>
+                    <button class="soul-tab" data-tab="privacy" role="tab" aria-selected="false" aria-controls="privacyTab">Privacy Settings</button>
                 </div>
                 
                 <!-- Profile Overview Tab -->
-                <div id="profileTab" class="soul-tab-content active">
+                <div id="profileTab" class="soul-tab-content active" role="tabpanel" aria-labelledby="profile-tab">
                     <h2>My Eternal Soul</h2>
                     <div class="profile-overview">
                         <div class="profile-header-mini">
@@ -552,7 +732,7 @@
                 </div>
                 
                 <!-- Edit Profile Tab -->
-                <div id="editTab" class="soul-tab-content">
+                <div id="editTab" class="soul-tab-content" role="tabpanel" aria-labelledby="edit-tab">
                     <h2>Edit Your Eternal Soul</h2>
                     <form id="profileEditForm" class="profile-edit-form">
                         <div class="form-group">
@@ -579,7 +759,7 @@
                 </div>
                 
                 <!-- Privacy Settings Tab -->
-                <div id="privacyTab" class="soul-tab-content">
+                <div id="privacyTab" class="soul-tab-content" role="tabpanel" aria-labelledby="privacy-tab">
                     <h2>Soul Privacy Settings</h2>
                     <p class="privacy-intro">Control how your eternal soul manifests to others.</p>
                     
@@ -1037,15 +1217,24 @@
             const closeSoulModal = document.getElementById('closeSoulModal');
             
             if (viewProfileBtn) {
-                viewProfileBtn.addEventListener('click', () => openSoulModal('profile'));
+                viewProfileBtn.addEventListener('click', (e) => {
+                    e.target.setAttribute('data-recently-clicked', 'true');
+                    openSoulModal('profile');
+                });
             }
             
             if (editProfileBtn) {
-                editProfileBtn.addEventListener('click', () => openSoulModal('edit'));
+                editProfileBtn.addEventListener('click', (e) => {
+                    e.target.setAttribute('data-recently-clicked', 'true');
+                    openSoulModal('edit');
+                });
             }
             
             if (privacySettingsBtn) {
-                privacySettingsBtn.addEventListener('click', () => openSoulModal('privacy'));
+                privacySettingsBtn.addEventListener('click', (e) => {
+                    e.target.setAttribute('data-recently-clicked', 'true');
+                    openSoulModal('privacy');
+                });
             }
             
             if (closeSoulModal) {
@@ -1080,6 +1269,36 @@
                         closeSoulManagementModal();
                     }
                 });
+                
+                // Handle escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modal.classList.contains('active')) {
+                        closeSoulManagementModal();
+                    }
+                });
+                
+                // Trap focus within modal
+                modal.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        const focusableElements = modal.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        const firstElement = focusableElements[0];
+                        const lastElement = focusableElements[focusableElements.length - 1];
+                        
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstElement) {
+                                lastElement.focus();
+                                e.preventDefault();
+                            }
+                        } else {
+                            if (document.activeElement === lastElement) {
+                                firstElement.focus();
+                                e.preventDefault();
+                            }
+                        }
+                    }
+                });
             }
         }
         
@@ -1087,8 +1306,18 @@
             const modal = document.getElementById('soulManagementModal');
             if (modal) {
                 modal.classList.add('active');
+                // Prevent body scroll on mobile when modal is open
+                document.body.style.overflow = 'hidden';
                 switchSoulTab(tab);
                 loadUserProfile();
+                
+                // Focus management for accessibility
+                setTimeout(() => {
+                    const firstInput = modal.querySelector('input, textarea, select, button');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                }, 100);
             }
         }
         
@@ -1096,6 +1325,15 @@
             const modal = document.getElementById('soulManagementModal');
             if (modal) {
                 modal.classList.remove('active');
+                // Restore body scroll
+                document.body.style.overflow = '';
+                
+                // Return focus to the button that opened the modal
+                const activeButton = document.querySelector('[data-recently-clicked]');
+                if (activeButton) {
+                    activeButton.focus();
+                    activeButton.removeAttribute('data-recently-clicked');
+                }
             }
         }
         
