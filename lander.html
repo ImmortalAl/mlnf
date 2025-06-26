@@ -1927,28 +1927,17 @@
         }
         
         function openSoulModal(tab = 'profile') {
-            console.log('[Debug] Opening soul modal with tab:', tab);
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
-                console.error('[Debug] Soul management modal not found!');
+                console.error('Soul management modal not found!');
                 return;
             }
             
-            console.log('[Debug] Modal found, current classes:', modal.className);
-            
-            // Force display and visibility
+            // Force display and visibility to override CSS conflicts
             modal.style.display = 'flex';
             modal.style.opacity = '1';
             modal.style.visibility = 'visible';
             modal.classList.add('active');
-            
-            console.log('[Debug] Modal styles applied, new classes:', modal.className);
-            console.log('[Debug] Modal computed style:', {
-                display: getComputedStyle(modal).display,
-                opacity: getComputedStyle(modal).opacity,
-                visibility: getComputedStyle(modal).visibility,
-                zIndex: getComputedStyle(modal).zIndex
-            });
             
             // Prevent body scroll on mobile when modal is open
             document.body.style.overflow = 'hidden';
@@ -1966,8 +1955,6 @@
                     firstInput.focus();
                 }
             }, 100);
-            
-            console.log('[Debug] Soul modal opened successfully');
         }
         
         function closeSoulManagementModal() {
