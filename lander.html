@@ -47,10 +47,15 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         
         .modal.active {
             display: flex;
+            opacity: 1;
+            visibility: visible;
         }
         
         .soul-modal {
@@ -781,6 +786,13 @@
             .modal {
                 padding: 0;
                 align-items: flex-start;
+                background: rgba(13, 13, 26, 0.95);
+            }
+            
+            .modal.active {
+                display: flex !important;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
             
             .soul-modal {
@@ -796,6 +808,7 @@
                 position: relative;
                 display: flex;
                 flex-direction: column;
+                background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
             }
             
             .close-modal {
@@ -1921,8 +1934,21 @@
                 return;
             }
             
-            console.log('[Debug] Modal found, adding active class');
+            console.log('[Debug] Modal found, current classes:', modal.className);
+            
+            // Force display and visibility
+            modal.style.display = 'flex';
+            modal.style.opacity = '1';
+            modal.style.visibility = 'visible';
             modal.classList.add('active');
+            
+            console.log('[Debug] Modal styles applied, new classes:', modal.className);
+            console.log('[Debug] Modal computed style:', {
+                display: getComputedStyle(modal).display,
+                opacity: getComputedStyle(modal).opacity,
+                visibility: getComputedStyle(modal).visibility,
+                zIndex: getComputedStyle(modal).zIndex
+            });
             
             // Prevent body scroll on mobile when modal is open
             document.body.style.overflow = 'hidden';
@@ -1948,6 +1974,10 @@
             const modal = document.getElementById('soulManagementModal');
             if (modal) {
                 modal.classList.remove('active');
+                modal.style.display = 'none';
+                modal.style.opacity = '0';
+                modal.style.visibility = 'hidden';
+                
                 // Restore body scroll
                 document.body.style.overflow = '';
                 
@@ -1957,6 +1987,8 @@
                     activeButton.focus();
                     activeButton.removeAttribute('data-recently-clicked');
                 }
+                
+                console.log('[Debug] Soul modal closed');
             }
         }
         
