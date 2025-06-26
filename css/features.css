@@ -944,18 +944,22 @@ footer {
 
 .footer-feedback-section {
     text-align: center;
-    margin-bottom: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
 }
 
 .footer-feedback-section .feedback-btn.footer {
-    margin-bottom: 0 !important;
+    margin: 0 !important;
+    display: inline-block !important;
 }
 
 .footer-divider {
     border: none;
     height: 1px;
     background: rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-    margin: 0.25rem 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .footer-column {
