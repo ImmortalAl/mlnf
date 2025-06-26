@@ -20,13 +20,13 @@
     
     <!-- 4. PROGRESSIVE LOADING (NON-BLOCKING) -->
     <link rel="preload" href="../css/layout.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="stylesheet" href="../css/components.css?v=2.3" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../css/components.css?v=2.4" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="../css/features.css?v=2.3" media="print" onload="this.media='all'">
     
     <!-- 5. FALLBACK FOR NON-JS -->
     <noscript>
         <link rel="stylesheet" href="../css/layout.css?v=2.3">
-        <link rel="stylesheet" href="../css/components.css?v=2.3">
+        <link rel="stylesheet" href="../css/components.css?v=2.4">
         <link rel="stylesheet" href="../css/features.css?v=2.3">
     </noscript>
     
@@ -73,16 +73,17 @@
     
     <!-- Message Modal -->
     <div id="messageModal" class="modal" aria-hidden="true">
-        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+        <div class="modal-content message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <button class="modal-close" id="closeMessageModal" aria-label="Close message modal">&times;</button>
             <h3 id="messageTitle">Direct Message</h3>
-                <p id="recipientName">To: Username</p>
+            <p id="recipientName">To: Username</p>
             <div class="message-history" id="messageHistory"></div>
-            <div>
+            <div class="message-input-section">
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
-                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
-                    <button type="button" id="closeMessageModal">Close Nexus</button>
-            </div>
+                    <button type="submit" id="sendMessageBtn" class="btn btn-primary">Send Whisper</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('closeMessageModal').click()">Close Nexus</button>
+                </div>
             </div>
         </div>
     </div>
