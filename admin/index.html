@@ -354,8 +354,14 @@
         
         function openCurationModal(section) {
             console.log('openCurationModal called with section:', section);
-            currentCurationSection = section;
+            // Convert frontend section names to backend enum values
+            const sectionMapping = {
+                'soul-scrolls': 'soul_scrolls',
+                'echoes-unbound': 'echoes_unbound'
+            };
+            currentCurationSection = sectionMapping[section] || section;
             currentContentType = section === 'soul-scrolls' ? 'blogs' : 'threads';
+            console.log('Mapped section for backend:', currentCurationSection);
             
             const modal = document.getElementById('curationModal');
             console.log('Modal element found:', modal);
@@ -606,15 +612,15 @@
             // Load current Soul Scrolls highlight
             try {
                 console.log('Loading current highlights...');
-                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul-scrolls`);
-                console.log('Highlights response status:', response.status);
+                const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul_scrolls`);
+                console.log('Soul Scrolls response status:', response.status);
                 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Highlights data:', data);
+                    console.log('Soul Scrolls data:', data);
                     
                     const adminHighlight = data.highlights?.find(h => h.type === 'admin');
-                    console.log('Admin highlight found:', adminHighlight);
+                    console.log('Soul Scrolls admin highlight found:', adminHighlight);
                     
                     const container = document.getElementById('currentSoulScrollsHighlight');
                     if (adminHighlight && container) {
@@ -631,15 +637,15 @@
                 }
                 
                 // Load current Echoes Unbound highlight
-                const echoesResponse = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/echoes-unbound`);
-                console.log('Echoes response status:', echoesResponse.status);
+                const echoesResponse = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/echoes_unbound`);
+                console.log('Echoes Unbound response status:', echoesResponse.status);
                 
                 if (echoesResponse.ok) {
                     const echoesData = await echoesResponse.json();
-                    console.log('Echoes data:', echoesData);
+                    console.log('Echoes Unbound data:', echoesData);
                     
                     const echoesAdminHighlight = echoesData.highlights?.find(h => h.type === 'admin');
-                    console.log('Echoes admin highlight found:', echoesAdminHighlight);
+                    console.log('Echoes Unbound admin highlight found:', echoesAdminHighlight);
                     
                     const echoesContainer = document.getElementById('currentEchoesHighlight');
                     if (echoesAdminHighlight && echoesContainer) {
