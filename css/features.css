@@ -944,14 +944,14 @@ footer {
 
 .footer-feedback-section {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .footer-divider {
     border: none;
     height: 1px;
     background: rgba(var(--accent-rgb, 255, 94, 120), 0.2);
-    margin: 2rem 0;
+    margin: 1.5rem 0 1rem 0;
 }
 
 .footer-column {
