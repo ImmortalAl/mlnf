@@ -291,9 +291,16 @@
         }
         
         .btn-secondary {
+            background: rgba(255, 94, 120, 0.1);
+            color: var(--accent, #ff5e78);
+            border: 1px solid var(--accent, #ff5e78);
+        }
+        
+        .btn-outline {
             background: transparent;
             color: var(--accent, #ff5e78);
             border: 1px solid var(--accent, #ff5e78);
+            font-size: 0.8rem;
         }
         
         .btn:hover {
@@ -624,8 +631,8 @@
                     <p>View and manage your eternal presence</p>
                     <div class="hub-card-actions mobile-optimized">
                         <button id="viewProfileBtn" class="btn btn-primary">View Profile</button>
-                        <button id="editProfileBtn" class="btn">Edit Profile</button>
-                        <button id="privacySettingsBtn" class="btn btn-secondary">Privacy Settings</button>
+                        <button id="editProfileBtn" class="btn btn-secondary">Edit Profile</button>
+                        <button id="privacySettingsBtn" class="btn btn-outline">Privacy</button>
                     </div>
                 </div>
                 <div class="hub-card">
