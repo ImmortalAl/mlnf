@@ -1489,7 +1489,8 @@ body.light-theme .mlnf-avatar {
         padding-top: 2vh !important;
     }
 }
-.modal[aria-hidden="false"] {
+.modal[aria-hidden="false"],
+.modal.active {
     display: flex !important;
     opacity: 1;
     pointer-events: auto;
