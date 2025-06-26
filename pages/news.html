@@ -36,8 +36,8 @@
     <link rel="preload" href="../css/active-users.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=1.2"></noscript>
     
-    <link rel="preload" href="../css/news.css?v=2.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/news.css?v=2.2"></noscript>
+    <link rel="preload" href="../css/news.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/news.css?v=2.3"></noscript>
     
     <!-- 6. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
@@ -46,6 +46,10 @@
     <!-- 7. FONTS (lazy loaded) -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+
+    <!-- 8. QUILL EDITOR (for rich text chronicle creation) -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"></noscript>
 </head>
 <body>
     <!-- Active Users Sidebar (Shared Component) -->
@@ -180,8 +184,10 @@
                 
                 <div class="form-group">
                     <label for="chronicleContent">Chronicle Content *</label>
-                    <textarea id="chronicleContent" name="content" required rows="10"
-                              placeholder="Tell the story that shall echo through eternity..."></textarea>
+                    <div id="chronicleEditor" class="quill-editor">
+                        <p>Tell the story that shall echo through eternity...</p>
+                    </div>
+                    <textarea id="chronicleContent" name="content" required style="display: none;"></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -371,6 +377,9 @@
     <!-- Avatar System -->
     <script src="../js/mlnf-avatar-system.js?v=1.1"></script>
     
+    <!-- Quill Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    
     <!-- Page-specific Scripts -->
     <script src="../js/news/chroniclesFeed.js?v=2.1"></script>
     <script src="../js/news/submissionModal.js?v=2.1"></script>
@@ -404,6 +413,38 @@
                 }
                 
                 console.log('All news page components initialized successfully');
+                
+                // Initialize Quill editor for chronicle content
+                if (typeof Quill !== 'undefined') {
+                    const chronicleEditor = new Quill('#chronicleEditor', {
+                        theme: 'snow',
+                        placeholder: 'Tell the story that shall echo through eternity...',
+                        modules: {
+                            toolbar: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                                ['blockquote', 'code-block'],
+                                ['link'],
+                                [{ 'align': [] }],
+                                ['clean']
+                            ]
+                        }
+                    });
+
+                    // Sync Quill content with hidden textarea for form submission
+                    chronicleEditor.on('text-change', function() {
+                        const content = chronicleEditor.root.innerHTML;
+                        document.getElementById('chronicleContent').value = content;
+                    });
+
+                    // Store reference for access in submission modal
+                    window.chronicleQuillEditor = chronicleEditor;
+                    console.log('Quill editor initialized for chronicle creation');
+                } else {
+                    console.warn('Quill editor not available, falling back to textarea');
+                }
                 
                 // Check for chronicle ID to auto-open modal (from front page highlights)
                 const urlParams = new URLSearchParams(window.location.search);

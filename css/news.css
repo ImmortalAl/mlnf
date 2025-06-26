@@ -653,6 +653,74 @@
     line-height: 1.6;
 }
 
+/* Quill Editor Integration */
+.quill-editor {
+    background: var(--background);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    min-height: 200px;
+    transition: all 0.3s ease;
+}
+
+.quill-editor:focus-within {
+    border-color: var(--immortal-gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.quill-editor .ql-toolbar {
+    background: var(--background-secondary, #2a2a2a);
+    border-bottom: 1px solid var(--border);
+    border-radius: 6px 6px 0 0;
+    padding: 0.75rem;
+}
+
+.quill-editor .ql-container {
+    border: none;
+    min-height: 150px;
+    border-radius: 0 0 6px 6px;
+}
+
+.quill-editor .ql-editor {
+    color: var(--text);
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 1rem;
+}
+
+.quill-editor .ql-editor.ql-blank::before {
+    color: var(--text-muted);
+    font-style: italic;
+    font-family: 'Crimson Text', serif;
+}
+
+.quill-editor .ql-toolbar .ql-stroke {
+    stroke: var(--text);
+}
+
+.quill-editor .ql-toolbar .ql-fill {
+    fill: var(--text);
+}
+
+.quill-editor .ql-toolbar button:hover .ql-stroke,
+.quill-editor .ql-toolbar button.ql-active .ql-stroke {
+    stroke: var(--immortal-gold);
+}
+
+.quill-editor .ql-toolbar button:hover .ql-fill,
+.quill-editor .ql-toolbar button.ql-active .ql-fill {
+    fill: var(--immortal-gold);
+}
+
+.quill-editor .ql-toolbar button {
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.quill-editor .ql-toolbar button:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
 .form-group small {
     display: block;
     margin-top: 0.5rem;
