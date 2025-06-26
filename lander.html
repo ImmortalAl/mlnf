@@ -1800,15 +1800,25 @@
         
         // Soul Management System
         function initSoulManagement() {
+            console.log('🚀 INIT DEBUG: initSoulManagement called');
             // Setup button event listeners
             const viewProfileBtn = document.getElementById('viewProfileBtn');
             const editProfileBtn = document.getElementById('editProfileBtn');
             const privacySettingsBtn = document.getElementById('privacySettingsBtn');
             const closeSoulModal = document.getElementById('closeSoulModal');
             
+            console.log('🔍 INIT DEBUG: Button elements found:', {
+                viewProfileBtn: !!viewProfileBtn,
+                editProfileBtn: !!editProfileBtn, 
+                privacySettingsBtn: !!privacySettingsBtn,
+                closeSoulModal: !!closeSoulModal
+            });
+            
             if (viewProfileBtn) {
+                console.log('🔘 BUTTON DEBUG: View Profile button found, attaching handlers');
                 // Add both click and touchend for mobile reliability
                 const viewHandler = (e) => {
+                    console.log('🖱️ BUTTON DEBUG: View Profile button clicked!', e.type);
                     e.preventDefault();
                     e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
@@ -1816,10 +1826,14 @@
                 };
                 viewProfileBtn.addEventListener('click', viewHandler);
                 viewProfileBtn.addEventListener('touchend', viewHandler, { passive: false });
+            } else {
+                console.error('❌ BUTTON DEBUG: viewProfileBtn not found!');
             }
             
             if (editProfileBtn) {
+                console.log('🔘 BUTTON DEBUG: Edit Profile button found, attaching handlers');
                 const editHandler = (e) => {
+                    console.log('🖱️ BUTTON DEBUG: Edit Profile button clicked!', e.type);
                     e.preventDefault();
                     e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
@@ -1827,10 +1841,14 @@
                 };
                 editProfileBtn.addEventListener('click', editHandler);
                 editProfileBtn.addEventListener('touchend', editHandler, { passive: false });
+            } else {
+                console.error('❌ BUTTON DEBUG: editProfileBtn not found!');
             }
             
             if (privacySettingsBtn) {
+                console.log('🔘 BUTTON DEBUG: Privacy Settings button found, attaching handlers');
                 const privacyHandler = (e) => {
+                    console.log('🖱️ BUTTON DEBUG: Privacy Settings button clicked!', e.type);
                     e.preventDefault();
                     e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
@@ -1838,6 +1856,8 @@
                 };
                 privacySettingsBtn.addEventListener('click', privacyHandler);
                 privacySettingsBtn.addEventListener('touchend', privacyHandler, { passive: false });
+            } else {
+                console.error('❌ BUTTON DEBUG: privacySettingsBtn not found!');
             }
             
             if (closeSoulModal) {
@@ -1906,15 +1926,63 @@
         }
         
         function openSoulModal(tab = 'profile') {
+            console.log('🔥 MODAL DEBUG: openSoulModal called with tab:', tab);
+            
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
-                console.error('Soul management modal not found!');
+                console.error('❌ MODAL DEBUG: soulManagementModal element not found!');
                 return;
             }
+            console.log('✅ MODAL DEBUG: Modal element found:', modal);
+            
+            // Check initial state
+            console.log('📊 MODAL DEBUG: Initial state:', {
+                classList: modal.className,
+                ariaHidden: modal.getAttribute('aria-hidden'),
+                display: getComputedStyle(modal).display,
+                opacity: getComputedStyle(modal).opacity,
+                visibility: getComputedStyle(modal).visibility,
+                zIndex: getComputedStyle(modal).zIndex
+            });
             
             // Use proper CSS architecture - let stylesheets handle display
             modal.classList.add('active');
             modal.setAttribute('aria-hidden', 'false');
+            
+            // Check state after changes
+            setTimeout(() => {
+                console.log('🔄 MODAL DEBUG: After CSS changes:', {
+                    classList: modal.className,
+                    ariaHidden: modal.getAttribute('aria-hidden'),
+                    display: getComputedStyle(modal).display,
+                    opacity: getComputedStyle(modal).opacity,
+                    visibility: getComputedStyle(modal).visibility,
+                    zIndex: getComputedStyle(modal).zIndex
+                });
+                
+                // Check if any CSS rules are being applied
+                const allRules = [];
+                for (let sheet of document.styleSheets) {
+                    try {
+                        for (let rule of sheet.cssRules || sheet.rules) {
+                            if (rule.selectorText && rule.selectorText.includes('modal')) {
+                                allRules.push({
+                                    selector: rule.selectorText,
+                                    styles: rule.style.cssText
+                                });
+                            }
+                        }
+                    } catch(e) {
+                        console.log('🔍 MODAL DEBUG: Could not access stylesheet:', sheet.href);
+                    }
+                }
+                console.log('📋 MODAL DEBUG: Modal CSS rules found:', allRules);
+                
+                // Check if modal is actually visible
+                const rect = modal.getBoundingClientRect();
+                console.log('📐 MODAL DEBUG: Modal dimensions:', rect);
+                
+            }, 10);
             
             // Prevent body scroll on mobile when modal is open
             document.body.style.overflow = 'hidden';
@@ -1932,6 +2000,8 @@
                     firstInput.focus();
                 }
             }, 100);
+            
+            console.log('🎯 MODAL DEBUG: openSoulModal complete');
         }
         
         function closeSoulManagementModal() {
