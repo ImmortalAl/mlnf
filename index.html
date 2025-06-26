@@ -876,7 +876,7 @@
             // Load both recent posts and editorial highlights in parallel
             const [recentResponse, highlightsResponse] = await Promise.all([
                 fetch(`${window.MLNF_CONFIG.API_BASE_URL}/blogs?limit=1&sort=createdAt`),
-                fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul-scrolls`)
+                fetch(`${window.MLNF_CONFIG.API_BASE_URL}/highlights/soul_scrolls`)
             ]);
             
             // Load recent posts
