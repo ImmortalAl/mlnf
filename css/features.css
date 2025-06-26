@@ -920,7 +920,7 @@ body.light-theme .debate-position h4 {
 footer {
     background: var(--gradient-secondary);
     border-top: 3px solid var(--accent);
-    padding: 3rem 2rem;
+    padding: 2rem 2rem 1.5rem 2rem;
     margin-top: auto; /* Pushes footer to bottom if content is short */
 }
 
@@ -933,21 +933,21 @@ footer {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 3rem;
+    gap: 2rem;
     flex-wrap: wrap;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-3);
 }
 
 .footer-feedback-section {
     text-align: center;
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-2);
 }
 
 .footer-divider {
     border: none;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 94, 120, 0.4), transparent);
-    margin: var(--space-4) 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 94, 120, 0.3), transparent);
+    margin: var(--space-2) 0 var(--space-1) 0;
 }
 
 .footer-column {
@@ -957,8 +957,8 @@ footer {
 
 .footer-column h3 {
     color: var(--accent);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+    font-size: 1rem;
+    margin-bottom: var(--space-2);
     font-weight: 600;
 }
 
@@ -969,7 +969,7 @@ footer {
 }
 
 .footer-column ul li {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-1);
 }
 
 .footer-column ul li a {
@@ -993,17 +993,17 @@ footer {
 }
 
 .footer-bottom p {
-    font-size: 1rem;
-    line-height: 1.7;
-    opacity: 0.95;
-    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin-bottom: var(--space-1);
 }
 
 .social-links {
-    margin-top: 1rem;
+    margin-top: var(--space-2);
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: var(--space-4);
 }
 
 .social-links a {
