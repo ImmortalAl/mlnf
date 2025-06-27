@@ -1334,49 +1334,35 @@
                 
                 <!-- Privacy Settings Tab -->
                 <div id="privacyTab" class="soul-tab-content" role="tabpanel" aria-labelledby="privacy-tab">
-                    <h2>Soul Privacy Settings</h2>
-                    <p class="privacy-intro">Control how your eternal soul manifests to others.</p>
-                    
-                    <div class="privacy-settings">
-                        <div class="setting-item">
-                            <div class="setting-info">
-                                <h4><i class="fas fa-eye"></i> Profile Visibility</h4>
-                                <p>Who can view your profile</p>
-                            </div>
+                    <h3 class="privacy-title">Privacy Settings</h3>
+                    <form class="privacy-settings-grid" autocomplete="off" onsubmit="event.preventDefault(); document.getElementById('savePrivacySettings').click();">
+                        <div class="privacy-setting">
+                            <label for="privacyVisibilitySetting"><i class="fas fa-eye"></i> Profile Visibility</label>
                             <select id="privacyVisibilitySetting" class="setting-select">
                                 <option value="public">Public</option>
                                 <option value="connections">Connections Only</option>
                                 <option value="private">Private</option>
                             </select>
                         </div>
-                        
-                        <div class="setting-item">
-                            <div class="setting-info">
-                                <h4><i class="fas fa-envelope"></i> Soul Messaging</h4>
-                                <p>Allow other souls to message you</p>
-                            </div>
+                        <div class="privacy-setting">
+                            <label for="privacyMessagingSetting"><i class="fas fa-envelope"></i> Soul Messaging</label>
                             <select id="privacyMessagingSetting" class="setting-select">
                                 <option value="enabled">Enabled</option>
                                 <option value="connections">Connections Only</option>
                                 <option value="disabled">Disabled</option>
                             </select>
                         </div>
-                        
-                        <div class="setting-item">
-                            <div class="setting-info">
-                                <h4><i class="fas fa-search"></i> Directory Listing</h4>
-                                <p>Include your profile in the soul directory</p>
-                            </div>
+                        <div class="privacy-setting">
+                            <label for="privacyDirectorySetting"><i class="fas fa-search"></i> Directory Listing</label>
                             <select id="privacyDirectorySetting" class="setting-select">
                                 <option value="listed">Listed</option>
                                 <option value="unlisted">Unlisted</option>
                             </select>
                         </div>
-                        
                         <div class="privacy-actions">
-                            <button id="savePrivacySettings" class="btn btn-primary">Save Privacy Settings</button>
+                            <button id="savePrivacySettings" class="btn btn-primary" type="submit">Save</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
