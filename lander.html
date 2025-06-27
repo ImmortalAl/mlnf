@@ -42,7 +42,12 @@
         .modal {
             display: none !important;
             position: fixed !important;
-            top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+            top: 0 !important; 
+            left: 0 !important; 
+            right: 0 !important; 
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             background: rgba(13, 13, 26, 0.8) !important;
             z-index: 9999 !important;
             align-items: center !important;
@@ -75,6 +80,8 @@
             border: 1px solid var(--accent, #ff5e78);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             position: relative;
+            margin: auto;
+            transform: none !important;
         }
         
         .close-modal {
