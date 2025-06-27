@@ -10,36 +10,62 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" href="../favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=MedievalSharp&display=swap" rel="stylesheet">
     <!-- Quill.js Rich Text Editor -->
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
     <!-- Config MUST be loaded first -->
-    <script src="../components/shared/config.js?v=1.2"></script>
+    <script src="../components/shared/config.js?v=1.3"></script>
+    <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
     <link rel="stylesheet" href="../css/base-theme.css">
-    <link rel="stylesheet" href="../css/styles.css?v=2.0">
-    <!-- Shared component styles -->
-    <link rel="stylesheet" href="../components/shared/styles.css?v=2.0">
-    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
-    <!-- Rich Text Editor Component -->
-    <link rel="stylesheet" href="../components/shared/rich-text-editor.css?v=1.0">
-    <!-- Critical blog styles - load immediately for initial render -->
-    <link rel="stylesheet" href="../css/blog-critical.css?v=1.0">
-    <!-- Non-critical blog modules - lazy load for better performance -->
-    <link rel="stylesheet" href="../css/blog-cards.css?v=2.0" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="../css/blog-modal.css?v=1.0" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="../css/blog-forms.css?v=1.0" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="../css/blog-comments.css?v=1.0" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="../css/blog-responsive.css?v=1.0" media="print" onload="this.media='all'">
-    <noscript>
-        <!-- Fallback for when JS is disabled -->
-        <link rel="stylesheet" href="../css/blog-cards.css?v=2.0">
-        <link rel="stylesheet" href="../css/blog-modal.css?v=1.0">
-        <link rel="stylesheet" href="../css/blog-forms.css?v=1.0">
-        <link rel="stylesheet" href="../css/blog-comments.css?v=1.0">
-        <link rel="stylesheet" href="../css/blog-responsive.css?v=1.0">
-    </noscript>
+    
+    <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
+    <link rel="stylesheet" href="../css/critical.css?v=2.3">
+    <link rel="stylesheet" href="../css/blog-critical.css?v=2.3">
+    
+    <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
+    <link rel="stylesheet" href="../css/styles.css?v=2.3">
+    
+    <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
+    <link rel="preload" href="../css/layout.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/layout.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/components.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/components.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/features.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/features.css?v=2.3"></noscript>
+    
+    <!-- 5. SHARED COMPONENTS (lazy loaded) -->
+    <link rel="preload" href="../components/shared/styles.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../components/shared/styles.css?v=2.0"></noscript>
+    
+    <link rel="preload" href="../components/shared/rich-text-editor.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../components/shared/rich-text-editor.css?v=2.0"></noscript>
+    
+    <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
+    <link rel="preload" href="../css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/active-users.css?v=2.0"></noscript>
+    
+    <!-- Blog-specific modules (lazy loaded) -->
+    <link rel="preload" href="../css/blog-cards.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/blog-cards.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/blog-modal.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/blog-modal.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/blog-forms.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/blog-forms.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/blog-comments.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/blog-comments.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/blog-responsive.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/blog-responsive.css?v=2.3"></noscript>
+    
+    <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 </head>
 <body>
     <header>

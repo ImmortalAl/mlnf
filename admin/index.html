@@ -10,12 +10,39 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" href="../favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
     <link rel="stylesheet" href="../css/base-theme.css">
-    <link rel="stylesheet" href="../css/styles.css?v=2.0">
-    <link rel="stylesheet" href="../components/shared/styles.css?v=2.0">
-    <link rel="stylesheet" href="../css/active-users.css?v=1.2">
-    <link rel="stylesheet" href="../css/admin.css?v=1.1">
+    
+    <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
+    <link rel="stylesheet" href="../css/critical.css?v=2.3">
+    
+    <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
+    <link rel="stylesheet" href="../css/styles.css?v=2.3">
+    
+    <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
+    <link rel="preload" href="../css/layout.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/layout.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/components.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/components.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="../css/features.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/features.css?v=2.3"></noscript>
+    
+    <!-- 5. SHARED COMPONENTS (lazy loaded) -->
+    <link rel="preload" href="../components/shared/styles.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../components/shared/styles.css?v=2.0"></noscript>
+    
+    <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
+    <link rel="preload" href="../css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/active-users.css?v=2.0"></noscript>
+    
+    <link rel="preload" href="../css/admin.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=2.3"></noscript>
+    
+    <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 </head>
 <body>
     <header>
