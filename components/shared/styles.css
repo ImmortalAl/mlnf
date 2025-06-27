@@ -441,16 +441,25 @@ header {
 }
 
 .soul-modal .modal-content {
-    background: var(--secondary, #1a1a33);
-    padding: 1rem 1.5rem 1.5rem;
-    border-radius: var(--border-radius, 12px);
-    box-shadow: var(--shadow, 0 10px 20px rgba(0, 0, 0, 0.3));
-    width: 90%;
-    max-width: 400px;
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 51, 0.98) 0%, 
+        rgba(35, 35, 65, 0.95) 50%, 
+        rgba(26, 26, 51, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    padding: 0;
+    border-radius: 20px;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 94, 120, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    width: 95%;
+    max-width: 520px;
     position: relative;
     transform: scale(0.95);
-    transition: transform 0.3s ease;
-    border: 1px solid var(--accent, #ff5e78);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    overflow: hidden;
 }
 
 .soul-modal.active .modal-content {
@@ -552,22 +561,32 @@ header {
 
 .soul-modal .modal-content .close-modal {
     position: absolute;
-    top: 0.8rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: var(--text, #f0e6ff);
-    font-size: 2rem;
-    font-weight: 300;
+    top: 1rem;
+    right: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 400;
     cursor: pointer;
-    padding: 0.25rem;
+    padding: 0.5rem;
     line-height: 1;
-    transition: color 0.2s ease, transform 0.2s ease;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    backdrop-filter: blur(10px);
+    z-index: 10;
 }
 
 .soul-modal .modal-content .close-modal:hover {
-    color: var(--accent, #ff5e78);
-    transform: scale(1.1);
+    background: rgba(255, 94, 120, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 4px 12px rgba(255, 94, 120, 0.4);
 }
 
 /* Responsive Styles */
@@ -1205,29 +1224,57 @@ body.light-theme .user-dropdown .divider {
 /* SLEEKER TAB DESIGN */
 .soul-tabs {
     display: flex;
-    border-bottom: 1px solid var(--highlight, #2a4066);
-    margin-bottom: 1.2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 0.3rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
 }
+
+.soul-tabs::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 94, 120, 0.05) 50%,
+        transparent 100%);
+    pointer-events: none;
+}
+
 .soul-tab {
-    padding: 0.7rem 1.2rem;
+    flex: 1;
+    padding: 0.8rem 1rem;
     cursor: pointer;
     border: none;
-    background: none;
-    color: var(--text_secondary, #ccc);
-    font-size: 0.95rem;
+    background: transparent;
+    color: var(--text_secondary, #bbb);
+    font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.2s ease-in-out;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px; /* Overlap with parent border */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
 }
+
 .soul-tab:hover {
     color: var(--text, #f0e6ff);
-    background-color: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
 }
+
 .soul-tab.active {
-    color: var(--accent, #ff5e78);
-    border-bottom-color: var(--accent, #ff5e78);
+    color: white;
+    background: linear-gradient(135deg, var(--accent, #ff5e78), #ff8f00);
     font-weight: 600;
+    box-shadow: 
+        0 4px 12px rgba(255, 94, 120, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
 /* FADE-IN TRANSITION FOR TAB CONTENT */
@@ -1241,4 +1288,44 @@ body.light-theme .user-dropdown .divider {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal Header with gradient */
+.modal-header {
+    background: linear-gradient(135deg, var(--accent, #ff5e78), #ff8f00);
+    padding: 1.5rem 2rem 1rem;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
+}
+
+.modal-header h2 {
+    color: white;
+    font-size: 1.6rem;
+    margin: 0;
+    text-align: center;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 1.5rem 2rem 2rem;
+    background: rgba(26, 26, 51, 0.95);
 } 
