@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Test Thread</title>
+</head>
+<body>
+    <h1>Create Test Thread</h1>
+    <div id="results"></div>
+    <button onclick="createTestThread()">Create Ideas Thread</button>
+    <button onclick="createEventsThread()">Create Events Thread</button>
+    <button onclick="checkAllThreads()">Check All Threads</button>
+    <button onclick="checkIdeasThreads()">Check Ideas Threads</button>
+
+    <script>
+        async function createTestThread() {
+            const results = document.getElementById('results');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/threads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                    },
+                    body: JSON.stringify({
+                        title: 'Test Ideas Thread - Manual Creation',
+                        content: '<p>This is a manually created test thread in the Ideas category.</p>',
+                        category: 'Ideas',
+                        tags: ['test', 'manual']
+                    })
+                });
+                
+                const data = await response.json();
+                results.innerHTML += `<p><strong>Create Ideas Thread:</strong> ${JSON.stringify(data, null, 2)}</p>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error creating thread:</strong> ${error.message}</p>`;
+            }
+        }
+
+        async function createEventsThread() {
+            const results = document.getElementById('results');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/threads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                    },
+                    body: JSON.stringify({
+                        title: 'Test Events Thread - Manual Creation',
+                        content: '<p>This is a manually created test thread in the Events category.</p>',
+                        category: 'Events',
+                        tags: ['test', 'manual']
+                    })
+                });
+                
+                const data = await response.json();
+                results.innerHTML += `<p><strong>Create Events Thread:</strong> ${JSON.stringify(data, null, 2)}</p>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error creating thread:</strong> ${error.message}</p>`;
+            }
+        }
+
+        async function checkAllThreads() {
+            const results = document.getElementById('results');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/threads');
+                const data = await response.json();
+                results.innerHTML += `<p><strong>All Threads:</strong> Found ${data.threads.length} threads</p>`;
+                data.threads.forEach(thread => {
+                    results.innerHTML += `<p>- "${thread.title}" (Category: ${thread.category})</p>`;
+                });
+                
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error checking threads:</strong> ${error.message}</p>`;
+            }
+        }
+
+        async function checkIdeasThreads() {
+            const results = document.getElementById('results');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/threads?category=Ideas');
+                const data = await response.json();
+                results.innerHTML += `<p><strong>Ideas Threads:</strong> Found ${data.threads.length} threads</p>`;
+                data.threads.forEach(thread => {
+                    results.innerHTML += `<p>- "${thread.title}" (Category: ${thread.category})</p>`;
+                });
+                
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error checking Ideas threads:</strong> ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html> 

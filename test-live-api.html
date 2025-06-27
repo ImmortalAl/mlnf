@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live API Test</title>
+    <script src="front/components/shared/config.js"></script>
+    <script src="front/components/shared/apiClient.js"></script>
+</head>
+<body>
+    <h1>Live API Test with apiClient</h1>
+    <div id="results"></div>
+    <button onclick="testAllThreads()">Test All Threads</button>
+    <button onclick="testIdeasCategory()">Test Ideas Category</button>
+    <button onclick="testEventsCategory()">Test Events Category</button>
+    <button onclick="testAnonymousWhispers()">Test Anonymous Whispers</button>
+
+    <script>
+        async function testAllThreads() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<p><strong>Testing All Threads...</strong></p>';
+            
+            try {
+                const data = await window.apiClient.get('/threads');
+                results.innerHTML += `<p><strong>All Threads:</strong> Found ${data.threads.length} threads</p>`;
+                data.threads.forEach(thread => {
+                    results.innerHTML += `<p>- "${thread.title}" (Category: ${thread.category})</p>`;
+                });
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error:</strong> ${JSON.stringify(error, null, 2)}</p>`;
+            }
+        }
+
+        async function testIdeasCategory() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<p><strong>Testing Ideas Category...</strong></p>';
+            
+            try {
+                const data = await window.apiClient.get('/threads?category=Ideas');
+                results.innerHTML += `<p><strong>Ideas Threads:</strong> Found ${data.threads.length} threads</p>`;
+                data.threads.forEach(thread => {
+                    results.innerHTML += `<p>- "${thread.title}" (Category: ${thread.category})</p>`;
+                });
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error:</strong> ${JSON.stringify(error, null, 2)}</p>`;
+            }
+        }
+
+        async function testEventsCategory() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<p><strong>Testing Events Category...</strong></p>';
+            
+            try {
+                const data = await window.apiClient.get('/threads?category=Events');
+                results.innerHTML += `<p><strong>Events Threads:</strong> Found ${data.threads.length} threads</p>`;
+                data.threads.forEach(thread => {
+                    results.innerHTML += `<p>- "${thread.title}" (Category: ${thread.category})</p>`;
+                });
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error:</strong> ${JSON.stringify(error, null, 2)}</p>`;
+            }
+        }
+
+        async function testAnonymousWhispers() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<p><strong>Testing Anonymous Whispers Category...</strong></p>';
+            
+            try {
+                const data = await window.apiClient.get('/threads?category=Anonymous Whispers');
+                results.innerHTML += `<p><strong>Anonymous Whispers Threads:</strong> Found ${data.threads.length} threads</p>`;
+                data.threads.forEach(thread => {
+                    results.innerHTML += `<p>- "${thread.title}" (Category: ${thread.category})</p>`;
+                });
+            } catch (error) {
+                results.innerHTML += `<p><strong>Error:</strong> ${JSON.stringify(error, null, 2)}</p>`;
+            }
+        }
+
+        // Test on page load
+        window.addEventListener('load', () => {
+            console.log('API Base URL:', window.MLNF_CONFIG.API_BASE_URL);
+            testAllThreads();
+        });
+    </script>
+</body>
+</html> 
