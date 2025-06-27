@@ -1127,4 +1127,11 @@ body.light-theme .user-dropdown .divider {
     margin: 0 auto; /* horizontally center */
     max-height: calc(100vh - (var(--header-height, 72px) + 2rem));
     overflow-y: auto;
+}
+
+/* Offset the fixed-position inner modal so it clears the sticky header */
+#soulManagementModal .soul-modal {
+    top: var(--header-height, 72px); /* move modal content below header */
+    height: calc(100% - var(--header-height, 72px));
+    max-width: 600px; /* allow wider content on desktop */
 } 
