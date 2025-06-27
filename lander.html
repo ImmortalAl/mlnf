@@ -1339,34 +1339,58 @@
                     
                     <!-- Privacy Settings Tab -->
                     <div id="privacyTab" class="soul-tab-content" role="tabpanel" aria-labelledby="privacy-tab">
-                        <form class="privacy-settings-grid" autocomplete="off" onsubmit="event.preventDefault(); document.getElementById('savePrivacySettings').click();">
+                        <div class="privacy-settings-grid">
                             <div class="privacy-setting">
                                 <label for="privacyVisibilitySetting"><i class="fas fa-eye"></i> Profile Visibility</label>
-                                <select id="privacyVisibilitySetting" class="setting-select">
-                                    <option value="public">Public</option>
-                                    <option value="connections">Connections Only</option>
-                                    <option value="private">Private</option>
+                                <select id="privacyVisibilitySetting">
+                                    <option value="public">🌍 Public</option>
+                                    <option value="connections">👥 Connections Only</option>
+                                    <option value="private">🔒 Private</option>
                                 </select>
                             </div>
                             <div class="privacy-setting">
                                 <label for="privacyMessagingSetting"><i class="fas fa-envelope"></i> Soul Messaging</label>
-                                <select id="privacyMessagingSetting" class="setting-select">
-                                    <option value="enabled">Enabled</option>
-                                    <option value="connections">Connections Only</option>
-                                    <option value="disabled">Disabled</option>
+                                <select id="privacyMessagingSetting">
+                                    <option value="enabled">💬 Everyone</option>
+                                    <option value="connections">👤 Connections Only</option>
+                                    <option value="disabled">🚫 Disabled</option>
                                 </select>
                             </div>
                             <div class="privacy-setting">
                                 <label for="privacyDirectorySetting"><i class="fas fa-search"></i> Directory Listing</label>
-                                <select id="privacyDirectorySetting" class="setting-select">
-                                    <option value="listed">Listed</option>
-                                    <option value="unlisted">Unlisted</option>
+                                <select id="privacyDirectorySetting">
+                                    <option value="listed">📋 Listed</option>
+                                    <option value="unlisted">👻 Unlisted</option>
+                                </select>
+                            </div>
+                            <div class="privacy-setting">
+                                <label for="privacyActivitySetting"><i class="fas fa-history"></i> Activity Tracking</label>
+                                <select id="privacyActivitySetting">
+                                    <option value="full">📊 Full Tracking</option>
+                                    <option value="limited">📈 Limited</option>
+                                    <option value="minimal">📉 Minimal</option>
+                                </select>
+                            </div>
+                            <div class="privacy-setting">
+                                <label for="privacyNotificationsSetting"><i class="fas fa-bell"></i> Notifications</label>
+                                <select id="privacyNotificationsSetting">
+                                    <option value="all">🔔 All Notifications</option>
+                                    <option value="important">⭐ Important Only</option>
+                                    <option value="none">🔕 None</option>
+                                </select>
+                            </div>
+                            <div class="privacy-setting">
+                                <label for="privacyDataSetting"><i class="fas fa-database"></i> Data Sharing</label>
+                                <select id="privacyDataSetting">
+                                    <option value="analytics">📈 Analytics Only</option>
+                                    <option value="essential">🔧 Essential Only</option>
+                                    <option value="none">🚫 No Sharing</option>
                                 </select>
                             </div>
                             <div class="privacy-actions">
-                                <button id="savePrivacySettings" class="btn btn-primary" type="submit">Save</button>
+                                <button id="savePrivacySettings" class="btn btn-primary" onclick="handlePrivacyUpdate()">💾 Save Privacy Settings</button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2198,17 +2222,35 @@
         async function handlePrivacyUpdate() {
             const token = localStorage.getItem('sessionToken');
             if (!token) {
-                alert('Please log in to update privacy settings');
+                alert('🔐 Please log in to update privacy settings');
                 return;
             }
             
+            // Get all privacy settings including new ones
+            const visibilityEl = document.getElementById('privacyVisibilitySetting');
+            const messagingEl = document.getElementById('privacyMessagingSetting');
+            const directoryEl = document.getElementById('privacyDirectorySetting');
+            const activityEl = document.getElementById('privacyActivitySetting');
+            const notificationsEl = document.getElementById('privacyNotificationsSetting');
+            const dataEl = document.getElementById('privacyDataSetting');
+            
             const privacyData = {
                 privacy: {
-                    profileVisibility: document.getElementById('privacyVisibilitySetting').value,
-                    allowMessages: document.getElementById('privacyMessagingSetting').value === 'enabled',
-                    showInDirectory: document.getElementById('privacyDirectorySetting').value === 'listed'
+                    profileVisibility: visibilityEl?.value || 'public',
+                    allowMessages: messagingEl?.value === 'enabled' || messagingEl?.value === 'connections',
+                    messageRestriction: messagingEl?.value || 'enabled',
+                    showInDirectory: directoryEl?.value === 'listed',
+                    activityTracking: activityEl?.value || 'full',
+                    notifications: notificationsEl?.value || 'all',
+                    dataSharing: dataEl?.value || 'analytics'
                 }
             };
+            
+            // Show loading feedback
+            const saveBtn = document.getElementById('savePrivacySettings');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = '💾 Saving...';
+            saveBtn.disabled = true;
             
             try {
                 const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
@@ -2222,14 +2264,76 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Failed to update privacy settings');
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Failed to update privacy settings');
                 }
                 
-                alert('Privacy settings updated successfully!');
+                // Success feedback
+                saveBtn.textContent = '✅ Saved!';
+                saveBtn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.background = '';
+                    saveBtn.disabled = false;
+                }, 2000);
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #28a745, #20c997);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+                    z-index: 15000;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s ease;
+                `;
+                successMsg.innerHTML = '🎉 Privacy settings updated successfully!';
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
                 
             } catch (error) {
                 console.error('Error updating privacy settings:', error);
-                alert('Failed to update privacy settings: ' + error.message);
+                
+                // Error feedback
+                saveBtn.textContent = '❌ Error';
+                saveBtn.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
+                
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.background = '';
+                    saveBtn.disabled = false;
+                }, 2000);
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #dc3545, #c82333);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+                    z-index: 15000;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s ease;
+                `;
+                errorMsg.innerHTML = `⚠️ Failed to update settings: ${error.message}`;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    errorMsg.remove();
+                }, 4000);
             }
         }
         
