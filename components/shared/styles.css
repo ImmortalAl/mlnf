@@ -1149,11 +1149,13 @@ body.light-theme .user-dropdown .divider {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 20000;
+    z-index: 99999;
     opacity: 0;
     visibility: hidden;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     padding-top: 100px;
+    isolation: isolate;
+    inset: 0;
 }
 
 #soulManagementModal.active {
@@ -1178,7 +1180,8 @@ body.light-theme .user-dropdown .divider {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: grid;
     grid-template-rows: auto 1fr;
-    z-index: 20001;
+    z-index: 99999;
+    isolation: isolate;
 }
 
 #soulManagementModal.active .modal-content {
@@ -1192,7 +1195,8 @@ body.light-theme .user-dropdown .divider {
     border-bottom: 1px solid var(--border-light, #2d1b4e);
     position: relative;
     overflow: hidden;
-    z-index: 20001;
+    z-index: 99999;
+    isolation: isolate;
 }
 
 .modal-header::before {
@@ -1234,7 +1238,9 @@ body.light-theme .user-dropdown .divider {
     justify-content: center;
     font-size: var(--text-lg, 1.125rem);
     transition: all 0.1s ease;
-    z-index: 20002;
+    z-index: 100000;
+    isolation: isolate;
+    transform: translateZ(0);
 }
 
 .close-modal:hover {
