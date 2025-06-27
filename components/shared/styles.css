@@ -1111,4 +1111,20 @@ body.light-theme .user-dropdown .divider {
         padding: 0.8rem;
         font-size: 0.9rem;
     }
+}
+
+/* ===============================
+   Soul Management Modal Layout
+   =============================== */
+#soulManagementModal {
+    /* Position content starting just below the sticky header */
+    align-items: flex-start; /* top-align instead of center */
+    padding-top: var(--header-height, 72px); /* fallback height */
+}
+
+#soulManagementModal .modal-content {
+    /* Make better use of vertical space on larger viewports */
+    margin: 0 auto; /* horizontally center */
+    max-height: calc(100vh - (var(--header-height, 72px) + 2rem));
+    overflow-y: auto;
 } 
