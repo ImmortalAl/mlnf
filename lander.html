@@ -1978,6 +1978,11 @@
             
             // Use proper CSS architecture - let stylesheets handle display
             modal.classList.add('active');
+            // Also activate the inner soul-modal content so it becomes visible
+            const modalContent = modal.querySelector('.soul-modal');
+            if (modalContent) {
+                modalContent.classList.add('active');
+            }
             modal.setAttribute('aria-hidden', 'false');
             
             // Check state after changes
@@ -2039,6 +2044,11 @@
             const modal = document.getElementById('soulManagementModal');
             if (modal) {
                 modal.classList.remove('active');
+                // Hide the inner soul-modal content
+                const modalContent = modal.querySelector('.soul-modal');
+                if (modalContent) {
+                    modalContent.classList.remove('active');
+                }
                 modal.setAttribute('aria-hidden', 'true');
                 
                 // Restore body scroll
