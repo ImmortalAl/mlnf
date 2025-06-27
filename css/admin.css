@@ -635,6 +635,8 @@
 .content-list {
     max-height: 400px;
     overflow-y: auto;
+    padding: 2px;
+    margin: -2px;
 }
 
 .content-item {
@@ -654,6 +656,8 @@
     background: var(--background-secondary);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    position: relative;
 }
 
 .content-item.selected {
@@ -661,6 +665,8 @@
     background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 202, 40, 0.05));
     box-shadow: 0 0 0 2px rgba(255, 94, 120, 0.4), 0 6px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
+    z-index: 15;
+    position: relative;
 }
 
 .content-item.selected::before {
