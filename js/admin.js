@@ -62,7 +62,6 @@
                 
                 // If it's an external link (like "/" for home), allow default behavior
                 if (href === '/' || href.startsWith('http') || href.startsWith('../')) {
-                    console.log('[Admin] Allowing navigation to:', href);
                     return; // Don't prevent default, let browser handle navigation
                 }
                 
@@ -136,7 +135,6 @@
             
             if (usersResponse.ok) {
                 const responseData = await usersResponse.json();
-                console.log('[Admin] Response from /users in loadStats:', responseData); // Log the data
                 
                 // Ensure usersArray is an array
                 let usersArray = [];
@@ -204,7 +202,6 @@
             }
             
             const responseData = await response.json();
-            console.log('[Admin] Response from /users in loadUsers:', responseData); // Log the data
 
             // Ensure allUsers is an array
             if (Array.isArray(responseData)) {
@@ -506,7 +503,6 @@
 
         // Message Modal Listeners - Only set up if messageModal.js component is not available
         if (!window.MLNF || !window.MLNF.initMessageModal) {
-            console.log('[Admin] Setting up fallback message modal listeners');
             const messageModal = document.getElementById('messageModal');
             const sendMessageBtn = document.getElementById('sendMessageBtn');
             const closeMessageModalBtn = document.getElementById('closeMessageModal');
@@ -561,7 +557,6 @@
                 console.warn('Message modal elements not found. Full interactivity might be limited.');
             }
         } else {
-            console.log('[Admin] Using messageModal.js component for message modal functionality');
         }
     }
     
@@ -623,7 +618,6 @@
                 btn.addEventListener('click', function() {
                     const username = btn.getAttribute('data-username');
                     const userId = btn.getAttribute('data-uid'); // Assuming you have user ID available
-                    console.log('[Admin Panel DEBUG] Reply clicked. Username:', username, 'UserID:', userId);
                     
                     // Store recipient info for sending message
                     const recipientNameElement = document.getElementById('recipientName');

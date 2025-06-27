@@ -304,7 +304,6 @@ class EternalSoulsHighlight {
     }
 
     async init() {
-        console.log('[EternalSouls] Initializing highlight system...');
         await this.populateFounderCard();
         await this.populateFeaturedSoul();
     }
@@ -362,7 +361,6 @@ class EternalSoulsHighlight {
             founderDisplay.innerHTML = '';
             founderDisplay.appendChild(founderUserDisplay);
 
-            console.log('[EternalSouls] Founder card populated successfully');
 
         } catch (error) {
             console.error('[EternalSouls] Error populating founder card:', error);
@@ -458,7 +456,6 @@ class EternalSoulsHighlight {
                 featuredActions.style.display = 'flex';
             }
 
-            console.log('[EternalSouls] Featured soul populated:', featuredSoul.username);
 
         } catch (error) {
             console.error('[EternalSouls] Error populating featured soul:', error);
@@ -474,7 +471,6 @@ class EternalSoulsHighlight {
 
 // Anonymous Messaging for Soul Highlights
 function openFounderMessage() {
-    console.log('[EternalSouls] Opening founder message modal');
     openAnonymousMessage('ImmortalAl', 'Community Founder');
 }
 
@@ -485,7 +481,6 @@ function openFeaturedSoulMessage() {
     }
     
     const featured = window.eternalSoulsHighlight.featuredSoulData;
-    console.log('[EternalSouls] Opening featured soul message modal for:', featured.username);
     openAnonymousMessage(featured.username, 'Featured Soul');
 }
 
@@ -640,7 +635,6 @@ async function sendAnonymousMessage(recipientUsername, content, senderName = 'An
         alert(`Your anonymous message has been sent to ${recipientUsername}!`);
         closeAnonymousMessageModal();
 
-        console.log('[EternalSouls] Anonymous message sent successfully');
 
     } catch (error) {
         console.error('[EternalSouls] Error sending anonymous message:', error);

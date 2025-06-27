@@ -332,10 +332,8 @@ function setupSoulModalEvents() {
 
 // Initialize auth modal
 function initAuthModal() {
-  console.log('[authModal.js] initAuthModal called');
   injectSoulModal();
   setupSoulModalEvents();
-  console.log('[authModal.js] Auth modal initialized. openSoulModal function:', typeof openSoulModal);
 }
 
 // Export functions
@@ -344,8 +342,5 @@ window.MLNF.initAuthModal = initAuthModal;
 window.MLNF.openSoulModal = openSoulModal;
 window.MLNF.closeSoulModal = closeSoulModal;
 
-console.log('[authModal.js] Functions exported to window.MLNF:', {
-  initAuthModal: typeof window.MLNF.initAuthModal,
-  openSoulModal: typeof window.MLNF.openSoulModal,
   closeSoulModal: typeof window.MLNF.closeSoulModal
 }); 

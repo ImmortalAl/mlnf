@@ -2,7 +2,6 @@
 // Include this on news page if issues persist
 
 (function() {
-    console.log('[MLNF Hotfix] Applying news page fixes...');
     
     // 1. Force modal visibility CSS
     const style = document.createElement('style');
@@ -42,12 +41,10 @@
         }
     `;
     document.head.appendChild(style);
-    console.log('[MLNF Hotfix] Modal CSS override applied');
     
     // 2. Wait for avatar system and patch if needed
     const patchAvatarSystem = () => {
         if (window.MLNFAvatars) {
-            console.log('[MLNF Hotfix] Avatar system found, patching...');
             
             // Store original method
             const originalCreateUserDisplay = window.MLNFAvatars.createUserDisplay;
@@ -75,7 +72,6 @@
                 }
             };
             
-            console.log('[MLNF Hotfix] Avatar system patched');
         } else {
             // Retry in 100ms
             setTimeout(patchAvatarSystem, 100);
@@ -88,7 +84,6 @@
         if (modal) {
             modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
-            console.log(`[MLNF Hotfix] Opened modal: ${modalId}`);
         } else {
             console.error(`[MLNF Hotfix] Modal not found: ${modalId}`);
         }
@@ -99,7 +94,6 @@
         if (modal) {
             modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
-            console.log(`[MLNF Hotfix] Closed modal: ${modalId}`);
         }
     };
     
@@ -110,5 +104,4 @@
         patchAvatarSystem();
     }
     
-    console.log('[MLNF Hotfix] Complete - modals should work with aria-hidden, avatars have fallback');
 })(); 

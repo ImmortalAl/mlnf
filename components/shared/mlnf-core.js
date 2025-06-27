@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Listen for authentication state changes
 window.addEventListener('storage', (event) => {
   if (event.key === 'sessionToken' || event.key === 'user') {
-    console.log('Auth state changed in another window. Updating UI.');
     if (typeof window.MLNF.updateUserMenu === 'function') {
       window.MLNF.updateUserMenu();
     }

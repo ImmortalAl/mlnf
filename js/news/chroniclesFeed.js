@@ -11,10 +11,8 @@ class ChroniclesFeed {
     }
 
     static init() {
-        console.log('[ChroniclesFeed] Initializing ChroniclesFeed...');
         window.chroniclesFeed = new ChroniclesFeed();
         window.chroniclesFeed.initialize();
-        console.log('[ChroniclesFeed] ChroniclesFeed initialized and exposed to window.chroniclesFeed');
     }
 
     initialize() {
@@ -242,7 +240,6 @@ class ChroniclesFeed {
         authorContainers.forEach((container, index) => {
             if (this.chronicles[index] && this.chronicles[index].author) {
                 const author = this.chronicles[index].author;
-                console.log('[Chronicles] Populating avatar for author:', author);
                 
                 if (window.MLNFAvatars) {
                     const avatarElement = window.MLNFAvatars.createUserDisplay({
@@ -273,7 +270,6 @@ class ChroniclesFeed {
     }
 
     async openChronicleModal(chronicleId) {
-        console.log('[ChroniclesFeed] Opening chronicle modal for ID:', chronicleId);
         
         try {
             // Verify modal exists
@@ -285,16 +281,13 @@ class ChroniclesFeed {
             }
 
             // Get full chronicle details
-            console.log('[ChroniclesFeed] Fetching chronicle details...');
             const response = await window.apiClient.get(`/chronicles/${chronicleId}`);
             const chronicle = response;
-            console.log('[ChroniclesFeed] Chronicle details loaded:', chronicle.title);
 
             // Populate modal
             this.populateChronicleModal(chronicle);
             
             // Show modal
-            console.log('[ChroniclesFeed] Showing chronicle modal');
             modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
         } catch (error) {
@@ -378,7 +371,6 @@ class ChroniclesFeed {
         // Populate author avatar
         const authorContainer = document.querySelector('.chronicle-detail .chronicle-author-info');
         if (authorContainer && chronicle.author) {
-            console.log('[Chronicles Modal] Populating avatar for author:', chronicle.author);
             
             if (window.MLNFAvatars) {
                 const avatarElement = window.MLNFAvatars.createUserDisplay({

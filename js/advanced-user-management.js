@@ -11,7 +11,6 @@ class AdvancedUserManager {
     }
 
     init() {
-        console.log('[AdvancedUserManager] Initializing advanced user management...');
         this.setupEventListeners();
         this.loadCurrentUser();
     }
@@ -413,7 +412,6 @@ class AdvancedUserManager {
         if (window.MLNF && window.MLNF.showNotification) {
             window.MLNF.showNotification(message, type);
         } else {
-            console.log(`[${type.toUpperCase()}] ${message}`);
         }
     }
 

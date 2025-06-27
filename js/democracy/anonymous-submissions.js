@@ -8,7 +8,6 @@ class AnonymousSubmissions {
     }
 
     async init() {
-        console.log('[Anonymous] Initializing anonymous submissions system');
         this.generateFingerprint();
         await this.loadAnonymousSections();
         this.setupEventListeners();
@@ -32,7 +31,6 @@ class AnonymousSubmissions {
             
             if (data.success) {
                 this.anonymousSections = data.sections;
-                console.log('[Anonymous] Loaded anonymous sections:', this.anonymousSections);
             }
         } catch (error) {
             console.error('[Anonymous] Error loading sections:', error);
@@ -40,7 +38,6 @@ class AnonymousSubmissions {
     }
 
     setupEventListeners() {
-        console.log('[Anonymous] Setting up event listeners');
         
         // Listen for category changes in thread composer
         const categorySelect = document.querySelector('#threadForm select[name="category"]');
@@ -56,17 +53,14 @@ class AnonymousSubmissions {
         const anonymousContainer = document.getElementById('threadComposerAnonymous');
         
         if (!categorySelect || !anonymousContainer) {
-            console.log('[Anonymous] Missing elements for toggle visibility');
             return;
         }
 
         const selectedCategory = categorySelect.value;
-        console.log('[Anonymous] Checking category for anonymous option:', selectedCategory);
         
         // For the unified messageboard system, allow anonymous posting in specific categories
         const allowsAnonymous = ['Anonymous Whispers', 'Debates', 'Ideas'].includes(selectedCategory);
 
-        console.log('[Anonymous] Category allows anonymous:', allowsAnonymous);
 
         if (allowsAnonymous) {
             anonymousContainer.style.display = 'block';

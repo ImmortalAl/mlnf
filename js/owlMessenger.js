@@ -14,8 +14,6 @@ async function sendOwlMessage() {
   statusEl.textContent = 'Preparing the messenger...';
   startOwlAnimation();
   try {
-    console.log('[owlMessenger] Sending owl to:', email, 'with URL:', url);
-    console.log('[owlMessenger] API endpoint:', `${window.MLNF_CONFIG.API_BASE_URL}/send-owl`);
     
     const response = await fetch(`${window.MLNF_CONFIG.API_BASE_URL}/send-owl`, {
       method: 'POST',
@@ -23,8 +21,6 @@ async function sendOwlMessage() {
       body: JSON.stringify({ email, url })
     });
     
-    console.log('[owlMessenger] Response status:', response.status);
-    console.log('[owlMessenger] Response ok:', response.ok);
     
     if (response.status === 404) {
       throw new Error('FALLBACK_NEEDED');
@@ -39,7 +35,6 @@ async function sendOwlMessage() {
     }
     
     const result = await response.json();
-    console.log('[owlMessenger] Response data:', result);
     
     if (result.success) {
       statusEl.textContent = '🦉 The owl has taken flight!';
