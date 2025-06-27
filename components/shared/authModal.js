@@ -340,7 +340,4 @@ function initAuthModal() {
 window.MLNF = window.MLNF || {};
 window.MLNF.initAuthModal = initAuthModal;
 window.MLNF.openSoulModal = openSoulModal;
-window.MLNF.closeSoulModal = closeSoulModal;
-
-  closeSoulModal: typeof window.MLNF.closeSoulModal
-}); 
+window.MLNF.closeSoulModal = closeSoulModal; 

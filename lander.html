@@ -10,31 +10,55 @@
     <link rel="stylesheet" href="css/base-theme.css">
     
     <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
-    <link rel="stylesheet" href="css/critical.css?v=1.0">
+    <link rel="stylesheet" href="css/critical.css?v=2.3">
     
-    <!-- 3. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
-    <link rel="preload" href="css/layout.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/layout.css?v=2.0"></noscript>
+    <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
+    <link rel="stylesheet" href="css/styles.css?v=2.3">
     
-    <link rel="preload" href="css/components.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/components.css?v=2.0"></noscript>
+    <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
+    <link rel="preload" href="css/layout.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/layout.css?v=2.3"></noscript>
     
-    <link rel="preload" href="css/features.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/features.css?v=1.0"></noscript>
+    <link rel="preload" href="css/components.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/components.css?v=2.3"></noscript>
+    
+    <link rel="preload" href="css/features.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/features.css?v=2.3"></noscript>
     
     <!-- 4. SHARED COMPONENTS (lazy loaded) -->
     <link rel="preload" href="components/shared/styles.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="components/shared/styles.css?v=2.0"></noscript>
     
     <!-- 5. PAGE-SPECIFIC (lazy loaded) -->
-    <link rel="preload" href="css/active-users.css?v=1.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/active-users.css?v=1.2"></noscript>
+    <link rel="preload" href="css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/active-users.css?v=2.0"></noscript>
     
-    <link rel="preload" href="css/lander.css?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/lander.css?v=1.0"></noscript>
+    <link rel="preload" href="css/lander.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/lander.css?v=2.3"></noscript>
     
     <!-- Soul Management Modal Styles -->
     <style>
+        /* Critical Modal Visibility Fix */
+        .modal {
+            display: none !important;
+            position: fixed !important;
+            top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+            background: rgba(13, 13, 26, 0.8) !important;
+            z-index: 9999 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: opacity 0.3s ease !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        
+        .modal.active,
+        .modal[aria-hidden="false"] {
+            display: flex !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        
         #soulManagementModal.modal {
             background: rgba(13, 13, 26, 0.9);
             padding: 20px;
@@ -1426,13 +1450,13 @@
 
     <!-- Shared MLNF Scripts -->
     <!-- Config MUST be loaded first -->
-    <script src="components/shared/config.js?v=1.2"></script>
-    <script src="components/shared/mlnf-core.js?v=1.2"></script>
+    <script src="components/shared/config.js?v=1.3"></script>
+    <script src="components/shared/mlnf-core.js?v=1.3"></script>
     <script src="components/shared/navigation.js?v=1.3"></script>
-    <script src="components/shared/userMenu.js?v=1.2"></script>
-    <script src="components/shared/authModal.js?v=1.2"></script>
-    <script src="components/shared/messageModal.js?v=1.2"></script>
-    <script src="components/shared/activeUsers.js?v=1.2"></script>
+    <script src="components/shared/userMenu.js?v=1.3"></script>
+    <script src="components/shared/authModal.js?v=1.3"></script>
+    <script src="components/shared/messageModal.js?v=1.3"></script>
+    <script src="components/shared/activeUsers.js?v=1.3"></script>
     <!-- End Shared MLNF Scripts -->
 
     <!-- <script src="js/scripts.js?v=1.0"></script> --> <!-- Legacy script - functionality moved to components -->
