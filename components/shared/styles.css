@@ -442,7 +442,7 @@ header {
 
 .soul-modal .modal-content {
     background: var(--secondary, #1a1a33);
-    padding: 2rem;
+    padding: 1rem 1.5rem 1.5rem;
     border-radius: var(--border-radius, 12px);
     box-shadow: var(--shadow, 0 10px 20px rgba(0, 0, 0, 0.3));
     width: 90%;
@@ -459,8 +459,8 @@ header {
 
 .soul-modal .modal-content h2 {
     color: var(--accent, #ff5e78);
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
     text-align: center;
     font-weight: 600;
 }
@@ -1124,7 +1124,7 @@ body.light-theme .user-dropdown .divider {
 
 #soulManagementModal .modal-content {
     /* Make better use of vertical space on larger viewports */
-    margin: 0 auto; /* horizontally center */
+    margin: 1rem auto; /* Add vertical margin and horizontally center */
     max-height: calc(100vh - (var(--header-height, 72px) + 2rem));
     overflow-y: auto;
 }
@@ -1200,4 +1200,45 @@ body.light-theme .user-dropdown .divider {
     .privacy-actions {
         justify-content: center;
     }
+}
+
+/* SLEEKER TAB DESIGN */
+.soul-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--highlight, #2a4066);
+    margin-bottom: 1.2rem;
+}
+.soul-tab {
+    padding: 0.7rem 1.2rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--text_secondary, #ccc);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px; /* Overlap with parent border */
+}
+.soul-tab:hover {
+    color: var(--text, #f0e6ff);
+    background-color: rgba(255,255,255,0.03);
+}
+.soul-tab.active {
+    color: var(--accent, #ff5e78);
+    border-bottom-color: var(--accent, #ff5e78);
+    font-weight: 600;
+}
+
+/* FADE-IN TRANSITION FOR TAB CONTENT */
+.soul-tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+}
+.soul-tab-content.active {
+    display: block;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 } 

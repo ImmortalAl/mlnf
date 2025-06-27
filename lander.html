@@ -2060,7 +2060,12 @@
             // Update tab content
             const contents = document.querySelectorAll('.soul-tab-content');
             contents.forEach(content => {
-                content.classList.toggle('active', content.id === tabName + 'Tab');
+                // content.classList.toggle('active', content.id === tabName + 'Tab');
+                if (content.id === tabName + 'Tab') {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
             });
         }
         
