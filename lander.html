@@ -44,11 +44,11 @@
             position: fixed;
             inset: 0;
             background: rgba(13, 13, 26, 0.9);
-            z-index: 150000; /* Above all notifications and UI elements */
-            align-items: flex-start; /* Start from top instead of center */
+            z-index: 5000; /* Reasonable z-index now that DOM order is fixed */
+            align-items: flex-start;
             justify-content: center;
-            padding-top: 120px; /* More space below header */
-            overflow-y: auto; /* Allow scrolling if needed */
+            padding: 80px 20px 20px; /* Compact padding: top, sides, bottom */
+            overflow-y: auto;
         }
         
         .modal.active,
@@ -58,15 +58,15 @@
         
         .soul-modal {
             background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
-            border-radius: 12px;
-            max-width: 700px; /* More compact width */
-            width: 85%;
-            max-height: calc(100vh - 200px); /* More compact height */
+            border-radius: 8px;
+            max-width: 600px; /* Compact width */
+            width: 90%;
+            max-height: calc(100vh - 140px); /* Efficient height usage */
             overflow-y: auto;
             border: 1px solid var(--accent, #ff5e78);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             position: relative;
-            margin-bottom: 40px; /* Space at bottom */
+            margin: 0 auto; /* Center without extra bottom margin */
         }
         
         .close-modal {
@@ -90,6 +90,28 @@
         .close-modal:hover {
             color: var(--accent, #ff5e78);
             transform: scale(1.1);
+        }
+        
+        /* Compact modal content spacing */
+        .soul-modal .modal-header {
+            padding: 1.5rem 2rem 1rem;
+        }
+        
+        .soul-modal .modal-body {
+            padding: 0 2rem 1.5rem;
+        }
+        
+        .soul-tabs {
+            margin-bottom: 1.5rem;
+        }
+        
+        .soul-tab-content {
+            padding: 0;
+        }
+        
+        .profile-header-mini {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
         }
         
         .soul-tabs {
