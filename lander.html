@@ -59,14 +59,15 @@
         .soul-modal {
             background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
             border-radius: 8px;
-            max-width: 600px; /* Compact width */
+            max-width: 500px; /* Compact desktop width */
             width: 90%;
-            max-height: calc(100vh - 140px); /* Efficient height usage */
+            min-height: auto; /* Content-based height */
+            max-height: calc(100vh - 140px);
             overflow-y: auto;
             border: 1px solid var(--accent, #ff5e78);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             position: relative;
-            margin: 0 auto; /* Center without extra bottom margin */
+            margin: 0 auto;
         }
         
         .close-modal {
@@ -168,18 +169,31 @@
             }
         }
         
-        /* Large Desktop Optimization */
-        @media (min-width: 1200px) {
+        /* Desktop UX Optimization - Content-based sizing */
+        @media (min-width: 769px) {
+            .modal {
+                padding: 60px 20px 20px; /* Tighter desktop padding */
+            }
+            
             .soul-modal {
-                max-width: 650px; /* Slightly larger on big screens */
+                max-width: 480px; /* Compact desktop size */
+                width: auto; /* Content-based width */
+                min-width: 400px; /* Minimum usable width */
             }
             
             .soul-modal .modal-header {
-                padding: 2rem 2.5rem 1.25rem;
+                padding: 1.5rem 2rem 1rem; /* Efficient spacing */
             }
             
             .soul-modal .modal-body {
-                padding: 0 2.5rem 2rem;
+                padding: 0 2rem 1.5rem; /* Compact content area */
+            }
+        }
+        
+        /* Large Desktop - Slightly more breathing room */
+        @media (min-width: 1200px) {
+            .soul-modal {
+                max-width: 520px; /* Modest increase for large screens */
             }
         }
         
@@ -2062,14 +2076,7 @@
             }
             // Modal element validated
             
-            // Check initial state
-                classList: modal.className,
-                ariaHidden: modal.getAttribute('aria-hidden'),
-                display: getComputedStyle(modal).display,
-                opacity: getComputedStyle(modal).opacity,
-                visibility: getComputedStyle(modal).visibility,
-                zIndex: getComputedStyle(modal).zIndex
-            });
+            // Check initial state - functionality restored
             
             // Use proper CSS architecture - let stylesheets handle display
             modal.classList.add('active');
@@ -2081,36 +2088,12 @@
             modal.setAttribute('aria-hidden', 'false');
             
             // Check state after changes
-            setTimeout(() => {
-                    classList: modal.className,
-                    ariaHidden: modal.getAttribute('aria-hidden'),
-                    display: getComputedStyle(modal).display,
-                    opacity: getComputedStyle(modal).opacity,
-                    visibility: getComputedStyle(modal).visibility,
-                    zIndex: getComputedStyle(modal).zIndex
-                });
-                
-                // Check if any CSS rules are being applied
-                const allRules = [];
-                for (let sheet of document.styleSheets) {
-                    try {
-                        for (let rule of sheet.cssRules || sheet.rules) {
-                            if (rule.selectorText && rule.selectorText.includes('modal')) {
-                                allRules.push({
-                                    selector: rule.selectorText,
-                                    styles: rule.style.cssText
-                                });
-                            }
-                        }
-                    } catch(e) {
-                    }
-                }
-                
-                // Check if modal is actually visible
-                const rect = modal.getBoundingClientRect();
-                
-            }, 10);
-            
+            // Tab switching logic
+            activateTab(tab);
+        }
+        
+        function activateTab(tabName) {
+            // Simple tab activation without debug bloat
             // Prevent body scroll on mobile when modal is open
             document.body.style.overflow = 'hidden';
             
