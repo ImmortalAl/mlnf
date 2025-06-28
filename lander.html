@@ -93,26 +93,49 @@
             transform: scale(1.1);
         }
         
-        /* Compact modal content spacing */
+        /* Optimized modal content spacing */
         .soul-modal .modal-header {
-            padding: 1.5rem 2rem 1rem;
+            padding: 1.25rem 1.75rem 0.75rem;
         }
         
         .soul-modal .modal-body {
-            padding: 0 2rem 1.5rem;
+            padding: 0 1.75rem 1.25rem;
         }
         
         .soul-tabs {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
         }
         
         .soul-tab-content {
-            padding: 0;
+            padding: 0.75rem 0;
         }
         
         .profile-header-mini {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
+            margin-bottom: 1.25rem;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+        }
+        
+        .profile-stats-mini {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: space-between;
+            margin: 1rem 0;
+        }
+        
+        .stat-mini {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
         }
         
         /* Responsive Design - Mobile First */
@@ -169,32 +192,108 @@
             }
         }
         
-        /* Desktop UX Optimization - Content-based sizing */
+        /* Desktop UX Optimization - Natural content flow */
         @media (min-width: 769px) {
             .modal {
-                padding: 60px 20px 20px; /* Tighter desktop padding */
+                padding: 60px 20px 20px;
             }
             
             .soul-modal {
-                max-width: 480px; /* Compact desktop size */
+                max-width: 460px; /* Refined compact size */
                 width: auto; /* Content-based width */
-                min-width: 400px; /* Minimum usable width */
+                min-width: 420px; /* Optimal minimum */
             }
             
             .soul-modal .modal-header {
-                padding: 1.5rem 2rem 1rem; /* Efficient spacing */
+                padding: 1.5rem 2rem 1rem;
             }
             
             .soul-modal .modal-body {
-                padding: 0 2rem 1.5rem; /* Compact content area */
+                padding: 0 2rem 1.5rem;
+            }
+            
+            .profile-header-mini {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                padding: 1.25rem;
+                background: rgba(255, 255, 255, 0.03);
+            }
+            
+            .profile-info-mini {
+                flex: 1;
+            }
+            
+            .profile-stats-mini {
+                justify-content: space-around;
+                gap: 2rem;
+                margin: 1.25rem 0;
+            }
+            
+            .soul-tabs {
+                justify-content: center;
+                gap: 1.5rem;
+            }
+            
+            .soul-tab {
+                padding: 0.75rem 1.5rem;
+                min-width: auto;
+            }
+            
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.75rem 1rem;
+                border-radius: 6px;
+            }
+            
+            .privacy-settings-grid {
+                gap: 1.25rem;
+            }
+            
+            .privacy-setting {
+                margin-bottom: 1.25rem;
             }
         }
         
-        /* Large Desktop - Slightly more breathing room */
+        /* Large Desktop - Refined proportions */
         @media (min-width: 1200px) {
             .soul-modal {
-                max-width: 520px; /* Modest increase for large screens */
+                max-width: 480px; /* Keep compact even on large screens */
             }
+            
+            .soul-modal .modal-header {
+                padding: 1.75rem 2.25rem 1.25rem;
+            }
+            
+            .soul-modal .modal-body {
+                padding: 0 2.25rem 1.75rem;
+            }
+        }
+        
+        /* Content flow improvements */
+        .profile-bio-mini {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent, #ff5e78);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .privacy-actions {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
         
         /* Touch Optimization */
