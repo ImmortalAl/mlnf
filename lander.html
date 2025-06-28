@@ -59,11 +59,12 @@
         .soul-modal {
             background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
             border-radius: 8px;
-            max-width: 500px; /* Compact desktop width */
+            max-width: 600px; /* Widened to prevent horizontal overflow */
             width: 90%;
             min-height: auto; /* Content-based height */
             max-height: calc(100vh - 140px);
             overflow-y: auto;
+            overflow-x: hidden; /* Prevent horizontal scroll */
             border: 1px solid var(--accent, #ff5e78);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             position: relative;
@@ -132,10 +133,30 @@
         
         .form-group {
             margin-bottom: 1rem;
+            width: 100%;
+            box-sizing: border-box;
         }
         
         .form-group:last-child {
             margin-bottom: 0;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+        
+        .privacy-settings-grid {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .privacy-setting {
+            width: 100%;
+            box-sizing: border-box;
         }
         
         /* Responsive Design - Mobile First */
@@ -199,9 +220,9 @@
             }
             
             .soul-modal {
-                max-width: 460px; /* Refined compact size */
+                max-width: 580px; /* Wider to accommodate content */
                 width: auto; /* Content-based width */
-                min-width: 420px; /* Optimal minimum */
+                min-width: 520px; /* Wider minimum for content flow */
             }
             
             .soul-modal .modal-header {
@@ -256,10 +277,10 @@
             }
         }
         
-        /* Large Desktop - Refined proportions */
+        /* Large Desktop - Proper content accommodation */
         @media (min-width: 1200px) {
             .soul-modal {
-                max-width: 480px; /* Keep compact even on large screens */
+                max-width: 620px; /* Sufficient width for content without overflow */
             }
             
             .soul-modal .modal-header {
