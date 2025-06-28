@@ -11,7 +11,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); REMOVED - Creates stacking context that traps modal z-index */
 }
 
 .logo {
