@@ -44,10 +44,11 @@
             position: fixed;
             inset: 0;
             background: rgba(13, 13, 26, 0.9);
-            z-index: 5000; /* Simple z-index - no more stacking context traps */
-            align-items: center;
+            z-index: 3000; /* Above nav z-index 2501 */
+            align-items: flex-start; /* Start from top instead of center */
             justify-content: center;
-            padding-top: 80px; /* Account for header */
+            padding-top: 120px; /* More space below header */
+            overflow-y: auto; /* Allow scrolling if needed */
         }
         
         .modal.active,
@@ -58,13 +59,14 @@
         .soul-modal {
             background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
             border-radius: 12px;
-            max-width: 850px;
-            width: 90%;
-            max-height: calc(100vh - 140px);
+            max-width: 700px; /* More compact width */
+            width: 85%;
+            max-height: calc(100vh - 200px); /* More compact height */
             overflow-y: auto;
             border: 1px solid var(--accent, #ff5e78);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             position: relative;
+            margin-bottom: 40px; /* Space at bottom */
         }
         
         .close-modal {
