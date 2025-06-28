@@ -1483,148 +1483,7 @@
             </div>
         </section>
 
-        <!-- DUPLICATE MODAL REMOVED - Now positioned before header -->
-            <div class="modal-content soul-modal">
-                <button class="close-modal" id="closeSoulModal" aria-label="Close modal">×</button>
-                
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h2 id="modalTitle">My Eternal Soul</h2>
-                </div>
-                
-                <!-- Modal Body -->
-                <div class="modal-body">
-                    <!-- Tab Navigation -->
-                    <div class="soul-tabs" role="tablist" aria-label="Soul management options">
-                        <button class="soul-tab active" data-tab="profile" role="tab" aria-selected="true" aria-controls="profileTab">Profile</button>
-                        <button class="soul-tab" data-tab="edit" role="tab" aria-selected="false" aria-controls="editTab">Edit</button>
-                        <button class="soul-tab" data-tab="privacy" role="tab" aria-selected="false" aria-controls="privacyTab">Privacy</button>
-                    </div>
-                    
-                    <!-- Profile Overview Tab -->
-                    <div id="profileTab" class="soul-tab-content active" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="profile-overview">
-                            <div class="profile-header-mini">
-                                <img id="modalProfileAvatar" src="/assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar-mini">
-                                <div class="profile-info-mini">
-                                    <h3 id="modalProfileName">Loading...</h3>
-                                    <p id="modalProfileUsername">@loading</p>
-                                    <p id="modalProfileStatus" class="profile-status-mini">Setting eternal status...</p>
-                                </div>
-                            </div>
-                            <div class="profile-stats-mini">
-                                <div class="stat-mini">
-                                    <span class="stat-value" id="modalPostsCount">0</span>
-                                    <span class="stat-label">Scrolls</span>
-                                </div>
-                                <div class="stat-mini">
-                                    <span class="stat-value" id="modalCommentsCount">0</span>
-                                    <span class="stat-label">Echoes</span>
-                                </div>
-                                <div class="stat-mini">
-                                    <span class="stat-value" id="modalConnectionsCount">0</span>
-                                    <span class="stat-label">Connections</span>
-                                </div>
-                            </div>
-                            <div class="profile-bio-mini">
-                                <h4>Soul Biography</h4>
-                                <p id="modalProfileBio">Loading biographical essence...</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Edit Profile Tab -->
-                    <div id="editTab" class="soul-tab-content" role="tabpanel" aria-labelledby="edit-tab">
-                        <form id="profileEditForm" class="profile-edit-form">
-                            <div class="form-group">
-                                <label for="editDisplayName">Display Name</label>
-                                <input type="text" id="editDisplayName" placeholder="Your eternal name">
-                            </div>
-                            <div class="form-group">
-                                <label for="editStatus">Status</label>
-                                <input type="text" id="editStatus" placeholder="Your eternal status" maxlength="100">
-                            </div>
-                            <div class="form-group">
-                                <label for="editBio">Biography</label>
-                                <textarea id="editBio" placeholder="Share your eternal essence..." rows="4"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="editAvatar">Avatar URL</label>
-                                <input type="url" id="editAvatar" placeholder="https://...">
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <button type="button" class="btn btn-secondary" onclick="resetProfileForm()">Reset</button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Privacy Settings Tab -->
-                    <div id="privacyTab" class="soul-tab-content" role="tabpanel" aria-labelledby="privacy-tab">
-                        <div class="privacy-settings-grid">
-                            <div class="privacy-setting">
-                                <label for="privacyVisibilitySetting"><i class="fas fa-eye"></i> Profile Visibility</label>
-                                <select id="privacyVisibilitySetting">
-                                    <option value="public">🌍 Public</option>
-                                    <option value="connections">👥 Connections Only</option>
-                                    <option value="private">🔒 Private</option>
-                                </select>
-                            </div>
-                            <div class="privacy-setting">
-                                <label for="privacyMessagingSetting"><i class="fas fa-envelope"></i> Soul Messaging</label>
-                                <select id="privacyMessagingSetting">
-                                    <option value="enabled">💬 Everyone</option>
-                                    <option value="connections">👤 Connections Only</option>
-                                    <option value="disabled">🚫 Disabled</option>
-                                </select>
-                            </div>
-                            <div class="privacy-setting">
-                                <label for="privacyDirectorySetting"><i class="fas fa-search"></i> Directory Listing</label>
-                                <select id="privacyDirectorySetting">
-                                    <option value="listed">📋 Listed</option>
-                                    <option value="unlisted">👻 Unlisted</option>
-                                </select>
-                            </div>
-                            <div class="privacy-setting">
-                                <label for="privacyActivitySetting"><i class="fas fa-history"></i> Activity Tracking</label>
-                                <select id="privacyActivitySetting">
-                                    <option value="full">📊 Full Tracking</option>
-                                    <option value="limited">📈 Limited</option>
-                                    <option value="minimal">📉 Minimal</option>
-                                </select>
-                            </div>
-                            <div class="privacy-setting">
-                                <label for="privacyNotificationsSetting"><i class="fas fa-bell"></i> Notifications</label>
-                                <select id="privacyNotificationsSetting">
-                                    <option value="all">🔔 All Notifications</option>
-                                    <option value="important">⭐ Important Only</option>
-                                    <option value="none">🔕 None</option>
-                                </select>
-                            </div>
-                            <div class="privacy-setting">
-                                <label for="privacyDataSetting"><i class="fas fa-database"></i> Data Sharing</label>
-                                <select id="privacyDataSetting">
-                                    <option value="analytics">📈 Analytics Only</option>
-                                    <option value="essential">🔧 Essential Only</option>
-                                    <option value="none">🚫 No Sharing</option>
-                                </select>
-                            </div>
-                            <div class="privacy-actions">
-                                <button id="savePrivacySettings" class="btn btn-primary" onclick="handlePrivacyUpdate()">💾 Save Privacy Settings</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Sheet for Secondary Tools -->
-        <div class="bottom-sheet" id="bottomSheet">
-            <div class="bottom-sheet-header">
-                <div class="bottom-sheet-handle"></div>
-                <h3>More Tools</h3>
-            </div>
-            <div class="bottom-sheet-content">
+        <!-- ZOMBIE MODAL SURGICALLY REMOVED - COMPLETE -->
                 <div class="secondary-tools-grid">
                     <button class="secondary-tool-btn">
                         <i class="fas fa-chart-line"></i>
@@ -2194,17 +2053,16 @@
         }
         
         function openSoulModal(tab = 'profile') {
-            console.log('🔥 MODAL DEBUG: openSoulModal called with tab:', tab);
+            // Modal opening
             
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
-                console.error('❌ MODAL DEBUG: soulManagementModal element not found!');
+                console.error('Modal element not found');
                 return;
             }
-            console.log('✅ MODAL DEBUG: Modal element found:', modal);
+            // Modal element validated
             
             // Check initial state
-            console.log('📊 MODAL DEBUG: Initial state:', {
                 classList: modal.className,
                 ariaHidden: modal.getAttribute('aria-hidden'),
                 display: getComputedStyle(modal).display,
@@ -2224,7 +2082,6 @@
             
             // Check state after changes
             setTimeout(() => {
-                console.log('🔄 MODAL DEBUG: After CSS changes:', {
                     classList: modal.className,
                     ariaHidden: modal.getAttribute('aria-hidden'),
                     display: getComputedStyle(modal).display,
@@ -2246,14 +2103,11 @@
                             }
                         }
                     } catch(e) {
-                        console.log('🔍 MODAL DEBUG: Could not access stylesheet:', sheet.href);
                     }
                 }
-                console.log('📋 MODAL DEBUG: Modal CSS rules found:', allRules);
                 
                 // Check if modal is actually visible
                 const rect = modal.getBoundingClientRect();
-                console.log('📐 MODAL DEBUG: Modal dimensions:', rect);
                 
             }, 10);
             
@@ -2274,7 +2128,6 @@
                 }
             }, 100);
             
-            console.log('🎯 MODAL DEBUG: openSoulModal complete');
         }
         
         function closeSoulManagementModal() {
