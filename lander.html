@@ -1430,14 +1430,11 @@
                             </div>
                             <div class="info-card">
                                 <div class="info-header">
-                                    <i class="fas fa-heart"></i>
-                                    <span>Soul Energy</span>
+                                    <i class="fas fa-clock"></i>
+                                    <span>Last Active</span>
                                 </div>
-                                <div class="info-content">
-                                    <div class="energy-bar">
-                                        <div class="energy-fill" style="width: 85%"></div>
-                                    </div>
-                                    <span class="energy-text">Radiant</span>
+                                <div class="info-content" id="lastActive">
+                                    Online now
                                 </div>
                             </div>
                         </div>
@@ -2471,6 +2468,30 @@
                 const joinDate = userData.createdAt ? new Date(userData.createdAt) : new Date();
                 const options = { year: 'numeric', month: 'long' };
                 memberSince.textContent = joinDate.toLocaleDateString('en-US', options);
+            }
+            
+            // Set last active status
+            const lastActive = document.getElementById('lastActive');
+            if (lastActive) {
+                if (userData.lastActiveAt) {
+                    const lastActiveDate = new Date(userData.lastActiveAt);
+                    const now = new Date();
+                    const diffMinutes = Math.floor((now - lastActiveDate) / (1000 * 60));
+                    
+                    if (diffMinutes < 5) {
+                        lastActive.textContent = 'Online now';
+                    } else if (diffMinutes < 60) {
+                        lastActive.textContent = `${diffMinutes} minutes ago`;
+                    } else if (diffMinutes < 1440) {
+                        const hours = Math.floor(diffMinutes / 60);
+                        lastActive.textContent = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+                    } else {
+                        const days = Math.floor(diffMinutes / 1440);
+                        lastActive.textContent = `${days} day${days > 1 ? 's' : ''} ago`;
+                    }
+                } else {
+                    lastActive.textContent = 'Recently active';
+                }
             }
             
             // Edit profile tab
