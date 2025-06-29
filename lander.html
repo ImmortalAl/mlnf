@@ -1355,32 +1355,91 @@
                 
                 <!-- Profile Overview Tab -->
                 <div id="profileTab" class="soul-tab-content active" role="tabpanel" aria-labelledby="profile-tab">
-                    <div class="profile-overview">
-                        <div class="profile-header-mini">
-                            <img id="modalProfileAvatar" src="/assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar-mini">
-                            <div class="profile-info-mini">
-                                <h3 id="modalProfileName">Loading...</h3>
-                                <p id="modalProfileUsername">@loading</p>
-                                <p id="modalProfileStatus" class="profile-status-mini">Setting eternal status...</p>
+                    <div class="profile-overview-enhanced">
+                        <!-- Profile Hero Section -->
+                        <div class="profile-hero">
+                            <div class="profile-background"></div>
+                            <div class="profile-main-info">
+                                <div class="profile-avatar-container">
+                                    <img id="modalProfileAvatar" src="/assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar-enhanced">
+                                    <div class="avatar-status-indicator"></div>
+                                </div>
+                                <div class="profile-identity">
+                                    <h2 id="modalProfileName" class="profile-name-enhanced">Loading...</h2>
+                                    <p id="modalProfileUsername" class="profile-username-enhanced">@loading</p>
+                                    <div class="profile-status-container">
+                                        <i class="fas fa-quote-left status-icon"></i>
+                                        <span id="modalProfileStatus" class="profile-status-enhanced">Setting eternal status...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="profile-stats-mini">
-                            <div class="stat-mini">
-                                <span class="stat-value" id="modalPostsCount">0</span>
-                                <span class="stat-label">Scrolls</span>
+
+                        <!-- Stats Grid -->
+                        <div class="profile-stats-enhanced">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-scroll"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <span class="stat-value-enhanced" id="modalPostsCount">0</span>
+                                    <span class="stat-label-enhanced">Scrolls</span>
+                                </div>
                             </div>
-                            <div class="stat-mini">
-                                <span class="stat-value" id="modalCommentsCount">0</span>
-                                <span class="stat-label">Echoes</span>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <span class="stat-value-enhanced" id="modalCommentsCount">0</span>
+                                    <span class="stat-label-enhanced">Echoes</span>
+                                </div>
                             </div>
-                            <div class="stat-mini">
-                                <span class="stat-value" id="modalConnectionsCount">0</span>
-                                <span class="stat-label">Connections</span>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <span class="stat-value-enhanced" id="modalConnectionsCount">0</span>
+                                    <span class="stat-label-enhanced">Connections</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="profile-bio-mini">
-                            <h4>Soul Biography</h4>
-                            <p id="modalProfileBio">Loading biographical essence...</p>
+
+                        <!-- Bio Section -->
+                        <div class="profile-bio-enhanced">
+                            <div class="bio-header">
+                                <i class="fas fa-user-circle bio-icon"></i>
+                                <h3>Soul Biography</h3>
+                            </div>
+                            <div class="bio-content">
+                                <p id="modalProfileBio">Loading biographical essence...</p>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info Cards -->
+                        <div class="profile-extras">
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Journey Started</span>
+                                </div>
+                                <div class="info-content" id="memberSince">
+                                    Loading...
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Soul Energy</span>
+                                </div>
+                                <div class="info-content">
+                                    <div class="energy-bar">
+                                        <div class="energy-fill" style="width: 85%"></div>
+                                    </div>
+                                    <span class="energy-text">Radiant</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2389,6 +2448,30 @@
             if (postsCount) postsCount.textContent = userData.postsCount || 0;
             if (commentsCount) commentsCount.textContent = userData.commentsCount || 0;
             if (connectionsCount) connectionsCount.textContent = userData.connectionsCount || 0;
+            
+            // Enhanced profile fields
+            const enhancedPostsCount = document.getElementById('modalPostsCount');
+            const enhancedCommentsCount = document.getElementById('modalCommentsCount');
+            const enhancedConnectionsCount = document.getElementById('modalConnectionsCount');
+            const memberSince = document.getElementById('memberSince');
+            
+            // Update enhanced stat counts (they use the same IDs so this is for safety)
+            if (enhancedPostsCount && enhancedPostsCount !== postsCount) {
+                enhancedPostsCount.textContent = userData.postsCount || 0;
+            }
+            if (enhancedCommentsCount && enhancedCommentsCount !== commentsCount) {
+                enhancedCommentsCount.textContent = userData.commentsCount || 0;
+            }
+            if (enhancedConnectionsCount && enhancedConnectionsCount !== connectionsCount) {
+                enhancedConnectionsCount.textContent = userData.connectionsCount || 0;
+            }
+            
+            // Set member since date
+            if (memberSince) {
+                const joinDate = userData.createdAt ? new Date(userData.createdAt) : new Date();
+                const options = { year: 'numeric', month: 'long' };
+                memberSince.textContent = joinDate.toLocaleDateString('en-US', options);
+            }
             
             // Edit profile tab
             const editDisplayName = document.getElementById('editDisplayName');
