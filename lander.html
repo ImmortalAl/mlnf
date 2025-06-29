@@ -2187,16 +2187,14 @@
         }
         
         function openSoulModal(tab = 'profile') {
-            // Modal opening
+            console.log('🚀 Opening soul modal with tab:', tab);
             
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
-                console.error('Modal element not found');
+                console.error('❌ Modal element not found');
                 return;
             }
-            // Modal element validated
-            
-            // Check initial state - functionality restored
+            console.log('✅ Modal element found');
             
             // Use proper CSS architecture - let stylesheets handle display
             modal.classList.add('active');
@@ -2204,11 +2202,12 @@
             const modalContent = modal.querySelector('.soul-modal');
             if (modalContent) {
                 modalContent.classList.add('active');
+                console.log('✅ Modal content activated');
             }
             modal.setAttribute('aria-hidden', 'false');
             
-            // Check state after changes
             // Tab switching logic
+            console.log('🔄 Activating tab:', tab);
             activateTab(tab);
         }
         
@@ -2218,12 +2217,13 @@
             document.body.style.overflow = 'hidden';
             
             // Switch to the requested tab
-            switchSoulTab(tab);
+            switchSoulTab(tabName);
             
             // Load user profile data
             loadUserProfile();
             
             // Focus management for accessibility
+            const modal = document.getElementById('soulManagementModal');
             setTimeout(() => {
                 const firstInput = modal.querySelector('input, textarea, select, button');
                 if (firstInput) {
@@ -2288,14 +2288,28 @@
         }
         
         async function loadUserProfile() {
+            console.log('🔄 Loading user profile...');
             const token = localStorage.getItem('sessionToken');
             if (!token) {
-                alert('Please log in to view your profile');
+                console.log('❌ No session token found');
+                // Don't show alert if no token - just populate with defaults
+                populateProfileModal({
+                    displayName: 'Eternal Seeker',
+                    username: 'guest',
+                    status: 'Living eternally free',
+                    bio: 'Welcome to your eternal journey...',
+                    avatar: '/assets/images/default.jpg',
+                    postsCount: 0,
+                    commentsCount: 0,
+                    connectionsCount: 0
+                });
                 return;
             }
             
             try {
                 const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+                console.log('🌐 Fetching from:', `${apiBaseUrl}/users/me`);
+                
                 const response = await fetch(`${apiBaseUrl}/users/me`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -2304,19 +2318,32 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Failed to load profile');
+                    throw new Error(`API returned ${response.status}: ${response.statusText}`);
                 }
                 
                 const userData = await response.json();
+                console.log('✅ Profile data loaded:', userData);
                 populateProfileModal(userData);
                 
             } catch (error) {
-                console.error('Error loading profile:', error);
-                alert('Failed to load profile data');
+                console.error('❌ Error loading profile:', error);
+                // Populate with fallback data instead of showing alert
+                populateProfileModal({
+                    displayName: 'Eternal Seeker',
+                    username: 'loading_error',
+                    status: 'Connection temporarily unavailable',
+                    bio: 'Please try refreshing to load your profile...',
+                    avatar: '/assets/images/default.jpg',
+                    postsCount: 0,
+                    commentsCount: 0,
+                    connectionsCount: 0
+                });
             }
         }
         
         function populateProfileModal(userData) {
+            console.log('📝 Populating modal with data:', userData);
+            
             // Profile overview tab
             const avatar = document.getElementById('modalProfileAvatar');
             const name = document.getElementById('modalProfileName');
@@ -2327,11 +2354,38 @@
             const commentsCount = document.getElementById('modalCommentsCount');
             const connectionsCount = document.getElementById('modalConnectionsCount');
             
-            if (avatar) avatar.src = userData.avatar || '/assets/images/default.jpg';
-            if (name) name.textContent = userData.displayName || userData.username;
-            if (username) username.textContent = `@${userData.username}`;
-            if (status) status.textContent = userData.status || 'Living eternally free';
-            if (bio) bio.textContent = userData.bio || 'No biography written yet';
+            // Debug: Check if elements exist
+            console.log('🔍 Modal elements found:', {
+                avatar: !!avatar,
+                name: !!name,
+                username: !!username,
+                status: !!status,
+                bio: !!bio,
+                postsCount: !!postsCount,
+                commentsCount: !!commentsCount,
+                connectionsCount: !!connectionsCount
+            });
+            
+            if (avatar) {
+                avatar.src = userData.avatar || '/assets/images/default.jpg';
+                console.log('🖼️ Avatar set to:', avatar.src);
+            }
+            if (name) {
+                name.textContent = userData.displayName || userData.username || 'Unknown User';
+                console.log('👤 Name set to:', name.textContent);
+            }
+            if (username) {
+                username.textContent = `@${userData.username || 'unknown'}`;
+                console.log('🏷️ Username set to:', username.textContent);
+            }
+            if (status) {
+                status.textContent = userData.status || 'Living eternally free';
+                console.log('📱 Status set to:', status.textContent);
+            }
+            if (bio) {
+                bio.textContent = userData.bio || 'No biography written yet';
+                console.log('📖 Bio set to:', bio.textContent);
+            }
             if (postsCount) postsCount.textContent = userData.postsCount || 0;
             if (commentsCount) commentsCount.textContent = userData.commentsCount || 0;
             if (connectionsCount) connectionsCount.textContent = userData.connectionsCount || 0;
