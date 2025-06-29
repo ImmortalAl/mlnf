@@ -1137,23 +1137,23 @@ body.light-theme .user-dropdown .divider {
 /* 🌟 SOUL MANAGEMENT MODAL - DIVINE REDESIGN */
 /* ========================================= */
 
-/* Modal Foundation - Following CSS Guide Architecture */
+/* Modal Foundation - Professional Desktop Optimized */
 #soulManagementModal {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 99999;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    padding-top: 100px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 2rem;
     isolation: isolate;
     inset: 0;
 }
@@ -1163,23 +1163,23 @@ body.light-theme .user-dropdown .divider {
     visibility: visible;
 }
 
-/* Modal Content Container - Modern Design System */
+/* Modal Content Container - Professional Desktop Design */
 .soul-modal .modal-content {
-    background: var(--background-tertiary, #16213e);
+    background: linear-gradient(135deg, var(--background-tertiary, #16213e), rgba(26, 26, 46, 0.95));
     border: 1px solid var(--border, #4a3569);
     border-radius: var(--radius-2xl, 1rem);
     box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.8),
-        0 0 0 1px rgba(255, 255, 255, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    width: 90%;
-    max-width: 850px;
-    max-height: calc(100vh - 140px);
+        0 30px 60px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    width: 95%;
+    max-width: 1000px;
+    max-height: calc(100vh - 4rem);
     overflow: hidden;
-    transform: scale(0.9) translateY(20px);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    display: grid;
-    grid-template-rows: auto 1fr;
+    transform: scale(0.95) translateY(10px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
     z-index: 99999;
     isolation: isolate;
 }
@@ -1248,14 +1248,36 @@ body.light-theme .user-dropdown .divider {
     transform: scale(1.1);
 }
 
-/* Modal Body Container */
+/* Modal Body Container - Flexible Scroll Design */
 .modal-body {
     padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
     background: var(--background, #0d0d1a);
     overflow-y: auto;
-    display: grid;
-    grid-template-rows: auto 1fr;
+    overflow-x: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-4, 1rem);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent, #ff5e78) transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--accent, #ff5e78);
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover, #ff7a8e);
 }
 
 /* Tab Navigation - Modern Tab Design */
@@ -1299,10 +1321,13 @@ body.light-theme .user-dropdown .divider {
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Tab Content Container */
+/* Tab Content Container - Professional Animation */
 .soul-tab-content {
     display: none;
-    animation: fadeIn 0.15s ease;
+    animation: fadeInSlide 0.2s ease-out;
+    min-height: 400px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .soul-tab-content.active {
@@ -1314,14 +1339,40 @@ body.light-theme .user-dropdown .divider {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Profile Overview Section */
+@keyframes fadeInSlide {
+    from { 
+        opacity: 0; 
+        transform: translateX(-10px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateX(0);
+    }
+}
+
+/* Profile Overview Section - Professional Desktop Layout */
 .profile-overview {
     display: grid;
     gap: var(--space-4, 1rem);
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas: 
-        "header stats";
+        "header"
+        "stats"
+        "bio";
+    max-width: 100%;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .profile-overview {
+        grid-template-columns: 300px 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas: 
+            "header stats"
+            "bio bio";
+        gap: var(--space-6, 1.5rem);
+    }
 }
 
 .profile-header-mini {
@@ -1462,12 +1513,94 @@ body.light-theme .user-dropdown .divider {
     margin-top: var(--space-6);
 }
 
-/* Privacy Settings - Compact Grid Design */
+.privacy-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6, 1.5rem);
+    padding-top: var(--space-4, 1rem);
+    border-top: 1px solid var(--border-light, #2d1b4e);
+}
+
+/* Privacy Settings - Professional Grid Design */
+.privacy-settings-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4, 1rem);
+    max-width: 100%;
+    margin-top: var(--space-2, 0.5rem);
+}
+
+@media (min-width: 768px) {
+    .privacy-settings-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--space-5, 1.25rem);
+    }
+}
+
 .privacy-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--space-3, 0.75rem);
     margin-top: var(--space-4);
+}
+
+.privacy-setting {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3, 0.75rem);
+    padding: var(--space-4, 1rem);
+    background: var(--background-secondary, #1a1a2e);
+    border: 1px solid var(--border-light, #2d1b4e);
+    border-radius: var(--radius-lg, 0.5rem);
+    transition: all 0.2s ease;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.privacy-setting:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-color: var(--accent, #ff5e78);
+}
+
+.privacy-setting label {
+    color: var(--text, #f0e6ff);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+}
+
+.privacy-setting label i {
+    color: var(--accent, #ff5e78);
+    width: 16px;
+    text-align: center;
+}
+
+.privacy-setting select {
+    background: var(--background-tertiary, #16213e);
+    border: 1px solid var(--border, #4a3569);
+    color: var(--text, #f0e6ff);
+    padding: var(--space-3, 0.75rem);
+    border-radius: var(--radius-lg, 0.5rem);
+    font-size: var(--text-base, 1rem);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    width: 100%;
+}
+
+.privacy-setting select:focus {
+    outline: none;
+    border-color: var(--accent, #ff5e78);
+    box-shadow: 0 0 0 3px rgba(255, 94, 120, 0.2);
+}
+
+.privacy-setting select option {
+    background: var(--background-tertiary, #16213e);
+    color: var(--text, #f0e6ff);
 }
 
 .privacy-item {
@@ -1622,13 +1755,13 @@ body.light-theme .user-dropdown .divider {
 /* Responsive Design - Mobile First */
 @media (max-width: 768px) {
     #soulManagementModal {
-        padding: var(--space-2, 0.5rem);
-        padding-top: 90px;
+        padding: 1rem;
     }
     
     .soul-modal .modal-content {
-        width: 95%;
-        max-height: calc(100vh - 110px);
+        width: 100%;
+        max-width: none;
+        max-height: calc(100vh - 2rem);
     }
     
     .modal-header {
@@ -1643,7 +1776,13 @@ body.light-theme .user-dropdown .divider {
         grid-template-columns: 1fr;
         grid-template-areas: 
             "header"
-            "stats";
+            "stats"
+            "bio";
+        gap: var(--space-3, 0.75rem);
+    }
+    
+    .privacy-settings-grid {
+        grid-template-columns: 1fr;
         gap: var(--space-3, 0.75rem);
     }
     
@@ -1653,12 +1792,22 @@ body.light-theme .user-dropdown .divider {
     }
     
     .soul-tabs {
-        flex-direction: column;
+        flex-wrap: wrap;
         gap: var(--space-1);
+    }
+    
+    .soul-tab {
+        min-width: 80px;
+        text-align: center;
     }
     
     .form-actions {
         flex-direction: column;
+        gap: var(--space-2);
+    }
+    
+    .privacy-actions {
+        margin-top: var(--space-4);
     }
 }
 
