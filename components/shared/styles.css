@@ -743,7 +743,7 @@ header {
 
 /* Ensure message modal has highest z-index */
 #messageModal {
-    z-index: 10000; /* Higher than generic modal z-index to ensure it's always on top */
+    z-index: 100001; /* Higher than sidebar z-index to ensure it's always on top */
 }
 
 #messageModal .message-modal-content {
