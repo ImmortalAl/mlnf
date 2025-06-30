@@ -298,15 +298,15 @@
   animation: none;
 }
 
-.modal.keyboard-detected .message-history {
-  max-height: 60px;
-  min-height: 60px;
-  overflow: hidden;
+#messageModal.keyboard-detected .message-history {
+  max-height: 60px !important;
+  min-height: 60px !important;
+  overflow: hidden !important;
 }
 
 /* Hide all messages except the latest one on mobile keyboard */
-.modal.keyboard-detected .message-history .message:not(:last-child) {
-  display: none;
+#messageModal.keyboard-detected .message-history .message:not(:last-child) {
+  display: none !important;
 }
 
 /* iOS-specific keyboard handling */
@@ -426,14 +426,14 @@
     margin-bottom: var(--space-md);
   }
   
-  .modal.keyboard-detected .message-history {
-    max-height: 60px;
-    min-height: 60px;
-    overflow: hidden;
+  #messageModal.keyboard-detected .message-history {
+    max-height: 60px !important;
+    min-height: 60px !important;
+    overflow: hidden !important;
   }
   
-  .modal.keyboard-detected .message-history .message:not(:last-child) {
-    display: none;
+  #messageModal.keyboard-detected .message-history .message:not(:last-child) {
+    display: none !important;
   }
   
   .modal h3,
