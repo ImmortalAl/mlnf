@@ -1,0 +1,361 @@
+/* MLNF Modal Components - Consolidated Modal Styles */
+/* All modal types: message, auth, feedback, anonymous */
+
+/* === BASE MODAL STRUCTURE === */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  opacity: 0;
+  transition: opacity var(--duration-normal) ease;
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+}
+
+.modal.active,
+.modal[style*="display: flex"] {
+  display: flex !important;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* === MODAL CONTENT CONTAINERS === */
+.modal-content,
+.message-modal-content,
+.feedback-modal,
+.anonymous-message-modal {
+  background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 2px solid rgba(var(--accent-rgb), 0.3);
+  box-shadow: var(--shadow-xl), var(--shadow-glow);
+  position: relative;
+  transform: scale(0.9);
+  transition: transform var(--duration-normal) var(--ease-bounce);
+}
+
+.modal.active .modal-content,
+.modal.active .message-modal-content,
+.modal.active .feedback-modal,
+.modal.active .anonymous-message-modal {
+  transform: scale(1);
+}
+
+/* === MODAL HEADERS === */
+.modal h3,
+.modal h2 {
+  color: var(--accent);
+  font-family: var(--font-mystical);
+  font-size: var(--font-2xl);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.modal h3 i,
+.modal h2 i {
+  font-size: var(--font-xl);
+  color: var(--accent);
+}
+
+/* === CLOSE BUTTONS === */
+.close-modal,
+.modal .close-sidebar {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: var(--font-sm);
+}
+
+.close-modal:hover,
+.modal .close-sidebar:hover {
+  background: var(--accent);
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+/* === FORM ELEMENTS IN MODALS === */
+.modal .form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.modal label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+  font-size: var(--font-sm);
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  border-radius: var(--radius-md);
+  background: rgba(26, 26, 51, 0.8);
+  color: var(--text);
+  font-family: var(--font-primary);
+  font-size: var(--font-base);
+  transition: var(--transition);
+  resize: vertical;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
+}
+
+.modal textarea {
+  min-height: 120px;
+  max-height: 300px;
+}
+
+.modal small {
+  display: block;
+  margin-top: var(--space-xs);
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+}
+
+/* === MODAL ACTIONS === */
+.modal-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  margin-top: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.modal-actions .btn {
+  min-width: 120px;
+}
+
+/* === MESSAGE MODAL SPECIFIC === */
+#messageModal {
+  z-index: 100001; /* Higher than sidebar to ensure visibility */
+}
+
+.message-history {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  background: rgba(13, 13, 26, 0.5);
+}
+
+.message {
+  margin-bottom: var(--space-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.message.sent {
+  background: rgba(var(--accent-rgb), 0.1);
+  margin-left: var(--space-lg);
+  align-self: flex-end;
+}
+
+.message.received {
+  background: rgba(255, 255, 255, 0.05);
+  margin-right: var(--space-lg);
+}
+
+.message.error {
+  background: rgba(220, 38, 127, 0.2);
+  border-left: 3px solid #dc267f;
+}
+
+.message-text {
+  color: var(--text);
+  font-size: var(--font-sm);
+  line-height: 1.4;
+}
+
+.message-time {
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+  align-self: flex-end;
+}
+
+/* === FEEDBACK MODAL SPECIFIC === */
+.recipient-info {
+  background: rgba(var(--accent-rgb), 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.recipient-info p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+}
+
+.recipient-info strong {
+  color: var(--accent);
+  font-weight: var(--font-semibold);
+}
+
+/* === STATUS MESSAGES === */
+.modal-loading,
+.modal-error,
+.modal-info {
+  text-align: center;
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+}
+
+.modal-loading {
+  background: rgba(var(--accent-blue), 0.1);
+  color: var(--accent-blue);
+}
+
+.modal-error {
+  background: rgba(220, 38, 127, 0.1);
+  color: #dc267f;
+}
+
+.modal-info {
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--text-secondary);
+}
+
+.feedback-success {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.feedback-error {
+  background: rgba(220, 38, 127, 0.1);
+  color: #dc267f;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .modal-content,
+  .message-modal-content,
+  .feedback-modal,
+  .anonymous-message-modal {
+    width: 95%;
+    padding: var(--space-lg);
+    max-height: 95vh;
+  }
+  
+  .modal h3,
+  .modal h2 {
+    font-size: var(--font-xl);
+    margin-bottom: var(--space-md);
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .modal-actions .btn {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .message-history {
+    max-height: 200px;
+  }
+  
+  .message.sent {
+    margin-left: var(--space-sm);
+  }
+  
+  .message.received {
+    margin-right: var(--space-sm);
+  }
+}
+
+/* === ACCESSIBILITY === */
+@media (prefers-reduced-motion: reduce) {
+  .modal-content,
+  .message-modal-content,
+  .feedback-modal,
+  .anonymous-message-modal {
+    transition: none;
+    transform: none;
+  }
+  
+  .modal {
+    transition: none;
+  }
+}
+
+/* Focus management for accessibility */
+.modal[aria-hidden="false"] {
+  visibility: visible;
+}
+
+.modal[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .modal-content,
+  .message-modal-content,
+  .feedback-modal,
+  .anonymous-message-modal {
+    border: 3px solid var(--accent);
+  }
+  
+  .modal input,
+  .modal textarea {
+    border: 2px solid var(--accent);
+  }
+}
