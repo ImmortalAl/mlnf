@@ -948,7 +948,7 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     }
     
     #messageModal .message-history {
-        max-height: 200px;
+        max-height: 120px;
         padding: 0.8rem;
         margin-bottom: 1rem;
     }
@@ -993,7 +993,7 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     }
     
     #messageModal .message-history {
-        max-height: 150px;
+        max-height: 100px;
         padding: 0.6rem;
     }
     
