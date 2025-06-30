@@ -1260,7 +1260,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     margin-top: auto;
     flex-wrap: wrap;
     width: 100%;
-    padding: 0 0.5rem;
+    padding: 0;
     flex-shrink: 0;
 }
 
@@ -1273,7 +1273,10 @@ body .floating-buttons button.theme-toggle#themeToggle {
     font-size: 0.9rem;
     font-weight: 600;
     min-width: 120px;
+    width: 100%;
+    max-width: 200px;
     text-align: center;
+    margin: 0;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
@@ -1781,15 +1784,18 @@ body .floating-buttons button.theme-toggle#themeToggle {
         gap: 0.6rem;
         margin-top: 1rem;
         padding: 0;
+        align-items: stretch;
     }
     
     .soul-message-btn, .soul-profile-btn {
         width: 100%;
+        max-width: none;
         justify-content: center;
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
         border-radius: 20px;
         min-width: auto;
+        margin: 0;
     }
     
     .agora-subtitle {
