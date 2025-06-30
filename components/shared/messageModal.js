@@ -142,6 +142,7 @@ async function openMessageModal(username) {
     
     messageModal.classList.add('active');
     messageModal.setAttribute('aria-hidden', 'false');
+    messageModal.style.zIndex = '999999'; // Force highest z-index to override any CSS conflicts
         document.body.style.overflow = 'hidden';
 
     if (messageInputElement) {
