@@ -1060,31 +1060,32 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
         border-left: 3px solid var(--accent, #ff5e78);
     }
     
-    /* Enhanced close button for mobile */
+    /* Enhanced close button for mobile - ALWAYS VISIBLE */
     #messageModal .close-modal {
-        position: absolute;
-        top: 0.8rem;
-        right: 0.8rem;
-        width: 44px;
-        height: 44px;
-        background: rgba(0, 0, 0, 0.3);
-        border: 2px solid rgba(255, 94, 120, 0.4);
-        border-radius: 50%;
-        color: var(--text, #ffffff);
-        font-size: 1.2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.2s ease;
+        position: fixed !important;
+        top: 1rem !important;
+        right: 1rem !important;
+        width: 48px !important;
+        height: 48px !important;
+        background: rgba(255, 94, 120, 0.9) !important;
+        border: 2px solid rgba(255, 255, 255, 0.8) !important;
+        border-radius: 50% !important;
+        color: white !important;
+        font-size: 1.4rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        z-index: 999999 !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
     }
     
     #messageModal .close-modal:hover,
     #messageModal .close-modal:active {
-        background: var(--accent, #ff5e78);
-        border-color: var(--accent, #ff5e78);
-        transform: scale(1.05);
+        background: rgba(255, 94, 120, 1) !important;
+        border-color: white !important;
+        transform: scale(1.1) !important;
     }
     
     /* Hide decorative spinning background on very small screens for performance */
@@ -1164,13 +1165,17 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
 
 @media (max-width: 480px) {
   #messageModal.keyboard-detected .message-modal-content {
-    max-height: 100vh;
-    max-height: 100dvh;
-    height: 100%;
-    min-height: auto;
-    padding: var(--space-sm, 0.5rem);
-    width: 100%;
-    margin: 0;
+    max-height: 60vh !important;
+    max-height: 60dvh !important;
+    height: auto !important;
+    min-height: 300px !important;
+    padding: 1rem 1rem 0.5rem 1rem !important;
+    width: 100% !important;
+    margin: 0 !important;
+    position: fixed !important;
+    top: 5vh !important;
+    left: 0 !important;
+    overflow: hidden !important;
   }
   
   #messageModal.keyboard-detected .message-history {
@@ -1194,8 +1199,21 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
   }
   
   #messageModal.keyboard-detected .modal-actions {
-    padding-top: var(--space-sm, 0.5rem);
-    margin-top: 0;
+    padding: 1rem 0 0.5rem 0 !important;
+    margin-top: auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: linear-gradient(180deg, transparent, rgba(26, 26, 51, 0.95)) !important;
+    border-top: 2px solid rgba(255, 94, 120, 0.3) !important;
+    gap: 0.8rem !important;
+    flex-direction: row !important;
+  }
+  
+  #messageModal.keyboard-detected .modal-actions button {
+    flex: 1 !important;
+    min-height: 48px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
   }
 }
 
