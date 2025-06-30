@@ -469,9 +469,19 @@ class EternalSoulsHighlight {
     }
 }
 
-// Anonymous Messaging for Soul Highlights
+// Authenticated Messaging for Soul Highlights  
 function openFounderMessage() {
-    openAnonymousMessage('ImmortalAl', 'Community Founder');
+    // Check if user is authenticated
+    if (window.MLNF?.authManager?.isAuthenticated?.() || localStorage.getItem('sessionToken')) {
+        if (window.MLNF?.openMessageModal) {
+            window.MLNF.openMessageModal('ImmortalAl');
+        } else {
+            console.warn('[EternalSouls] Message modal not available');
+        }
+    } else {
+        // Show authentication required message
+        showAuthenticationRequired('message the MLNF Founder');
+    }
 }
 
 function openFeaturedSoulMessage() {
@@ -481,9 +491,104 @@ function openFeaturedSoulMessage() {
     }
     
     const featured = window.eternalSoulsHighlight.featuredSoulData;
-    openAnonymousMessage(featured.username, 'Featured Soul');
+    
+    // Check if user is authenticated
+    if (window.MLNF?.authManager?.isAuthenticated?.() || localStorage.getItem('sessionToken')) {
+        if (window.MLNF?.openMessageModal) {
+            window.MLNF.openMessageModal(featured.username);
+        } else {
+            console.warn('[EternalSouls] Message modal not available');
+        }
+    } else {
+        // Show authentication required message  
+        showAuthenticationRequired(`message ${featured.username}`);
+    }
 }
 
+// Show authentication required notification
+function showAuthenticationRequired(action) {
+    const notification = document.createElement('div');
+    notification.className = 'auth-required-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-lock"></i>
+            <h4>Authentication Required</h4>
+            <p>You must be logged in to ${action}. Authentic soul-to-soul connections require verified identity.</p>
+            <div class="notification-actions">
+                <button class="btn btn-primary" onclick="this.parentElement.parentElement.parentElement.remove(); window.MLNF?.authManager?.openAuthModal?.()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="btn btn-outline" onclick="this.parentElement.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Add styles if not already present
+    if (!document.getElementById('auth-notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'auth-notification-styles';
+        styles.textContent = `
+            .auth-required-notification {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 999999;
+                backdrop-filter: blur(5px);
+            }
+            .auth-required-notification .notification-content {
+                background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(13, 13, 26, 0.85));
+                border: 2px solid rgba(255, 94, 120, 0.3);
+                border-radius: 12px;
+                padding: 2rem;
+                max-width: 400px;
+                text-align: center;
+                color: var(--text);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+            .auth-required-notification h4 {
+                color: var(--accent);
+                margin: 1rem 0;
+                font-size: 1.3rem;
+            }
+            .auth-required-notification p {
+                margin: 1rem 0 1.5rem 0;
+                line-height: 1.5;
+                color: var(--text-secondary);
+            }
+            .auth-required-notification .notification-actions {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+            }
+            .auth-required-notification .fas {
+                font-size: 2rem;
+                color: var(--accent);
+                margin-bottom: 1rem;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 10000);
+}
+
+// DEPRECATED: Anonymous messaging for Eternal Souls Highlights removed
+// These functions are kept only for the feedback modal system
 function openAnonymousMessage(recipientUsername, recipientTitle) {
     // Check if we have the feedback modal system to extend
     if (!window.feedbackSystem) {
