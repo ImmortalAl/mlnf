@@ -1252,31 +1252,35 @@ body .floating-buttons button.theme-toggle#themeToggle {
     animation: spin 1s linear infinite;
 }
 
-.soul-card-actions {
-    display: flex;
+.soul-highlight-card .soul-card-actions {
+    display: flex !important;
     gap: 0.75rem;
-    justify-content: center;
+    justify-content: center !important;
     align-items: center;
     margin-top: auto;
     flex-wrap: wrap;
     width: 100%;
-    padding: 0;
+    padding: 0 !important;
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
-.soul-message-btn, .soul-profile-btn {
-    background: var(--gradient-accent);
-    color: white;
-    border: none;
-    padding: 0.8rem 1.2rem;
-    border-radius: 25px;
-    font-size: 0.9rem;
-    font-weight: 600;
+.soul-highlight-card .soul-message-btn, 
+.soul-highlight-card .soul-profile-btn {
+    background: var(--gradient-accent) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.8rem 1.2rem !important;
+    border-radius: 25px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
     min-width: 120px;
-    width: 100%;
-    max-width: 200px;
-    text-align: center;
-    margin: 0;
+    width: auto !important;
+    max-width: 180px;
+    text-align: center !important;
+    margin: 0 !important;
+    display: block !important;
+    box-sizing: border-box;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
@@ -1779,23 +1783,26 @@ body .floating-buttons button.theme-toggle#themeToggle {
         margin: 0 0.5rem 4rem 0.5rem;
     }
     
-    .soul-card-actions {
-        flex-direction: column;
-        gap: 0.6rem;
-        margin-top: 1rem;
-        padding: 0;
-        align-items: stretch;
+    .soul-highlight-card .soul-card-actions {
+        flex-direction: column !important;
+        gap: 0.6rem !important;
+        margin-top: 1rem !important;
+        padding: 0 1rem !important;
+        align-items: stretch !important;
+        justify-content: center !important;
     }
     
-    .soul-message-btn, .soul-profile-btn {
-        width: 100%;
-        max-width: none;
-        justify-content: center;
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-        border-radius: 20px;
-        min-width: auto;
-        margin: 0;
+    .soul-highlight-card .soul-message-btn, 
+    .soul-highlight-card .soul-profile-btn {
+        width: 100% !important;
+        max-width: none !important;
+        justify-content: center !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9rem !important;
+        border-radius: 20px !important;
+        min-width: auto !important;
+        margin: 0 !important;
+        display: block !important;
     }
     
     .agora-subtitle {
