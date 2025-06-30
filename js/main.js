@@ -565,6 +565,9 @@ function createAnonymousMessageModal(recipientUsername, recipientTitle) {
     modal.style.zIndex = '999999'; // Force highest z-index to override sidebar
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    
+    // Setup mobile keyboard detection for professional UX
+    setupMobileKeyboardDetectionFrontPage(modal);
 
     // Focus on textarea
     setTimeout(() => {
@@ -608,6 +611,12 @@ function closeAnonymousMessageModal() {
         modal.style.display = 'none';
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.removeProperty('overflow');
+        
+        // Cleanup mobile keyboard detection
+        if (modal.keyboardCleanup) {
+            modal.keyboardCleanup();
+        }
+        
         modal.remove();
     }
 }
@@ -655,6 +664,92 @@ async function sendAnonymousMessage(recipientUsername, content, senderName = 'An
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
         }
     }
+}
+
+// Mobile keyboard detection for front page anonymous modals
+function setupMobileKeyboardDetectionFrontPage(modal) {
+    if (!modal) return;
+    
+    // Only apply on mobile devices
+    if (window.innerWidth > 768) return;
+    
+    let initialViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    let keyboardDetectionTimeout = null;
+    
+    function handleViewportChange() {
+        if (keyboardDetectionTimeout) {
+            clearTimeout(keyboardDetectionTimeout);
+        }
+        
+        keyboardDetectionTimeout = setTimeout(() => {
+            const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            const heightDifference = initialViewportHeight - currentHeight;
+            
+            // Keyboard is considered open if viewport height decreased by more than 150px
+            const keyboardOpen = heightDifference > 150;
+            
+            if (keyboardOpen) {
+                modal.classList.add('keyboard-detected');
+                console.log('[AnonymousModal] Mobile keyboard detected, optimizing layout');
+            } else {
+                modal.classList.remove('keyboard-detected');
+                console.log('[AnonymousModal] Mobile keyboard closed, restoring layout');
+            }
+        }, 100); // Small delay to allow for viewport stabilization
+    }
+    
+    function handleResize() {
+        // Update initial height when device orientation changes
+        const newHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        if (Math.abs(newHeight - initialViewportHeight) > 200) {
+            initialViewportHeight = newHeight;
+            modal.classList.remove('keyboard-detected');
+        }
+    }
+    
+    // Use Visual Viewport API if available (modern browsers)
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+        window.addEventListener('orientationchange', handleResize);
+    } else {
+        // Fallback for older browsers
+        window.addEventListener('resize', handleViewportChange);
+        window.addEventListener('orientationchange', handleResize);
+    }
+    
+    // Focus and blur events for additional keyboard detection
+    const inputElements = modal.querySelectorAll('input, textarea');
+    inputElements.forEach(input => {
+        input.addEventListener('focus', () => {
+            setTimeout(handleViewportChange, 300); // Delay for keyboard animation
+        });
+        
+        input.addEventListener('blur', () => {
+            setTimeout(handleViewportChange, 300); // Delay for keyboard animation
+        });
+    });
+    
+    // Cleanup function to remove event listeners when modal closes
+    modal.keyboardCleanup = function() {
+        if (window.visualViewport) {
+            window.visualViewport.removeEventListener('resize', handleViewportChange);
+            window.removeEventListener('orientationchange', handleResize);
+        } else {
+            window.removeEventListener('resize', handleViewportChange);
+            window.removeEventListener('orientationchange', handleResize);
+        }
+        
+        inputElements.forEach(input => {
+            input.removeEventListener('focus', handleViewportChange);
+            input.removeEventListener('blur', handleViewportChange);
+        });
+        
+        if (keyboardDetectionTimeout) {
+            clearTimeout(keyboardDetectionTimeout);
+        }
+        
+        modal.classList.remove('keyboard-detected');
+    };
 }
 
 // Global functions for onclick handlers
