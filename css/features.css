@@ -1176,6 +1176,10 @@ body .floating-buttons button.theme-toggle#themeToggle {
     text-align: center;
     position: relative;
     overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .soul-highlight-card::before {
@@ -1212,14 +1216,22 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-card-content {
     margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+    min-height: 200px;
+    gap: 1rem;
 }
 
 .soul-display-container {
-    margin: 1.5rem 0;
-    min-height: 120px;
+    margin: 1rem 0;
+    min-height: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-grow: 1;
+    padding: 0.5rem;
 }
 
 .loading-soul {
@@ -1241,20 +1253,26 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-card-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: center;
     align-items: center;
-    margin-top: 1.5rem;
+    margin-top: auto;
     flex-wrap: wrap;
     width: 100%;
+    padding: 0 0.5rem;
+    flex-shrink: 0;
 }
 
 .soul-message-btn, .soul-profile-btn {
     background: var(--gradient-accent);
     color: white;
     border: none;
-    padding: 1rem 1.5rem;
-    border-radius: 30px;
+    padding: 0.8rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 120px;
+    text-align: center;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
@@ -1342,20 +1360,35 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-highlight-card .mlnf-username--mystical {
     /* Font now properly inherited from !important rules above */
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     margin-bottom: 0.5rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.4;
 }
 
 .soul-highlight-card .mlnf-user-title {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--text-secondary);
     margin-bottom: 0.3rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
 }
 
 .soul-highlight-card .mlnf-user-status {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-style: italic;
     color: var(--text-muted);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
 }
 
 /* ==========================================
@@ -1737,18 +1770,25 @@ body .floating-buttons button.theme-toggle#themeToggle {
     }
     
     .soul-highlight-card {
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
+        min-height: 380px;
+        margin: 0 0.5rem;
     }
     
     .soul-card-actions {
         flex-direction: column;
-        gap: 0.8rem;
+        gap: 0.6rem;
+        margin-top: 1rem;
+        padding: 0;
     }
     
     .soul-message-btn, .soul-profile-btn {
         width: 100%;
         justify-content: center;
-        padding: 0.8rem 1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 20px;
+        min-width: auto;
     }
     
     .agora-subtitle {
@@ -1775,6 +1815,25 @@ body .floating-buttons button.theme-toggle#themeToggle {
     
     .echoes-unbound-agora {
         padding: 1.5rem 1rem;
+    }
+    
+    .soul-highlight-card {
+        padding: 1rem 0.75rem;
+        min-height: 360px;
+        margin: 0 0.25rem;
+    }
+    
+    .soul-display-container {
+        min-height: 120px;
+        margin: 0.75rem 0;
+    }
+    
+    .soul-highlight-card .mlnf-username--mystical {
+        font-size: 1.1rem;
+    }
+    
+    .soul-highlight-card .mlnf-user-title {
+        font-size: 0.9rem;
     }
     
     .soul-highlight-card .mlnf-username--mystical {
