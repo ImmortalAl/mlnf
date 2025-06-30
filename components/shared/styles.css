@@ -1026,6 +1026,112 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     }
 }
 
+/* === MOBILE KEYBOARD OPTIMIZATION FOR MESSAGE MODAL === */
+/* Professional mobile UX that accounts for on-screen keyboard */
+#messageModal.keyboard-detected {
+  align-items: flex-start;
+  padding-top: var(--space-sm, 0.5rem);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height */
+}
+
+#messageModal.keyboard-detected .message-modal-content {
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  margin-top: 0;
+  transform: none;
+  animation: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Keyboard-optimized message history */
+#messageModal.keyboard-detected .message-history {
+  max-height: 80px !important;
+  min-height: 80px !important;
+  overflow-y: auto !important;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+}
+
+/* Show only the last 2 messages on mobile keyboard for better context */
+#messageModal.keyboard-detected .message-history .message:not(:nth-last-child(-n+2)) {
+  display: none !important;
+}
+
+/* Ensure input area stays visible and accessible */
+#messageModal.keyboard-detected .modal-actions {
+  margin-top: auto;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(26, 26, 51, 0.98), rgba(13, 13, 26, 0.95));
+  padding: var(--space-md, 1rem) 0 0 0;
+  border-top: 1px solid rgba(255, 94, 120, 0.2);
+}
+
+#messageModal.keyboard-detected input {
+  margin-bottom: var(--space-sm, 0.5rem);
+}
+
+/* Enhanced iOS keyboard handling */
+@supports (-webkit-appearance: none) {
+  #messageModal.keyboard-detected {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    height: 100dvh;
+    padding-top: var(--space-xs, 0.25rem);
+  }
+  
+  #messageModal.keyboard-detected .message-modal-content {
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  #messageModal.keyboard-detected .message-modal-content {
+    max-height: 100vh;
+    max-height: 100dvh;
+    height: 100%;
+    min-height: auto;
+    padding: var(--space-sm, 0.5rem);
+    width: 100%;
+    margin: 0;
+  }
+  
+  #messageModal.keyboard-detected .message-history {
+    max-height: 100px !important;
+    min-height: 100px !important;
+    overflow-y: auto !important;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+  
+  #messageModal.keyboard-detected .message-history .message:not(:nth-last-child(-n+2)) {
+    display: none !important;
+  }
+  
+  /* Input container optimization for keyboard */
+  #messageModal.keyboard-detected input[type="text"] {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    padding: var(--space-md, 1rem);
+    margin-bottom: var(--space-sm, 0.5rem);
+    touch-action: manipulation;
+  }
+  
+  #messageModal.keyboard-detected .modal-actions {
+    padding-top: var(--space-sm, 0.5rem);
+    margin-top: 0;
+  }
+}
+
 /* Keyframes used by modals in this file */
 @keyframes modalContentAppear {
     from { transform: scale(0.95) translateY(10px); opacity: 0; }
