@@ -132,6 +132,14 @@ async function openMessageModal(username) {
         if(recipientNameElement) recipientNameElement.textContent = `To: ${username}`;
         if(messageHistoryElement) messageHistoryElement.innerHTML = '<p class="modal-loading">Loading eternal whispers...</p>';
     
+    // Close active users sidebar if open (prevents z-index conflicts on mobile)
+    const activeUsersSidebar = document.getElementById('activeUsers');
+    const activeUsersOverlay = document.getElementById('activeUsersOverlay');
+    if (activeUsersSidebar && activeUsersSidebar.classList.contains('active')) {
+        activeUsersSidebar.classList.remove('active');
+        if (activeUsersOverlay) activeUsersOverlay.classList.remove('active');
+    }
+    
     messageModal.classList.add('active');
     messageModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
