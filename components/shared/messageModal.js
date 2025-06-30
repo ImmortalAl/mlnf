@@ -78,7 +78,19 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         if (!isInitialized || !messageModal) return;
         messageModal.classList.remove('active');
         messageModal.setAttribute('aria-hidden', 'true');
+        
+        // Restore body scroll position on mobile
+        if (window.innerWidth <= 768) {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+        }
         document.body.style.removeProperty('overflow');
+        
         currentRecipientUsername = null;
         if (currentBackdropListener) {
             messageModal.removeEventListener('click', currentBackdropListener);
@@ -152,6 +164,14 @@ async function openMessageModal(username) {
     
     // Setup mobile keyboard detection for professional UX
     setupMobileKeyboardDetection(messageModal);
+    
+    // Additional mobile optimizations
+    if (window.innerWidth <= 768) {
+        // Prevent body scroll when modal is open on mobile
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${window.scrollY}px`;
+        document.body.style.width = '100%';
+    }
 
     if (messageInputElement) {
         setTimeout(() => messageInputElement.focus(), 100);
@@ -184,7 +204,7 @@ async function openMessageModal(username) {
     }
 }
 
-// Mobile keyboard detection for professional UX
+// Enhanced mobile keyboard detection for professional UX
 function setupMobileKeyboardDetection(modal) {
     if (!modal) return;
     
@@ -193,6 +213,7 @@ function setupMobileKeyboardDetection(modal) {
     
     let initialViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
     let keyboardDetectionTimeout = null;
+    let focusTimeout = null;
     
     function handleViewportChange() {
         if (keyboardDetectionTimeout) {
@@ -202,12 +223,22 @@ function setupMobileKeyboardDetection(modal) {
         keyboardDetectionTimeout = setTimeout(() => {
             const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
             const heightDifference = initialViewportHeight - currentHeight;
+            const heightRatio = currentHeight / initialViewportHeight;
             
-            // Keyboard is considered open if viewport height decreased by more than 100px (more sensitive for mobile)
-            const keyboardOpen = heightDifference > 100;
+            // Enhanced keyboard detection:
+            // 1. Absolute height difference > 150px OR
+            // 2. Viewport height reduced by more than 25% (handles different screen sizes)
+            const keyboardOpen = heightDifference > 150 || heightRatio < 0.75;
             
             if (keyboardOpen) {
                 modal.classList.add('keyboard-detected');
+                // Scroll to input to ensure it's visible
+                const activeInput = document.activeElement;
+                if (activeInput && (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA')) {
+                    setTimeout(() => {
+                        activeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
             } else {
                 modal.classList.remove('keyboard-detected');
             }
@@ -223,6 +254,23 @@ function setupMobileKeyboardDetection(modal) {
         }
     }
     
+    function handleInputFocus() {
+        // Immediate keyboard detection on focus
+        if (focusTimeout) clearTimeout(focusTimeout);
+        focusTimeout = setTimeout(() => {
+            modal.classList.add('keyboard-detected');
+            handleViewportChange();
+        }, 200);
+    }
+    
+    function handleInputBlur() {
+        // Delayed keyboard detection on blur
+        if (focusTimeout) clearTimeout(focusTimeout);
+        focusTimeout = setTimeout(() => {
+            handleViewportChange();
+        }, 500);
+    }
+    
     // Use Visual Viewport API if available (modern browsers)
     if (window.visualViewport) {
         window.visualViewport.addEventListener('resize', handleViewportChange);
@@ -233,15 +281,17 @@ function setupMobileKeyboardDetection(modal) {
         window.addEventListener('orientationchange', handleResize);
     }
     
-    // Focus and blur events for additional keyboard detection
+    // Enhanced focus and blur events for better keyboard detection
     const inputElements = modal.querySelectorAll('input, textarea');
     inputElements.forEach(input => {
-        input.addEventListener('focus', () => {
-            setTimeout(handleViewportChange, 300); // Delay for keyboard animation
-        });
+        input.addEventListener('focus', handleInputFocus);
+        input.addEventListener('blur', handleInputBlur);
         
-        input.addEventListener('blur', () => {
-            setTimeout(handleViewportChange, 300); // Delay for keyboard animation
+        // Prevent zooming on iOS when focusing inputs
+        input.addEventListener('touchstart', function() {
+            if (input.style.fontSize !== '16px') {
+                input.style.fontSize = '16px';
+            }
         });
     });
     
@@ -256,12 +306,15 @@ function setupMobileKeyboardDetection(modal) {
         }
         
         inputElements.forEach(input => {
-            input.removeEventListener('focus', handleViewportChange);
-            input.removeEventListener('blur', handleViewportChange);
+            input.removeEventListener('focus', handleInputFocus);
+            input.removeEventListener('blur', handleInputBlur);
         });
         
         if (keyboardDetectionTimeout) {
             clearTimeout(keyboardDetectionTimeout);
+        }
+        if (focusTimeout) {
+            clearTimeout(focusTimeout);
         }
         
         modal.classList.remove('keyboard-detected');
