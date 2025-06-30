@@ -138,31 +138,16 @@ Small Mobile (<480px) → Ultra-compact, gesture-friendly
 - **Debate Chambers**: Structured discussions on important topics
 - **Memorial Spaces**: Honoring souls who have transcended
 
-## 🎯 User Personas
+## 🎯 User Experience Focus
 
-### The Seeker
-- Drawn to mystical concepts and spiritual growth
-- Values deep conversation over small talk
-- Appreciates beautiful, intentional design
-- Seeks authentic community connections
+MLNF serves souls who value authentic connection and meaningful discourse. The platform attracts individuals seeking deeper conversations, mystical wisdom, and genuine community beyond superficial social media interactions.
 
-### The Sage
-- Experienced in mystical traditions or philosophical thought
-- Enjoys mentoring and sharing wisdom
-- Values structured, respectful debate
-- Contributes high-quality content regularly
-
-### The Connector
-- Natural community builder and facilitator
-- Excels at bringing souls together
-- Active in real-time communication features
-- Helps maintain community culture
-
-### The Artist
-- Expresses mystical insights through creative mediums
-- Uses soul scrolls for personal expression
-- Appreciates the aesthetic beauty of the platform
-- Contributes visual and written art
+### Core User Values
+- **Authenticity**: Genuine expression and real connections
+- **Depth**: Meaningful conversations over surface-level chatter  
+- **Beauty**: Appreciation for thoughtful, mystical design
+- **Wisdom**: Interest in spiritual growth and knowledge sharing
+- **Community**: Desire for respectful, elevated discourse
 
 ## 🌊 User Flow Examples
 
