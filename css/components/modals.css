@@ -427,8 +427,13 @@
   }
   
   .modal.keyboard-detected .message-history {
-    max-height: 25vh;
-    min-height: 80px;
+    max-height: 60px;
+    min-height: 60px;
+    overflow: hidden;
+  }
+  
+  .modal.keyboard-detected .message-history .message:not(:last-child) {
+    display: none;
   }
   
   .modal h3,
