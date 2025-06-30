@@ -4,12 +4,48 @@
 
 **ALWAYS follow this sequence after making ANY code changes:**
 
-1. **Git add all changes**: `git add .`
-2. **Git commit with descriptive message**: `git commit -m "type: description"`
-3. **Git push immediately**: `git push origin main`
-4. **Test changes live on internet** (Netlify deployment)
+1. **FIRST: Update version numbers** for any modified CSS/JS files
+2. **Git add all changes**: `git add .`
+3. **Git commit with descriptive message**: `git commit -m "type: description"`
+4. **Git push immediately**: `git push origin main`
+5. **Test changes live on internet** (Netlify deployment)
 
 **NEVER skip the push step** - all changes must be deployed to Netlify immediately.
+
+## 🚨 CRITICAL VERSIONING RULE 🚨
+
+**MANDATORY: ALWAYS bump version numbers when modifying files with ?v= parameters**
+
+### Files That REQUIRE Version Bumps:
+- **CSS Files**: `styles.css?v=X.X`, `components/shared/styles.css?v=X.X`
+- **JavaScript Files**: `main.js?v=X.X`, `messageModal.js?v=X.X`, etc.
+- **ANY file loaded with ?v= parameter**
+
+### When to Bump Versions:
+- ✅ **CSS changes**: Layout, styling, responsive design, animations
+- ✅ **JavaScript changes**: Functionality, event handlers, API calls, UI behavior
+- ✅ **Feature additions**: New buttons, modals, forms, interactions
+- ✅ **Bug fixes**: Any code modification that affects user experience
+- ✅ **Content changes in versioned files**: Even small text updates
+
+### Version Bump Examples:
+```bash
+# CSS Changes
+sed -i 's/styles.css?v=[0-9.]*/styles.css?v=6.0/g' index.html
+
+# JavaScript Changes  
+sed -i 's/main.js?v=[0-9.]*/main.js?v=2.0/g' index.html
+
+# Shared Components
+sed -i 's/shared\/styles.css?v=[0-9.]*/shared\/styles.css?v=6.0/g' index.html
+```
+
+### ⚠️ CONSEQUENCES OF NOT VERSIONING:
+- Users see cached old functionality
+- Changes appear to "not work" 
+- Inconsistent user experience
+- Debugging nightmare ("it works on my machine")
+- Lost development time troubleshooting cache issues
 
 ## Commit Message Format
 - `feat: description` - New features

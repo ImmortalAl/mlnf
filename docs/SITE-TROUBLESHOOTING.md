@@ -10,6 +10,9 @@ After extensive development and optimization, MLNF now works flawlessly across a
 **Problem:** Made CSS changes but don't see them on the website
 **Most Likely Cause:** CSS versioning/caching issue
 
+**🚨 THE #1 RULE: ALWAYS BUMP VERSION NUMBERS 🚨**
+**If you modify ANY file with ?v= parameter, you MUST update the version number!**
+
 **Affected Areas:** All pages, styling, layout, responsiveness
 
 **Solutions:**
