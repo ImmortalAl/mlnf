@@ -1243,8 +1243,10 @@ body .floating-buttons button.theme-toggle#themeToggle {
     display: flex;
     gap: 1rem;
     justify-content: center;
+    align-items: center;
     margin-top: 1.5rem;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .soul-message-btn, .soul-profile-btn {
@@ -1569,6 +1571,39 @@ body .floating-buttons button.theme-toggle#themeToggle {
     }
 }
 
+/* Soul Highlight Card Tablet/Medium Screen Fixes */
+@media (max-width: 768px) and (min-width: 481px) {
+    .souls-highlight-container .soul-highlight-card {
+        padding: 1.8rem;
+        margin: 0 auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .soul-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .soul-card-actions {
+        flex-direction: row;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+    }
+    
+    .soul-message-btn, .soul-profile-btn {
+        flex: 0 1 auto;
+        min-width: 140px;
+        max-width: 180px;
+        padding: 0.9rem 1.2rem;
+    }
+}
+
 @media (max-width: 480px) {
     #blog {
         padding: 2rem 0.75rem;
@@ -1593,6 +1628,47 @@ body .floating-buttons button.theme-toggle#themeToggle {
     
     .scroll-highlight-card .read-more-indicator {
         font-size: 0.9rem;
+    }
+    
+    /* Soul Highlight Card Mobile Fixes */
+    .soul-highlight-card {
+        padding: 1.5rem;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .soul-card-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .soul-display-container {
+        margin: 1rem 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .soul-card-actions {
+        width: 100%;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 1rem;
+        flex-direction: column;
+    }
+    
+    .soul-message-btn, .soul-profile-btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+        padding: 0.8rem 1rem;
+        font-size: 0.85rem;
     }
 }
 
