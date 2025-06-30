@@ -216,6 +216,12 @@ body:has(.modal.active) .active-users-overlay {
     z-index: -1 !important; /* Move behind everything when modal is open */
 }
 
+/* Hide active users sidebar when any modal is open */
+body:has(.modal.active) .active-users {
+    right: -320px !important;
+    transition: right 0.3s ease !important;
+}
+
 /* Message Modal styles (original lines 170-267) were here. */
 /* They have been moved to components/shared/styles.css */
 

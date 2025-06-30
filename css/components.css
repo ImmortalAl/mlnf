@@ -447,7 +447,7 @@ body.light-theme .mlnf-avatar {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.7);
-    z-index: 2600;
+    z-index: 100000;
     align-items: center;
     justify-content: center;
     transition: opacity 0.3s;
@@ -463,6 +463,7 @@ body.light-theme .mlnf-avatar {
     .modal {
         align-items: flex-start !important;
         padding-top: 2vh !important;
+        z-index: 100001 !important; /* Even higher on mobile to ensure it's above everything */
     }
 }
 .modal[aria-hidden="false"] {
@@ -493,6 +494,7 @@ body.light-theme .mlnf-avatar {
     overflow-y: auto;
     box-sizing: border-box;
     border: 2px solid var(--accent);
+    z-index: 100002; /* Ensure modal content is above everything */
 }
 
 .message-modal-content .modal-close {
@@ -728,4 +730,17 @@ body.light-theme .mlnf-avatar {
     .mlnf-avatar--xxl { width: 56px; height: 56px; }
     
     .feature-card h3 { font-size: 1.4rem; }
+    
+    /* Mobile message modal adjustments */
+    .message-modal-content {
+        width: 98vw !important;
+        max-height: 85vh !important;
+        padding: 1.5rem !important;
+        margin: 1rem !important;
+        border-radius: 12px !important;
+    }
+    
+    .message-history {
+        max-height: 200px !important;
+    }
 }
