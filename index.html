@@ -1061,7 +1061,7 @@
                 // Create title
                 const title = document.createElement('h4');
                 title.className = 'echo-title-prominent';
-                title.textContent = `Thread: ${message.title || message.content.substring(0, 50) + '...'}`;
+                title.textContent = `${message.title || message.content.substring(0, 50) + '...'}`;
                 
                 // Create excerpt (strip HTML and limit length)
                 const excerpt = document.createElement('p');
