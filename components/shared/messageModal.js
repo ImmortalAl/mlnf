@@ -186,23 +186,10 @@ async function openMessageModal(username) {
 
 // Mobile keyboard detection for professional UX
 function setupMobileKeyboardDetection(modal) {
-    if (!modal) {
-        console.log('[MessageModal] No modal provided to setupMobileKeyboardDetection');
-        return;
-    }
+    if (!modal) return;
     
-    console.log('[MessageModal] Setting up mobile keyboard detection, window width:', window.innerWidth);
-    
-    // Test mode - temporarily enable on all devices for debugging
-    // if (window.innerWidth > 768) {
-    //     console.log('[MessageModal] Window width > 768, skipping mobile keyboard detection');
-    //     return;
-    // }
-    
-    // TEST: Add keyboard-detected class immediately to test CSS
-    console.log('[MessageModal] TEST: Adding keyboard-detected class for immediate testing');
-    modal.classList.add('keyboard-detected');
-    console.log('[MessageModal] Modal classes after adding keyboard-detected:', modal.classList.toString());
+    // Only apply on mobile devices
+    if (window.innerWidth > 768) return;
     
     let initialViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
     let keyboardDetectionTimeout = null;
@@ -216,23 +203,13 @@ function setupMobileKeyboardDetection(modal) {
             const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
             const heightDifference = initialViewportHeight - currentHeight;
             
-            // Keyboard is considered open if viewport height decreased by more than 150px
-            const keyboardOpen = heightDifference > 150;
-            
-            console.log('[MessageModal] Viewport check:', {
-                initialHeight: initialViewportHeight,
-                currentHeight: currentHeight,
-                heightDifference: heightDifference,
-                keyboardOpen: keyboardOpen,
-                modalClasses: modal.classList.toString()
-            });
+            // Keyboard is considered open if viewport height decreased by more than 100px (more sensitive for mobile)
+            const keyboardOpen = heightDifference > 100;
             
             if (keyboardOpen) {
                 modal.classList.add('keyboard-detected');
-                console.log('[MessageModal] Mobile keyboard detected, optimizing layout. Classes:', modal.classList.toString());
             } else {
                 modal.classList.remove('keyboard-detected');
-                console.log('[MessageModal] Mobile keyboard closed, restoring layout. Classes:', modal.classList.toString());
             }
         }, 100); // Small delay to allow for viewport stabilization
     }
