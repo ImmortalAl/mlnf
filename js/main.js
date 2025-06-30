@@ -552,8 +552,17 @@ function createAnonymousMessageModal(recipientUsername, recipientTitle) {
 
     document.body.appendChild(modal);
 
+    // Close active users sidebar if open (prevents z-index conflicts on mobile)
+    const activeUsersSidebar = document.getElementById('activeUsers');
+    const activeUsersOverlay = document.getElementById('activeUsersOverlay');
+    if (activeUsersSidebar && activeUsersSidebar.classList.contains('active')) {
+        activeUsersSidebar.classList.remove('active');
+        if (activeUsersOverlay) activeUsersOverlay.classList.remove('active');
+    }
+    
     // Show modal
     modal.style.display = 'flex';
+    modal.style.zIndex = '999999'; // Force highest z-index to override sidebar
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
 
