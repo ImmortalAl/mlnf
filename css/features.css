@@ -1177,6 +1177,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     position: relative;
     overflow: hidden;
     min-height: 400px;
+    margin-bottom: 5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1772,7 +1773,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     .soul-highlight-card {
         padding: 1.5rem 1rem;
         min-height: 380px;
-        margin: 0 0.5rem;
+        margin: 0 0.5rem 4rem 0.5rem;
     }
     
     .soul-card-actions {
@@ -1820,7 +1821,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     .soul-highlight-card {
         padding: 1rem 0.75rem;
         min-height: 360px;
-        margin: 0 0.25rem;
+        margin: 0 0.25rem 3.5rem 0.25rem;
     }
     
     .soul-display-container {
