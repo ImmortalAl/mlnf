@@ -1113,28 +1113,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     display: block !important;
 }
 
-/* SPECIFIC OVERRIDE FOR SOUL SCROLLS - FORCE THE BORDER */
-#blog.highlights::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    height: 8px !important;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        #ff5e78 15%, 
-        #ffca28 50%, 
-        #ff5e78 85%, 
-        transparent 100%) !important;
-    pointer-events: none !important;
-    z-index: 999 !important;
-    display: block !important;
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: 0 2px 8px rgba(255, 94, 120, 0.3) !important;
-}
+/* Removed duplicate border - using clean border-image instead */
 
 /* Add subtle overlay effect to all highlight sections */
 .highlights::after {
