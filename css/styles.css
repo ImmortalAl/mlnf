@@ -400,16 +400,16 @@ body.light-theme .hero::before {
     max-width: 900px;
     position: relative;
     z-index: 3;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.15);
     padding: 2rem;
     border-radius: 15px;
-    backdrop-filter: blur(0.5px);
-    border: 1px solid rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(1px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 body.light-theme .hero-content {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.02);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .hero h1 {
