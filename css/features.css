@@ -1502,6 +1502,16 @@ body .floating-buttons button.theme-toggle#themeToggle {
     padding: 0.5rem;
 }
 
+/* Ensure consistent center alignment for all CTA buttons */
+.highlight-grid {
+    text-align: center;
+}
+
+/* Reset text alignment for content items inside grid */
+.highlight-grid .highlight-item {
+    text-align: left;
+}
+
 /* Unified CTA button styling - works in any highlight section container */
 .highlight-grid > .btn.btn-primary,
 .section-footer .btn.btn-primary {
