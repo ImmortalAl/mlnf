@@ -161,9 +161,7 @@ body.light-theme .debate-position h4 {
     max-width: 1440px;
     position: relative;
     overflow: hidden;
-    /* Clean gradient top border only */
-    border-top: 6px solid transparent;
-    border-image: linear-gradient(90deg, transparent 0%, #ff5e78 20%, #ff8f00 50%, #ff5e78 80%, transparent 100%) 1;
+    /* Border handled by .highlights::before for consistency */
     z-index: 1;
 }
 
