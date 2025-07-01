@@ -1125,14 +1125,16 @@ body .floating-buttons button.theme-toggle#themeToggle {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 4px;
     background: linear-gradient(90deg, 
-        transparent, 
-        var(--accent), 
-        rgba(255, 202, 40, 0.8), 
-        var(--accent), 
-        transparent);
+        transparent 0%, 
+        var(--accent) 20%, 
+        rgba(255, 202, 40, 0.9) 50%, 
+        var(--accent) 80%, 
+        transparent 100%);
     pointer-events: none;
+    z-index: 10;
+    border-radius: 2px 2px 0 0;
 }
 
 /* Add subtle overlay effect to all highlight sections */
