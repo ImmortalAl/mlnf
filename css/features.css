@@ -64,7 +64,7 @@
 /* Enhanced heading styling for highlight items */
 .highlight-item h4,
 .debate-position h4 {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.75rem;
     font-weight: 700;
     background: var(--gradient-accent);
@@ -275,7 +275,7 @@ body.light-theme .debate-position h4 {
 
 /* Echo Title - Enhanced Typography */
 .echo-title-prominent {
-    font-family: 'Lato', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
     font-size: 1.75rem !important;
     font-weight: 700 !important;
     background: var(--gradient-accent) !important;
@@ -383,7 +383,7 @@ body.light-theme .debate-position h4 {
 /* Soul Scroll Title - Consistent Typography */
 .scroll-title-prominent {
     /* Use consistent styling with other highlight item h4 elements */
-    font-family: 'Lato', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
     font-size: 1.75rem !important;
     font-weight: 700 !important;
     background: var(--gradient-accent) !important;
@@ -407,7 +407,7 @@ body.light-theme .debate-position h4 {
     margin-bottom: 2rem !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
     position: relative;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     letter-spacing: 0.01em;
 }
 

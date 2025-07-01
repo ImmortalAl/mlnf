@@ -32,8 +32,9 @@
   
   /* === TYPOGRAPHY === */
   /* Font Families */
-  --font-primary: 'Lato', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-heading: 'Montserrat', var(--font-primary);
+  --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Lato', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-mystical: 'Cinzel', serif;
   --font-display: 'Immortal', fantasy;
   
