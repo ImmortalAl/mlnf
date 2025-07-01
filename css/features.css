@@ -1,5 +1,7 @@
 /* MLNF Features CSS - Page-specific features loaded last */
-/* Version: 1.0.0 - Performance optimized split */
+/* Version: 4.5.0 - Unified highlight sections, responsive design, Soul Scrolls enhancements */
+/* Last Updated: 2025-06-30 */
+/* Performance: Asynchronously loaded after core styles for enhanced UI features */
 
 /* ==========================================
    HIGHLIGHT ITEM & DEBATE POSITION STYLING
@@ -125,12 +127,13 @@ body.light-theme .debate-position h4 {
     margin-bottom: 1.5rem !important;
 }
 
-/* Legacy styles - deprecated in favor of MLNF Avatar System */
+/* Chronicle Author Display - Legacy Support */
 .chronicle-author-display,
 .author-avatar,
 .author-username {
-    /* These styles are maintained for backward compatibility */
-    /* New implementations should use mlnf-user-display, mlnf-avatar, mlnf-username */
+    /* Backward compatibility - Use MLNF Avatar System for new implementations */
+    opacity: 0.9;
+    transition: var(--transition);
 }
 
 /* Read more indicator */
@@ -1504,7 +1507,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 
 /* ==========================================
-   LEGACY BUTTON OVERRIDES
+   MODAL STATES & BUTTON OVERRIDES
    ========================================== */
 
 /* Styles for .modal-loading and .modal-error if used by JS directly */

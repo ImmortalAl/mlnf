@@ -47,6 +47,45 @@ sed -i 's/shared\/styles.css?v=[0-9.]*/shared\/styles.css?v=6.0/g' index.html
 - Debugging nightmare ("it works on my machine")
 - Lost development time troubleshooting cache issues
 
+## 🎨 FEATURES.CSS SPECIAL GUIDELINES
+
+**features.css is the "Enhanced Experience Layer" - handle with extra care!**
+
+### When features.css Changes:
+1. **ALWAYS update ALL pages** that use features.css (not just one page)
+2. **Current Standard Version**: v4.5 (as of 2025-06-30)
+3. **Pages that need updates**: index.html, lander.html, blog.html, messageboard.html, news.html, souls/index.html, admin/index.html, templates/page-template.html
+
+### Features.css Version Bump Commands:
+```bash
+# Update ALL pages at once - CRITICAL for consistency
+find /home/immortalal/sites/mlnf/front -name "*.html" -exec sed -i 's/features\.css?v=[0-9.]*/features.css?v=5.0/g' {} \;
+
+# Or individual pages:
+sed -i 's/features\.css?v=[0-9.]*/features.css?v=5.0/g' index.html
+sed -i 's/features\.css?v=[0-9.]*/features.css?v=5.0/g' lander.html
+sed -i 's/\.\.\/css\/features\.css?v=[0-9.]*/../css/features.css?v=5.0/g' pages/*.html
+sed -i 's/\.\.\/css\/features\.css?v=[0-9.]*/../css/features.css?v=5.0/g' souls/index.html
+sed -i 's/\.\.\/css\/features\.css?v=[0-9.]*/../css/features.css?v=5.0/g' admin/index.html
+```
+
+### What features.css Controls:
+- ✅ **Highlight container top borders** (Soul Scrolls, Eternal Souls, Echoes Unbound)
+- ✅ **Soul highlight cards** (founder/featured cards with colored borders)
+- ✅ **Responsive design** for all interactive features
+- ✅ **Modal systems** (profile previews, messages, authentication)
+- ✅ **Advanced animations** and hover effects
+
+### 🚨 FEATURES.CSS VERSION MISMATCH WARNING:
+If features.css versions are inconsistent across pages:
+- Highlight sections break on some pages
+- Soul cards lose styling
+- Mobile responsiveness fails
+- Top gradient borders disappear
+- User experience becomes inconsistent
+
+**Solution**: Always keep ALL pages on the same features.css version!
+
 ## Commit Message Format
 - `feat: description` - New features
 - `fix: description` - Bug fixes  
