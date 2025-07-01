@@ -1502,8 +1502,9 @@ body .floating-buttons button.theme-toggle#themeToggle {
     padding: 0.5rem;
 }
 
-/* Highlight grid button - this was a very specific override in original file */
-.highlight-grid > .btn.btn-primary {
+/* Unified CTA button styling - works in any highlight section container */
+.highlight-grid > .btn.btn-primary,
+.section-footer .btn.btn-primary {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1534,7 +1535,8 @@ body .floating-buttons button.theme-toggle#themeToggle {
     max-width: 200px !important;
 }
 
-.highlight-grid > .btn.btn-primary:hover {
+.highlight-grid > .btn.btn-primary:hover,
+.section-footer .btn.btn-primary:hover {
     transform: translateY(-2px) scale(1.03) !important;
     box-shadow:
         0 0 12px rgba(255, 94, 120, 0.5),
