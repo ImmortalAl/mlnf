@@ -181,6 +181,13 @@ body.light-theme .debate-position h4 {
     z-index: 0;
 }
 
+/* Exclude buttons from Soul Scrolls spotlight animation */
+#blog .highlight-grid > .btn {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
+}
+
 @keyframes soulScrollsGlow {
     0%, 100% { 
         transform: rotate(0deg) scale(1);
