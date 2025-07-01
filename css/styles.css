@@ -1997,10 +1997,7 @@ body.light-theme {
     color: var(--primary) !important;
     background: linear-gradient(to bottom, #ff5e78, #ff8f00) !important; /* Vertical Gradient with Border was one of the variants */
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow:
-        0 0 8px rgba(255, 94, 120, 0.3),
-        0 0 15px rgba(255, 94, 120, 0.2),
-        inset 0 0 5px rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease !important;
     animation: none !important; /* Override general .btn-primary pulse if it was causing issues */
     position: relative !important; /* Ensure z-index works if needed */
@@ -2011,11 +2008,8 @@ body.light-theme {
 }
 
 .highlight-grid > .btn.btn-primary:hover {
-    transform: translateY(-2px) scale(1.03) !important;
-    box-shadow:
-        0 0 12px rgba(255, 94, 120, 0.5),
-        0 0 25px rgba(255, 94, 120, 0.3),
-        inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Ensure this media query for highlight grid is also included if it was separate */
