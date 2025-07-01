@@ -168,38 +168,9 @@ body.light-theme .debate-position h4 {
     z-index: 1;
 }
 
-/* Mystical glow effect for Soul Scrolls section */
-#blog::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center,
-        rgba(var(--accent-rgb, 255, 94, 120), 0.03) 0%,
-        rgba(255, 143, 0, 0.02) 30%,
-        transparent 70%);
-    animation: soulScrollsGlow 8s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-}
+/* Remove distracting animated artifact - keep section clean */
 
 
-@keyframes soulScrollsGlow {
-    0%, 100% { 
-        transform: rotate(0deg) scale(1);
-        opacity: 0.6;
-    }
-    33% { 
-        transform: rotate(120deg) scale(1.1);
-        opacity: 0.8;
-    }
-    66% { 
-        transform: rotate(240deg) scale(0.9);
-        opacity: 0.5;
-    }
-}
 
 /* Enhanced section title for Soul Scrolls */
 #blogHeading {
