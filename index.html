@@ -31,8 +31,8 @@
     <link rel="preload" href="css/components.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/components.css?v=6.0"></noscript>
     
-    <link rel="preload" href="css/features.css?v=6.5" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/features.css?v=6.5"></noscript>
+    <link rel="preload" href="css/features.css?v=6.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/features.css?v=6.6"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
     <link rel="preload" href="components/shared/styles.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -858,12 +858,19 @@
                 highlightsContainer.appendChild(highlightCard);
             });
             
-            // Add "Read More Stories" button
+            // Add "Read More Stories" button in section-footer
+            const parentSection = highlightsContainer.closest('section');
+            let sectionFooter = parentSection.querySelector('.section-footer');
+            if (!sectionFooter) {
+                sectionFooter = document.createElement('div');
+                sectionFooter.className = 'section-footer';
+                parentSection.appendChild(sectionFooter);
+            }
             const readMoreBtn = document.createElement('a');
             readMoreBtn.href = 'pages/news.html';
             readMoreBtn.className = 'btn btn-primary';
             readMoreBtn.textContent = 'Read More Stories';
-            highlightsContainer.appendChild(readMoreBtn);
+            sectionFooter.appendChild(readMoreBtn);
             
         } catch (error) {
             console.error('Failed to load chronicles:', error);
@@ -1108,12 +1115,19 @@
                 highlightsContainer.appendChild(highlightCard);
             });
             
-            // Add "Join the Discussion" button
+            // Add "Join the Discussion" button in section-footer
+            const parentSection = highlightsContainer.closest('section');
+            let sectionFooter = parentSection.querySelector('.section-footer');
+            if (!sectionFooter) {
+                sectionFooter = document.createElement('div');
+                sectionFooter.className = 'section-footer';
+                parentSection.appendChild(sectionFooter);
+            }
             const joinBtn = document.createElement('a');
             joinBtn.href = 'pages/messageboard.html';
             joinBtn.className = 'btn btn-primary';
             joinBtn.textContent = 'Join the Discussion';
-            highlightsContainer.appendChild(joinBtn);
+            sectionFooter.appendChild(joinBtn);
             
         } catch (error) {
             console.error('Failed to load echoes:', error);
