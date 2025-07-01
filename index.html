@@ -19,28 +19,28 @@
     <link rel="stylesheet" href="css/base-theme.css">
     
     <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
-    <link rel="stylesheet" href="css/critical.css?v=2.3">
+    <link rel="stylesheet" href="css/critical.css?v=6.0">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
-    <link rel="stylesheet" href="css/styles.css?v=2.3">
+    <link rel="stylesheet" href="css/styles.css?v=6.0">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
-    <link rel="preload" href="css/layout.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/layout.css?v=2.3"></noscript>
+    <link rel="preload" href="css/layout.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/layout.css?v=6.0"></noscript>
     
-    <link rel="preload" href="css/components.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/components.css?v=2.3"></noscript>
+    <link rel="preload" href="css/components.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/components.css?v=6.0"></noscript>
     
-    <link rel="preload" href="css/features.css?v=99.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/features.css?v=99.0"></noscript>
+    <link rel="preload" href="css/features.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/features.css?v=6.0"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="components/shared/styles.css?v=5.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=5.0"></noscript>
+    <link rel="preload" href="components/shared/styles.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=6.0"></noscript>
     
     <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
-    <link rel="preload" href="css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/active-users.css?v=2.0"></noscript>
+    <link rel="preload" href="css/active-users.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/active-users.css?v=6.0"></noscript>
     
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded with high priority) -->
@@ -531,7 +531,7 @@
                     <h4>Affirmative</h4>
                     <p><strong>"Freedom transcends time;</strong> it's woven into existence." — ImmortalAl</p>
                     <div class="debate-actions">
-                        <button class="btn btn-primary">Vote Yes</button>
+                        <button class="btn btn-outline">Vote Yes</button>
                         <span class="vote-count">12 Votes</span>
                     </div>
                 </div>
@@ -609,7 +609,7 @@
             <hr class="footer-divider">
             
             <div class="footer-bottom">
-                <p>&copy; 2023 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
+                <p>&copy; 2025 Manifest Liberation, Naturally Free. All eternal rights reserved.</p>
                 <p>Embrace your infinite potential and connect across eternity.</p>
             </div>
         </div>
@@ -742,7 +742,6 @@
                         heroSignupButton.parentNode.replaceChild(newSignupButton, heroSignupButton);
                         heroLoginButton.parentNode.replaceChild(newLoginButton, heroLoginButton);
                         
-                        console.log('[index.html] Hero buttons updated for logged-in user');
                     }
                 } catch (error) {
                     console.error('Error parsing user data:', error);
@@ -767,7 +766,6 @@
                     });
                 }
                 
-                console.log('[index.html] Hero buttons configured for logged-out user');
             }
             
             // Active users sidebar toggle is handled by components/shared/activeUsers.js
@@ -781,7 +779,6 @@
         try {
             // Wait for MLNFAvatars to be available
             if (!window.MLNFAvatars) {
-                console.log('[index.html] Waiting for MLNFAvatars to load...');
                 setTimeout(loadChroniclesHighlights, 200);
                 return;
             }
@@ -813,8 +810,6 @@
                 // Add click handler to open specific chronicle modal
                 highlightCard.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('[index.html] Chronicle highlight clicked, ID:', post._id);
-                    // Use URL parameter instead of sessionStorage for more reliable delivery
                     window.location.href = `pages/news.html?openChronicle=${post._id}`;
                 });
                 
@@ -1027,7 +1022,6 @@
         try {
             // Wait for MLNFAvatars to be available
             if (!window.MLNFAvatars) {
-                console.log('[index.html] Waiting for MLNFAvatars to load...');
                 setTimeout(loadEchoesHighlights, 200);
                 return;
             }
@@ -1060,8 +1054,6 @@
                 // Add click handler to open specific thread
                 highlightCard.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('[index.html] Echo highlight clicked, ID:', message._id);
-                    // Use URL parameter for reliable delivery
                     window.location.href = `pages/messageboard.html?openThread=${message._id}`;
                 });
                 
