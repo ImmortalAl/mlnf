@@ -181,33 +181,6 @@ body.light-theme .debate-position h4 {
     z-index: 0;
 }
 
-/* Exclude buttons from Soul Scrolls spotlight animation */
-#blog .dual-highlight-grid > .btn,
-#blog .highlight-grid > .btn {
-    position: relative !important;
-    z-index: 50 !important;
-    isolation: isolate !important;
-    background: linear-gradient(to bottom, #ff5e78, #ff8f00) !important;
-    filter: none !important;
-    transform: none !important;
-    animation: none !important;
-    mix-blend-mode: normal !important;
-    opacity: 1 !important;
-}
-
-/* Create a solid backdrop for the button to block spotlight */
-#blog .dual-highlight-grid > .btn::before,
-#blog .highlight-grid > .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, #ff5e78, #ff8f00);
-    z-index: -1;
-    border-radius: inherit;
-}
 
 @keyframes soulScrollsGlow {
     0%, 100% { 
