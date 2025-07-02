@@ -63,11 +63,24 @@
 /* Admin Sections */
 .admin-section {
     display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .admin-section.active {
-    display: block;
+    display: block !important;
+    opacity: 1;
     animation: fadeIn 0.3s ease;
+}
+
+/* Ensure users section is properly styled */
+#users.admin-section {
+    display: none;
+}
+
+#users.admin-section.active {
+    display: block !important;
+    opacity: 1;
 }
 
 /* Stats Grid */
@@ -376,13 +389,18 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 3000;
+    z-index: 50001;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
 .modal.active {
-    display: flex;
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 .modal-content {

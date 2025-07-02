@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin JavaScript Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Basic JavaScript</h2>
+        <button onclick="alert('JavaScript is working!')">Click Me - Alert Test</button>
+        <button onclick="document.getElementById('result1').innerHTML = 'Button clicked at ' + new Date().toLocaleTimeString()">Click Me - DOM Update</button>
+        <div id="result1" class="result">Result will appear here</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Inline Script</h2>
+        <button id="test2btn">Click Me - Event Listener Test</button>
+        <div id="result2" class="result">Result will appear here</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Console Test</h2>
+        <button onclick="console.log('Console test:', new Date()); document.getElementById('result3').innerHTML = 'Check browser console (F12)'">Click Me - Console Test</button>
+        <div id="result3" class="result">Result will appear here</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Navigation Test</h2>
+        <a href="#section1" onclick="document.getElementById('result4').innerHTML = 'Navigation clicked'; return false;">Click Me - Navigation Link</a>
+        <div id="result4" class="result">Result will appear here</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Object Test</h2>
+        <button onclick="testObject()">Click Me - Test Object Method</button>
+        <div id="result5" class="result">Result will appear here</div>
+    </div>
+
+    <script>
+        // Test 2: Event Listener
+        document.getElementById('test2btn').addEventListener('click', function() {
+            document.getElementById('result2').innerHTML = 'Event listener worked at ' + new Date().toLocaleTimeString();
+        });
+
+        // Test 5: Object Method
+        const TestObject = {
+            message: 'Object method called',
+            showMessage: function() {
+                document.getElementById('result5').innerHTML = this.message + ' at ' + new Date().toLocaleTimeString();
+            }
+        };
+
+        function testObject() {
+            TestObject.showMessage();
+        }
+
+        // Log to console when page loads
+        console.log('Test page loaded at:', new Date().toLocaleTimeString());
+        console.log('JavaScript is enabled and running');
+    </script>
+</body>
+</html>

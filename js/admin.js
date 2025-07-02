@@ -53,60 +53,28 @@
         }
     }
     
-    // Navigation
+    // Navigation - Delegated to AdminDashboard module
     function setupNavigation() {
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                const target = href.substring(1);
-                
-                // If it's an external link (like "/" for home), allow default behavior
-                if (href === '/' || href.startsWith('http') || href.startsWith('../')) {
-                    return; // Don't prevent default, let browser handle navigation
-                }
-                
-                // For internal admin sections, prevent default and handle with SPA logic
-                e.preventDefault();
-                
-                if (target === '') {
-                    // This shouldn't happen now, but kept for safety
-                    window.location.href = '/';
-                    return;
-                }
-                
-                showSection(target);
-                
-                // Update active state
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            });
-        });
+        // Navigation is now handled by AdminDashboard.setupAdminNavigation()
+        // This function is kept for compatibility but delegates to the main module
+        console.log('Legacy navigation setup - delegating to AdminDashboard');
     }
     
     function showSection(sectionId) {
-        sections.forEach(section => {
-            section.classList.remove('active');
-        });
-        
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-            currentSection = sectionId;
+        // Delegate to AdminDashboard.switchSection for consistent behavior
+        if (typeof AdminDashboard !== 'undefined' && AdminDashboard.switchSection) {
+            AdminDashboard.switchSection(sectionId);
+        } else {
+            console.warn('AdminDashboard not available, using fallback section switching');
+            // Fallback implementation
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
             
-            // Load section-specific data
-            switch(sectionId) {
-                case 'dashboard':
-                    loadDashboard();
-                    break;
-                case 'users':
-                    loadUsers();
-                    break;
-                case 'analytics':
-                    loadAnalytics();
-                    break;
-                case 'feedback':
-                    loadFeedback();
-                    break;
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                currentSection = sectionId;
             }
         }
     }
@@ -411,6 +379,7 @@
             </div>
         `;
         
+        modal.style.display = 'flex';
         modal.classList.add('active');
     };
     
@@ -430,6 +399,7 @@
             </div>
             <div id="editUserFeedback"></div>
         `;
+        modal.style.display = 'flex';
         modal.classList.add('active');
         document.getElementById('saveUserBtn').onclick = async function() {
             const displayName = document.getElementById('editDisplayName').value;
@@ -498,7 +468,9 @@
         
         // Modal close
         document.getElementById('closeModal').addEventListener('click', () => {
-            document.getElementById('userModal').classList.remove('active');
+            const modal = document.getElementById('userModal');
+            modal.classList.remove('active');
+            modal.style.display = 'none';
         });
 
         // Message Modal Listeners - Only set up if messageModal.js component is not available

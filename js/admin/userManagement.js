@@ -1,4 +1,4 @@
-﻿// User Management JavaScript
+// User Management JavaScript
 // Handles user listing, search, filtering, and management actions
 
 const UserManagement = {
@@ -11,9 +11,16 @@ const UserManagement = {
     currentFilter: 'all',
 
     init() {
-        this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
-        this.setupEventListeners();
-        this.loadUsers();
+        console.log('UserManagement.init() called');
+        try {
+            this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+            console.log('API Base URL set to:', this.apiBaseUrl);
+            this.setupEventListeners();
+            this.loadUsers();
+            console.log('UserManagement initialization completed');
+        } catch (error) {
+            console.error('UserManagement initialization failed:', error);
+        }
     },
 
     setupEventListeners() {
@@ -50,23 +57,45 @@ const UserManagement = {
 
     async loadUsers() {
         try {
+            console.log('UserManagement.loadUsers() called');
             const token = localStorage.getItem('sessionToken');
             if (!token) throw new Error('No authentication token');
 
             const tbody = document.getElementById('usersTableBody');
+            const mobileCards = document.getElementById('mobileUsersCards');
+            
             if (tbody) {
                 tbody.innerHTML = '<tr><td colspan="7" class="loading">Summoning souls...</td></tr>';
             }
+            if (mobileCards) {
+                mobileCards.innerHTML = '<div class="loading">Summoning souls...</div>';
+            }
 
+            console.log('Fetching users from:', `${this.apiBaseUrl}/users`);
             const response = await fetch(`${this.apiBaseUrl}/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (!response.ok) {
-                throw new Error('Failed to load users');
+                throw new Error(`Failed to load users: ${response.status} ${response.statusText}`);
             }
 
-            this.allUsers = await response.json();
+            const userData = await response.json();
+            console.log('Raw API response:', userData);
+            
+            // Handle different response formats
+            if (Array.isArray(userData)) {
+                this.allUsers = userData;
+            } else if (userData.data && Array.isArray(userData.data)) {
+                this.allUsers = userData.data;
+            } else if (userData.users && Array.isArray(userData.users)) {
+                this.allUsers = userData.users;
+            } else {
+                console.warn('Unexpected API response format:', userData);
+                this.allUsers = [];
+            }
+            
+            console.log('UserManagement: Loaded', this.allUsers.length, 'users');
             this.filteredUsers = [...this.allUsers];
             this.totalUsers = this.allUsers.length;
             
@@ -75,7 +104,7 @@ const UserManagement = {
 
         } catch (error) {
             console.error('Error loading users:', error);
-            this.showError('Failed to load users');
+            this.showError('Failed to load users', error.message);
         }
     },
 
@@ -138,7 +167,7 @@ const UserManagement = {
         // Render desktop table
         if (tbody) {
             tbody.innerHTML = pageUsers.map(user => `
-                <tr class="user-row" data-user-id="${user._id}">
+                <tr class="user-row" data-user-id="${user._id || user.id}">
                     <td>
                         <img src="${user.avatar || '../assets/images/default.jpg'}" 
                              alt="${user.username}" 
@@ -156,17 +185,17 @@ const UserManagement = {
                     <td class="join-date">${this.formatDate(user.createdAt)}</td>
                     <td class="last-active">${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</td>
                     <td class="actions">
-                        <button class="action-btn view" onclick="UserManagement.viewUser('${user._id}')" title="View Details">
+                        <button class="action-btn view" onclick="console.log('View button clicked for user:', '${user._id || user.id}'); alert('Click registered! User: ${user.username}'); UserManagement.viewUser('${user._id || user.id}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="action-btn edit" onclick="UserManagement.editUser('${user._id}')" title="Edit User">
+                        <button class="action-btn edit" onclick="UserManagement.editUser('${user._id || user.id}')" title="Edit User">
                             <i class="fas fa-edit"></i>
                         </button>
                         ${!user.banned ? 
-                            `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id}')" title="Ban User">
+                            `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id || user.id}')" title="Ban User">
                                 <i class="fas fa-ban"></i>
                             </button>` :
-                            `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id}')" title="Unban User">
+                            `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id || user.id}')" title="Unban User">
                                 <i class="fas fa-check"></i>
                             </button>`
                         }
@@ -178,7 +207,7 @@ const UserManagement = {
         // Render mobile cards
         if (mobileCards) {
             mobileCards.innerHTML = pageUsers.map(user => `
-                <div class="mobile-card" data-user-id="${user._id}">
+                <div class="mobile-card" data-user-id="${user._id || user.id}">
                     <div class="mobile-card-header">
                         <img src="${user.avatar || '../assets/images/default.jpg'}" 
                              alt="${user.username}" 
@@ -205,17 +234,17 @@ const UserManagement = {
                         </div>
                     </div>
                     <div class="mobile-card-actions">
-                        <button class="action-btn view" onclick="UserManagement.viewUser('${user._id}')" title="View Details">
+                        <button class="action-btn view" onclick="UserManagement.viewUser('${user._id || user.id}')" title="View Details">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="action-btn edit" onclick="UserManagement.editUser('${user._id}')" title="Edit User">
+                        <button class="action-btn edit" onclick="UserManagement.editUser('${user._id || user.id}')" title="Edit User">
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         ${!user.banned ? 
-                            `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id}')" title="Ban User">
+                            `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id || user.id}')" title="Ban User">
                                 <i class="fas fa-ban"></i> Ban
                             </button>` :
-                            `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id}')" title="Unban User">
+                            `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id || user.id}')" title="Unban User">
                                 <i class="fas fa-check"></i> Unban
                             </button>`
                         }
@@ -267,8 +296,16 @@ const UserManagement = {
     },
 
     viewUser(userId) {
-        const user = this.allUsers.find(u => u._id === userId);
-        if (!user) return;
+        console.log('UserManagement.viewUser called with userId:', userId);
+        let user = this.allUsers.find(u => u._id === userId);
+        if (!user) {
+            user = this.allUsers.find(u => u.id === userId);
+        }
+        if (!user) {
+            console.error('User not found with ID:', userId);
+            this.showError('User not found');
+            return;
+        }
 
         this.showModal('Soul Details', `
             <div class="user-details">
@@ -347,6 +384,7 @@ const UserManagement = {
     },
 
     showModal(title, content) {
+        console.log('UserManagement.showModal called with:', title);
         const modal = document.getElementById('userModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalContent = document.getElementById('modalContent');
@@ -354,13 +392,23 @@ const UserManagement = {
         if (modal && modalTitle && modalContent) {
             modalTitle.textContent = title;
             modalContent.innerHTML = content;
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+            console.log('Modal opened successfully');
+        } else {
+            console.error('Missing modal elements:', {
+                modal: !!modal,
+                modalTitle: !!modalTitle,
+                modalContent: !!modalContent
+            });
+            this.showError('Modal elements not found');
         }
     },
 
     closeModal() {
         const modal = document.getElementById('userModal');
         if (modal) {
+            modal.classList.remove('active');
             modal.style.display = 'none';
         }
     },
@@ -401,3 +449,10 @@ const UserManagement = {
 
 // Make it globally available
 window.UserManagement = UserManagement;
+
+// Debug: Log when this script loads
+console.log('UserManagement script loaded, object available:', typeof UserManagement);
+
+// Remove auto-initialization - let AdminDashboard handle initialization
+// This prevents race conditions and duplicate initialization
+console.log('UserManagement module loaded and available for initialization');

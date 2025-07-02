@@ -224,6 +224,7 @@ const AdminFeedback = {
     showFeedbackModal(feedback) {
         const modal = document.createElement('div');
         modal.className = 'modal active';
+        modal.style.display = 'flex';
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">

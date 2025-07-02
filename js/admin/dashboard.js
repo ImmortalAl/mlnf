@@ -23,9 +23,8 @@ const AdminDashboard = {
                 const targetSection = link.getAttribute('href').substring(1);
                 this.switchSection(targetSection);
                 
-                // Update active nav item
-                adminNavLinks.forEach(navLink => navLink.classList.remove('active'));
-                link.classList.add('active');
+                // Update active state for all navigation elements
+                this.updateActiveNavStates(targetSection);
             });
         });
 
@@ -34,11 +33,7 @@ const AdminDashboard = {
         this.switchSection(initialSection);
         
         // Update active nav item for initial load
-        const activeLink = document.querySelector(`.admin-nav a[href="#${initialSection}"]`);
-        if (activeLink) {
-            adminNavLinks.forEach(navLink => navLink.classList.remove('active'));
-            activeLink.classList.add('active');
-        }
+        this.updateActiveNavStates(initialSection);
 
         // Handle logout button
         const logoutBtn = document.getElementById('logoutBtn');
@@ -48,6 +43,8 @@ const AdminDashboard = {
     },
 
     switchSection(sectionName) {
+        console.log(`AdminDashboard.switchSection called with: ${sectionName}`);
+        
         // Hide all sections
         const allSections = document.querySelectorAll('.admin-section');
         allSections.forEach(section => {
@@ -58,13 +55,74 @@ const AdminDashboard = {
         const targetSection = document.getElementById(sectionName);
         if (targetSection) {
             targetSection.classList.add('active');
+            console.log(`Section ${sectionName} activated successfully`);
             
             // Update URL hash without triggering page reload
             window.history.replaceState(null, null, `#${sectionName}`);
             
+            // Load section-specific data
+            this.loadSectionData(sectionName);
+            
         } else {
-            console.warn(`Admin section not found: ${sectionName}`);
+            console.error(`Admin section not found: ${sectionName}. Available sections:`, 
+                Array.from(document.querySelectorAll('.admin-section')).map(s => s.id));
         }
+    },
+
+    loadSectionData(sectionName) {
+        switch(sectionName) {
+            case 'dashboard':
+                this.loadDashboardData();
+                break;
+            case 'users':
+                // Initialize UserManagement if it hasn't been initialized yet
+                if (typeof UserManagement !== 'undefined') {
+                    if (!UserManagement.apiBaseUrl) {
+                        console.log('Initializing UserManagement for first time');
+                        UserManagement.init();
+                    } else {
+                        console.log('UserManagement already initialized, loading users data');
+                        UserManagement.loadUsers();
+                    }
+                } else {
+                    console.error('UserManagement module not available - check script loading order');
+                    this.showError('User Management module failed to load', 'Please refresh the page');
+                }
+                break;
+            case 'analytics':
+                if (typeof AdminAnalytics !== 'undefined' && AdminAnalytics.loadAnalytics) {
+                    AdminAnalytics.loadAnalytics();
+                }
+                break;
+            case 'feedback':
+                if (typeof AdminFeedback !== 'undefined' && AdminFeedback.loadFeedback) {
+                    AdminFeedback.loadFeedback();
+                }
+                break;
+        }
+    },
+
+    updateActiveNavStates(activeSection) {
+        // Update desktop navigation
+        const desktopNavLinks = document.querySelectorAll('.admin-nav a[href^="#"]');
+        desktopNavLinks.forEach(link => {
+            const section = link.getAttribute('href').substring(1);
+            link.classList.toggle('active', section === activeSection);
+        });
+
+        // Update mobile navigation
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link[href^="#"]');
+        mobileNavLinks.forEach(link => {
+            const section = link.getAttribute('href').substring(1);
+            link.classList.toggle('active', section === activeSection);
+        });
+
+        // Update mobile tab buttons
+        const mobileTabBtns = document.querySelectorAll('.mobile-tab-btn[data-section]');
+        mobileTabBtns.forEach(btn => {
+            const section = btn.dataset.section;
+            btn.classList.toggle('active', section === activeSection);
+        });
     },
 
     handleLogout() {

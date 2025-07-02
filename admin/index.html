@@ -37,14 +37,22 @@
     <link rel="preload" href="../css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=2.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=3.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.1"></noscript>
+    <link rel="preload" href="../css/admin.css?v=3.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.3"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 </head>
 <body>
+    <!-- EMERGENCY TEST - Remove after debugging -->
+    <div style="position: fixed; top: 0; left: 0; z-index: 999999; background: red; color: white; padding: 20px;">
+        <h3>JAVASCRIPT TEST</h3>
+        <button onclick="alert('JS WORKS!')">TEST ALERT</button>
+        <button onclick="this.innerHTML='CLICKED'">TEST DOM</button>
+        <p>If these buttons don't work, JavaScript is completely disabled</p>
+    </div>
+    
     <header>
         <div class="logo">
             <a href="/">
@@ -60,7 +68,7 @@
         <nav class="admin-nav">
             <ul>
                 <li><a href="#dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="#users"><i class="fas fa-users"></i> Soul Management</a></li>
+                <li><a href="#users" onclick="console.log('Users nav clicked'); alert('Navigation click detected!');"><i class="fas fa-users"></i> Soul Management</a></li>
                 <li><a href="#curation"><i class="fas fa-star"></i> Content Curation</a></li>
                 <li><a href="#analytics"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
                 <li><a href="#feedback"><i class="fas fa-heart"></i> Eternal Feedback</a></li>
@@ -177,6 +185,9 @@
             <h2 class="section-title">
                 <i class="fas fa-users-cog"></i> Soul Management
             </h2>
+            
+            <!-- Test button to verify JavaScript is working -->
+            <button onclick="alert('JavaScript is working!'); console.log('Test button clicked');" style="background: #ff0000; color: white; padding: 10px; margin: 10px 0;">TEST: Click Me to Verify JS Works</button>
             
             <div class="management-controls">
                 <div class="search-bar">
@@ -593,10 +604,10 @@
     <script src="../js/mlnf-avatar-system.js?v=2.0"></script>
     
     <!-- Admin Components -->
-    <script src="../js/admin/dashboard.js?v=1.3"></script>
-    <script src="../js/admin/userManagement.js?v=1.4"></script>
+    <script src="../js/admin/dashboard.js?v=1.4"></script>
+    <script src="../js/admin/userManagement.js?v=2.0"></script>
     <script src="../js/admin/analytics.js?v=2.0"></script>
-    <script src="../js/admin/feedback.js?v=2.2"></script>
+    <script src="../js/admin/feedback.js?v=2.3"></script>
     
     <!-- Content Curation System -->
     <script>
@@ -1005,19 +1016,52 @@
                 }
             }, 1000);
             
-            // Initialize admin components
-            if (typeof AdminDashboard !== 'undefined') {
-                AdminDashboard.init();
-            }
-            if (typeof UserManagement !== 'undefined') {
-                UserManagement.init();
-            }
-            if (typeof AdminAnalytics !== 'undefined') {
-                AdminAnalytics.init();
-            }
-            if (typeof AdminFeedback !== 'undefined') {
-                AdminFeedback.init();
-            }
+            // Initialize admin components with delay to ensure all scripts are loaded
+            setTimeout(() => {
+                console.log('Initializing admin components...');
+                console.log('Available globals:', {
+                    AdminDashboard: typeof AdminDashboard,
+                    UserManagement: typeof UserManagement,
+                    AdminAnalytics: typeof AdminAnalytics,
+                    AdminFeedback: typeof AdminFeedback,
+                    MLNF_CONFIG: typeof window.MLNF_CONFIG
+                });
+                
+                if (typeof AdminDashboard !== 'undefined') {
+                    console.log('Initializing AdminDashboard');
+                    AdminDashboard.init();
+                } else {
+                    console.error('AdminDashboard not found - check script loading');
+                }
+                
+                // Don't auto-init UserManagement - let AdminDashboard handle it
+                if (typeof UserManagement !== 'undefined') {
+                    console.log('UserManagement available for lazy initialization');
+                } else {
+                    console.error('UserManagement not found - check script loading');
+                }
+                
+                if (typeof AdminAnalytics !== 'undefined') {
+                    console.log('Initializing AdminAnalytics');
+                    AdminAnalytics.init();
+                } else {
+                    console.error('AdminAnalytics not found - check script loading');
+                }
+                
+                if (typeof AdminFeedback !== 'undefined') {
+                    console.log('Initializing AdminFeedback');
+                    AdminFeedback.init();
+                } else {
+                    console.error('AdminFeedback not found - check script loading');
+                }
+                
+                // Test section switching after initialization
+                setTimeout(() => {
+                    console.log('Testing section availability...');
+                    const sections = document.querySelectorAll('.admin-section');
+                    console.log('Available sections:', Array.from(sections).map(s => ({ id: s.id, hasActiveClass: s.classList.contains('active') })));
+                }, 100);
+            }, 500);
             
             // Initialize curation highlights
             setTimeout(loadCurrentHighlights, 1000);
