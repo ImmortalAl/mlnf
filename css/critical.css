@@ -34,6 +34,16 @@ body {
 }
 
 /* ==========================================
+   PREVENT FOUC (Flash of Unstyled Content)
+   ========================================== */
+
+/* Hide mobile nav initially to prevent left-side flash on page load */
+.mobile-nav {
+    transform: translateX(-100%) !important;
+    visibility: hidden !important;
+}
+
+/* ==========================================
    LIGHT THEME VARIABLES & OVERRIDES
    ========================================== */
 
