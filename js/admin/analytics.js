@@ -106,7 +106,9 @@ const AdminAnalytics = {
                 
                 // If it's a 404, the endpoint might not be deployed yet
                 if (response.status === 404) {
-                    throw new Error('Analytics endpoint not deployed yet - using fallback data');
+                    console.log('🔄 Analytics endpoint not deployed, trying existing endpoints...');
+                    await this.loadDataFromExistingEndpoints();
+                    return;
                 }
                 
                 throw new Error(`Analytics API error: ${response.status} - ${errorText}`);
@@ -220,15 +222,15 @@ const AdminAnalytics = {
         this.updateMetricWithAnimation('avgPageLoadTime', '1.8s'); // Placeholder
 
         // Update eternal analytics specific metrics
-        this.updateMetricWithAnimation('dailyActive', data.overview.activeUsers);
-        this.updateMetricWithAnimation('contentRate', data.content.recentBlogs + data.content.recentThreads + '/day');
+        this.updateMetricWithAnimation('dailyActive', data.overview.dailyActiveUsers || data.overview.activeUsers);
+        this.updateMetricWithAnimation('contentRate', (data.content.recentBlogs + data.content.recentThreads) + '/day');
         this.updateMetricWithAnimation('engagement', data.overview.engagementRate + '%');
         this.updateMetricWithAnimation('errorRate', '0.2%'); // Placeholder
 
         // Update change indicators (calculated from data trends)
-        const userGrowth = data.overview.newUsers > 0 ? '+' + ((data.overview.newUsers / data.overview.totalUsers) * 100).toFixed(1) : '0';
+        const userGrowth = data.overview.newUsers > 0 ? ((data.overview.newUsers / data.overview.totalUsers) * 100).toFixed(1) : '0';
         this.updateChangeIndicator('pageViewsChange', Math.floor(Math.random() * 20) - 10);
-        this.updateChangeIndicator('uniqueVisitorsChange', userGrowth);
+        this.updateChangeIndicator('uniqueVisitorsChange', parseFloat(userGrowth));
         this.updateChangeIndicator('sessionDurationChange', Math.floor(Math.random() * 10) - 5);
         this.updateChangeIndicator('bounceRateChange', Math.floor(Math.random() * 8) - 4);
     },
@@ -324,6 +326,74 @@ const AdminAnalytics = {
         this.loadDeviceAnalytics();
         this.loadGeographicData();
         this.loadSearchAnalytics();
+    },
+
+    async loadDataFromExistingEndpoints() {
+        try {
+            console.log('🔄 Loading real data from existing endpoints...');
+            const token = localStorage.getItem('sessionToken');
+            
+            // Get real user data
+            const usersResponse = await fetch(`${this.apiBaseUrl}/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (usersResponse.ok) {
+                const users = await usersResponse.json();
+                console.log('✅ Real user data loaded:', users.length, 'users');
+                
+                // Calculate real metrics from user data
+                const realMetrics = this.calculateRealMetricsFromUsers(users);
+                this.updateEternalMetrics({
+                    overview: realMetrics,
+                    content: { recentBlogs: 0, recentThreads: 0, commentRate: '0' },
+                    governance: { totalVotes: 0, recentVotes: 0, participationRate: '0' },
+                    popular: { blogs: [], threads: [] },
+                    activity: { recentBlogs: [], recentComments: [], recentThreads: [], newUsers: [] }
+                });
+                
+                this.showAnalyticsStatus('Using real user data + estimated metrics', 'success');
+                return;
+            }
+        } catch (error) {
+            console.error('Error loading existing endpoint data:', error);
+        }
+        
+        // If all else fails, use mock data
+        this.loadFallbackData();
+    },
+
+    calculateRealMetricsFromUsers(users) {
+        const now = new Date();
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        
+        const totalUsers = users.length;
+        const onlineUsers = users.filter(user => user.online).length;
+        const activeUsers = users.filter(user => {
+            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+            return lastLogin && lastLogin >= sevenDaysAgo;
+        }).length;
+        const newUsers = users.filter(user => {
+            const createdAt = new Date(user.createdAt);
+            return createdAt >= sevenDaysAgo;
+        }).length;
+        const dailyActiveUsers = users.filter(user => {
+            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+            return lastLogin && lastLogin >= oneDayAgo;
+        }).length;
+        
+        return {
+            totalUsers,
+            activeUsers,
+            newUsers,
+            onlineUsers,
+            dailyActiveUsers,
+            totalContent: Math.floor(totalUsers * 2.5), // Estimate
+            totalEngagement: Math.floor(totalUsers * 5), // Estimate
+            engagementRate: totalUsers > 0 ? ((activeUsers / totalUsers) * 100).toFixed(1) : '0',
+            userRetentionRate: totalUsers > 0 ? ((activeUsers / totalUsers) * 100).toFixed(1) : '0'
+        };
     },
 
     showAnalyticsStatus(message, type) {
