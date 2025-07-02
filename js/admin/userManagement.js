@@ -119,10 +119,15 @@ const UserManagement = {
 
     renderUsersTable() {
         const tbody = document.getElementById('usersTableBody');
-        if (!tbody) return;
-
+        const mobileCards = document.getElementById('mobileUsersCards');
+        
         if (this.filteredUsers.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="no-data">No souls found</td></tr>';
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">No souls found</td></tr>';
+            }
+            if (mobileCards) {
+                mobileCards.innerHTML = '<div class="no-data">No souls found</div>';
+            }
             return;
         }
 
@@ -130,42 +135,94 @@ const UserManagement = {
         const endIndex = startIndex + this.itemsPerPage;
         const pageUsers = this.filteredUsers.slice(startIndex, endIndex);
 
-        tbody.innerHTML = pageUsers.map(user => `
-            <tr class="user-row" data-user-id="${user._id}">
-                <td>
-                    <img src="${user.avatar || '../assets/images/default.jpg'}" 
-                         alt="${user.username}" 
-                         class="user-avatar"
-                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                </td>
-                <td class="username">${user.username}</td>
-                <td class="display-name">${user.displayName || '-'}</td>
-                <td>
-                    <span class="status-badge ${user.online ? 'online' : 'offline'}">
-                        ${user.online ? 'Online' : 'Offline'}
-                    </span>
-                    ${user.banned ? '<span class="status-badge banned">Banned</span>' : ''}
-                </td>
-                <td class="join-date">${this.formatDate(user.createdAt)}</td>
-                <td class="last-active">${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</td>
-                <td class="actions">
-                    <button class="action-btn view" onclick="UserManagement.viewUser('${user._id}')" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="action-btn edit" onclick="UserManagement.editUser('${user._id}')" title="Edit User">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    ${!user.banned ? 
-                        `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id}')" title="Ban User">
-                            <i class="fas fa-ban"></i>
-                        </button>` :
-                        `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id}')" title="Unban User">
-                            <i class="fas fa-check"></i>
-                        </button>`
-                    }
-                </td>
-            </tr>
-        `).join('');
+        // Render desktop table
+        if (tbody) {
+            tbody.innerHTML = pageUsers.map(user => `
+                <tr class="user-row" data-user-id="${user._id}">
+                    <td>
+                        <img src="${user.avatar || '../assets/images/default.jpg'}" 
+                             alt="${user.username}" 
+                             class="user-avatar"
+                             style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    </td>
+                    <td class="username">${user.username}</td>
+                    <td class="display-name">${user.displayName || '-'}</td>
+                    <td>
+                        <span class="status-badge ${user.online ? 'online' : 'offline'}">
+                            ${user.online ? 'Online' : 'Offline'}
+                        </span>
+                        ${user.banned ? '<span class="status-badge banned">Banned</span>' : ''}
+                    </td>
+                    <td class="join-date">${this.formatDate(user.createdAt)}</td>
+                    <td class="last-active">${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</td>
+                    <td class="actions">
+                        <button class="action-btn view" onclick="UserManagement.viewUser('${user._id}')" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit" onclick="UserManagement.editUser('${user._id}')" title="Edit User">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        ${!user.banned ? 
+                            `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id}')" title="Ban User">
+                                <i class="fas fa-ban"></i>
+                            </button>` :
+                            `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id}')" title="Unban User">
+                                <i class="fas fa-check"></i>
+                            </button>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render mobile cards
+        if (mobileCards) {
+            mobileCards.innerHTML = pageUsers.map(user => `
+                <div class="mobile-card" data-user-id="${user._id}">
+                    <div class="mobile-card-header">
+                        <img src="${user.avatar || '../assets/images/default.jpg'}" 
+                             alt="${user.username}" 
+                             class="mobile-card-avatar">
+                        <div class="mobile-card-info">
+                            <div class="mobile-card-username">${user.displayName || user.username}</div>
+                            <div class="mobile-card-meta">@${user.username}</div>
+                        </div>
+                        <div class="status-badges">
+                            <span class="status-badge ${user.online ? 'online' : 'offline'}">
+                                ${user.online ? 'Online' : 'Offline'}
+                            </span>
+                            ${user.banned ? '<span class="status-badge banned">Banned</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="mobile-card-details">
+                        <div class="mobile-card-field">
+                            <span class="mobile-card-label">Joined</span>
+                            <span class="mobile-card-value">${this.formatDate(user.createdAt)}</span>
+                        </div>
+                        <div class="mobile-card-field">
+                            <span class="mobile-card-label">Last Active</span>
+                            <span class="mobile-card-value">${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</span>
+                        </div>
+                    </div>
+                    <div class="mobile-card-actions">
+                        <button class="action-btn view" onclick="UserManagement.viewUser('${user._id}')" title="View Details">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn edit" onclick="UserManagement.editUser('${user._id}')" title="Edit User">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        ${!user.banned ? 
+                            `<button class="action-btn ban" onclick="UserManagement.banUser('${user._id}')" title="Ban User">
+                                <i class="fas fa-ban"></i> Ban
+                            </button>` :
+                            `<button class="action-btn unban" onclick="UserManagement.unbanUser('${user._id}')" title="Unban User">
+                                <i class="fas fa-check"></i> Unban
+                            </button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
     },
 
     renderPagination() {

@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=2.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=2.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=2.4"></noscript>
+    <link rel="preload" href="../css/admin.css?v=3.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.0"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -67,6 +67,12 @@
                 <li><a href="/"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
             </ul>
         </nav>
+        
+        <!-- Mobile Navigation Toggle -->
+        <button class="admin-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        
         <div class="admin-user">
             <button id="showUsersBtn" class="btn btn-outline" title="Active Souls">
                 <i class="fas fa-users"></i>
@@ -78,7 +84,38 @@
         </div>
     </header>
 
+    <!-- Mobile Navigation Overlay -->
+    <div class="admin-nav-overlay" id="mobileNavOverlay"></div>
+    
+    <!-- Mobile Navigation Menu -->
+    <nav class="admin-nav-mobile" id="mobileNavMenu">
+        <div class="nav-header">
+            <h3>Admin Menu</h3>
+            <button class="nav-close" id="mobileNavClose" aria-label="Close navigation">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul>
+            <li><a href="#dashboard" class="mobile-nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="#users" class="mobile-nav-link"><i class="fas fa-users"></i> Soul Management</a></li>
+            <li><a href="#curation" class="mobile-nav-link"><i class="fas fa-star"></i> Content Curation</a></li>
+            <li><a href="#analytics" class="mobile-nav-link"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
+            <li><a href="#feedback" class="mobile-nav-link"><i class="fas fa-heart"></i> Eternal Feedback</a></li>
+            <li><a href="/" class="mobile-nav-link"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
+        </ul>
+    </nav>
+
     <main class="admin-container">
+        <!-- Mobile Section Tabs -->
+        <div class="mobile-section-tabs">
+            <ul class="mobile-tabs-list">
+                <li><a href="#dashboard" class="mobile-tab-btn active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="#users" class="mobile-tab-btn" data-section="users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="#curation" class="mobile-tab-btn" data-section="curation"><i class="fas fa-star"></i> Curation</a></li>
+                <li><a href="#analytics" class="mobile-tab-btn" data-section="analytics"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#feedback" class="mobile-tab-btn" data-section="feedback"><i class="fas fa-heart"></i> Feedback</a></li>
+            </ul>
+        </div>
         <!-- Dashboard Section -->
         <section id="dashboard" class="admin-section active">
             <h2 class="section-title">
@@ -158,24 +195,31 @@
             </div>
             
             <div class="users-table-wrapper">
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>Avatar</th>
-                            <th>Username</th>
-                            <th>Display Name</th>
-                            <th>Status</th>
-                            <th>Joined</th>
-                            <th>Last Active</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <tr>
-                            <td colspan="7" class="loading">Summoning souls...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Avatar</th>
+                                <th>Username</th>
+                                <th>Display Name</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Last Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="7" class="loading">Summoning souls...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Mobile Table Cards -->
+            <div class="mobile-table-cards" id="mobileUsersCards">
+                <div class="loading">Summoning souls...</div>
             </div>
             
             <div class="pagination" id="usersPagination">
@@ -367,7 +411,7 @@
     
     <!-- Admin Components -->
     <script src="../js/admin/dashboard.js?v=1.3"></script>
-    <script src="../js/admin/userManagement.js?v=1.3"></script>
+    <script src="../js/admin/userManagement.js?v=1.4"></script>
     <script src="../js/admin/analytics.js?v=1.2"></script>
     <script src="../js/admin/feedback.js?v=2.1"></script>
     
@@ -794,7 +838,111 @@
             
             // Initialize curation highlights
             setTimeout(loadCurrentHighlights, 1000);
+            
+            // Initialize mobile navigation
+            initMobileNavigation();
         });
+        
+        // Mobile Navigation Functions
+        function initMobileNavigation() {
+            const mobileNavToggle = document.getElementById('mobileNavToggle');
+            const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+            const mobileNavMenu = document.getElementById('mobileNavMenu');
+            const mobileNavClose = document.getElementById('mobileNavClose');
+            
+            // Mobile nav toggle
+            if (mobileNavToggle) {
+                mobileNavToggle.addEventListener('click', () => {
+                    toggleMobileNav(true);
+                });
+            }
+            
+            // Mobile nav close
+            if (mobileNavClose) {
+                mobileNavClose.addEventListener('click', () => {
+                    toggleMobileNav(false);
+                });
+            }
+            
+            // Overlay click to close
+            if (mobileNavOverlay) {
+                mobileNavOverlay.addEventListener('click', () => {
+                    toggleMobileNav(false);
+                });
+            }
+            
+            // Mobile nav links
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link, .mobile-tab-btn');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.getAttribute('href').substring(1) || link.dataset.section;
+                    if (section && section !== '/') {
+                        // Switch section using existing AdminDashboard function
+                        if (typeof AdminDashboard !== 'undefined' && AdminDashboard.switchSection) {
+                            AdminDashboard.switchSection(section);
+                        }
+                        // Update active states
+                        updateMobileNavActiveStates(section);
+                    }
+                    // Close mobile nav
+                    toggleMobileNav(false);
+                });
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    toggleMobileNav(false);
+                }
+            });
+        }
+        
+        function toggleMobileNav(show) {
+            const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+            const mobileNavMenu = document.getElementById('mobileNavMenu');
+            
+            if (show) {
+                if (mobileNavOverlay) {
+                    mobileNavOverlay.style.display = 'block';
+                }
+                if (mobileNavMenu) {
+                    mobileNavMenu.style.display = 'block';
+                    // Force reflow then add active class for animation
+                    mobileNavMenu.offsetHeight;
+                    mobileNavMenu.classList.add('active');
+                }
+                // Prevent body scroll
+                document.body.style.overflow = 'hidden';
+            } else {
+                if (mobileNavMenu) {
+                    mobileNavMenu.classList.remove('active');
+                    setTimeout(() => {
+                        if (mobileNavMenu) mobileNavMenu.style.display = 'none';
+                    }, 300);
+                }
+                if (mobileNavOverlay) {
+                    mobileNavOverlay.style.display = 'none';
+                }
+                // Restore body scroll
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function updateMobileNavActiveStates(activeSection) {
+            // Update mobile tab buttons
+            const tabBtns = document.querySelectorAll('.mobile-tab-btn');
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === activeSection);
+            });
+            
+            // Update desktop nav links
+            const navLinks = document.querySelectorAll('.admin-nav a');
+            navLinks.forEach(link => {
+                const section = link.getAttribute('href').substring(1);
+                link.classList.toggle('active', section === activeSection);
+            });
+        }
     </script>
 </body>
 </html> 
