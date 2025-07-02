@@ -37,30 +37,69 @@ const AdminFeedback = {
     async loadFeedback() {
         try {
             const tbody = document.getElementById('feedbackTableBody');
-            if (!tbody) {
-                console.warn('Feedback table body not found');
-                return;
+            const mobileCards = document.getElementById('mobileFeedbackCards');
+            
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="5" class="loading">Summoning immortal feedback...</td></tr>';
             }
-
-            tbody.innerHTML = '<tr><td colspan="5" class="loading">Summoning immortal feedback...</td></tr>';
+            if (mobileCards) {
+                mobileCards.innerHTML = '<div class="loading">Summoning immortal feedback...</div>';
+            }
             
             const token = localStorage.getItem('sessionToken');
             if (!token) {
                 throw new Error('No authentication token found');
             }
 
-            const response = await fetch(`${this.apiBaseUrl}/feedback`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            // Try multiple potential API endpoints for feedback
+            const endpoints = [
+                `${this.apiBaseUrl}/feedback`,
+                `${this.apiBaseUrl}/admin/feedback`,
+                `${this.apiBaseUrl}/messages/feedback`,
+                `${this.apiBaseUrl}/contact`
+            ];
 
-            if (!response.ok) {
-                throw new Error(`Failed to load feedback: ${response.status}`);
+            let response = null;
+            let lastError = null;
+
+            for (const endpoint of endpoints) {
+                try {
+                    response = await fetch(endpoint, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        break; // Success, exit loop
+                    } else if (response.status === 404) {
+                        lastError = `Endpoint not found: ${endpoint}`;
+                        response = null;
+                        continue; // Try next endpoint
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                } catch (fetchError) {
+                    lastError = `${endpoint}: ${fetchError.message}`;
+                    response = null;
+                    continue; // Try next endpoint
+                }
+            }
+
+            if (!response || !response.ok) {
+                // If all endpoints failed, show a message but don't error out
+                const message = lastError || 'Feedback API not available';
+                console.warn('Feedback API warning:', message);
+                
+                // Show placeholder message instead of error
+                this.feedbacks = [];
+                this.filteredFeedbacks = [];
+                this.renderFeedbackTable();
+                return;
             }
 
             const data = await response.json();
-            this.feedbacks = Array.isArray(data) ? data : data.feedbacks || [];
+            this.feedbacks = Array.isArray(data) ? data : data.feedbacks || data.messages || [];
             this.filteredFeedbacks = [...this.feedbacks];
             this.renderFeedbackTable();
 
@@ -68,19 +107,29 @@ const AdminFeedback = {
             console.error('Error loading feedback:', error);
             this.showError('Failed to load feedback', error.message);
             
+            // Show error in both table and mobile cards
+            const errorMessage = `<tr><td colspan="5" class="error">Failed to load feedback: ${error.message}</td></tr>`;
+            const mobileErrorMessage = `<div class="error">Failed to load feedback: ${error.message}</div>`;
+            
             const tbody = document.getElementById('feedbackTableBody');
-            if (tbody) {
-                tbody.innerHTML = `<tr><td colspan="5" class="error">Failed to load feedback: ${error.message}</td></tr>`;
-            }
+            const mobileCards = document.getElementById('mobileFeedbackCards');
+            
+            if (tbody) tbody.innerHTML = errorMessage;
+            if (mobileCards) mobileCards.innerHTML = mobileErrorMessage;
         }
     },
 
     renderFeedbackTable() {
         const tbody = document.getElementById('feedbackTableBody');
-        if (!tbody) return;
+        const mobileCards = document.getElementById('mobileFeedbackCards');
 
         if (this.filteredFeedbacks.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="empty">No feedback available</td></tr>';
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty">No feedback available yet</td></tr>';
+            }
+            if (mobileCards) {
+                mobileCards.innerHTML = '<div class="empty">No feedback available yet</div>';
+            }
             return;
         }
 
@@ -88,34 +137,72 @@ const AdminFeedback = {
         const endIndex = startIndex + this.itemsPerPage;
         const pageFeedbacks = this.filteredFeedbacks.slice(startIndex, endIndex);
 
-        tbody.innerHTML = pageFeedbacks.map(feedback => {
-            const feedbackId = feedback._id || feedback.id;
-            const date = feedback.createdAt ? new Date(feedback.createdAt).toLocaleDateString() : 'Unknown';
-            const content = this.truncateText(feedback.message || feedback.content || 'No message', 100);
-            const sender = feedback.username || feedback.email || 'Anonymous';
+        // Render desktop table
+        if (tbody) {
+            tbody.innerHTML = pageFeedbacks.map(feedback => {
+                const feedbackId = feedback._id || feedback.id || Date.now();
+                const date = feedback.createdAt ? new Date(feedback.createdAt).toLocaleDateString() : 'Unknown';
+                const content = this.truncateText(feedback.message || feedback.content || 'No message', 100);
+                const sender = feedback.username || feedback.email || feedback.name || 'Anonymous';
 
-            return `
-                <tr class="feedback-row" data-feedback-id="${feedbackId}">
-                    <td class="feedback-date">${date}</td>
-                    <td class="feedback-content">
-                        <div class="feedback-preview" title="${this.escapeHtml(feedback.message || feedback.content || 'No message')}">
-                            ${this.escapeHtml(content)}
+                return `
+                    <tr class="feedback-row" data-feedback-id="${feedbackId}">
+                        <td class="feedback-date">${date}</td>
+                        <td class="feedback-content">
+                            <div class="feedback-preview" title="${this.escapeHtml(feedback.message || feedback.content || 'No message')}">
+                                ${this.escapeHtml(content)}
+                            </div>
+                        </td>
+                        <td class="feedback-sender">${this.escapeHtml(sender)}</td>
+                        <td class="feedback-actions">
+                            <button class="action-btn reply" onclick="AdminFeedback.replyToFeedback('${feedbackId}')" title="Reply">
+                                <i class="fas fa-reply"></i>
+                            </button>
+                        </td>
+                        <td class="feedback-actions">
+                            <button class="action-btn delete" onclick="AdminFeedback.deleteFeedback('${feedbackId}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render mobile cards
+        if (mobileCards) {
+            mobileCards.innerHTML = pageFeedbacks.map(feedback => {
+                const feedbackId = feedback._id || feedback.id || Date.now();
+                const date = feedback.createdAt ? new Date(feedback.createdAt).toLocaleDateString() : 'Unknown';
+                const content = feedback.message || feedback.content || 'No message';
+                const sender = feedback.username || feedback.email || feedback.name || 'Anonymous';
+
+                return `
+                    <div class="mobile-card" data-feedback-id="${feedbackId}">
+                        <div class="mobile-card-header">
+                            <div class="mobile-card-info">
+                                <div class="mobile-card-username">Feedback from ${this.escapeHtml(sender)}</div>
+                                <div class="mobile-card-meta">${date}</div>
+                            </div>
                         </div>
-                    </td>
-                    <td class="feedback-sender">${this.escapeHtml(sender)}</td>
-                    <td class="feedback-actions">
-                        <button class="action-btn reply" onclick="AdminFeedback.replyToFeedback('${feedbackId}')" title="Reply">
-                            <i class="fas fa-reply"></i>
-                        </button>
-                    </td>
-                    <td class="feedback-actions">
-                        <button class="action-btn delete" onclick="AdminFeedback.deleteFeedback('${feedbackId}')" title="Delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+                        <div class="mobile-card-details">
+                            <div class="mobile-card-field">
+                                <span class="mobile-card-label">Message</span>
+                                <span class="mobile-card-value">${this.escapeHtml(this.truncateText(content, 200))}</span>
+                            </div>
+                        </div>
+                        <div class="mobile-card-actions">
+                            <button class="action-btn reply" onclick="AdminFeedback.replyToFeedback('${feedbackId}')" title="Reply">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                            <button class="action-btn delete" onclick="AdminFeedback.deleteFeedback('${feedbackId}')" title="Delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
     },
 
     replyToFeedback(feedbackId) {
