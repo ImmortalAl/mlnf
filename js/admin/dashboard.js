@@ -289,11 +289,6 @@ const AdminDashboard = {
         }
     },
 
-    showError(message) {
-        console.error('Dashboard Error:', message);
-        // Could show a toast notification or error banner
-    },
-
     destroy() {
         this.stopAutoRefresh();
     }
