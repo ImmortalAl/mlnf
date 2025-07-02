@@ -11,13 +11,10 @@ const UserManagement = {
     currentFilter: 'all',
 
     init() {
-        console.log('UserManagement.init() called');
         try {
             this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
-            console.log('API Base URL set to:', this.apiBaseUrl);
             this.setupEventListeners();
             this.loadUsers();
-            console.log('UserManagement initialization completed');
         } catch (error) {
             console.error('UserManagement initialization failed:', error);
         }
@@ -53,11 +50,30 @@ const UserManagement = {
         if (closeModal) {
             closeModal.addEventListener('click', () => this.closeModal());
         }
+
+        // Close modal on backdrop click
+        const modal = document.getElementById('userModal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeModal();
+                }
+            });
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const activeModal = document.querySelector('.modal.active');
+                if (activeModal && activeModal.id === 'userModal') {
+                    this.closeModal();
+                }
+            }
+        });
     },
 
     async loadUsers() {
         try {
-            console.log('UserManagement.loadUsers() called');
             const token = localStorage.getItem('sessionToken');
             if (!token) throw new Error('No authentication token');
 
@@ -71,7 +87,6 @@ const UserManagement = {
                 mobileCards.innerHTML = '<div class="loading">Summoning souls...</div>';
             }
 
-            console.log('Fetching users from:', `${this.apiBaseUrl}/users`);
             const response = await fetch(`${this.apiBaseUrl}/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -81,7 +96,6 @@ const UserManagement = {
             }
 
             const userData = await response.json();
-            console.log('Raw API response:', userData);
             
             // Handle different response formats
             if (Array.isArray(userData)) {
@@ -95,7 +109,6 @@ const UserManagement = {
                 this.allUsers = [];
             }
             
-            console.log('UserManagement: Loaded', this.allUsers.length, 'users');
             this.filteredUsers = [...this.allUsers];
             this.totalUsers = this.allUsers.length;
             
@@ -185,7 +198,7 @@ const UserManagement = {
                     <td class="join-date">${this.formatDate(user.createdAt)}</td>
                     <td class="last-active">${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</td>
                     <td class="actions">
-                        <button class="action-btn view" onclick="console.log('View button clicked for user:', '${user._id || user.id}'); alert('Click registered! User: ${user.username}'); UserManagement.viewUser('${user._id || user.id}')" title="View Details">
+                        <button class="action-btn view" onclick="UserManagement.viewUser('${user._id || user.id}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                         <button class="action-btn edit" onclick="UserManagement.editUser('${user._id || user.id}')" title="Edit User">
@@ -296,7 +309,6 @@ const UserManagement = {
     },
 
     viewUser(userId) {
-        console.log('UserManagement.viewUser called with userId:', userId);
         let user = this.allUsers.find(u => u._id === userId);
         if (!user) {
             user = this.allUsers.find(u => u.id === userId);
@@ -310,27 +322,186 @@ const UserManagement = {
         this.showModal('Soul Details', `
             <div class="user-details">
                 <div class="user-header">
-                    <img src="${user.avatar || '../assets/images/default.jpg'}" alt="${user.username}" class="modal-avatar">
+                    <img src="${user.avatar || '../assets/images/default.jpg'}" 
+                         alt="${user.username}" 
+                         class="modal-avatar"
+                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent);">
                     <div class="user-info">
-                        <h4>${user.displayName || user.username}</h4>
-                        <p>@${user.username}</p>
+                        <h4 style="margin: 0; color: var(--accent);">${user.displayName || user.username}</h4>
+                        <p style="margin: 0.5rem 0; color: var(--text-secondary);">@${user.username}</p>
+                        <div class="status-badges" style="margin-top: 0.5rem;">
+                            <span class="status-badge ${user.online ? 'online' : 'offline'}" style="margin-right: 0.5rem;">
+                                ${user.online ? 'Online' : 'Offline'}
+                            </span>
+                            ${user.banned ? '<span class="status-badge banned">Banned</span>' : ''}
+                        </div>
                     </div>
                 </div>
-                <div class="user-stats">
-                    <p><strong>Status:</strong> ${user.status || 'No status set'}</p>
-                    <p><strong>Bio:</strong> ${user.bio || 'No bio provided'}</p>
-                    <p><strong>Joined:</strong> ${this.formatDate(user.createdAt)}</p>
-                    <p><strong>Last Login:</strong> ${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</p>
-                    <p><strong>Online:</strong> ${user.online ? 'Yes' : 'No'}</p>
-                    <p><strong>Banned:</strong> ${user.banned ? 'Yes' : 'No'}</p>
+                <div class="user-stats" style="margin-top: 1.5rem;">
+                    <div class="stat-row" style="margin-bottom: 1rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);">
+                        <strong style="color: var(--accent);">Status:</strong> 
+                        <span style="color: var(--text);">${user.status || 'No status set'}</span>
+                    </div>
+                    <div class="stat-row" style="margin-bottom: 1rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);">
+                        <strong style="color: var(--accent);">Bio:</strong> 
+                        <span style="color: var(--text);">${user.bio || 'No bio provided'}</span>
+                    </div>
+                    <div class="stat-row" style="margin-bottom: 1rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);">
+                        <strong style="color: var(--accent);">Joined:</strong> 
+                        <span style="color: var(--text);">${this.formatDate(user.createdAt)}</span>
+                    </div>
+                    <div class="stat-row" style="margin-bottom: 1rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);">
+                        <strong style="color: var(--accent);">Last Login:</strong> 
+                        <span style="color: var(--text);">${user.lastLogin ? this.formatDate(user.lastLogin) : 'Never'}</span>
+                    </div>
+                    <div class="stat-row" style="margin-bottom: 1rem; padding: 0.5rem 0;">
+                        <strong style="color: var(--accent);">User ID:</strong> 
+                        <span style="color: var(--text-secondary); font-family: monospace; font-size: 0.9em;">${user._id || user.id}</span>
+                    </div>
+                </div>
+                <div class="user-actions" style="margin-top: 1.5rem; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                    ${!user.banned ? 
+                        `<button class="btn btn-danger" onclick="UserManagement.banUser('${user._id || user.id}'); UserManagement.closeModal();" style="background: #dc267f; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; color: white;">
+                            <i class="fas fa-ban"></i> Ban Soul
+                        </button>` :
+                        `<button class="btn btn-success" onclick="UserManagement.unbanUser('${user._id || user.id}'); UserManagement.closeModal();" style="background: #22c55e; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; color: white;">
+                            <i class="fas fa-check"></i> Unban Soul
+                        </button>`
+                    }
+                    <button class="btn btn-secondary" onclick="UserManagement.closeModal();" style="background: rgba(var(--accent-rgb), 0.2); border: 1px solid var(--accent); padding: 0.5rem 1rem; border-radius: 0.25rem; color: var(--text);">
+                        <i class="fas fa-times"></i> Close
+                    </button>
                 </div>
             </div>
         `);
     },
 
     editUser(userId) {
-        // Implementation for editing users would go here
-        this.showModal('Edit Soul', '<p>User editing functionality coming soon...</p>');
+        let user = this.allUsers.find(u => u._id === userId);
+        if (!user) {
+            user = this.allUsers.find(u => u.id === userId);
+        }
+        if (!user) {
+            console.error('User not found with ID:', userId);
+            this.showError('User not found');
+            return;
+        }
+
+        this.showModal('Edit Soul', `
+            <form id="editUserForm" class="edit-user-form">
+                <div class="user-edit-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);">
+                    <img src="${user.avatar || '../assets/images/default.jpg'}" 
+                         alt="${user.username}" 
+                         style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent);">
+                    <div>
+                        <h4 style="margin: 0; color: var(--accent);">Editing: ${user.username}</h4>
+                        <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.9em;">User ID: ${user._id || user.id}</p>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="editDisplayName" style="display: block; margin-bottom: 0.5rem; color: var(--accent); font-weight: 500;">Display Name</label>
+                    <input type="text" id="editDisplayName" name="displayName" 
+                           value="${user.displayName || ''}" 
+                           placeholder="Soul's display name"
+                           style="width: 100%; padding: 0.75rem; border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 0.25rem; background: rgba(26, 26, 51, 0.8); color: var(--text); font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="editStatus" style="display: block; margin-bottom: 0.5rem; color: var(--accent); font-weight: 500;">Status Message</label>
+                    <input type="text" id="editStatus" name="status" 
+                           value="${user.status || ''}" 
+                           placeholder="Soul's status message"
+                           style="width: 100%; padding: 0.75rem; border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 0.25rem; background: rgba(26, 26, 51, 0.8); color: var(--text); font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="editBio" style="display: block; margin-bottom: 0.5rem; color: var(--accent); font-weight: 500;">Biography</label>
+                    <textarea id="editBio" name="bio" 
+                              placeholder="Soul's biography"
+                              style="width: 100%; padding: 0.75rem; border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 0.25rem; background: rgba(26, 26, 51, 0.8); color: var(--text); font-size: 1rem; min-height: 100px; resize: vertical;">${user.bio || ''}</textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="editEmail" style="display: block; margin-bottom: 0.5rem; color: var(--accent); font-weight: 500;">Email</label>
+                    <input type="email" id="editEmail" name="email" 
+                           value="${user.email || ''}" 
+                           placeholder="Soul's email address"
+                           style="width: 100%; padding: 0.75rem; border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 0.25rem; background: rgba(26, 26, 51, 0.8); color: var(--text); font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text);">
+                        <input type="checkbox" id="editBanned" name="banned" ${user.banned ? 'checked' : ''}
+                               style="width: 1.2rem; height: 1.2rem; accent-color: var(--accent);">
+                        <span style="font-weight: 500;">Soul is banned from the sanctuary</span>
+                    </label>
+                </div>
+
+                <div class="modal-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(var(--accent-rgb), 0.2);">
+                    <button type="button" onclick="UserManagement.closeModal();" 
+                            style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(var(--accent-rgb), 0.3); padding: 0.75rem 1.5rem; border-radius: 0.25rem; color: var(--text); cursor: pointer; transition: var(--transition);">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" 
+                            style="background: var(--accent); border: none; padding: 0.75rem 1.5rem; border-radius: 0.25rem; color: var(--primary); cursor: pointer; font-weight: 500; transition: var(--transition);">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        `);
+
+        // Add form submit handler
+        const form = document.getElementById('editUserForm');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.updateUser(userId, form);
+            });
+        }
+    },
+
+    async updateUser(userId, form) {
+        try {
+            const formData = new FormData(form);
+            const updateData = {
+                displayName: formData.get('displayName'),
+                status: formData.get('status'),
+                bio: formData.get('bio'),
+                email: formData.get('email'),
+                banned: formData.has('banned')
+            };
+
+            // Remove empty values
+            Object.keys(updateData).forEach(key => {
+                if (updateData[key] === '' || updateData[key] === null) {
+                    delete updateData[key];
+                }
+            });
+
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update user: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            this.showSuccess('Soul updated successfully');
+            this.closeModal();
+            await this.loadUsers(); // Reload users to show changes
+
+        } catch (error) {
+            console.error('Error updating user:', error);
+            this.showError('Failed to update soul', error.message);
+        }
     },
 
     async banUser(userId) {
@@ -384,7 +555,6 @@ const UserManagement = {
     },
 
     showModal(title, content) {
-        console.log('UserManagement.showModal called with:', title);
         const modal = document.getElementById('userModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalContent = document.getElementById('modalContent');
@@ -394,14 +564,20 @@ const UserManagement = {
             modalContent.innerHTML = content;
             modal.style.display = 'flex';
             modal.classList.add('active');
-            console.log('Modal opened successfully');
+            modal.setAttribute('aria-hidden', 'false');
+            
+            // Focus management for accessibility
+            const firstInput = modalContent.querySelector('input, button, textarea, select');
+            if (firstInput) {
+                setTimeout(() => firstInput.focus(), 100);
+            }
         } else {
             console.error('Missing modal elements:', {
                 modal: !!modal,
                 modalTitle: !!modalTitle,
                 modalContent: !!modalContent
             });
-            this.showError('Modal elements not found');
+            this.showError('Modal system is not properly initialized');
         }
     },
 
@@ -410,6 +586,7 @@ const UserManagement = {
         if (modal) {
             modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
         }
     },
 
