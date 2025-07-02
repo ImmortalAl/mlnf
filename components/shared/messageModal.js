@@ -23,11 +23,8 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         messageDiv.innerHTML = `<span class="message-text">${escapeHTML(content)}</span><span class="message-time">${time}</span>`;
         messageHistoryElement.appendChild(messageDiv);
         
-        // Debounced scroll to prevent glitchiness
-        clearTimeout(messageHistoryElement.scrollTimeout);
-        messageHistoryElement.scrollTimeout = setTimeout(() => {
-            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
-        }, 50);
+        // Simple immediate scroll - no timeout needed
+        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
     }
 
     async function handleSendMessage() {
@@ -61,11 +58,8 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         const currentUserId = currentUser.id || currentUser._id;
         messages.forEach(message => addMessageToUI(message.content, (message.sender._id || message.sender.id) === currentUserId, false, new Date(message.timestamp)));
         
-        // Debounced scroll after loading all messages
-        clearTimeout(messageHistoryElement.scrollTimeout);
-        messageHistoryElement.scrollTimeout = setTimeout(() => {
-            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
-        }, 100);
+        // Single scroll after all messages loaded
+        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
     }
     
     async function loadConversation(username) {
@@ -89,17 +83,11 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         messageModal.classList.remove('active');
         messageModal.setAttribute('aria-hidden', 'true');
         
-        // Restore body scroll position on mobile
-        if (window.innerWidth <= 768) {
-            const scrollY = document.body.style.top;
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            if (scrollY) {
-                window.scrollTo(0, parseInt(scrollY || '0') * -1);
-            }
-        }
+        // Restore body scroll position
         document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('top');
+        document.body.style.removeProperty('width');
         
         currentRecipientUsername = null;
         if (currentBackdropListener) {
@@ -174,14 +162,6 @@ async function openMessageModal(username) {
     
     // Setup mobile keyboard detection for professional UX
     setupMobileKeyboardDetection(messageModal);
-    
-    // Additional mobile optimizations
-    if (window.innerWidth <= 768) {
-        // Prevent body scroll when modal is open on mobile
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${window.scrollY}px`;
-        document.body.style.width = '100%';
-    }
 
     if (messageInputElement) {
         setTimeout(() => messageInputElement.focus(), 100);
@@ -214,56 +194,32 @@ async function openMessageModal(username) {
     }
 }
 
-// Simplified mobile keyboard detection - fixes scrollbar glitchiness
+// Minimal mobile keyboard detection - prevents scroll interference
 function setupMobileKeyboardDetection(modal) {
     if (!modal || window.innerWidth > 768) return;
     
-    let isKeyboardOpen = false;
-    let debounceTimeout = null;
-    
-    function handleInputFocus() {
-        if (!isKeyboardOpen) {
-            isKeyboardOpen = true;
-            modal.classList.add('keyboard-detected');
-        }
-    }
-    
-    function handleInputBlur() {
-        // Debounce blur to avoid flickering when switching between inputs
-        if (debounceTimeout) clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(() => {
-            if (!modal.querySelector('input:focus, textarea:focus')) {
-                isKeyboardOpen = false;
-                modal.classList.remove('keyboard-detected');
-            }
-        }, 300);
-    }
-    
-    // Simple focus/blur detection - much more reliable
     const inputElements = modal.querySelectorAll('input, textarea');
     inputElements.forEach(input => {
-        input.addEventListener('focus', handleInputFocus);
-        input.addEventListener('blur', handleInputBlur);
-        
         // Prevent iOS zoom on input focus
         if (input.style.fontSize !== '16px') {
             input.style.fontSize = '16px';
         }
+        
+        // Simple keyboard detection without complex scroll handling
+        input.addEventListener('focus', () => modal.classList.add('keyboard-detected'));
+        input.addEventListener('blur', () => {
+            // Simple timeout to prevent flicker
+            setTimeout(() => {
+                if (!modal.querySelector('input:focus, textarea:focus')) {
+                    modal.classList.remove('keyboard-detected');
+                }
+            }, 100);
+        });
     });
     
-    // Cleanup function
+    // Simple cleanup function
     modal.keyboardCleanup = function() {
-        inputElements.forEach(input => {
-            input.removeEventListener('focus', handleInputFocus);
-            input.removeEventListener('blur', handleInputBlur);
-        });
-        
-        if (debounceTimeout) {
-            clearTimeout(debounceTimeout);
-        }
-        
         modal.classList.remove('keyboard-detected');
-        isKeyboardOpen = false;
     };
 }
 
