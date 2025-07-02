@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=2.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=3.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.0"></noscript>
+    <link rel="preload" href="../css/admin.css?v=3.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.1"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -264,24 +264,174 @@
                 <i class="fas fa-chart-bar"></i> Eternal Analytics
             </h2>
             
-            <div class="analytics-grid">
-                <div class="chart-card">
-                    <h3>Soul Growth</h3>
-                    <canvas id="userGrowthChart"></canvas>
+            <!-- Analytics Controls -->
+            <div class="analytics-controls">
+                <div class="time-range-selector">
+                    <label for="analyticsTimeRange">Time Range:</label>
+                    <select id="analyticsTimeRange">
+                        <option value="24h">Last 24 Hours</option>
+                        <option value="7d" selected>Last 7 Days</option>
+                        <option value="30d">Last 30 Days</option>
+                        <option value="90d">Last 90 Days</option>
+                        <option value="1y">Last Year</option>
+                    </select>
                 </div>
-                
-                <div class="chart-card">
-                    <h3>Activity Patterns</h3>
-                    <canvas id="activityChart"></canvas>
+                <button id="refreshAnalytics" class="btn btn-outline">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+                <button id="exportAnalytics" class="btn btn-primary">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+            </div>
+
+            <!-- Visitor Analytics Grid -->
+            <div class="visitor-analytics-grid">
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Total Page Views</h3>
+                        <p class="analytics-number" id="totalPageViews">--</p>
+                        <span class="analytics-change" id="pageViewsChange">--</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Unique Visitors</h3>
+                        <p class="analytics-number" id="uniqueVisitors">--</p>
+                        <span class="analytics-change" id="uniqueVisitorsChange">--</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Avg. Session Duration</h3>
+                        <p class="analytics-number" id="avgSessionDuration">--</p>
+                        <span class="analytics-change" id="sessionDurationChange">--</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Bounce Rate</h3>
+                        <p class="analytics-number" id="bounceRate">--</p>
+                        <span class="analytics-change" id="bounceRateChange">--</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Online Now</h3>
+                        <p class="analytics-number real-time" id="currentOnlineVisitors">--</p>
+                        <span class="analytics-subtitle">Live visitors</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Page Load Speed</h3>
+                        <p class="analytics-number" id="avgPageLoadTime">--</p>
+                        <span class="analytics-subtitle">Average load time</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <h4>Average Session Duration</h4>
-                    <p class="metric-value" id="avgSession">--</p>
+            <!-- Charts Grid -->
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Visitor Traffic</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-color primary"></span> Page Views</span>
+                            <span class="legend-item"><span class="legend-color secondary"></span> Unique Visitors</span>
+                        </div>
+                    </div>
+                    <canvas id="trafficChart"></canvas>
                 </div>
                 
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>User Activity Patterns</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-color accent"></span> Active Sessions</span>
+                        </div>
+                    </div>
+                    <canvas id="activityChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Top Referrers</h3>
+                    </div>
+                    <div id="topReferrers" class="analytics-list">
+                        <div class="loading">Loading referrer data...</div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Popular Pages</h3>
+                    </div>
+                    <div id="popularPages" class="analytics-list">
+                        <div class="loading">Loading page data...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device & Location Analytics -->
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Device Types</h3>
+                    </div>
+                    <canvas id="deviceChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Browser Usage</h3>
+                    </div>
+                    <canvas id="browserChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Geographic Distribution</h3>
+                    </div>
+                    <div id="geographicData" class="analytics-list">
+                        <div class="loading">Loading geographic data...</div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Search Queries</h3>
+                    </div>
+                    <div id="searchQueries" class="analytics-list">
+                        <div class="loading">Loading search data...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Legacy Metrics Grid -->
+            <div class="metrics-grid legacy-metrics">
                 <div class="metric-card">
                     <h4>Daily Active Souls</h4>
                     <p class="metric-value" id="dailyActive">--</p>
@@ -295,6 +445,11 @@
                 <div class="metric-card">
                     <h4>Engagement Score</h4>
                     <p class="metric-value" id="engagement">--</p>
+                </div>
+
+                <div class="metric-card">
+                    <h4>Error Rate</h4>
+                    <p class="metric-value" id="errorRate">--</p>
                 </div>
             </div>
         </section>
@@ -440,7 +595,7 @@
     <!-- Admin Components -->
     <script src="../js/admin/dashboard.js?v=1.3"></script>
     <script src="../js/admin/userManagement.js?v=1.4"></script>
-    <script src="../js/admin/analytics.js?v=1.2"></script>
+    <script src="../js/admin/analytics.js?v=2.0"></script>
     <script src="../js/admin/feedback.js?v=2.2"></script>
     
     <!-- Content Curation System -->
