@@ -422,13 +422,6 @@ const UserManagement = {
                               style="width: 100%; padding: 0.75rem; border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 0.25rem; background: rgba(26, 26, 51, 0.8); color: var(--text); font-size: 1rem; min-height: 100px; resize: vertical;">${user.bio || ''}</textarea>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label for="editEmail" style="display: block; margin-bottom: 0.5rem; color: var(--accent); font-weight: 500;">Email</label>
-                    <input type="email" id="editEmail" name="email" 
-                           value="${user.email || ''}" 
-                           placeholder="Soul's email address"
-                           style="width: 100%; padding: 0.75rem; border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 0.25rem; background: rgba(26, 26, 51, 0.8); color: var(--text); font-size: 1rem;">
-                </div>
 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text);">
@@ -468,7 +461,6 @@ const UserManagement = {
                 displayName: formData.get('displayName'),
                 status: formData.get('status'),
                 bio: formData.get('bio'),
-                email: formData.get('email'),
                 banned: formData.has('banned')
             };
 
