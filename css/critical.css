@@ -9,7 +9,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
     /* Optimize for touch devices */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
@@ -24,6 +23,7 @@ html {
 body {
     background: linear-gradient(180deg, rgba(13, 13, 26, 0.2), var(--primary)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
     color: var(--text);
+    font-family: var(--font-primary, 'Montserrat', sans-serif);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
