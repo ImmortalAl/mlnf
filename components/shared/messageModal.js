@@ -204,120 +204,56 @@ async function openMessageModal(username) {
     }
 }
 
-// Enhanced mobile keyboard detection for professional UX
+// Simplified mobile keyboard detection - fixes scrollbar glitchiness
 function setupMobileKeyboardDetection(modal) {
-    if (!modal) return;
+    if (!modal || window.innerWidth > 768) return;
     
-    // Only apply on mobile devices
-    if (window.innerWidth > 768) return;
-    
-    let initialViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-    let keyboardDetectionTimeout = null;
-    let focusTimeout = null;
-    
-    function handleViewportChange() {
-        if (keyboardDetectionTimeout) {
-            clearTimeout(keyboardDetectionTimeout);
-        }
-        
-        keyboardDetectionTimeout = setTimeout(() => {
-            const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-            const heightDifference = initialViewportHeight - currentHeight;
-            const heightRatio = currentHeight / initialViewportHeight;
-            
-            // Enhanced keyboard detection:
-            // 1. Absolute height difference > 150px OR
-            // 2. Viewport height reduced by more than 25% (handles different screen sizes)
-            const keyboardOpen = heightDifference > 150 || heightRatio < 0.75;
-            
-            if (keyboardOpen) {
-                modal.classList.add('keyboard-detected');
-                // Scroll to input to ensure it's visible
-                const activeInput = document.activeElement;
-                if (activeInput && (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA')) {
-                    setTimeout(() => {
-                        activeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                }
-            } else {
-                modal.classList.remove('keyboard-detected');
-            }
-        }, 100); // Small delay to allow for viewport stabilization
-    }
-    
-    function handleResize() {
-        // Update initial height when device orientation changes
-        const newHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        if (Math.abs(newHeight - initialViewportHeight) > 200) {
-            initialViewportHeight = newHeight;
-            modal.classList.remove('keyboard-detected');
-        }
-    }
+    let isKeyboardOpen = false;
+    let debounceTimeout = null;
     
     function handleInputFocus() {
-        // Immediate keyboard detection on focus
-        if (focusTimeout) clearTimeout(focusTimeout);
-        focusTimeout = setTimeout(() => {
+        if (!isKeyboardOpen) {
+            isKeyboardOpen = true;
             modal.classList.add('keyboard-detected');
-            handleViewportChange();
-        }, 200);
+        }
     }
     
     function handleInputBlur() {
-        // Delayed keyboard detection on blur
-        if (focusTimeout) clearTimeout(focusTimeout);
-        focusTimeout = setTimeout(() => {
-            handleViewportChange();
-        }, 500);
+        // Debounce blur to avoid flickering when switching between inputs
+        if (debounceTimeout) clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            if (!modal.querySelector('input:focus, textarea:focus')) {
+                isKeyboardOpen = false;
+                modal.classList.remove('keyboard-detected');
+            }
+        }, 300);
     }
     
-    // Use Visual Viewport API if available (modern browsers)
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', handleViewportChange);
-        window.addEventListener('orientationchange', handleResize);
-    } else {
-        // Fallback for older browsers
-        window.addEventListener('resize', handleViewportChange);
-        window.addEventListener('orientationchange', handleResize);
-    }
-    
-    // Enhanced focus and blur events for better keyboard detection
+    // Simple focus/blur detection - much more reliable
     const inputElements = modal.querySelectorAll('input, textarea');
     inputElements.forEach(input => {
         input.addEventListener('focus', handleInputFocus);
         input.addEventListener('blur', handleInputBlur);
         
-        // Prevent zooming on iOS when focusing inputs
-        input.addEventListener('touchstart', function() {
-            if (input.style.fontSize !== '16px') {
-                input.style.fontSize = '16px';
-            }
-        });
+        // Prevent iOS zoom on input focus
+        if (input.style.fontSize !== '16px') {
+            input.style.fontSize = '16px';
+        }
     });
     
-    // Cleanup function to remove event listeners when modal closes
+    // Cleanup function
     modal.keyboardCleanup = function() {
-        if (window.visualViewport) {
-            window.visualViewport.removeEventListener('resize', handleViewportChange);
-            window.removeEventListener('orientationchange', handleResize);
-        } else {
-            window.removeEventListener('resize', handleViewportChange);
-            window.removeEventListener('orientationchange', handleResize);
-        }
-        
         inputElements.forEach(input => {
             input.removeEventListener('focus', handleInputFocus);
             input.removeEventListener('blur', handleInputBlur);
         });
         
-        if (keyboardDetectionTimeout) {
-            clearTimeout(keyboardDetectionTimeout);
-        }
-        if (focusTimeout) {
-            clearTimeout(focusTimeout);
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
         }
         
         modal.classList.remove('keyboard-detected');
+        isKeyboardOpen = false;
     };
 }
 
