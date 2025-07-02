@@ -47,9 +47,6 @@ function updateUserMenu() {
       `;
       
       userDropdown.innerHTML = `
-        <a href="/profile"><i class="fas fa-user"></i> My Soul</a>
-        <a href="/pages/profile-setup.html"><i class="fas fa-cog"></i> Edit Profile</a>
-        <div class="divider"></div>
         <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
         ${userData.username === 'ImmortalAl' || userData.role === 'admin' ? `
         <div class="divider"></div>
