@@ -108,7 +108,13 @@ class FeedbackSystem {
         document.body.style.removeProperty('overflow');
     }
     updateUserInfo() {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        let user = {};
+        try {
+            user = JSON.parse(localStorage.getItem('user') || '{}');
+        } catch (error) {
+            console.error('Error parsing user data from localStorage:', error);
+            localStorage.removeItem('user'); // Clear corrupted data
+        }
         const isLoggedIn = !!localStorage.getItem('sessionToken') && user.username;
         if (isLoggedIn) {
             this.usernameSpan.textContent = user.displayName || user.username;
@@ -795,10 +801,8 @@ function setupMobileKeyboardDetectionFrontPage(modal) {
             
             if (keyboardOpen) {
                 modal.classList.add('keyboard-detected');
-                console.log('[AnonymousModal] Mobile keyboard detected, optimizing layout');
             } else {
                 modal.classList.remove('keyboard-detected');
-                console.log('[AnonymousModal] Mobile keyboard closed, restoring layout');
             }
         }, 100); // Small delay to allow for viewport stabilization
     }
