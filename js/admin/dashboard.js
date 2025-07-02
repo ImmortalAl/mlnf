@@ -6,7 +6,6 @@ const AdminDashboard = {
     refreshInterval: null,
 
     init() {
-        console.log('Initializing Admin Dashboard...');
         this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
         this.setupAdminNavigation();
         this.loadDashboardData();
@@ -63,7 +62,6 @@ const AdminDashboard = {
             // Update URL hash without triggering page reload
             window.history.replaceState(null, null, `#${sectionName}`);
             
-            console.log(`Switched to admin section: ${sectionName}`);
         } else {
             console.warn(`Admin section not found: ${sectionName}`);
         }
@@ -84,8 +82,68 @@ const AdminDashboard = {
         }
     },
 
+    showError(message, details = '') {
+        // Create or update error notification
+        let errorContainer = document.getElementById('admin-error-notification');
+        if (!errorContainer) {
+            errorContainer = document.createElement('div');
+            errorContainer.id = 'admin-error-notification';
+            errorContainer.className = 'admin-notification error';
+            document.body.appendChild(errorContainer);
+        }
+
+        errorContainer.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="notification-text">
+                    <strong>${message}</strong>
+                    ${details ? `<br><small>${details}</small>` : ''}
+                </div>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+
+        errorContainer.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (errorContainer && errorContainer.parentNode) {
+                errorContainer.remove();
+            }
+        }, 5000);
+    },
+
+    showSuccess(message) {
+        // Create success notification
+        let successContainer = document.getElementById('admin-success-notification');
+        if (!successContainer) {
+            successContainer = document.createElement('div');
+            successContainer.id = 'admin-success-notification';
+            successContainer.className = 'admin-notification success';
+            document.body.appendChild(successContainer);
+        }
+
+        successContainer.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-check-circle"></i>
+                <div class="notification-text">
+                    <strong>${message}</strong>
+                </div>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+
+        successContainer.style.display = 'block';
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            if (successContainer && successContainer.parentNode) {
+                successContainer.remove();
+            }
+        }, 3000);
+    },
+
     async loadDashboardData() {
-        console.log('Loading dashboard data...');
         try {
             await Promise.all([
                 this.loadOverviewStats(),
@@ -93,7 +151,7 @@ const AdminDashboard = {
             ]);
         } catch (error) {
             console.error('Error loading dashboard data:', error);
-            this.showError('Failed to load dashboard data');
+            this.showError('Failed to load dashboard data', error.message);
         }
     },
 

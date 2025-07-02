@@ -11,7 +11,6 @@ const UserManagement = {
     currentFilter: 'all',
 
     init() {
-        console.log('Initializing User Management...');
         this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
         this.setupEventListeners();
         this.loadUsers();
@@ -237,7 +236,6 @@ const UserManagement = {
 
     editUser(userId) {
         // Implementation for editing users would go here
-        console.log('Edit user:', userId);
         this.showModal('Edit Soul', '<p>User editing functionality coming soon...</p>');
     },
 
@@ -257,13 +255,12 @@ const UserManagement = {
 
             if (response.ok) {
                 await this.loadUsers(); // Reload users
-                console.log('User banned successfully');
             } else {
                 throw new Error('Failed to ban user');
             }
         } catch (error) {
             console.error('Error banning user:', error);
-            this.showError('Failed to ban user');
+            this.showError('Failed to ban user', error.message);
         }
     },
 
@@ -283,7 +280,6 @@ const UserManagement = {
 
             if (response.ok) {
                 await this.loadUsers(); // Reload users
-                console.log('User unbanned successfully');
             } else {
                 throw new Error('Failed to unban user');
             }
@@ -323,9 +319,26 @@ const UserManagement = {
         });
     },
 
-    showError(message) {
-        console.error('User Management Error:', message);
-        // Could show a toast notification or error banner
+    showError(message, details = '') {
+        console.error('User Management Error:', message, details);
+        
+        // Use the dashboard notification system if available
+        if (typeof AdminDashboard !== 'undefined' && AdminDashboard.showError) {
+            AdminDashboard.showError(message, details);
+        } else {
+            // Fallback to alert
+            alert(`Error: ${message}${details ? ` - ${details}` : ''}`);
+        }
+    },
+
+    showSuccess(message) {
+        // Use the dashboard notification system if available
+        if (typeof AdminDashboard !== 'undefined' && AdminDashboard.showSuccess) {
+            AdminDashboard.showSuccess(message);
+        } else {
+            // Fallback to alert
+            alert(`Success: ${message}`);
+        }
     }
 };
 

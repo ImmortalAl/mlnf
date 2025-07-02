@@ -843,4 +843,80 @@
     .modal-footer {
         flex-direction: column;
     }
+}
+
+/* Admin Notification System */
+.admin-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 1rem;
+    border-radius: var(--border-radius, 12px);
+    box-shadow: var(--shadow, 0 10px 20px rgba(0, 0, 0, 0.3));
+    z-index: 10001;
+    display: none;
+    animation: slideInRight 0.3s ease;
+}
+
+.admin-notification.error {
+    background: linear-gradient(135deg, #c62828, #d32f2f);
+    border-left: 4px solid #ffcdd2;
+}
+
+.admin-notification.success {
+    background: linear-gradient(135deg, #2e7d32, #388e3c);
+    border-left: 4px solid #c8e6c9;
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: white;
+}
+
+.notification-content i {
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.notification-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.notification-text small {
+    opacity: 0.9;
+    font-size: 0.85rem;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0.5rem;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 } 
