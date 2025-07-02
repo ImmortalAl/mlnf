@@ -87,8 +87,8 @@
                 <label for="messageInput" class="visually-hidden">Message content</label>
                 <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
                 <div class="modal-actions">
-                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
-                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                    <button type="submit" id="sendMessageBtn" aria-label="Send direct message">Send Whisper</button>
+                    <button type="button" id="closeMessageModal" aria-label="Close message modal">Close Nexus</button>
                 </div>
             </div>
         </div>
@@ -150,8 +150,8 @@
                 <h1 id="mainHeading" class="eternal font-immortal-heading text-immortal-glow">Naturally Free Forever</h1>
                 <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers. Experience true freedom.</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
-                    <a href="#" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
+                    <a href="javascript:void(0)" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
+                    <a href="javascript:void(0)" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
                 </div>
             </div>
         </section>
@@ -374,7 +374,7 @@
                     <h4>Affirmative</h4>
                     <p><strong>"Freedom transcends time;</strong> it's woven into existence." — ImmortalAl</p>
                     <div class="debate-actions">
-                        <button class="btn btn-outline">Vote Yes</button>
+                        <button class="btn btn-outline" aria-label="Vote yes for immortal freedom">Vote Yes</button>
                         <span class="vote-count">12 Votes</span>
                     </div>
                 </div>
@@ -382,7 +382,7 @@
                     <h4>Negative</h4>
                     <p><strong>"Freedom is a fleeting illusion,</strong> bound by power." — EternalVoice</p>
                     <div class="debate-actions">
-                        <button class="btn btn-outline">Vote No</button>
+                        <button class="btn btn-outline" aria-label="Vote no for immortal freedom">Vote No</button>
                         <span class="vote-count">8 Votes</span>
                     </div>
                 </div>
@@ -444,7 +444,7 @@
             </div>
             
             <div class="footer-feedback-section">
-                <button type="button" class="feedback-btn footer" id="feedbackBtnFooter">
+                <button type="button" class="feedback-btn footer" id="feedbackBtnFooter" aria-label="Open feedback form">
                     <i class="fas fa-heart"></i> Share Your Eternal Feedback
                 </button>
             </div>
@@ -479,8 +479,8 @@
           <span id="feedbackUsername"></span>
         </div>
         <div class="modal-actions">
-          <button type="submit" id="submitFeedback" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Feedback</button>
-          <button type="button" id="cancelFeedback" class="btn btn-outline">Cancel</button>
+          <button type="submit" id="submitFeedback" class="btn btn-primary" aria-label="Submit feedback"><i class="fas fa-paper-plane"></i> Send Feedback</button>
+          <button type="button" id="cancelFeedback" class="btn btn-outline" aria-label="Cancel feedback">Cancel</button>
         </div>
       </form>
     </div>
