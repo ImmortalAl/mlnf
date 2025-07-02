@@ -46,8 +46,13 @@
     letter-spacing: 1px;
     font-size: 0.85rem;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     -webkit-appearance: none;
     appearance: none;
     user-select: none;
