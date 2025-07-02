@@ -78,21 +78,54 @@ const AdminAnalytics = {
     async loadRealAnalyticsData() {
         try {
             const token = localStorage.getItem('sessionToken');
+            console.log('🔍 Attempting to load real analytics from:', `${this.apiBaseUrl}/activity/analytics`);
+            console.log('🔑 Using token:', token ? 'Token present' : 'No token found');
+            
+            // First test if basic activity endpoint works
+            console.log('🧪 Testing basic activity endpoint first...');
+            const basicResponse = await fetch(`${this.apiBaseUrl}/activity`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            });
+            console.log('📡 Basic activity endpoint status:', basicResponse.status);
+            
+            if (basicResponse.ok) {
+                const basicData = await basicResponse.json();
+                console.log('✅ Basic activity data:', basicData);
+            }
+            
+            // Now try the analytics endpoint
             const response = await fetch(`${this.apiBaseUrl}/activity/analytics?timeRange=${this.currentTimeRange}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
+            console.log('📡 Analytics API response status:', response.status);
+
             if (!response.ok) {
-                throw new Error(`Analytics API error: ${response.status}`);
+                const errorText = await response.text();
+                console.error('❌ Analytics API error details:', errorText);
+                
+                // If it's a 404, the endpoint might not be deployed yet
+                if (response.status === 404) {
+                    throw new Error('Analytics endpoint not deployed yet - using fallback data');
+                }
+                
+                throw new Error(`Analytics API error: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
+            console.log('✅ Real analytics data received:', data);
+            console.log('📊 Metrics overview:', data.overview);
+            
             this.updateEternalMetrics(data);
             this.updatePopularContent(data.popular);
             this.updateRecentActivity(data.activity);
             
+            // Show success indicator
+            this.showAnalyticsStatus('Real data loaded successfully', 'success');
+            
         } catch (error) {
-            console.error('Error loading real analytics:', error);
+            console.error('❌ Error loading real analytics:', error);
+            this.showAnalyticsStatus(`Failed to load real data: ${error.message}`, 'error');
             // Fallback to mock data if API fails
             this.loadFallbackData();
         }
@@ -279,8 +312,59 @@ const AdminAnalytics = {
 
     loadFallbackData() {
         // Fallback to mock data if real API fails
+        console.log('⚠️ Loading fallback mock data due to API failure');
+        this.showAnalyticsStatus('Using mock data - real API unavailable', 'warning');
+        
         const mockData = this.generateMockVisitorData();
         this.updateVisitorMetrics(mockData);
+        
+        // Continue with other mock data
+        this.loadTrafficData();
+        this.loadPopularContent();
+        this.loadDeviceAnalytics();
+        this.loadGeographicData();
+        this.loadSearchAnalytics();
+    },
+
+    showAnalyticsStatus(message, type) {
+        // Create or update status indicator
+        let statusElement = document.getElementById('analyticsStatus');
+        if (!statusElement) {
+            statusElement = document.createElement('div');
+            statusElement.id = 'analyticsStatus';
+            statusElement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-size: 0.9em;
+                font-weight: 500;
+                z-index: 1000;
+                transition: all 0.3s ease;
+                max-width: 300px;
+            `;
+            document.body.appendChild(statusElement);
+        }
+
+        // Set styling based on type
+        const styles = {
+            success: { background: '#22c55e', color: 'white', border: '1px solid #16a34a' },
+            error: { background: '#dc267f', color: 'white', border: '1px solid #be185d' },
+            warning: { background: '#f59e0b', color: 'white', border: '1px solid #d97706' }
+        };
+
+        const style = styles[type] || styles.warning;
+        Object.assign(statusElement.style, style);
+        statusElement.textContent = message;
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (statusElement) {
+                statusElement.style.opacity = '0';
+                setTimeout(() => statusElement.remove(), 300);
+            }
+        }, 5000);
     },
 
     updateVisitorMetrics(data) {
