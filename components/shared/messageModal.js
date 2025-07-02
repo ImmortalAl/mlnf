@@ -22,7 +22,12 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         const time = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         messageDiv.innerHTML = `<span class="message-text">${escapeHTML(content)}</span><span class="message-time">${time}</span>`;
         messageHistoryElement.appendChild(messageDiv);
-        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        
+        // Debounced scroll to prevent glitchiness
+        clearTimeout(messageHistoryElement.scrollTimeout);
+        messageHistoryElement.scrollTimeout = setTimeout(() => {
+            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        }, 50);
     }
 
     async function handleSendMessage() {
@@ -55,7 +60,12 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         if (!currentUser) return;
         const currentUserId = currentUser.id || currentUser._id;
         messages.forEach(message => addMessageToUI(message.content, (message.sender._id || message.sender.id) === currentUserId, false, new Date(message.timestamp)));
-        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        
+        // Debounced scroll after loading all messages
+        clearTimeout(messageHistoryElement.scrollTimeout);
+        messageHistoryElement.scrollTimeout = setTimeout(() => {
+            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        }, 100);
     }
     
     async function loadConversation(username) {

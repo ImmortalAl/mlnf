@@ -835,14 +835,16 @@ header {
 }
 
 /* Styles for message history area if it's part of this modal structure */
-#messageModal .message-history { /* This class is within .message-modal-content, so it does not need renaming as part of this step */
-    max-height: 300px; /* Or your preferred height */
+#messageModal .message-history { 
+    height: 200px; /* Fixed height to prevent resizing glitches */
     overflow-y: auto;
+    overflow-x: hidden;
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: rgba(var(--accent-rgb, 255, 94, 120), 0.05);
     border-radius: var(--border-radius);
     border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.25);
+    flex-shrink: 0; /* Prevent flex resizing */
 }
 
 #messageModal .message { /* Updated from .message-bubble */
@@ -948,7 +950,7 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     }
     
     #messageModal .message-history {
-        max-height: 120px;
+        height: 150px; /* Fixed height for mobile */
         padding: 0.8rem;
         margin-bottom: 1rem;
     }
@@ -1008,10 +1010,8 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
     }
     
     #messageModal .message-history {
-        max-height: 140px;
-        min-height: 120px;
+        height: 120px; /* Fixed height for small mobile */
         padding: 1rem;
-        flex-grow: 1;
         margin-bottom: 1rem;
         background: rgba(0, 0, 0, 0.2);
         border-radius: 8px;
@@ -1097,7 +1097,7 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
 /* === SIMPLIFIED MOBILE KEYBOARD OPTIMIZATION === */
 /* Simple, stable keyboard detection without height conflicts */
 #messageModal.keyboard-detected .message-history {
-  max-height: 120px;
+  height: 100px; /* Fixed smaller height for keyboard mode */
   overflow-y: auto;
   scrollbar-width: thin;
 }
@@ -2337,8 +2337,7 @@ body.light-theme .user-dropdown .divider {
     }
     
     #messageModal .message-history {
-        max-height: 400px;
-        min-height: 200px;
+        height: 300px; /* Fixed height for desktop */
     }
 }
 
@@ -2350,8 +2349,7 @@ body.light-theme .user-dropdown .divider {
     }
     
     #messageModal .message-history {
-        max-height: 300px;
-        min-height: 150px;
+        height: 220px; /* Fixed height for tablet */
     }
 }
 
@@ -2364,8 +2362,7 @@ body.light-theme .user-dropdown .divider {
     }
     
     #messageModal .message-history {
-        max-height: 200px;
-        min-height: 120px;
+        height: 160px; /* Fixed height for general mobile */
     }
     
     #messageModal .modal-actions {
@@ -2409,9 +2406,7 @@ body.light-theme .user-dropdown .divider {
     }
     
     #messageModal .message-history {
-        flex-grow: 1;
-        max-height: none;
-        min-height: 150px;
+        height: 140px; /* Fixed height for ultra small mobile */
         margin-bottom: 1rem;
     }
     
