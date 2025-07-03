@@ -1,6 +1,19 @@
-/* MLNF Main Stylesheet (styles.css) - Refactored */
+/* MLNF Main Stylesheet (styles.css) */
 
-/* Accessibility utilities */
+/* 
+ * TABLE OF CONTENTS:
+ * 1. Accessibility utilities
+ * 2. Loading spinners and animations  
+ * 3. General button styles
+ * 4. Form elements (select, dropdowns)
+ * 5. Typography and text styles
+ * 6. Layout components
+ * 7. Content sections
+ * 8. Responsive design (media queries)
+ * 9. Floating buttons and utilities
+ */
+
+/* === 1. ACCESSIBILITY UTILITIES === */
 .visually-hidden {
     position: absolute !important;
     width: 1px !important;
@@ -13,10 +26,9 @@
     border: 0 !important;
 }
 
-/* CSS reset and body styles moved to critical.css for above-fold loading */
+/* Note: CSS reset, body styles, and light theme overrides are in critical.css */
 
-/* Light theme overrides moved to critical.css for immediate theme switching */
-
+/* === 2. LOADING SPINNERS AND ANIMATIONS === */
 .spinner {
     display: inline-block;
     width: 24px;
@@ -33,9 +45,9 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Main layout moved to critical.css for above-fold loading */
+/* Note: Main layout styles are in critical.css for performance */
 
-/* General Button Styles */
+/* === 3. GENERAL BUTTON STYLES === */
 .btn {
     padding: 0.7rem 1.4rem;
     border-radius: var(--border-radius);
@@ -63,7 +75,7 @@
     min-width: 44px;
 }
 
-/* Global Select/Dropdown Styling */
+/* === 4. FORM ELEMENTS (SELECT, DROPDOWNS) === */
 select {
     appearance: none;
     -webkit-appearance: none;
@@ -612,26 +624,21 @@ body.light-theme .debate-position h4 {
 
 /* Prominent title styling for Chronicles highlights */
 .chronicle-title-prominent {
-    font-size: 1.9rem !important;
-    margin-bottom: 1.25rem !important;
-    line-height: 1.2 !important;
+    font-size: 1.9rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.2;
+    font-weight: 600;
 }
 
 /* Chronicle excerpt with reduced prominence */
 .chronicle-excerpt {
-    font-size: 1rem !important;
-    opacity: 0.85 !important;
-    line-height: 1.6 !important;
-    margin-bottom: 1.5rem !important;
+    font-size: 1rem;
+    opacity: 0.85;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
 }
 
-/* Legacy styles - deprecated in favor of MLNF Avatar System */
-.chronicle-author-display,
-.author-avatar,
-.author-username {
-    /* These styles are maintained for backward compatibility */
-    /* New implementations should use mlnf-user-display, mlnf-avatar, mlnf-username */
-}
+/* Legacy styles deprecated - use MLNF Avatar System instead */
 
 /* Read more indicator */
 .read-more-indicator {
@@ -2136,34 +2143,25 @@ main {
 
 /* Floating Action Buttons */
 .floating-buttons {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-    position: fixed !important;
-    bottom: 30px !important;
-    right: 30px !important;
-    z-index: 1000 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
 }
 
 .floating-buttons .theme-toggle,
-.floating-buttons #themeToggle,
-#themeToggle {
-    position: static !important; /* Remove fixed positioning from active-users.css */
-    bottom: auto !important;
-    right: auto !important;
-    order: 2 !important; /* Ensure it's second in flex order */
-    /* Remove debug color for now */
+.floating-buttons #themeToggle {
+    position: static;
+    bottom: auto;
+    right: auto;
+    order: 2;
 }
 
-/* Ultimate override for show-users-btn to ensure style application - DEBUG ONLY */
-body .floating-buttons button.show-users-btn#showUsersBtn {
-    /* background-color: #ff0000 !important; Debug: Bright red to confirm this rule is applied */
-    z-index: 1001 !important; /* Ensure it's above other elements if needed */
-}
-
-body .floating-buttons button.theme-toggle#themeToggle {
-    /* background-color: #0000ff !important; Debug: Bright blue to confirm this rule is applied */
-    z-index: 1000 !important;
+.floating-buttons .show-users-btn {
+    order: 1;
 }
 
 .top-button {
