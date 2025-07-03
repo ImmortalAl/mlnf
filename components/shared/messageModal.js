@@ -26,41 +26,10 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     }
 
     function scrollToBottom() {
-        if (DISABLE_ALL_SCROLLING) {
-            logDebug('SCROLLING DISABLED - not scrolling');
-            return;
+        // Simplified scroll - just scroll to bottom immediately
+        if (messageHistoryElement) {
+            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
         }
-        
-        if (scrollTimeout) {
-            clearTimeout(scrollTimeout);
-            logDebug('Cancelled previous scroll timeout');
-        }
-        
-        logDebug('Scheduling scroll to bottom', {
-            currentScrollTop: messageHistoryElement?.scrollTop,
-            currentScrollHeight: messageHistoryElement?.scrollHeight,
-            currentClientHeight: messageHistoryElement?.clientHeight
-        });
-        
-        scrollTimeout = setTimeout(() => {
-            if (messageHistoryElement) {
-                const beforeScroll = {
-                    scrollTop: messageHistoryElement.scrollTop,
-                    scrollHeight: messageHistoryElement.scrollHeight,
-                    clientHeight: messageHistoryElement.clientHeight
-                };
-                
-                messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
-                
-                const afterScroll = {
-                    scrollTop: messageHistoryElement.scrollTop,
-                    scrollHeight: messageHistoryElement.scrollHeight,
-                    clientHeight: messageHistoryElement.clientHeight
-                };
-                
-                logDebug('Executed scroll to bottom', { beforeScroll, afterScroll });
-            }
-        }, 100);
     }
 
     function addMessageToUI(content, isSent, isError = false, timestamp = new Date(), shouldScroll = true) {
@@ -175,11 +144,8 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         messageModal.classList.remove('active');
         messageModal.setAttribute('aria-hidden', 'true');
         
-        // Restore body scroll position
-        document.body.style.removeProperty('overflow');
-        document.body.style.removeProperty('position');
-        document.body.style.removeProperty('top');
-        document.body.style.removeProperty('width');
+        // Simple body overflow restoration
+        document.body.style.overflow = '';
         
         currentRecipientUsername = null;
         if (currentBackdropListener) {
@@ -187,10 +153,6 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
             currentBackdropListener = null;
         }
         
-        // Cleanup mobile keyboard detection
-        if (messageModal.keyboardCleanup) {
-            messageModal.keyboardCleanup();
-        }
     }
 
 function initMessageModal() {
@@ -222,34 +184,7 @@ function initMessageModal() {
         messageInputElement.addEventListener('input', handleTyping);
     }
 
-    // Add scroll event listener to detect external scroll changes
-    if (messageHistoryElement) {
-        let lastScrollTop = 0;
-        let lastScrollHeight = 0;
-        
-        messageHistoryElement.addEventListener('scroll', function(e) {
-            const currentScrollTop = e.target.scrollTop;
-            const currentScrollHeight = e.target.scrollHeight;
-            
-            // Only log if something actually changed
-            if (currentScrollTop !== lastScrollTop || currentScrollHeight !== lastScrollHeight) {
-                logDebug('⚠️ EXTERNAL SCROLL DETECTED - Something else is scrolling!', {
-                    scrollTop: currentScrollTop,
-                    scrollHeight: currentScrollHeight,
-                    clientHeight: e.target.clientHeight,
-                    scrollTopChange: currentScrollTop - lastScrollTop,
-                    scrollHeightChange: currentScrollHeight - lastScrollHeight,
-                    timestamp: new Date().toISOString()
-                });
-                
-                lastScrollTop = currentScrollTop;
-                lastScrollHeight = currentScrollHeight;
-            }
-        });
-        
-        // Observers removed - they were causing scrollbar jumping issues
-        // by triggering too many recalculations and layout shifts
-    }
+    // Removed scroll event listeners - they were contributing to scrollbar issues
 
     // Set up WebSocket message listeners to handle incoming messages properly
     if (window.MLNF && window.MLNF.websocket) {
@@ -286,9 +221,6 @@ async function openMessageModal(username) {
     messageModal.setAttribute('aria-hidden', 'false');
     messageModal.style.zIndex = '999999'; // Force highest z-index to override any CSS conflicts
     document.body.style.overflow = 'hidden';
-    
-    // Setup mobile keyboard detection for professional UX
-    setupMobileKeyboardDetection(messageModal);
 
     if (messageInputElement) {
         setTimeout(() => messageInputElement.focus(), 100);
@@ -363,33 +295,7 @@ async function openMessageModal(username) {
         }
     }
 
-// Minimal mobile keyboard detection - DISABLED to prevent scrollbar issues
-function setupMobileKeyboardDetection(modal) {
-    if (!modal || window.innerWidth > 768) return;
-    
-    const inputElements = modal.querySelectorAll('input, textarea');
-    inputElements.forEach(input => {
-        // Prevent iOS zoom on input focus (keep this for UX)
-        if (input.style.fontSize !== '16px') {
-            input.style.fontSize = '16px';
-        }
-        
-        // DISABLED: keyboard-detected class causes layout shifts and scrollbar jumping
-        // input.addEventListener('focus', () => modal.classList.add('keyboard-detected'));
-        // input.addEventListener('blur', () => {
-        //     setTimeout(() => {
-        //         if (!modal.querySelector('input:focus, textarea:focus')) {
-        //             modal.classList.remove('keyboard-detected');
-        //         }
-        //     }, 100);
-        // });
-    });
-    
-    // Simple cleanup function (now just removes any existing class)
-    modal.keyboardCleanup = function() {
-        modal.classList.remove('keyboard-detected');
-    };
-}
+// Mobile keyboard detection removed - was causing scrollbar issues
 
 // Expose to global MLNF object
 window.MLNF.initMessageModal = initMessageModal;
