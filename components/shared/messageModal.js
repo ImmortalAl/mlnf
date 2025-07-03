@@ -16,7 +16,7 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     }
     
     let scrollTimeout = null;
-    let debugMode = true; // Enable debugging
+    let debugMode = false; // Disabled - debug logging was for troubleshooting only
     let DISABLE_ALL_SCROLLING = false; // Re-enabled since scrolling wasn't the problem
 
     function logDebug(message, data = {}) {
@@ -247,51 +247,8 @@ function initMessageModal() {
             }
         });
         
-        // Add resize observer to detect layout changes
-        if (window.ResizeObserver) {
-            const resizeObserver = new ResizeObserver(entries => {
-                for (let entry of entries) {
-                    logDebug('Message history container resized', {
-                        newSize: {
-                            width: entry.contentRect.width,
-                            height: entry.contentRect.height
-                        },
-                        scrollDimensions: {
-                            scrollTop: messageHistoryElement.scrollTop,
-                            scrollHeight: messageHistoryElement.scrollHeight,
-                            clientHeight: messageHistoryElement.clientHeight
-                        }
-                    });
-                }
-            });
-            resizeObserver.observe(messageHistoryElement);
-        }
-        
-        // Add mutation observer to detect DOM changes
-        if (window.MutationObserver) {
-            const mutationObserver = new MutationObserver(mutations => {
-                mutations.forEach(mutation => {
-                    if (mutation.type === 'childList') {
-                        logDebug('DOM mutation detected in message history', {
-                            addedNodes: mutation.addedNodes.length,
-                            removedNodes: mutation.removedNodes.length,
-                            target: mutation.target.tagName,
-                            currentChildren: messageHistoryElement.children.length,
-                            scrollDimensions: {
-                                scrollTop: messageHistoryElement.scrollTop,
-                                scrollHeight: messageHistoryElement.scrollHeight,
-                                clientHeight: messageHistoryElement.clientHeight
-                            },
-                            stackTrace: new Error().stack.split('\n').slice(0, 5)
-                        });
-                    }
-                });
-            });
-            mutationObserver.observe(messageHistoryElement, { 
-                childList: true, 
-                subtree: true 
-            });
-        }
+        // Observers removed - they were causing scrollbar jumping issues
+        // by triggering too many recalculations and layout shifts
     }
 
     // Set up WebSocket message listeners to handle incoming messages properly
