@@ -15,7 +15,7 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         return div.innerHTML;
     }
     
-    function addMessageToUI(content, isSent, isError = false, timestamp = new Date()) {
+    function addMessageToUI(content, isSent, isError = false, timestamp = new Date(), shouldScroll = true) {
         if(!messageHistoryElement) return;
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isSent ? 'sent' : 'received'} ${isError ? 'error' : ''}`;
@@ -23,8 +23,10 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         messageDiv.innerHTML = `<span class="message-text">${escapeHTML(content)}</span><span class="message-time">${time}</span>`;
         messageHistoryElement.appendChild(messageDiv);
         
-        // Simple immediate scroll - no timeout needed
-        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        // Only scroll if explicitly requested (for new messages, not when loading conversation)
+        if (shouldScroll) {
+            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        }
     }
 
     async function handleSendMessage() {
@@ -56,10 +58,14 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         const currentUser = JSON.parse(localStorage.getItem('user'));
         if (!currentUser) return;
         const currentUserId = currentUser.id || currentUser._id;
-        messages.forEach(message => addMessageToUI(message.content, (message.sender._id || message.sender.id) === currentUserId, false, new Date(message.timestamp)));
+        messages.forEach(message => addMessageToUI(message.content, (message.sender._id || message.sender.id) === currentUserId, false, new Date(message.timestamp), false));
         
-        // Single scroll after all messages loaded
-        messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+        // Single scroll after all messages loaded with slight delay to ensure DOM is ready
+        setTimeout(() => {
+            if (messageHistoryElement) {
+                messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+            }
+        }, 50);
     }
     
     async function loadConversation(username) {
