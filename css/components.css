@@ -530,6 +530,11 @@ body.light-theme .mlnf-avatar {
     padding: 1rem;
     background: var(--background-secondary);
     margin: 1rem 0;
+    /* Stabilize container to prevent scrollHeight fluctuations */
+    box-sizing: border-box;
+    contain: layout style;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .message-input-section {
