@@ -43,8 +43,6 @@ const AdminDashboard = {
     },
 
     switchSection(sectionName) {
-        console.log(`AdminDashboard.switchSection called with: ${sectionName}`);
-        
         // Hide all sections
         const allSections = document.querySelectorAll('.admin-section');
         allSections.forEach(section => {
@@ -55,7 +53,6 @@ const AdminDashboard = {
         const targetSection = document.getElementById(sectionName);
         if (targetSection) {
             targetSection.classList.add('active');
-            console.log(`Section ${sectionName} activated successfully`);
             
             // Update URL hash without triggering page reload
             window.history.replaceState(null, null, `#${sectionName}`);
@@ -78,10 +75,8 @@ const AdminDashboard = {
                 // Initialize UserManagement if it hasn't been initialized yet
                 if (typeof UserManagement !== 'undefined') {
                     if (!UserManagement.apiBaseUrl) {
-                        console.log('Initializing UserManagement for first time');
                         UserManagement.init();
                     } else {
-                        console.log('UserManagement already initialized, loading users data');
                         UserManagement.loadUsers();
                     }
                 } else {

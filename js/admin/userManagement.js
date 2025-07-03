@@ -16,7 +16,7 @@ const UserManagement = {
             this.setupEventListeners();
             this.loadUsers();
         } catch (error) {
-            console.error('UserManagement initialization failed:', error);
+            this.showError('User Management initialization failed', error.message);
         }
     },
 
@@ -105,7 +105,7 @@ const UserManagement = {
             } else if (userData.users && Array.isArray(userData.users)) {
                 this.allUsers = userData.users;
             } else {
-                console.warn('Unexpected API response format:', userData);
+                // Unexpected API response format
                 this.allUsers = [];
             }
             
@@ -116,7 +116,7 @@ const UserManagement = {
             this.renderPagination();
 
         } catch (error) {
-            console.error('Error loading users:', error);
+            // Error loading users
             this.showError('Failed to load users', error.message);
         }
     },
@@ -314,7 +314,7 @@ const UserManagement = {
             user = this.allUsers.find(u => u.id === userId);
         }
         if (!user) {
-            console.error('User not found with ID:', userId);
+            this.showError('User not found', `No user found with ID: ${userId}`);
             this.showError('User not found');
             return;
         }
@@ -382,7 +382,7 @@ const UserManagement = {
             user = this.allUsers.find(u => u.id === userId);
         }
         if (!user) {
-            console.error('User not found with ID:', userId);
+            this.showError('User not found', `No user found with ID: ${userId}`);
             this.showError('User not found');
             return;
         }
@@ -491,7 +491,7 @@ const UserManagement = {
             await this.loadUsers(); // Reload users to show changes
 
         } catch (error) {
-            console.error('Error updating user:', error);
+            // Error updating user
             this.showError('Failed to update soul', error.message);
         }
     },
@@ -516,7 +516,7 @@ const UserManagement = {
                 throw new Error('Failed to ban user');
             }
         } catch (error) {
-            console.error('Error banning user:', error);
+            // Error banning user
             this.showError('Failed to ban user', error.message);
         }
     },
@@ -541,7 +541,7 @@ const UserManagement = {
                 throw new Error('Failed to unban user');
             }
         } catch (error) {
-            console.error('Error unbanning user:', error);
+            // Error unbanning user
             this.showError('Failed to unban user');
         }
     },
@@ -564,7 +564,7 @@ const UserManagement = {
                 setTimeout(() => firstInput.focus(), 100);
             }
         } else {
-            console.error('Missing modal elements:', {
+            this.showError('Missing modal elements', JSON.stringify({
                 modal: !!modal,
                 modalTitle: !!modalTitle,
                 modalContent: !!modalContent
@@ -619,9 +619,5 @@ const UserManagement = {
 // Make it globally available
 window.UserManagement = UserManagement;
 
-// Debug: Log when this script loads
-console.log('UserManagement script loaded, object available:', typeof UserManagement);
-
 // Remove auto-initialization - let AdminDashboard handle initialization
 // This prevents race conditions and duplicate initialization
-console.log('UserManagement module loaded and available for initialization');
