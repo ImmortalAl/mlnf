@@ -209,30 +209,29 @@ async function openMessageModal(username) {
     }
 }
 
-// Minimal mobile keyboard detection - prevents scroll interference
+// Minimal mobile keyboard detection - DISABLED to prevent scrollbar issues
 function setupMobileKeyboardDetection(modal) {
     if (!modal || window.innerWidth > 768) return;
     
     const inputElements = modal.querySelectorAll('input, textarea');
     inputElements.forEach(input => {
-        // Prevent iOS zoom on input focus
+        // Prevent iOS zoom on input focus (keep this for UX)
         if (input.style.fontSize !== '16px') {
             input.style.fontSize = '16px';
         }
         
-        // Simple keyboard detection without complex scroll handling
-        input.addEventListener('focus', () => modal.classList.add('keyboard-detected'));
-        input.addEventListener('blur', () => {
-            // Simple timeout to prevent flicker
-            setTimeout(() => {
-                if (!modal.querySelector('input:focus, textarea:focus')) {
-                    modal.classList.remove('keyboard-detected');
-                }
-            }, 100);
-        });
+        // DISABLED: keyboard-detected class causes layout shifts and scrollbar jumping
+        // input.addEventListener('focus', () => modal.classList.add('keyboard-detected'));
+        // input.addEventListener('blur', () => {
+        //     setTimeout(() => {
+        //         if (!modal.querySelector('input:focus, textarea:focus')) {
+        //             modal.classList.remove('keyboard-detected');
+        //         }
+        //     }, 100);
+        // });
     });
     
-    // Simple cleanup function
+    // Simple cleanup function (now just removes any existing class)
     modal.keyboardCleanup = function() {
         modal.classList.remove('keyboard-detected');
     };
