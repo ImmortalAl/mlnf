@@ -112,7 +112,7 @@ class FeedbackSystem {
         try {
             user = JSON.parse(localStorage.getItem('user') || '{}');
         } catch (error) {
-            console.error('Error parsing user data from localStorage:', error);
+            // Error parsing user data from localStorage
             localStorage.removeItem('user'); // Clear corrupted data
         }
         const isLoggedIn = !!localStorage.getItem('sessionToken') && user.username;
@@ -321,7 +321,7 @@ class EternalSoulsHighlight {
             return;
         }
         if (!window.MLNFAvatars) {
-            console.warn('[EternalSouls] Avatar System not available for founder display');
+            // Avatar System not available for founder display
             return;
         }
 
@@ -369,7 +369,7 @@ class EternalSoulsHighlight {
 
 
         } catch (error) {
-            console.error('[EternalSouls] Error populating founder card:', error);
+            // Error populating founder card
             founderDisplay.innerHTML = `
                 <div class="error-soul">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -389,7 +389,7 @@ class EternalSoulsHighlight {
             return;
         }
         if (!window.MLNFAvatars) {
-            console.warn('[EternalSouls] Avatar System not available for featured soul display');
+            // Avatar System not available for featured soul display
             return;
         }
 
@@ -464,7 +464,7 @@ class EternalSoulsHighlight {
 
 
         } catch (error) {
-            console.error('[EternalSouls] Error populating featured soul:', error);
+            // Error populating featured soul
             featuredDisplay.innerHTML = `
                 <div class="error-soul">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -482,7 +482,7 @@ function openFounderMessage() {
         if (window.MLNF?.openMessageModal) {
             window.MLNF.openMessageModal('ImmortalAl');
         } else {
-            console.warn('[EternalSouls] Message modal not available');
+            // Message modal not available
         }
     } else {
         // Show authentication required message
@@ -492,7 +492,7 @@ function openFounderMessage() {
 
 function openFeaturedSoulMessage() {
     if (!window.eternalSoulsHighlight?.featuredSoulData) {
-        console.warn('[EternalSouls] No featured soul data available');
+        // No featured soul data available
         return;
     }
     
@@ -503,7 +503,7 @@ function openFeaturedSoulMessage() {
         if (window.MLNF?.openMessageModal) {
             window.MLNF.openMessageModal(featured.username);
         } else {
-            console.warn('[EternalSouls] Message modal not available');
+            // Message modal not available
         }
     } else {
         // Show authentication required message  
@@ -598,7 +598,7 @@ function showAuthenticationRequired(action) {
 function openAnonymousMessage(recipientUsername, recipientTitle) {
     // Check if we have the feedback modal system to extend
     if (!window.feedbackSystem) {
-        console.warn('[EternalSouls] Feedback system not available, using fallback');
+        // Feedback system not available, using fallback
         // Fallback to simple prompt
         const message = prompt(`Send an anonymous message to ${recipientUsername}:`);
         if (message && message.trim()) {
@@ -766,7 +766,7 @@ async function sendAnonymousMessage(recipientUsername, content, senderName = 'An
 
 
     } catch (error) {
-        console.error('[EternalSouls] Error sending anonymous message:', error);
+        // Error sending anonymous message
         alert(`Failed to send message: ${error.message}`);
         
         // Reset button

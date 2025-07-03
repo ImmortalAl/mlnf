@@ -9,7 +9,7 @@
     <meta property="og:description" content="An immortal sanctuary for uncensored thought and eternal truth">
     <meta property="og:image" content="https://mlnf.net/social-cover.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <title>Manifest Liberation, Naturally Free (v1.1)</title>
+    <title>Manifest Liberation, Naturally Free</title>
     <!-- Immortal-themed favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -25,42 +25,36 @@
     <link rel="stylesheet" href="css/base-theme.css?v=1.0">
     
     <!-- 2. CRITICAL CSS - Above-fold essentials loaded synchronously -->
-    <link rel="stylesheet" href="css/critical.css?v=6.5">
+    <link rel="stylesheet" href="css/critical.css?v=7.0">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
     <link rel="stylesheet" href="css/styles.css?v=7.0">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
-    <link rel="preload" href="css/layout.css?v=6.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/layout.css?v=6.2"></noscript>
+    <link rel="preload" href="css/layout.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/layout.css?v=7.0"></noscript>
     
-    <link rel="preload" href="css/components.css?v=6.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/components.css?v=6.4"></noscript>
+    <link rel="preload" href="css/components.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/components.css?v=7.0"></noscript>
     
-    <link rel="preload" href="css/features.css?v=6.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/features.css?v=6.7"></noscript>
+    <link rel="preload" href="css/features.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/features.css?v=7.0"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="components/shared/styles.css?v=7.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=7.1"></noscript>
+    <link rel="preload" href="components/shared/styles.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=7.0"></noscript>
     
     <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
-    <link rel="preload" href="css/active-users.css?v=6.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/active-users.css?v=6.1"></noscript>
-    
+    <link rel="preload" href="css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/active-users.css?v=7.0"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded with high priority) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous"></noscript>
     
-    <!-- 8. OPTIMIZED FONTS (critical fonts loaded with high priority) -->
-    <!-- Primary fonts for immediate render -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Lato:wght@300;400;700&display=swap"></noscript>
-    
-    <!-- Secondary fonts for enhanced styling (lower priority) -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Caesar+Dressing&family=Metal+Mania&family=Griffy&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Caesar+Dressing&family=Metal+Mania&family=Griffy&display=swap"></noscript>
+    <!-- 8. OPTIMIZED FONTS (essential fonts only) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Lato:wght@300;400;700&family=Cinzel:wght@400;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Lato:wght@300;400;700&family=Cinzel:wght@400;600&display=swap"></noscript>
     
     <!-- Inline styles moved to optimized external CSS for better caching and performance -->
 </head>
@@ -500,7 +494,7 @@
     
     <!-- Avatar System -->
     <script src="js/mlnf-avatar-system.js?v=2.1"></script>
-    <script src="js/main.js?v=2.1"></script>
+    <script src="js/main.js?v=2.2"></script>
     
     <!-- Optimized Hero Particles - Hardware Accelerated -->
     <script>
@@ -693,7 +687,7 @@
                         
                     }
                 } catch (error) {
-                    console.error('Error parsing user data:', error);
+                    // Error parsing user data
                 }
             } else {
                 // User is not logged in - add modal event listeners
@@ -818,8 +812,7 @@
             sectionFooter.appendChild(readMoreBtn);
             
         } catch (error) {
-            console.error('Failed to load chronicles:', error);
-            console.error('Error details:', error.message);
+            // Failed to load chronicles
             // Keep fallback content
         }
     }
@@ -858,7 +851,7 @@
             }
             
         } catch (error) {
-            console.error('Failed to load soul scrolls highlights:', error);
+            // Failed to load soul scrolls highlights
             // Keep fallback content
         }
     }
@@ -1075,7 +1068,7 @@
             sectionFooter.appendChild(joinBtn);
             
         } catch (error) {
-            console.error('Failed to load echoes:', error);
+            // Failed to load echoes
             // Keep fallback content
         }
     }
