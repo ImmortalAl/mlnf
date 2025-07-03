@@ -496,6 +496,32 @@
   
 }
 
+/* Specific tweaks for devices around the Fairphone 4 / Pixel size */
+@media (max-width: 420px) {
+    #messageModal .message-modal-content {
+        padding: var(--space-sm);
+    }
+
+    #messageModal .message-header {
+        padding-bottom: var(--space-sm);
+    }
+    
+    .modal h3,
+    .modal h2 {
+        font-size: var(--font-lg);
+    }
+    
+    .message-text {
+        font-size: var(--font-sm);
+    }
+    
+    .modal-actions .btn {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.8rem;
+    }
+}
+
+
 /* === ACCESSIBILITY === */
 @media (prefers-reduced-motion: reduce) {
   .modal-content,
