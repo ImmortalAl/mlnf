@@ -17,6 +17,7 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     
     let scrollTimeout = null;
     let debugMode = true; // Enable debugging
+    let DISABLE_ALL_SCROLLING = true; // COMPLETELY DISABLE SCROLLING TO TEST
 
     function logDebug(message, data = {}) {
         if (debugMode) {
@@ -25,6 +26,11 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     }
 
     function scrollToBottom() {
+        if (DISABLE_ALL_SCROLLING) {
+            logDebug('SCROLLING DISABLED - not scrolling');
+            return;
+        }
+        
         if (scrollTimeout) {
             clearTimeout(scrollTimeout);
             logDebug('Cancelled previous scroll timeout');
@@ -218,13 +224,27 @@ function initMessageModal() {
 
     // Add scroll event listener to detect external scroll changes
     if (messageHistoryElement) {
+        let lastScrollTop = 0;
+        let lastScrollHeight = 0;
+        
         messageHistoryElement.addEventListener('scroll', function(e) {
-            logDebug('Scroll event detected', {
-                scrollTop: e.target.scrollTop,
-                scrollHeight: e.target.scrollHeight,
-                clientHeight: e.target.clientHeight,
-                stackTrace: new Error().stack
-            });
+            const currentScrollTop = e.target.scrollTop;
+            const currentScrollHeight = e.target.scrollHeight;
+            
+            // Only log if something actually changed
+            if (currentScrollTop !== lastScrollTop || currentScrollHeight !== lastScrollHeight) {
+                logDebug('⚠️ EXTERNAL SCROLL DETECTED - Something else is scrolling!', {
+                    scrollTop: currentScrollTop,
+                    scrollHeight: currentScrollHeight,
+                    clientHeight: e.target.clientHeight,
+                    scrollTopChange: currentScrollTop - lastScrollTop,
+                    scrollHeightChange: currentScrollHeight - lastScrollHeight,
+                    timestamp: new Date().toISOString()
+                });
+                
+                lastScrollTop = currentScrollTop;
+                lastScrollHeight = currentScrollHeight;
+            }
         });
         
         // Add resize observer to detect layout changes
