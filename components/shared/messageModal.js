@@ -144,6 +144,12 @@ function initMessageModal() {
         });
         messageInputElement.addEventListener('input', handleTyping);
     }
+
+    // Set up WebSocket message listeners to handle incoming messages properly
+    if (window.MLNF && window.MLNF.websocket) {
+        window.MLNF.websocket.on('newMessage', handleIncomingMessage);
+    }
+
         isInitialized = true;
 }
 
@@ -208,6 +214,24 @@ async function openMessageModal(username) {
         }, 2000);
     }
 }
+
+    function handleIncomingMessage(data) {
+        // Only handle messages if modal is open and it's for the current conversation
+        if (!messageModal || !messageModal.classList.contains('active') || !currentRecipientUsername) return;
+        
+        // Check if message is part of current conversation
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        if (!currentUser) return;
+        
+        const currentUserId = currentUser.id || currentUser._id;
+        const isFromCurrentRecipient = data.sender._id === currentRecipientUsername || data.sender.username === currentRecipientUsername;
+        const isToCurrentUser = data.recipient._id === currentUserId || data.recipient.id === currentUserId;
+        
+        if (isFromCurrentRecipient && isToCurrentUser) {
+            // Add the incoming message using our proper debounced scroll system
+            addMessageToUI(data.content, false, false, new Date(data.timestamp), true);
+        }
+    }
 
 // Minimal mobile keyboard detection - DISABLED to prevent scrollbar issues
 function setupMobileKeyboardDetection(modal) {
