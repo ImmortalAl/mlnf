@@ -15,6 +15,19 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         return div.innerHTML;
     }
     
+    let scrollTimeout = null;
+
+    function scrollToBottom() {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = setTimeout(() => {
+            if (messageHistoryElement) {
+                messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+            }
+        }, 100);
+    }
+
     function addMessageToUI(content, isSent, isError = false, timestamp = new Date(), shouldScroll = true) {
         if(!messageHistoryElement) return;
         const messageDiv = document.createElement('div');
@@ -23,9 +36,9 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         messageDiv.innerHTML = `<span class="message-text">${escapeHTML(content)}</span><span class="message-time">${time}</span>`;
         messageHistoryElement.appendChild(messageDiv);
         
-        // Only scroll if explicitly requested (for new messages, not when loading conversation)
+        // Use debounced scroll only for new messages
         if (shouldScroll) {
-            messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
+            scrollToBottom();
         }
     }
 
@@ -60,12 +73,8 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         const currentUserId = currentUser.id || currentUser._id;
         messages.forEach(message => addMessageToUI(message.content, (message.sender._id || message.sender.id) === currentUserId, false, new Date(message.timestamp), false));
         
-        // Single scroll after all messages loaded with slight delay to ensure DOM is ready
-        setTimeout(() => {
-            if (messageHistoryElement) {
-                messageHistoryElement.scrollTop = messageHistoryElement.scrollHeight;
-            }
-        }, 50);
+        // Use the same debounced scroll for consistency
+        scrollToBottom();
     }
     
     async function loadConversation(username) {
