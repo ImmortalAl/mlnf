@@ -164,18 +164,22 @@
 }
 
 .message-history {
-  max-height: 300px;
+  height: 300px !important; /* FIXED HEIGHT - no more fluctuation */
+  min-height: 300px !important;
+  max-height: 300px !important;
   overflow-y: auto;
   border: 1px solid rgba(var(--accent-rgb), 0.2);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   margin-bottom: var(--space-lg);
   background: rgba(13, 13, 26, 0.5);
-  /* Stabilize container to prevent scrollHeight fluctuations */
-  box-sizing: border-box;
-  contain: layout style;
+  /* Nuclear stability - prevent ANY layout changes */
+  box-sizing: border-box !important;
+  contain: strict !important;
   transform: translateZ(0);
   backface-visibility: hidden;
+  width: 100% !important;
+  flex-shrink: 0 !important;
 }
 
 .message {

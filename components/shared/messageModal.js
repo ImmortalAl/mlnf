@@ -17,7 +17,7 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     
     let scrollTimeout = null;
     let debugMode = true; // Enable debugging
-    let DISABLE_ALL_SCROLLING = true; // COMPLETELY DISABLE SCROLLING TO TEST
+    let DISABLE_ALL_SCROLLING = false; // Re-enabled since scrolling wasn't the problem
 
     function logDebug(message, data = {}) {
         if (debugMode) {
