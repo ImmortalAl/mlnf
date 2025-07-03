@@ -161,84 +161,110 @@
 /* === MESSAGE MODAL SPECIFIC === */
 #messageModal {
   z-index: 100001; /* Higher than sidebar to ensure visibility */
+  /* This ensures the modal backdrop is centered */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Redesigned message modal content for better viewport optimization */
-.message-modal-content {
+#messageModal .message-modal-content {
   background: linear-gradient(135deg, rgba(26, 26, 51, 0.98), rgba(13, 13, 26, 0.95));
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   width: 90%;
-  max-width: 600px; /* Wider for better desktop experience */
-  height: 80vh; /* Fixed viewport height */
-  max-height: 600px; /* Maximum height cap */
+  max-width: 550px; /* A good balance for desktop */
+  height: 85vh; /* Use viewport height for base */
+  max-height: 700px; /* Cap the max height */
   display: flex;
   flex-direction: column;
-  border: 2px solid rgba(var(--accent-rgb), 0.3);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   box-shadow: var(--shadow-xl), var(--shadow-glow);
-  position: relative;
-  transform: scale(0.9);
-  transition: transform var(--duration-normal) var(--ease-bounce);
-  overflow: hidden; /* Prevent content overflow */
+  position: relative; /* Changed from absolute to relative for centering */
+  transform: scale(0.95);
+  transition: transform var(--duration-fast) var(--ease-bounce), opacity var(--duration-fast) ease;
+  overflow: hidden; /* Key change: Hide overflow on the main container */
+  opacity: 0;
+  visibility: hidden;
 }
 
-.message-history {
-  flex: 1; /* Take available space */
-  overflow-y: auto;
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  margin-bottom: var(--space-lg);
-  background: rgba(13, 13, 26, 0.5);
+.modal.active #messageModal .message-modal-content {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+
+#messageModal .message-header {
+    flex-shrink: 0; /* Prevent header from shrinking */
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);
+    margin-bottom: var(--space-md);
+}
+
+#messageModal .message-history {
+  flex-grow: 1; /* Key change: Allow this to take all available space */
+  overflow-y: auto; /* Key change: Only this container scrolls */
+  min-height: 0; /* Critical for flexbox children */
+  padding-right: var(--space-sm); /* Space for scrollbar */
+  margin-bottom: var(--space-md);
   /* Smooth scrolling */
   scroll-behavior: smooth;
   /* Better scrollbar styling */
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--accent-rgb), 0.3) transparent;
+  scrollbar-color: rgba(var(--accent-rgb), 0.4) transparent;
 }
 
 /* Webkit scrollbar styling */
-.message-history::-webkit-scrollbar {
+#messageModal .message-history::-webkit-scrollbar {
   width: 8px;
 }
 
-.message-history::-webkit-scrollbar-track {
+#messageModal .message-history::-webkit-scrollbar-track {
   background: rgba(13, 13, 26, 0.3);
   border-radius: var(--radius-sm);
 }
 
-.message-history::-webkit-scrollbar-thumb {
+#messageModal .message-history::-webkit-scrollbar-thumb {
   background: rgba(var(--accent-rgb), 0.3);
   border-radius: var(--radius-sm);
 }
 
-.message-history::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--accent-rgb), 0.5);
+#messageModal .message-history::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-rgb), 0.6);
 }
 
-.message {
-  margin-bottom: var(--space-sm);
-  padding: var(--space-sm);
-  border-radius: var(--radius-sm);
+#messageModal .message-input-area {
+    flex-shrink: 0; /* Prevent input area from shrinking */
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+#messageModal .message-input-area .modal-actions {
+    margin-top: var(--space-md);
+    justify-content: space-between;
+}
+
+#messageModal .message {
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  /* Force consistent layout to prevent height fluctuations */
-  box-sizing: border-box;
-  min-height: 0;
-  transform: translateZ(0); /* Force hardware acceleration */
-  will-change: auto; /* Prevent unnecessary layer promotion */
+  max-width: 90%;
 }
 
 .message.sent {
-  background: rgba(var(--accent-rgb), 0.1);
-  margin-left: var(--space-lg);
+  background: rgba(var(--accent-rgb), 0.15);
   align-self: flex-end;
+  border-bottom-right-radius: var(--radius-xs);
 }
 
 .message.received {
   background: rgba(255, 255, 255, 0.05);
-  margin-right: var(--space-lg);
+  align-self: flex-start;
+  border-bottom-left-radius: var(--radius-xs);
 }
 
 .message.error {
@@ -248,8 +274,8 @@
 
 .message-text {
   color: var(--text);
-  font-size: var(--font-sm);
-  line-height: 1.4;
+  font-size: var(--font-base);
+  line-height: 1.5;
   /* Stabilize text rendering to prevent height fluctuations */
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -418,14 +444,11 @@
 }
 
 @media (max-width: 480px) {
-  .modal-content,
-  .message-modal-content,
-  .feedback-modal,
-  .anonymous-message-modal {
-    width: 100%;
+  #messageModal .message-modal-content {
+    width: 100vw;
     height: 100vh;
     height: 100dvh; /* Use dynamic viewport height */
-    max-height: none;
+    max-height: 100dvh;
     border-radius: 0;
     margin: 0;
     padding: var(--space-md);
@@ -434,19 +457,20 @@
     position: relative;
   }
   
-  
-  .message-history {
+  #messageModal .message-history {
     flex: 1 1 auto;
     min-height: 0;
     margin-bottom: var(--space-md);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    /* Prevent resize on scroll */
     position: relative;
     isolation: isolate;
   }
   
-  
+  #messageModal .message-input-area {
+      padding-bottom: env(safe-area-inset-bottom); /* iOS notch handling */
+  }
+
   .modal h3,
   .modal h2 {
     font-size: var(--font-lg);
