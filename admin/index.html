@@ -17,28 +17,28 @@
     <link rel="stylesheet" href="../css/critical.css?v=2.3">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
-    <link rel="stylesheet" href="../css/styles.css?v=6.6">
+    <link rel="stylesheet" href="../css/styles.css?v=7.0">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
     <link rel="preload" href="../css/layout.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/layout.css?v=2.3"></noscript>
     
-    <link rel="preload" href="../css/components.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/components.css?v=2.3"></noscript>
+    <link rel="preload" href="../css/components.css?v=6.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/components.css?v=6.2"></noscript>
     
     <link rel="preload" href="../css/features.css?v=6.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/features.css?v=6.7"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="../components/shared/styles.css?v=6.9" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../components/shared/styles.css?v=6.9"></noscript>
+    <link rel="preload" href="../components/shared/styles.css?v=7.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../components/shared/styles.css?v=7.1"></noscript>
     
     <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
     <link rel="preload" href="../css/active-users.css?v=2.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=2.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=3.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.3"></noscript>
+    <link rel="preload" href="../css/admin.css?v=3.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.4"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -264,6 +264,9 @@
         <section id="analytics" class="admin-section">
             <h2 class="section-title">
                 <i class="fas fa-chart-bar"></i> Eternal Analytics
+                <button class="btn btn-outline analytics-help-btn" onclick="openAnalyticsTutorial()" title="View Analytics Guide">
+                    <i class="fas fa-question-circle"></i> Help
+                </button>
             </h2>
             
             <!-- Analytics Controls -->
@@ -570,6 +573,104 @@
                 <button class="btn btn-secondary" onclick="closeCurationModal()">Cancel</button>
                 <button class="btn btn-primary" id="featureContentBtn" onclick="featureSelectedContent()" disabled>
                     <i class="fas fa-star"></i> Feature Content
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Tutorial Modal -->
+    <div id="analyticsTutorial" class="modal analytics-tutorial-modal" aria-hidden="true">
+        <div class="modal-content tutorial-content">
+            <button class="close-modal" onclick="closeAnalyticsTutorial()">&times;</button>
+            <h2><i class="fas fa-graduation-cap"></i> Eternal Analytics Guide</h2>
+            
+            <div class="tutorial-sections">
+                <!-- Overview Section -->
+                <div class="tutorial-section">
+                    <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                    <p>The Eternal Analytics dashboard provides comprehensive insights into your site's performance and user engagement. All metrics update in real-time to give you the most current data.</p>
+                </div>
+
+                <!-- Visitor Metrics -->
+                <div class="tutorial-section">
+                    <h3><i class="fas fa-users"></i> Visitor Metrics</h3>
+                    <div class="metric-explanation">
+                        <h4><i class="fas fa-eye"></i> Total Page Views</h4>
+                        <p>The total number of pages viewed on your site. Repeated views of a single page are counted.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4><i class="fas fa-users"></i> Unique Visitors</h4>
+                        <p>The number of individual users who have visited your site, counted only once per time period.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4><i class="fas fa-clock"></i> Average Session Duration</h4>
+                        <p>The average length of time users spend on your site during a single visit.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4><i class="fas fa-percentage"></i> Bounce Rate</h4>
+                        <p>The percentage of visitors who leave your site after viewing only one page. Lower is better!</p>
+                    </div>
+                </div>
+
+                <!-- Real-Time Metrics -->
+                <div class="tutorial-section">
+                    <h3><i class="fas fa-globe"></i> Real-Time Metrics</h3>
+                    <div class="metric-explanation">
+                        <h4><i class="fas fa-globe"></i> Online Now</h4>
+                        <p>The number of users currently active on your site. Updates every few seconds.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4><i class="fas fa-chart-line"></i> Page Load Speed</h4>
+                        <p>Average time it takes for pages to fully load. Aim for under 3 seconds for optimal user experience.</p>
+                    </div>
+                </div>
+
+                <!-- Legacy Metrics -->
+                <div class="tutorial-section">
+                    <h3><i class="fas fa-history"></i> Legacy Metrics</h3>
+                    <div class="metric-explanation">
+                        <h4>Daily Active Souls</h4>
+                        <p>Registered users who have logged in and performed actions in the last 24 hours.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4>Content Creation Rate</h4>
+                        <p>Average number of new posts, messages, and comments created per day.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4>Engagement Score</h4>
+                        <p>A composite score (0-100) based on user interactions, content creation, and session quality.</p>
+                    </div>
+                    <div class="metric-explanation">
+                        <h4>Error Rate</h4>
+                        <p>Percentage of page loads that result in errors. Should be below 1% for good user experience.</p>
+                    </div>
+                </div>
+
+                <!-- Time Range Tips -->
+                <div class="tutorial-section">
+                    <h3><i class="fas fa-calendar"></i> Using Time Ranges</h3>
+                    <p>Select different time ranges to analyze trends:</p>
+                    <ul>
+                        <li><strong>Last 24 Hours:</strong> Best for monitoring immediate changes and real-time issues</li>
+                        <li><strong>Last 7 Days:</strong> Ideal for weekly patterns and recent trends</li>
+                        <li><strong>Last 30 Days:</strong> Good for monthly overview and content performance</li>
+                        <li><strong>Last 90 Days:</strong> Useful for quarterly analysis and seasonal patterns</li>
+                        <li><strong>Last Year:</strong> Perfect for long-term growth tracking and yearly comparisons</li>
+                    </ul>
+                </div>
+
+                <!-- Charts Guide -->
+                <div class="tutorial-section">
+                    <h3><i class="fas fa-chart-bar"></i> Understanding Charts</h3>
+                    <p><strong>Visitor Traffic Chart:</strong> Shows page views and unique visitors over time. Look for patterns and spikes.</p>
+                    <p><strong>User Activity Patterns:</strong> Displays when users are most active. Use this to schedule content and maintenance.</p>
+                    <p><strong>Device & Browser Charts:</strong> Helps you understand what devices and browsers to optimize for.</p>
+                </div>
+            </div>
+
+            <div class="tutorial-footer">
+                <button class="btn btn-primary" onclick="closeAnalyticsTutorial()">
+                    <i class="fas fa-check"></i> Got It!
                 </button>
             </div>
         </div>
@@ -949,6 +1050,32 @@
         document.addEventListener('click', function(e) {
             if (e.target.id === 'curationModal') {
                 closeCurationModal();
+            }
+        });
+
+        // Analytics Tutorial Functions
+        function openAnalyticsTutorial() {
+            const tutorial = document.getElementById('analyticsTutorial');
+            if (tutorial) {
+                tutorial.style.display = 'flex';
+                tutorial.classList.add('active');
+                tutorial.setAttribute('aria-hidden', 'false');
+            }
+        }
+
+        function closeAnalyticsTutorial() {
+            const tutorial = document.getElementById('analyticsTutorial');
+            if (tutorial) {
+                tutorial.style.display = 'none';
+                tutorial.classList.remove('active');
+                tutorial.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        // Close tutorial on background click
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'analyticsTutorial') {
+                closeAnalyticsTutorial();
             }
         });
     </script>

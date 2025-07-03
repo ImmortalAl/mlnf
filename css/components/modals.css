@@ -307,7 +307,9 @@
   overflow: hidden;
 }
 
-/* Keyboard-optimized message history */
+/* Keyboard-optimized message history - DISABLED due to usability issues */
+/* Keeping original modal size for better user experience */
+/*
 #messageModal.keyboard-detected .message-history {
   max-height: 80px !important;
   min-height: 80px !important;
@@ -315,11 +317,15 @@
   flex-shrink: 0;
   scrollbar-width: thin;
 }
+*/
 
-/* Show only the last 2 messages on mobile keyboard for better context */
+/* Show only the last 2 messages on mobile keyboard for better context - DISABLED */
+/* Users need to see full conversation history */
+/*
 #messageModal.keyboard-detected .message-history .message:not(:nth-last-child(-n+2)) {
   display: none !important;
 }
+*/
 
 /* Ensure input area stays visible and accessible */
 .modal.keyboard-detected .modal-actions {
@@ -465,6 +471,9 @@
     overflow-y: auto;
   }
   
+  /* Keyboard-detected message history restrictions - DISABLED */
+  /* Keeping full message history visible for better UX */
+  /*
   #messageModal.keyboard-detected .message-history {
     max-height: 100px !important;
     min-height: 100px !important;
@@ -476,6 +485,7 @@
   #messageModal.keyboard-detected .message-history .message:not(:nth-last-child(-n+2)) {
     display: none !important;
   }
+  */
   
   .modal h3,
   .modal h2 {

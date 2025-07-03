@@ -1096,12 +1096,16 @@ body.light-theme #messageModal .message-modal-content::before { /* Adjust messag
 
 /* === SIMPLIFIED MOBILE KEYBOARD OPTIMIZATION === */
 /* Simple, stable keyboard detection without height conflicts */
+/* Message history height restriction DISABLED - causes usability issues */
+/*
 #messageModal.keyboard-detected .message-history {
-  height: 100px; /* Fixed smaller height for keyboard mode */
+  height: 100px;
   overflow-y: auto;
   scrollbar-width: thin;
 }
+*/
 
+/* Keep only the iOS zoom prevention which is helpful */
 #messageModal.keyboard-detected input[type="text"] {
   font-size: 16px; /* Prevent iOS zoom */
 }

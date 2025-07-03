@@ -63,6 +63,83 @@
     min-width: 44px;
 }
 
+/* Global Select/Dropdown Styling */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 94, 120, 0.3);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ff5e78' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1rem;
+}
+
+select:hover {
+    border-color: var(--accent);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255, 94, 120, 0.2);
+}
+
+/* Dropdown Option Styling - Enhanced Contrast */
+select option {
+    background-color: var(--background-secondary, #1a1a2e);
+    color: var(--text);
+    padding: 0.5rem;
+    font-weight: normal;
+}
+
+select option:hover {
+    background-color: var(--accent);
+    color: var(--primary);
+}
+
+/* Selected option distinction */
+select option:checked {
+    background-color: rgba(255, 94, 120, 0.3);
+    font-weight: 600;
+}
+
+/* Light theme adjustments for dropdowns */
+body.light-theme select {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: rgba(214, 45, 77, 0.3);
+    color: var(--text);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23d62d4d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+body.light-theme select:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: var(--accent);
+}
+
+body.light-theme select option {
+    background-color: #f8f8fc;
+    color: #2a2a2a;
+}
+
+body.light-theme select option:hover {
+    background-color: var(--accent);
+    color: white;
+}
+
+body.light-theme select option:checked {
+    background-color: rgba(214, 45, 77, 0.2);
+}
+
 .btn-primary {
     background: var(--gradient-accent);
     color: var(--primary);
