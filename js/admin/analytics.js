@@ -122,12 +122,8 @@ const AdminAnalytics = {
             this.updatePopularContent(data.popular);
             this.updateRecentActivity(data.activity);
             
-            // Show success indicator
-            this.showAnalyticsStatus('Real data loaded successfully', 'success');
-            
         } catch (error) {
             console.error('❌ Error loading real analytics:', error);
-            this.showAnalyticsStatus(`Failed to load real data: ${error.message}`, 'error');
             // Fallback to mock data if API fails
             this.loadFallbackData();
         }
@@ -315,7 +311,6 @@ const AdminAnalytics = {
     loadFallbackData() {
         // Fallback to mock data if real API fails
         console.log('⚠️ Loading fallback mock data due to API failure');
-        this.showAnalyticsStatus('Using mock data - real API unavailable', 'warning');
         
         const mockData = this.generateMockVisitorData();
         this.updateVisitorMetrics(mockData);
@@ -352,7 +347,6 @@ const AdminAnalytics = {
                     activity: { recentBlogs: [], recentComments: [], recentThreads: [], newUsers: [] }
                 });
                 
-                this.showAnalyticsStatus('Using real user data + estimated metrics', 'success');
                 return;
             }
         } catch (error) {
@@ -396,46 +390,6 @@ const AdminAnalytics = {
         };
     },
 
-    showAnalyticsStatus(message, type) {
-        // Create or update status indicator
-        let statusElement = document.getElementById('analyticsStatus');
-        if (!statusElement) {
-            statusElement = document.createElement('div');
-            statusElement.id = 'analyticsStatus';
-            statusElement.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 10px 15px;
-                border-radius: 5px;
-                font-size: 0.9em;
-                font-weight: 500;
-                z-index: 1000;
-                transition: all 0.3s ease;
-                max-width: 300px;
-            `;
-            document.body.appendChild(statusElement);
-        }
-
-        // Set styling based on type
-        const styles = {
-            success: { background: '#22c55e', color: 'white', border: '1px solid #16a34a' },
-            error: { background: '#dc267f', color: 'white', border: '1px solid #be185d' },
-            warning: { background: '#f59e0b', color: 'white', border: '1px solid #d97706' }
-        };
-
-        const style = styles[type] || styles.warning;
-        Object.assign(statusElement.style, style);
-        statusElement.textContent = message;
-
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            if (statusElement) {
-                statusElement.style.opacity = '0';
-                setTimeout(() => statusElement.remove(), 300);
-            }
-        }, 5000);
-    },
 
     updateVisitorMetrics(data) {
         // Update main metrics with animation (fallback method)
