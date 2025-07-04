@@ -7,44 +7,18 @@
     <link rel="canonical" href="https://mlnf.net/pages/infinite-nexus">
     <title>Infinite Nexus - MLNF</title>
     <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/critical.css?v=7.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=7.1">
     <link rel="stylesheet" href="../components/shared/styles.css?v=7.0">
     <link rel="stylesheet" href="../css/active-users.css">
     <link rel="stylesheet" href="../css/mindmap.css">
+    <link rel="stylesheet" href="../css/features.css?v=7.0">
     <!-- Quill editor styles -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
-    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
-        <div class="active-users-header">
-            <h3>Eternal Seekers</h3>
-            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
-        </div>
-        <div id="userList"></div>
-    </aside>
-
-    <div class="floating-buttons">
-        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-    </div>
-
-    <div id="messageModal" class="modal" aria-hidden="true">
-        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
-            <h3 id="messageTitle">Direct Message</h3>
-            <p id="recipientName">To: Username</p>
-            <div class="message-history" id="messageHistory"></div>
-            <div>
-                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
-                <div class="modal-actions">
-                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
-                    <button type="button" id="closeMessageModal">Close Nexus</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <header>
         <div class="logo">
             <a href="/">
@@ -85,6 +59,34 @@
             </ul>
         </nav>
     </header>
+
+    <aside class="active-users" id="activeUsers" aria-label="Active users panel">
+        <div class="active-users-header">
+            <h3>Eternal Seekers</h3>
+            <button class="close-sidebar" id="closeUsers" aria-label="Close sidebar">×</button>
+        </div>
+        <div id="userList"></div>
+    </aside>
+
+    <div class="floating-buttons">
+        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users"><i class="fas fa-users"></i></button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    </div>
+
+    <div id="messageModal" class="modal" aria-hidden="true">
+        <div class="message-modal-content" role="dialog" aria-labelledby="messageTitle">
+            <h3 id="messageTitle">Direct Message</h3>
+            <p id="recipientName">To: Username</p>
+            <div class="message-history" id="messageHistory"></div>
+            <div>
+                <input type="text" id="messageInput" placeholder="Inscribe your eternal message..." required>
+                <div class="modal-actions">
+                    <button type="submit" id="sendMessageBtn">Send Whisper</button>
+                    <button type="button" id="closeMessageModal">Close Nexus</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <main>
         <section class="page-header">
