@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
+    <meta name="description" content="Infinite Nexus - Collaborative knowledge mindmap | Manifest Liberation, Naturally Free">
     <link rel="canonical" href="https://mlnf.net/pages/infinite-nexus">
     <title>Infinite Nexus - MLNF</title>
     <link rel="stylesheet" href="../css/base-theme.css">
@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="../css/styles.css?v=7.1">
     <link rel="stylesheet" href="../components/shared/styles.css?v=7.0">
     <link rel="stylesheet" href="../css/active-users.css">
-    <!-- Add page-specific styles if needed in the future -->
-    <!-- <link rel="stylesheet" href="../css/infinite-nexus.css"> -->
+    <link rel="stylesheet" href="../css/mindmap.css">
+    <!-- Quill editor styles -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
     <aside class="active-users" id="activeUsers" aria-label="Active users panel">
@@ -66,7 +67,7 @@
             </ul>
         </nav>
         <div class="header-controls">
-            <div class="user-menu" id="userMenuContainer"></div> <!-- Populated by userMenu.js -->
+            <div class="user-menu" id="userMenuContainer"></div>
             <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;">
                 <!-- Populated by userMenu.js when logged out -->
             </div>
@@ -88,24 +89,134 @@
     <main>
         <section class="page-header">
             <h1>Infinite Nexus</h1>
-            <p>The convergence of all paths. Content to be revealed.</p>
+            <p>Collaboratively build the eternal knowledge web - A refuge for free thinkers</p>
         </section>
         
-        <section class="placeholder-content">
+        <section class="mindmap-section">
             <div class="container">
-                <h2>Framework in Place</h2>
-                <p>This page is ready for future development. The core navigation, user authentication, and sidebar components are all wired up and ready to go.</p>
-                <p>When the time comes, the unique features of the Infinite Nexus will be built upon this foundation.</p>
+                <div class="mindmap-container">
+                    <!-- Controls toolbar -->
+                    <div class="mindmap-controls">
+                        <div class="search-container">
+                            <input type="text" id="mindmap-search" placeholder="Search the Infinite Nexus..." />
+                            <button id="search-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                        <button id="add-node-btn"><i class="fas fa-plus"></i> Add Node</button>
+                        <button id="connect-mode-btn"><i class="fas fa-link"></i> Connect</button>
+                        <button id="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                    
+                    <!-- Cytoscape canvas -->
+                    <div id="cy">
+                        <div class="mindmap-loading">Loading the Infinite Nexus...</div>
+                    </div>
+                    
+                    <!-- Node details panel -->
+                    <div class="node-details-panel" id="nodeDetailsPanel">
+                        <button class="close" onclick="this.parentElement.style.display='none'">×</button>
+                        <h3 id="nodeTitle"></h3>
+                        <div class="content" id="nodeContent"></div>
+                        
+                        <div class="credibility-widget">
+                            <div>
+                                <div class="credibility-label">Credibility</div>
+                                <div class="credibility-score" id="credibilityScore">50</div>
+                            </div>
+                            <div class="vote-buttons">
+                                <button id="upvoteBtn" title="Upvote"><i class="fas fa-arrow-up"></i></button>
+                                <button id="downvoteBtn" title="Downvote"><i class="fas fa-arrow-down"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="citations-list">
+                            <h4>References</h4>
+                            <div id="citationsList"></div>
+                            <button id="addCitationBtn" class="add-citation-btn">+ Add Reference</button>
+                        </div>
+                        
+                        <button id="editNodeBtn" class="edit-node-btn">Edit Node</button>
+                    </div>
+                    
+                    <!-- Search results overlay -->
+                    <div class="search-results-overlay" id="searchResults"></div>
+                    
+                    <!-- Connection modal -->
+                    <div class="connection-modal" id="connectionModal">
+                        <h4>Define Relationship</h4>
+                        <div class="connection-input">
+                            <input type="text" id="relationshipLabel" placeholder="Enter relationship type..." />
+                            <div class="label-suggestions" id="labelSuggestions"></div>
+                        </div>
+                        <div class="connection-actions">
+                            <button id="confirmConnection">Connect</button>
+                            <button id="cancelConnection">Cancel</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile tilt indicator -->
+                    <div class="tilt-indicator" id="tiltIndicator" style="display: none;">
+                        <span>Tilt Navigation</span>
+                        <div class="tilt-toggle" id="tiltToggle"></div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
+
+    <!-- Node Editor Modal -->
+    <div class="node-editor-modal" id="nodeEditorModal">
+        <div class="node-editor-content">
+            <span class="close" id="closeNodeEditor">×</span>
+            <h2 id="editorTitle">Create Node</h2>
+            <form class="node-editor-form" id="nodeEditorForm">
+                <div>
+                    <label for="nodeTitleInput">Title</label>
+                    <input type="text" id="nodeTitleInput" required maxlength="200" />
+                </div>
+                
+                <div>
+                    <label for="node-content-editor">Content</label>
+                    <div id="node-content-editor"></div>
+                </div>
+                
+                <div>
+                    <label for="nodeTagsInput">Tags (comma separated)</label>
+                    <input type="text" id="nodeTagsInput" placeholder="science, philosophy, technology" />
+                </div>
+                
+                <button type="submit">Save Node</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Citation Modal -->
+    <div class="modal" id="citationModal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="this.parentElement.parentElement.style.display='none'">×</span>
+            <h3>Add Reference</h3>
+            <form id="citationForm">
+                <div>
+                    <label for="citationUrl">URL</label>
+                    <input type="url" id="citationUrl" required />
+                </div>
+                <div>
+                    <label for="citationDescription">Description</label>
+                    <input type="text" id="citationDescription" maxlength="500" />
+                </div>
+                <button type="submit">Add Citation</button>
+            </form>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free | Embracing Infinity</p>
     </footer>
     
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    
     <!-- Shared MLNF Scripts -->
-    <!-- Config MUST be loaded first -->
     <script src="../components/shared/config.js?v=1.2"></script>
     <script src="../components/shared/mlnf-core.js?v=1.2"></script>
     <script src="../components/shared/navigation.js?v=1.2"></script>
@@ -113,18 +224,29 @@
     <script src="../components/shared/authModal.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=2.4"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
-    <!-- End Shared MLNF Scripts -->
-
-    <!-- <script src="../js/scripts.js?v=1.2"></script> --> <!-- Legacy script - functionality moved to components -->
+    <script src="../components/shared/apiClient.js?v=1.0"></script>
+    <script src="../components/shared/websocket.js?v=1.0"></script>
+    
     <script src="../js/mlnf-avatar-system.js?v=2.0"></script>
     <script src="../js/main.js?v=2.2"></script>
     
-    <!-- Page-specific scripts can be added here -->
+    <!-- Mindmap specific scripts -->
+    <script src="../js/mindmap/nexusEngine.js"></script>
+    <script src="../js/mindmap/nodeEditor.js"></script>
+    <script src="../js/mindmap/search.js"></script>
+    <script src="../js/mindmap/tiltNavigation.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Core MLNF functionalities are already initialized by the shared scripts.
-            // You can add page-specific logic here.
-            console.log('Infinite Nexus page framework loaded.');
+            // Check authentication
+            const authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                window.location.href = '/pages/auth.html';
+                return;
+            }
+            
+            // Initialize mindmap after auth check
+            console.log('Initializing Infinite Nexus...');
         });
     </script>
 </body>

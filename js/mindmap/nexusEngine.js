@@ -1,0 +1,686 @@
+/**
+ * Infinite Nexus Engine
+ * Main controller for the mindmap visualization
+ */
+class NexusEngine {
+    constructor() {
+        this.cy = null;
+        this.nodes = new Map();
+        this.edges = new Map();
+        this.selectedNode = null;
+        this.connectMode = false;
+        this.sourceNode = null;
+        this.apiClient = new ApiClient();
+        this.currentUserId = localStorage.getItem('userId');
+        
+        this.init();
+    }
+    
+    async init() {
+        try {
+            // Initialize Cytoscape
+            this.initCytoscape();
+            
+            // Load existing mindmap data
+            await this.loadMindmap();
+            
+            // Set up event handlers
+            this.setupEventHandlers();
+            
+            // Initialize WebSocket for real-time updates
+            this.initWebSocket();
+            
+            // Remove loading indicator
+            document.querySelector('.mindmap-loading').style.display = 'none';
+        } catch (error) {
+            console.error('Failed to initialize mindmap:', error);
+            this.showError('Failed to load the Infinite Nexus');
+        }
+    }
+    
+    initCytoscape() {
+        this.cy = cytoscape({
+            container: document.getElementById('cy'),
+            
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#1a1a2e',
+                        'border-color': '#e94560',
+                        'border-width': 2,
+                        'label': 'data(title)',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'color': '#f1f1f1',
+                        'font-size': '14px',
+                        'width': 'mapData(credibility, 0, 100, 40, 120)',
+                        'height': 'mapData(credibility, 0, 100, 40, 120)',
+                        'transition-property': 'width, height, background-color',
+                        'transition-duration': '0.3s'
+                    }
+                },
+                {
+                    selector: 'node:selected',
+                    style: {
+                        'background-color': '#e94560',
+                        'border-width': 3,
+                        'box-shadow': '0 0 20px #e94560'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': 'rgba(233, 69, 96, 0.6)',
+                        'target-arrow-color': 'rgba(233, 69, 96, 0.6)',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'label': 'data(relationshipLabel)',
+                        'text-rotation': 'autorotate',
+                        'text-margin-y': -10,
+                        'font-size': '12px',
+                        'color': '#f1f1f1',
+                        'text-background-color': '#1a1a2e',
+                        'text-background-opacity': 0.8,
+                        'text-background-padding': '3px'
+                    }
+                },
+                {
+                    selector: '.high-credibility',
+                    style: {
+                        'box-shadow': '0 0 20px rgba(76, 175, 80, 0.6)'
+                    }
+                },
+                {
+                    selector: '.medium-credibility',
+                    style: {
+                        'box-shadow': '0 0 15px rgba(255, 193, 7, 0.6)'
+                    }
+                },
+                {
+                    selector: '.low-credibility',
+                    style: {
+                        'box-shadow': '0 0 10px rgba(244, 67, 54, 0.6)'
+                    }
+                }
+            ],
+            
+            layout: {
+                name: 'cose',
+                animate: true,
+                animationDuration: 500,
+                nodeRepulsion: 8000,
+                idealEdgeLength: 100,
+                edgeElasticity: 100,
+                nestingFactor: 5,
+                gravity: 80,
+                numIter: 1000,
+                initialTemp: 200,
+                coolingFactor: 0.95,
+                minTemp: 1.0
+            },
+            
+            // Interaction options
+            minZoom: 0.1,
+            maxZoom: 3,
+            wheelSensitivity: 0.2
+        });
+    }
+    
+    async loadMindmap() {
+        try {
+            const response = await this.apiClient.get('/mindmap');
+            const { nodes, edges } = response.data;
+            
+            // Add nodes to Cytoscape
+            nodes.forEach(node => {
+                this.addNodeToGraph(node);
+            });
+            
+            // Add edges to Cytoscape
+            edges.forEach(edge => {
+                this.addEdgeToGraph(edge);
+            });
+            
+            // Run layout
+            this.cy.layout({ name: 'cose' }).run();
+        } catch (error) {
+            console.error('Failed to load mindmap data:', error);
+            // Start with empty mindmap if loading fails
+        }
+    }
+    
+    addNodeToGraph(nodeData) {
+        const cyNode = {
+            group: 'nodes',
+            data: {
+                id: nodeData._id,
+                title: nodeData.title,
+                content: nodeData.content,
+                credibility: nodeData.credibility.score,
+                creator: nodeData.creator,
+                tags: nodeData.tags,
+                ...nodeData
+            },
+            position: nodeData.position || { x: Math.random() * 500, y: Math.random() * 500 }
+        };
+        
+        this.cy.add(cyNode);
+        this.nodes.set(nodeData._id, nodeData);
+        
+        // Apply credibility class
+        this.updateNodeCredibilityClass(nodeData._id, nodeData.credibility.score);
+    }
+    
+    addEdgeToGraph(edgeData) {
+        const cyEdge = {
+            group: 'edges',
+            data: {
+                id: edgeData._id,
+                source: edgeData.sourceNode,
+                target: edgeData.targetNode,
+                relationshipLabel: edgeData.relationshipLabel,
+                creator: edgeData.creator
+            }
+        };
+        
+        this.cy.add(cyEdge);
+        this.edges.set(edgeData._id, edgeData);
+    }
+    
+    updateNodeCredibilityClass(nodeId, score) {
+        const node = this.cy.getElementById(nodeId);
+        node.removeClass('high-credibility medium-credibility low-credibility');
+        
+        if (score >= 70) {
+            node.addClass('high-credibility');
+        } else if (score >= 40) {
+            node.addClass('medium-credibility');
+        } else {
+            node.addClass('low-credibility');
+        }
+    }
+    
+    setupEventHandlers() {
+        // Node selection
+        this.cy.on('tap', 'node', (evt) => {
+            const node = evt.target;
+            this.selectNode(node);
+        });
+        
+        // Background tap - deselect
+        this.cy.on('tap', (evt) => {
+            if (evt.target === this.cy) {
+                this.deselectAll();
+            }
+        });
+        
+        // Edge creation in connect mode
+        this.cy.on('tap', 'node', (evt) => {
+            if (this.connectMode) {
+                this.handleConnectMode(evt.target);
+            }
+        });
+        
+        // Add node button
+        document.getElementById('add-node-btn').addEventListener('click', () => {
+            window.nodeEditor.openForCreate();
+        });
+        
+        // Connect mode button
+        document.getElementById('connect-mode-btn').addEventListener('click', () => {
+            this.toggleConnectMode();
+        });
+        
+        // Search functionality
+        document.getElementById('search-btn').addEventListener('click', () => {
+            this.performSearch();
+        });
+        
+        document.getElementById('mindmap-search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.performSearch();
+            }
+        });
+        
+        // Node details panel buttons
+        document.getElementById('upvoteBtn').addEventListener('click', () => {
+            this.voteOnNode(1);
+        });
+        
+        document.getElementById('downvoteBtn').addEventListener('click', () => {
+            this.voteOnNode(-1);
+        });
+        
+        document.getElementById('editNodeBtn').addEventListener('click', () => {
+            if (this.selectedNode) {
+                window.nodeEditor.openForEdit(this.nodes.get(this.selectedNode.id()));
+            }
+        });
+        
+        document.getElementById('addCitationBtn').addEventListener('click', () => {
+            this.openCitationModal();
+        });
+        
+        // Connection modal
+        document.getElementById('confirmConnection').addEventListener('click', () => {
+            this.confirmConnection();
+        });
+        
+        document.getElementById('cancelConnection').addEventListener('click', () => {
+            this.cancelConnection();
+        });
+        
+        // Relationship label autocomplete
+        document.getElementById('relationshipLabel').addEventListener('input', (e) => {
+            this.fetchLabelSuggestions(e.target.value);
+        });
+    }
+    
+    selectNode(node) {
+        this.selectedNode = node;
+        const nodeData = this.nodes.get(node.id());
+        
+        // Update details panel
+        document.getElementById('nodeTitle').textContent = nodeData.title;
+        document.getElementById('nodeContent').innerHTML = nodeData.content;
+        document.getElementById('credibilityScore').textContent = nodeData.credibility.score;
+        
+        // Update citations list
+        const citationsList = document.getElementById('citationsList');
+        citationsList.innerHTML = '';
+        nodeData.credibility.citations.forEach(citation => {
+            const citationDiv = document.createElement('div');
+            citationDiv.className = 'citation-item';
+            citationDiv.innerHTML = `
+                <a href="${citation.url}" target="_blank">${citation.url}</a>
+                <p>${citation.description || ''}</p>
+                <small>Added by ${citation.addedBy.username || 'Unknown'}</small>
+            `;
+            citationsList.appendChild(citationDiv);
+        });
+        
+        // Check if user has voted
+        const userVote = nodeData.credibility.votes.find(v => v.user === this.currentUserId);
+        document.getElementById('upvoteBtn').classList.toggle('voted', userVote?.value === 1);
+        document.getElementById('downvoteBtn').classList.toggle('voted', userVote?.value === -1);
+        
+        // Show details panel
+        document.getElementById('nodeDetailsPanel').style.display = 'block';
+    }
+    
+    deselectAll() {
+        this.cy.elements().unselect();
+        document.getElementById('nodeDetailsPanel').style.display = 'none';
+        this.selectedNode = null;
+    }
+    
+    toggleConnectMode() {
+        this.connectMode = !this.connectMode;
+        const btn = document.getElementById('connect-mode-btn');
+        btn.classList.toggle('active', this.connectMode);
+        
+        if (this.connectMode) {
+            this.cy.container().style.cursor = 'crosshair';
+            this.showMessage('Click a source node, then a target node to connect them');
+        } else {
+            this.cy.container().style.cursor = 'default';
+            this.sourceNode = null;
+        }
+    }
+    
+    handleConnectMode(node) {
+        if (!this.sourceNode) {
+            this.sourceNode = node;
+            node.addClass('source-node');
+            this.showMessage('Now click the target node');
+        } else if (node.id() !== this.sourceNode.id()) {
+            // Show connection modal
+            this.showConnectionModal(this.sourceNode, node);
+        }
+    }
+    
+    showConnectionModal(source, target) {
+        const modal = document.getElementById('connectionModal');
+        modal.style.display = 'block';
+        
+        // Position modal near the connection
+        const sourcePos = source.renderedPosition();
+        const targetPos = target.renderedPosition();
+        modal.style.left = `${(sourcePos.x + targetPos.x) / 2}px`;
+        modal.style.top = `${(sourcePos.y + targetPos.y) / 2}px`;
+        
+        // Store nodes for connection
+        this.pendingConnection = { source, target };
+        
+        // Focus input
+        document.getElementById('relationshipLabel').value = '';
+        document.getElementById('relationshipLabel').focus();
+    }
+    
+    async confirmConnection() {
+        const relationshipLabel = document.getElementById('relationshipLabel').value.trim();
+        if (!relationshipLabel) {
+            this.showError('Please enter a relationship type');
+            return;
+        }
+        
+        try {
+            const response = await this.apiClient.post('/mindmap/edges', {
+                sourceNode: this.pendingConnection.source.id(),
+                targetNode: this.pendingConnection.target.id(),
+                relationshipLabel
+            });
+            
+            this.addEdgeToGraph(response.data);
+            this.cancelConnection();
+            this.showMessage('Connection created successfully');
+        } catch (error) {
+            console.error('Failed to create connection:', error);
+            this.showError('Failed to create connection');
+        }
+    }
+    
+    cancelConnection() {
+        document.getElementById('connectionModal').style.display = 'none';
+        if (this.sourceNode) {
+            this.sourceNode.removeClass('source-node');
+        }
+        this.sourceNode = null;
+        this.pendingConnection = null;
+        this.toggleConnectMode();
+    }
+    
+    async fetchLabelSuggestions(query) {
+        if (query.length < 2) {
+            document.getElementById('labelSuggestions').style.display = 'none';
+            return;
+        }
+        
+        try {
+            const response = await this.apiClient.get(`/mindmap/labels/suggestions?q=${query}`);
+            const suggestions = response.data;
+            
+            const suggestionsDiv = document.getElementById('labelSuggestions');
+            suggestionsDiv.innerHTML = '';
+            
+            suggestions.forEach(label => {
+                const div = document.createElement('div');
+                div.className = 'label-suggestion';
+                div.textContent = label;
+                div.onclick = () => {
+                    document.getElementById('relationshipLabel').value = label;
+                    suggestionsDiv.style.display = 'none';
+                };
+                suggestionsDiv.appendChild(div);
+            });
+            
+            suggestionsDiv.style.display = suggestions.length > 0 ? 'block' : 'none';
+        } catch (error) {
+            console.error('Failed to fetch label suggestions:', error);
+        }
+    }
+    
+    async voteOnNode(value) {
+        if (!this.selectedNode) return;
+        
+        try {
+            const response = await this.apiClient.post(`/mindmap/nodes/${this.selectedNode.id()}/vote`, {
+                value
+            });
+            
+            // Update local data
+            const nodeData = this.nodes.get(this.selectedNode.id());
+            nodeData.credibility = response.data.credibility;
+            
+            // Update UI
+            document.getElementById('credibilityScore').textContent = nodeData.credibility.score;
+            this.selectedNode.data('credibility', nodeData.credibility.score);
+            this.updateNodeCredibilityClass(this.selectedNode.id(), nodeData.credibility.score);
+            
+            // Update vote buttons
+            document.getElementById('upvoteBtn').classList.toggle('voted', value === 1);
+            document.getElementById('downvoteBtn').classList.toggle('voted', value === -1);
+            
+            this.showMessage(response.data.message);
+        } catch (error) {
+            console.error('Failed to vote:', error);
+            this.showError('Failed to record vote');
+        }
+    }
+    
+    openCitationModal() {
+        if (!this.selectedNode) return;
+        
+        document.getElementById('citationModal').style.display = 'block';
+        document.getElementById('citationForm').onsubmit = async (e) => {
+            e.preventDefault();
+            await this.addCitation();
+        };
+    }
+    
+    async addCitation() {
+        const url = document.getElementById('citationUrl').value;
+        const description = document.getElementById('citationDescription').value;
+        
+        try {
+            const response = await this.apiClient.post(`/mindmap/nodes/${this.selectedNode.id()}/citations`, {
+                url,
+                description
+            });
+            
+            // Update local data
+            const nodeData = this.nodes.get(this.selectedNode.id());
+            nodeData.credibility = response.data.credibility;
+            
+            // Refresh node details
+            this.selectNode(this.selectedNode);
+            
+            // Close modal
+            document.getElementById('citationModal').style.display = 'none';
+            document.getElementById('citationForm').reset();
+            
+            this.showMessage('Citation added successfully');
+        } catch (error) {
+            console.error('Failed to add citation:', error);
+            this.showError('Failed to add citation');
+        }
+    }
+    
+    async performSearch() {
+        const query = document.getElementById('mindmap-search').value.trim();
+        if (!query) {
+            this.cy.elements().removeClass('search-match search-dimmed');
+            document.getElementById('searchResults').style.display = 'none';
+            return;
+        }
+        
+        try {
+            const response = await this.apiClient.get(`/mindmap/search?q=${query}`);
+            const results = response.data.results;
+            
+            // Highlight matching nodes
+            this.cy.elements().addClass('search-dimmed');
+            results.forEach(result => {
+                this.cy.getElementById(result._id).removeClass('search-dimmed').addClass('search-match');
+            });
+            
+            // Show results panel
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = `<h4>Search Results (${results.length})</h4>`;
+            
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                div.innerHTML = `
+                    <strong>${result.title}</strong>
+                    <small>Credibility: ${result.credibility.score}</small>
+                `;
+                div.onclick = () => {
+                    const node = this.cy.getElementById(result._id);
+                    this.cy.center(node);
+                    this.cy.zoom(1.5);
+                    this.selectNode(node);
+                };
+                resultsDiv.appendChild(div);
+            });
+            
+            resultsDiv.style.display = 'block';
+        } catch (error) {
+            console.error('Search failed:', error);
+            this.showError('Search failed');
+        }
+    }
+    
+    initWebSocket() {
+        // Use the existing MLNF WebSocket manager
+        if (window.MLNF && window.MLNF.websocket) {
+            // Register mindmap-specific handlers
+            window.MLNF.websocket.on('nodeCreated', (data) => {
+                this.handleNodeCreated(data);
+            });
+            
+            window.MLNF.websocket.on('nodeUpdated', (data) => {
+                this.handleNodeUpdated(data);
+            });
+            
+            window.MLNF.websocket.on('nodeDeleted', (data) => {
+                this.handleNodeDeleted(data);
+            });
+            
+            window.MLNF.websocket.on('edgeCreated', (data) => {
+                this.handleEdgeCreated(data);
+            });
+            
+            window.MLNF.websocket.on('edgeUpdated', (data) => {
+                this.handleEdgeUpdated(data);
+            });
+            
+            window.MLNF.websocket.on('edgeDeleted', (data) => {
+                this.handleEdgeDeleted(data);
+            });
+            
+            window.MLNF.websocket.on('nodeVoted', (data) => {
+                this.handleNodeVoted(data);
+            });
+            
+            window.MLNF.websocket.on('citationAdded', (data) => {
+                this.handleCitationAdded(data);
+            });
+        }
+    }
+    
+    // WebSocket event handlers
+    handleNodeCreated(data) {
+        // Don't add if we created it (already added)
+        if (!this.nodes.has(data._id)) {
+            this.addNodeToGraph(data);
+            this.showMessage('New node added to the Nexus');
+        }
+    }
+    
+    handleNodeUpdated(data) {
+        const node = this.cy.getElementById(data._id);
+        if (node.length > 0) {
+            // Update node data
+            node.data('title', data.title);
+            node.data('content', data.content);
+            node.data('tags', data.tags);
+            
+            // Update local data
+            this.nodes.set(data._id, data);
+            
+            // If this is the selected node, refresh details
+            if (this.selectedNode && this.selectedNode.id() === data._id) {
+                this.selectNode(node);
+            }
+        }
+    }
+    
+    handleNodeDeleted(data) {
+        const node = this.cy.getElementById(data.nodeId);
+        if (node.length > 0) {
+            // If this is the selected node, deselect
+            if (this.selectedNode && this.selectedNode.id() === data.nodeId) {
+                this.deselectAll();
+            }
+            
+            // Remove from graph
+            node.remove();
+            this.nodes.delete(data.nodeId);
+            
+            this.showMessage('Node removed from the Nexus');
+        }
+    }
+    
+    handleEdgeCreated(data) {
+        // Don't add if we created it (already added)
+        if (!this.edges.has(data._id)) {
+            this.addEdgeToGraph(data);
+        }
+    }
+    
+    handleEdgeUpdated(data) {
+        const edge = this.cy.getElementById(data._id);
+        if (edge.length > 0) {
+            edge.data('relationshipLabel', data.relationshipLabel);
+            this.edges.set(data._id, data);
+        }
+    }
+    
+    handleEdgeDeleted(data) {
+        const edge = this.cy.getElementById(data.edgeId);
+        if (edge.length > 0) {
+            edge.remove();
+            this.edges.delete(data.edgeId);
+        }
+    }
+    
+    handleNodeVoted(data) {
+        const node = this.cy.getElementById(data.nodeId);
+        if (node.length > 0) {
+            // Update credibility
+            node.data('credibility', data.credibility.score);
+            this.updateNodeCredibilityClass(data.nodeId, data.credibility.score);
+            
+            // Update local data
+            const nodeData = this.nodes.get(data.nodeId);
+            if (nodeData) {
+                nodeData.credibility = data.credibility;
+                
+                // If this is the selected node, refresh details
+                if (this.selectedNode && this.selectedNode.id() === data.nodeId) {
+                    document.getElementById('credibilityScore').textContent = data.credibility.score;
+                }
+            }
+        }
+    }
+    
+    handleCitationAdded(data) {
+        const nodeData = this.nodes.get(data.nodeId);
+        if (nodeData) {
+            nodeData.credibility = data.credibility;
+            
+            // If this is the selected node, refresh details
+            if (this.selectedNode && this.selectedNode.id() === data.nodeId) {
+                this.selectNode(this.selectedNode);
+            }
+        }
+    }
+    
+    showMessage(message) {
+        // Simple message display - could be enhanced with a toast notification
+        console.log(message);
+    }
+    
+    showError(message) {
+        console.error(message);
+        alert(message); // Simple alert for now
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.nexusEngine = new NexusEngine();
+}); 
