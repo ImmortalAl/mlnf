@@ -1017,29 +1017,47 @@ footer {
 .floating-buttons {
     display: flex !important;
     flex-direction: column !important;
-    gap: 10px !important;
+    gap: 20px !important; /* Increased gap to prevent overlap */
     position: fixed !important;
     bottom: 30px !important;
     right: 30px !important;
     z-index: 1000 !important;
 }
 
+/* Theme toggle button positioning and sizing */
 .floating-buttons .theme-toggle,
 .floating-buttons #themeToggle,
 #themeToggle {
     position: static !important; /* Remove fixed positioning from active-users.css */
     bottom: auto !important;
     right: auto !important;
-    order: 2 !important; /* Ensure it's second in flex order */
+    order: 2 !important; /* Theme toggle second */
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
 }
 
-/* Ultimate override for show-users-btn to ensure style application */
+/* Active users button positioning and sizing */
+.floating-buttons .show-users-btn,
+.floating-buttons #showUsersBtn {
+    position: static !important;
+    bottom: auto !important;
+    right: auto !important;
+    order: 1 !important; /* Active users button first */
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+}
+
+/* Z-index management */
 body .floating-buttons button.show-users-btn#showUsersBtn {
-    z-index: 1001 !important; /* Ensure it's above other elements if needed */
+    z-index: 1001 !important;
 }
 
 body .floating-buttons button.theme-toggle#themeToggle {
-    z-index: 1000 !important;
+    z-index: 1001 !important; /* Same z-index since they don't overlap now */
 }
 
 .top-button {

@@ -2,19 +2,8 @@
 /* Header, mobile nav, breadcrumbs, and navigation elements */
 
 /* === MAIN HEADER === */
-header {
-  background: var(--gradient-secondary);
-  padding: var(--space-md) var(--space-xl);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 3px solid var(--accent);
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
-  height: var(--header-height);
-  box-sizing: border-box;
-}
+/* Header base styles moved to critical.css to prevent conflicts */
+/* Only navigation-specific component styles remain here */
 
 /* === LOGO SECTION === */
 .logo {
@@ -386,10 +375,7 @@ header {
 }
 
 @media (max-width: 768px) {
-  header {
-    padding: var(--space-md);
-    height: 60px;
-  }
+  /* Header padding moved to critical.css to prevent conflicts */
   
   .main-nav {
     display: none;
@@ -426,9 +412,7 @@ header {
 }
 
 @media (max-width: 480px) {
-  header {
-    padding: var(--space-sm) var(--space-md);
-  }
+  /* Header padding moved to critical.css to prevent conflicts */
   
   .logo {
     gap: var(--space-xs);

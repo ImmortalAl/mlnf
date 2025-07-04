@@ -1,0 +1,19 @@
+Screenshot for debate.html saved to C:\Users\coold\Documents\Sites\MLNF\front\screenshots\test-debate.png
+debate.html: Header is flush.
+ERROR on debate.html: Cannot read properties of null (reading 'right')
+Screenshot for archive.html saved to C:\Users\coold\Documents\Sites\MLNF\front\screenshots\test-archive.png
+archive.html: Header is flush.
+ERROR on archive.html: Cannot read properties of null (reading 'right')
+Screenshot for mindmap.html saved to C:\Users\coold\Documents\Sites\MLNF\front\screenshots\test-mindmap.png
+mindmap.html: Header is flush.
+ERROR on mindmap.html: Cannot read properties of null (reading 'right')
+Screenshot for blog.html saved to C:\Users\coold\Documents\Sites\MLNF\front\screenshots\test-blog.png
+blog.html: Header is flush.
+blog.html: Not enough floating buttons found for overlap test.
+Screenshot for news.html saved to C:\Users\coold\Documents\Sites\MLNF\front\screenshots\test-news.png
+news.html: Header is flush.
+news.html: Not enough floating buttons found for overlap test.
+Screenshot for index.html saved to C:\Users\coold\Documents\Sites\MLNF\front\screenshots\test-index.png
+index.html: Header is flush.
+index.html: Not enough floating buttons found for overlap test.
+Test complete.

@@ -1,18 +1,8 @@
 /* MLNF Shared Component Styles */
 
 /* Main Navigation Styles */
-header {
-    background: var(--gradient-secondary, linear-gradient(to bottom, #1a1a33, rgba(26, 26, 51, 0.9)));
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid var(--accent, #ff5e78);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    /* backdrop-filter: blur(10px); REMOVED - Creates stacking context that traps modal z-index */
-}
+/* Header base styles moved to critical.css to prevent conflicts */
+/* Only component-specific navigation styles remain here */
 
 .logo {
     display: flex;
@@ -125,9 +115,7 @@ header {
 }
 
 @media (max-width: 920px) {
-    header {
-        padding: 1rem;
-    }
+    /* Header padding moved to critical.css to prevent conflicts */
 
     .full-title {
         display: none;

@@ -18,6 +18,10 @@ html {
     scroll-behavior: smooth;
     /* Ensure smooth scrolling on mobile */
     -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -35,6 +39,8 @@ body {
     overflow-x: hidden;
     /* Optimize for mobile touch */
     -webkit-overflow-scrolling: touch;
+    margin: 0; /* Ensure no body margins */
+    padding: 0; /* Ensure no body padding */
 }
 
 /* ==========================================
@@ -130,11 +136,40 @@ main {
 
 /* Page content padding - apply to sections inside main instead */
 .page-header, .placeholder-content, .mindmap-section {
-    padding: 2rem;
+    padding: 0; /* Remove default padding to make sections full width */
 }
 
+/* Add inner padding using a container or inner elements */
 .page-header {
-    padding-top: 3rem; /* Extra top padding for first section */
+    padding: 2rem; /* Add padding back */
+    padding-top: 0; /* Make flush with header - was 2rem */
+}
+
+.placeholder-content {
+    padding: 2rem; /* Add padding for content */
+}
+
+.mindmap-section {
+    padding: 2rem; /* Add padding for content */
+}
+
+/* Responsive padding adjustments for main content */
+@media (max-width: 768px) {
+    .page-header, .placeholder-content, .mindmap-section {
+        padding: 1.5rem;
+    }
+    .page-header {
+        padding-top: 0; /* Make flush with header - was 1.5rem */
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header, .placeholder-content, .mindmap-section {
+        padding: 1rem;
+    }
+    .page-header {
+        padding-top: 0; /* Make flush with header - was 1rem */
+    }
 }
 
 /* ==========================================
@@ -146,14 +181,18 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0; /* Completely removed padding to make it flush with all edges */
+    padding: 0; /* Flush with edges - internal spacing handled by logo/controls containers */
+    margin: 0; /* Ensure no default browser margins */
     background: var(--gradient-secondary);
     border-bottom: 2px solid var(--accent);
     position: sticky;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 2500;
     min-height: var(--header-height, 70px);
-    width: 100%;
+    width: 100vw; /* Use viewport width */
+    margin-left: calc(-50vw + 50%); /* Pull to left edge */
     box-sizing: border-box;
 }
 
@@ -328,10 +367,10 @@ nav.main-nav a.active span::after {
 /* For Header & Main Nav responsiveness */
 @media (max-width: 920px) {
     .logo {
-        padding-left: 1rem; /* Reduced padding for smaller screens */
+        padding-left: 1rem; /* Reduce padding for smaller screens */
     }
     .header-controls {
-        padding-right: 1rem; /* Reduced padding for smaller screens */
+        padding-right: 1rem; /* Reduce padding for smaller screens */
     }
     .full-title {
         display: none !important; /* Hide full title */
@@ -342,6 +381,28 @@ nav.main-nav a.active span::after {
     /* Main nav hidden on mobile - hamburger menu used instead */
     /* The .mobile-nav-toggle button (hamburger) is styled in components/shared/styles.css */
     /* and its display:block is handled by a media query there. */
+}
+
+/* Additional responsive breakpoints for header */
+@media (max-width: 768px) {
+    header {
+        min-height: 60px; /* Reduced height for smaller screens */
+    }
+    .logo {
+        padding-left: 0.75rem; /* Further reduce padding */
+    }
+    .header-controls {
+        padding-right: 0.75rem; /* Further reduce padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        padding-left: 0.5rem; /* Minimal padding for mobile */
+    }
+    .header-controls {
+        padding-right: 0.5rem; /* Minimal padding for mobile */
+    }
 }
 
 /* ==========================================
