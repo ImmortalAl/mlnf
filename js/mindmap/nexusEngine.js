@@ -73,7 +73,6 @@ class NexusEngine {
                     style: {
                         'background-color': '#e94560',
                         'border-width': 3,
-                        'box-shadow': '0 0 20px #e94560'
                     }
                 },
                 {
@@ -96,21 +95,12 @@ class NexusEngine {
                 },
                 {
                     selector: '.high-credibility',
-                    style: {
-                        'box-shadow': '0 0 20px rgba(76, 175, 80, 0.6)'
-                    }
                 },
                 {
                     selector: '.medium-credibility',
-                    style: {
-                        'box-shadow': '0 0 15px rgba(255, 193, 7, 0.6)'
-                    }
                 },
                 {
                     selector: '.low-credibility',
-                    style: {
-                        'box-shadow': '0 0 10px rgba(244, 67, 54, 0.6)'
-                    }
                 }
             ],
             
@@ -132,14 +122,37 @@ class NexusEngine {
             // Interaction options
             minZoom: 0.1,
             maxZoom: 3,
-            wheelSensitivity: 0.2
+            wheelSensitivity: 1, // Default value for mainstream mice
         });
     }
     
     async loadMindmap() {
         try {
+            console.log('Loading mindmap data...');
             const response = await this.apiClient.get('/mindmap');
-            const { nodes, edges } = response.data;
+            console.log('Raw API response:', response);
+            
+            // Validate response structure
+            if (!response) {
+                console.error('Response is null or undefined');
+                return;
+            }
+            
+            // Handle different response structures
+            let nodes, edges;
+            if (response.data) {
+                // If response has a data wrapper
+                nodes = response.data.nodes || [];
+                edges = response.data.edges || [];
+                console.log('Using response.data structure');
+            } else {
+                // Direct response structure
+                nodes = response.nodes || [];
+                edges = response.edges || [];
+                console.log('Using direct response structure');
+            }
+            
+            console.log(`Loading ${nodes.length} nodes and ${edges.length} edges`);
             
             // Add nodes to Cytoscape
             nodes.forEach(node => {
@@ -153,8 +166,14 @@ class NexusEngine {
             
             // Run layout
             this.cy.layout({ name: 'cose' }).run();
+            console.log('Mindmap loaded successfully');
         } catch (error) {
             console.error('Failed to load mindmap data:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                response: error.response
+            });
             // Start with empty mindmap if loading fails
         }
     }
@@ -390,7 +409,7 @@ class NexusEngine {
                 relationshipLabel
             });
             
-            this.addEdgeToGraph(response.data);
+            this.addEdgeToGraph(response);
             this.cancelConnection();
             this.showMessage('Connection created successfully');
         } catch (error) {
@@ -417,7 +436,7 @@ class NexusEngine {
         
         try {
             const response = await this.apiClient.get(`/mindmap/labels/suggestions?q=${query}`);
-            const suggestions = response.data;
+            const suggestions = response;
             
             const suggestionsDiv = document.getElementById('labelSuggestions');
             suggestionsDiv.innerHTML = '';
@@ -449,7 +468,7 @@ class NexusEngine {
             
             // Update local data
             const nodeData = this.nodes.get(this.selectedNode.id());
-            nodeData.credibility = response.data.credibility;
+            nodeData.credibility = response.credibility;
             
             // Update UI
             document.getElementById('credibilityScore').textContent = nodeData.credibility.score;
@@ -460,7 +479,7 @@ class NexusEngine {
             document.getElementById('upvoteBtn').classList.toggle('voted', value === 1);
             document.getElementById('downvoteBtn').classList.toggle('voted', value === -1);
             
-            this.showMessage(response.data.message);
+            this.showMessage(response.message);
         } catch (error) {
             console.error('Failed to vote:', error);
             this.showError('Failed to record vote');
@@ -489,7 +508,7 @@ class NexusEngine {
             
             // Update local data
             const nodeData = this.nodes.get(this.selectedNode.id());
-            nodeData.credibility = response.data.credibility;
+            nodeData.credibility = response.credibility;
             
             // Refresh node details
             this.selectNode(this.selectedNode);
@@ -515,7 +534,7 @@ class NexusEngine {
         
         try {
             const response = await this.apiClient.get(`/mindmap/search?q=${query}`);
-            const results = response.data.results;
+            const results = response.results;
             
             // Highlight matching nodes
             this.cy.elements().addClass('search-dimmed');
