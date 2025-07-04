@@ -130,9 +130,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0; /* Removed padding to make it flush with edges */
-    padding-left: 1.5rem; /* Only add left padding for logo spacing */
-    padding-right: 1.5rem; /* Only add right padding for controls spacing */
+    padding: 0; /* Completely removed padding to make it flush with all edges */
     background: var(--gradient-secondary);
     border-bottom: 2px solid var(--accent);
     position: sticky;
@@ -146,6 +144,10 @@ header {
 body.light-theme header {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(240, 240, 245, 0.92));
     border-color: rgba(214, 45, 77, 0.25);
+}
+
+.logo {
+    padding-left: 1.5rem; /* Add padding to logo container for spacing from edge */
 }
 
 .logo a {
@@ -281,6 +283,7 @@ nav.main-nav a.active span::after {
     display: flex;
     align-items: center;
     gap: 1rem;
+    padding-right: 1.5rem; /* Add padding to controls container for spacing from edge */
 }
 
 /* Header Auth Buttons (for logged-out state) */
@@ -308,8 +311,10 @@ nav.main-nav a.active span::after {
 
 /* For Header & Main Nav responsiveness */
 @media (max-width: 920px) {
-    header {
+    .logo {
         padding-left: 1rem; /* Reduced padding for smaller screens */
+    }
+    .header-controls {
         padding-right: 1rem; /* Reduced padding for smaller screens */
     }
     .full-title {

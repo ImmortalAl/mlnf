@@ -239,26 +239,10 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Wait for authManager to be available
-            const checkAuth = () => {
-                if (window.authManager && window.authManager.isLoggedIn()) {
-                    // User is authenticated, initialize mindmap
-                    console.log('Initializing Infinite Nexus...');
-                } else if (window.authManager) {
-                    // AuthManager is available but user is not logged in
-                    // Show the login modal instead of redirecting
-                    if (window.MLNF && window.MLNF.openSoulModal) {
-                        window.MLNF.openSoulModal('login');
-                    } else {
-                        console.error('Login modal not available');
-                    }
-                } else {
-                    // AuthManager not ready yet, check again
-                    setTimeout(checkAuth, 100);
-                }
-            };
-            
-            checkAuth();
+            // The mindmap should be accessible to all users, logged in or not
+            // Authentication is only required for specific actions (editing, creating nodes)
+            // Let the shared components handle authentication state
+            console.log('Infinite Nexus initialized - ready for eternal seekers');
         });
     </script>
 </body>
