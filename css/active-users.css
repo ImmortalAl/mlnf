@@ -2,7 +2,7 @@
 .active-users {
     position: fixed;
     top: 0;
-    right: -320px;
+    right: -340px; /* Increased from -320px to ensure it's fully hidden */
     width: 320px;
     height: 100vh;
     background: var(--secondary, #1a1a33);
@@ -17,6 +17,14 @@
     /* Ensure this creates its own stacking context */
     transform: translateZ(0);
     will-change: transform;
+    /* Ensure sidebar stays off viewport completely */
+    max-width: 320px;
+}
+
+/* Force sidebar to be fully hidden by default - prevent any partial visibility */
+.active-users:not(.active) {
+    right: -340px !important; /* Force completely off-screen */
+    visibility: hidden; /* Additional safety */
 }
 
 /* ---------------------------------------------------------
@@ -37,12 +45,35 @@
 aside#activeUsers.active-users.active {
     right: 0 !important; /* Force visible – wins against page-specific overrides */
     z-index: 99999 !important; /* Ensure maximum z-index when active */
+    visibility: visible !important; /* Ensure visibility when active */
 }
 
 /* Force sidebar to close - overrides all other rules including .active */
 aside#activeUsers.active-users.force-close {
-    right: -320px !important; /* Force hidden – wins against all other overrides */
+    right: -340px !important; /* Force hidden – wins against all other overrides */
     transition: right 0.3s ease !important;
+    visibility: hidden !important;
+}
+
+/* On very small screens, reduce sidebar width to prevent overflow */
+@media (max-width: 480px) {
+    .active-users {
+        width: 280px;
+        right: -300px; /* Adjusted for smaller width */
+    }
+    
+    .active-users:not(.active) {
+        right: -300px !important;
+    }
+    
+    aside#activeUsers.active-users.force-close {
+        right: -300px !important;
+    }
+}
+
+/* Ensure body overflow is handled when sidebar is open */
+body.sidebar-open {
+    overflow-x: hidden !important;
 }
 
 .active-users-header {

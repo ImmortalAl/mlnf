@@ -130,13 +130,17 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 1.5rem;
+    padding: 0; /* Removed padding to make it flush with edges */
+    padding-left: 1.5rem; /* Only add left padding for logo spacing */
+    padding-right: 1.5rem; /* Only add right padding for controls spacing */
     background: var(--gradient-secondary);
     border-bottom: 2px solid var(--accent);
     position: sticky;
     top: 0;
     z-index: 2500;
     min-height: var(--header-height, 70px);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 body.light-theme header {
@@ -305,7 +309,8 @@ nav.main-nav a.active span::after {
 /* For Header & Main Nav responsiveness */
 @media (max-width: 920px) {
     header {
-        padding: 1rem 1.5rem; /* Adjust padding for smaller screens */
+        padding-left: 1rem; /* Reduced padding for smaller screens */
+        padding-right: 1rem; /* Reduced padding for smaller screens */
     }
     .full-title {
         display: none !important; /* Hide full title */
