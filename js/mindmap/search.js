@@ -82,7 +82,7 @@ class MindmapSearch {
             
             // Perform search
             const response = await this.apiClient.get(`/mindmap/search?${params}`);
-            this.searchResults = response.data.results;
+            this.searchResults = response.results;
             
             // Update visual feedback
             this.highlightSearchResults();
