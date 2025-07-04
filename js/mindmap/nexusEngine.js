@@ -375,27 +375,36 @@ class NexusEngine {
         this.selectedNode = node;
         const nodeData = this.nodes.get(node.id());
         
+        if (!nodeData) {
+            console.error('Node data not found for node ID:', node.id());
+            console.log('Available nodes:', Array.from(this.nodes.keys()));
+            this.showError('Node data not found. Please refresh the page.');
+            return;
+        }
+        
         // Update details panel
-        document.getElementById('nodeTitle').textContent = nodeData.title;
-        document.getElementById('nodeContent').innerHTML = nodeData.content;
-        document.getElementById('credibilityScore').textContent = nodeData.credibility.score;
+        document.getElementById('nodeTitle').textContent = nodeData.title || 'Untitled';
+        document.getElementById('nodeContent').innerHTML = nodeData.content || '';
+        document.getElementById('credibilityScore').textContent = nodeData.credibility?.score || 0;
         
         // Update citations list
         const citationsList = document.getElementById('citationsList');
         citationsList.innerHTML = '';
-        nodeData.credibility.citations.forEach(citation => {
-            const citationDiv = document.createElement('div');
-            citationDiv.className = 'citation-item';
-            citationDiv.innerHTML = `
-                <a href="${citation.url}" target="_blank">${citation.url}</a>
-                <p>${citation.description || ''}</p>
-                <small>Added by ${citation.addedBy.username || 'Unknown'}</small>
-            `;
-            citationsList.appendChild(citationDiv);
-        });
+        if (nodeData.credibility && nodeData.credibility.citations) {
+            nodeData.credibility.citations.forEach(citation => {
+                const citationDiv = document.createElement('div');
+                citationDiv.className = 'citation-item';
+                citationDiv.innerHTML = `
+                    <a href="${citation.url}" target="_blank">${citation.url}</a>
+                    <p>${citation.description || ''}</p>
+                    <small>Added by ${citation.addedBy?.username || 'Unknown'}</small>
+                `;
+                citationsList.appendChild(citationDiv);
+            });
+        }
         
         // Check if user has voted
-        const userVote = nodeData.credibility.votes.find(v => v.user === this.currentUserId);
+        const userVote = nodeData.credibility?.votes?.find(v => v.user === this.currentUserId);
         document.getElementById('upvoteBtn').classList.toggle('voted', userVote?.value === 1);
         document.getElementById('downvoteBtn').classList.toggle('voted', userVote?.value === -1);
         

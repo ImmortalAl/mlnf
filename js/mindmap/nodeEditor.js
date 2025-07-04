@@ -137,43 +137,61 @@ class NodeEditor {
                     tags
                 });
                 
+                console.log('Node update response:', response);
+                
+                if (!response) {
+                    this.showError('Malformed response from server (no node object)');
+                    return;
+                }
+                
+                // Create updated node data by merging current node with response
+                const updatedNodeData = {
+                    ...this.currentNode,
+                    title,
+                    content,
+                    tags,
+                    ...response
+                };
+                
+                console.log('Updated node data:', updatedNodeData);
+                
                 // Update node in graph
                 const node = window.nexusEngine.cy.getElementById(this.currentNode._id);
                 node.data('title', title);
                 node.data('content', content);
                 node.data('tags', tags);
                 
-                // Update local data
-                window.nexusEngine.nodes.set(this.currentNode._id, response.data);
+                // Update local data with merged data
+                window.nexusEngine.nodes.set(this.currentNode._id, updatedNodeData);
                 
-                // Refresh details panel if this node is selected
                 if (window.nexusEngine.selectedNode && window.nexusEngine.selectedNode.id() === this.currentNode._id) {
                     window.nexusEngine.selectNode(node);
                 }
-                
                 this.showMessage('Node updated successfully');
             } else {
                 // Create new node
                 const position = this.getNewNodePosition();
-                
                 response = await this.apiClient.post('/mindmap/nodes', {
                     title,
                     content,
                     tags,
                     position
                 });
-                
+                if (!response) {
+                    this.showError('Malformed response from server (no node object)');
+                    return;
+                }
+                if (!response || !response._id) {
+                    this.showError('Malformed response from server (missing node _id, or not authenticated)');
+                    return;
+                }
                 // Add node to graph
-                window.nexusEngine.addNodeToGraph(response.data);
-                
+                window.nexusEngine.addNodeToGraph(response);
                 // Center view on new node
-                const newNode = window.nexusEngine.cy.getElementById(response.data._id);
+                const newNode = window.nexusEngine.cy.getElementById(response._id);
                 window.nexusEngine.cy.center(newNode);
                 window.nexusEngine.cy.zoom(1.5);
-                
-                // Select the new node
                 window.nexusEngine.selectNode(newNode);
-                
                 this.showMessage('Node created successfully');
             }
             
