@@ -10,7 +10,7 @@ class NexusEngine {
         this.selectedNode = null;
         this.connectMode = false;
         this.sourceNode = null;
-        this.apiClient = new ApiClient();
+        this.apiClient = window.apiClient;
         this.currentUserId = null;
         this.currentUsername = null;
         

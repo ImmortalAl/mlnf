@@ -5,7 +5,7 @@
 class MindmapSearch {
     constructor(nexusEngine) {
         this.nexusEngine = nexusEngine;
-        this.apiClient = new ApiClient();
+        this.apiClient = window.apiClient;
         this.searchResults = [];
         this.searchTimeout = null;
         

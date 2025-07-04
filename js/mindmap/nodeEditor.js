@@ -7,7 +7,7 @@ class NodeEditor {
         this.quill = null;
         this.currentNode = null;
         this.isEditMode = false;
-        this.apiClient = new ApiClient();
+        this.apiClient = window.apiClient;
         
         this.init();
     }
