@@ -113,7 +113,7 @@
                     
                     <!-- Node details panel -->
                     <div class="node-details-panel" id="nodeDetailsPanel">
-                        <button class="close" onclick="this.parentElement.style.display='none'">×</button>
+                        <button class="close" id="closeNodeDetails">×</button>
                         <h3 id="nodeTitle"></h3>
                         <div class="content" id="nodeContent"></div>
                         
@@ -190,10 +190,10 @@
     </div>
 
     <!-- Citation Modal -->
-    <div class="modal" id="citationModal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="this.parentElement.parentElement.style.display='none'">×</span>
-            <h3>Add Reference</h3>
+    <div class="modal" id="citationModal" style="display: none;" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="citationModalTitle">
+            <span class="close" id="closeCitationModal" aria-label="Close modal">×</span>
+            <h3 id="citationModalTitle">Add Reference</h3>
             <form id="citationForm">
                 <div>
                     <label for="citationUrl">URL</label>
@@ -238,15 +238,26 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Check authentication
-            const authToken = localStorage.getItem('authToken');
-            if (!authToken) {
-                window.location.href = '/pages/auth.html';
-                return;
-            }
+            // Wait for authManager to be available
+            const checkAuth = () => {
+                if (window.authManager && window.authManager.isLoggedIn()) {
+                    // User is authenticated, initialize mindmap
+                    console.log('Initializing Infinite Nexus...');
+                } else if (window.authManager) {
+                    // AuthManager is available but user is not logged in
+                    // Show the login modal instead of redirecting
+                    if (window.MLNF && window.MLNF.openSoulModal) {
+                        window.MLNF.openSoulModal('login');
+                    } else {
+                        console.error('Login modal not available');
+                    }
+                } else {
+                    // AuthManager not ready yet, check again
+                    setTimeout(checkAuth, 100);
+                }
+            };
             
-            // Initialize mindmap after auth check
-            console.log('Initializing Infinite Nexus...');
+            checkAuth();
         });
     </script>
 </body>

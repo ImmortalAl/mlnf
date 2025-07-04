@@ -11,13 +11,21 @@ class NexusEngine {
         this.connectMode = false;
         this.sourceNode = null;
         this.apiClient = new ApiClient();
-        this.currentUserId = localStorage.getItem('userId');
+        this.currentUserId = null;
+        this.currentUsername = null;
         
         this.init();
     }
     
     async init() {
         try {
+            // Get current user info
+            if (window.authManager && window.authManager.isLoggedIn()) {
+                const user = window.authManager.getUser();
+                this.currentUserId = user._id || user.id;
+                this.currentUsername = user.username;
+            }
+            
             // Initialize Cytoscape
             this.initCytoscape();
             
@@ -275,6 +283,15 @@ class NexusEngine {
         // Relationship label autocomplete
         document.getElementById('relationshipLabel').addEventListener('input', (e) => {
             this.fetchLabelSuggestions(e.target.value);
+        });
+        
+        // Close buttons
+        document.getElementById('closeNodeDetails').addEventListener('click', () => {
+            document.getElementById('nodeDetailsPanel').style.display = 'none';
+        });
+        
+        document.getElementById('closeCitationModal').addEventListener('click', () => {
+            document.getElementById('citationModal').style.display = 'none';
         });
     }
     
