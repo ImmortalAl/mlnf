@@ -47,8 +47,22 @@ class NexusEngine {
     }
     
     initCytoscape() {
+        console.log('Initializing Cytoscape...');
+        console.log('cytoscape function available:', typeof cytoscape);
+        
+        const container = document.getElementById('cy');
+        console.log('Container element:', container);
+        
+        if (!container) {
+            throw new Error('Mindmap container element (#cy) not found');
+        }
+        
+        if (typeof cytoscape === 'undefined') {
+            throw new Error('Cytoscape library not loaded');
+        }
+        
         this.cy = cytoscape({
-            container: document.getElementById('cy'),
+            container: container,
             
             style: [
                 {
@@ -95,12 +109,24 @@ class NexusEngine {
                 },
                 {
                     selector: '.high-credibility',
+                    style: {
+                        'border-color': '#4CAF50',
+                        'background-color': '#1b2d1b'
+                    }
                 },
                 {
                     selector: '.medium-credibility',
+                    style: {
+                        'border-color': '#FF9800',
+                        'background-color': '#2d251b'
+                    }
                 },
                 {
                     selector: '.low-credibility',
+                    style: {
+                        'border-color': '#F44336',
+                        'background-color': '#2d1b1b'
+                    }
                 }
             ],
             
