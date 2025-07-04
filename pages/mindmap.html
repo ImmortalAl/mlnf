@@ -213,6 +213,27 @@
         </div>
     </div>
 
+    <!-- Edit Relationship Modal -->
+    <div class="modal" id="editRelationshipModal" style="display: none;" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="editRelationshipTitle">
+            <span class="close" id="closeEditRelationship" aria-label="Close modal">×</span>
+            <h3 id="editRelationshipTitle">Edit Relationship</h3>
+            <form id="editRelationshipForm">
+                <div>
+                    <label for="editRelationshipLabel">Relationship Type</label>
+                    <div class="relationship-input-container">
+                        <input type="text" id="editRelationshipLabel" placeholder="Enter relationship type..." required />
+                        <div class="relationship-suggestions" id="editRelationshipSuggestions"></div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit">Update Relationship</button>
+                    <button type="button" id="deleteRelationshipBtn" class="delete-relationship-btn">Delete Relationship</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2023 Manifest Liberation, Naturally Free | Embracing Infinity</p>
     </footer>
@@ -237,10 +258,10 @@
     <script src="../js/main.js?v=2.2"></script>
     
     <!-- Mindmap specific scripts -->
-    <script src="../js/mindmap/nexusEngine.js?v=20240701e"></script>
-    <script src="../js/mindmap/nodeEditor.js?v=20240701e"></script>
-    <script src="../js/mindmap/search.js?v=20240701e"></script>
-    <script src="../js/mindmap/tiltNavigation.js?v=20240701e"></script>
+    <script src="../js/mindmap/nexusEngine.js?v=20240701f"></script>
+    <script src="../js/mindmap/nodeEditor.js?v=20240701f"></script>
+    <script src="../js/mindmap/search.js?v=20240701f"></script>
+    <script src="../js/mindmap/tiltNavigation.js?v=20240701f"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {

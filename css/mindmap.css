@@ -599,3 +599,74 @@
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(233, 69, 96, 0.4);
 }
+
+/* Edit relationship modal styles */
+.relationship-input-container {
+    position: relative;
+}
+
+.relationship-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(26, 26, 46, 0.98);
+    border: 1px solid rgba(233, 69, 96, 0.3);
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+}
+
+.relationship-suggestion {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    color: #f1f1f1;
+    font-size: 14px;
+}
+
+.relationship-suggestion:hover {
+    background: rgba(233, 69, 96, 0.2);
+}
+
+.delete-relationship-btn {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.delete-relationship-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions button[type="submit"] {
+    flex: 1;
+    background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.modal-actions button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}

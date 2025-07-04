@@ -276,6 +276,13 @@ class NexusEngine {
             }
         });
         
+        // Edge label editing
+        this.cy.on('tap', 'edge', (evt) => {
+            if (!this.connectMode) {
+                this.editEdgeLabel(evt.target);
+            }
+        });
+        
         // Add node button
         document.getElementById('add-node-btn').addEventListener('click', () => {
             window.nodeEditor.openForCreate();
@@ -343,6 +350,24 @@ class NexusEngine {
         
         document.getElementById('closeCitationModal').addEventListener('click', () => {
             document.getElementById('citationModal').style.display = 'none';
+        });
+        
+        // Edit relationship modal
+        document.getElementById('editRelationshipForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.updateRelationship();
+        });
+        
+        document.getElementById('closeEditRelationship').addEventListener('click', () => {
+            document.getElementById('editRelationshipModal').style.display = 'none';
+        });
+        
+        document.getElementById('deleteRelationshipBtn').addEventListener('click', () => {
+            this.deleteRelationship();
+        });
+        
+        document.getElementById('editRelationshipLabel').addEventListener('input', (e) => {
+            this.fetchRelationshipSuggestions(e.target.value);
         });
     }
     
@@ -591,6 +616,127 @@ class NexusEngine {
         } catch (error) {
             console.error('Failed to delete node:', error);
             this.showError('Failed to delete node');
+        }
+    }
+    
+    editEdgeLabel(edge) {
+        this.selectedEdge = edge;
+        const edgeData = this.edges.get(edge.id());
+        
+        if (!edgeData) {
+            this.showError('Edge data not found');
+            return;
+        }
+        
+        // Populate modal with current relationship label
+        document.getElementById('editRelationshipLabel').value = edgeData.relationshipLabel || '';
+        
+        // Show modal
+        document.getElementById('editRelationshipModal').style.display = 'block';
+        
+        // Focus input
+        document.getElementById('editRelationshipLabel').focus();
+        document.getElementById('editRelationshipLabel').select();
+    }
+    
+    async updateRelationship() {
+        const newLabel = document.getElementById('editRelationshipLabel').value.trim();
+        if (!newLabel) {
+            this.showError('Please enter a relationship type');
+            return;
+        }
+        
+        if (!this.selectedEdge) {
+            this.showError('No edge selected');
+            return;
+        }
+        
+        try {
+            const response = await this.apiClient.put(`/mindmap/edges/${this.selectedEdge.id()}`, {
+                relationshipLabel: newLabel
+            });
+            
+            // Update edge label in graph
+            this.selectedEdge.data('relationshipLabel', newLabel);
+            
+            // Update local data
+            const edgeData = this.edges.get(this.selectedEdge.id());
+            if (edgeData) {
+                edgeData.relationshipLabel = newLabel;
+            }
+            
+            // Close modal
+            document.getElementById('editRelationshipModal').style.display = 'none';
+            this.selectedEdge = null;
+            
+            this.showMessage('Relationship updated successfully');
+        } catch (error) {
+            console.error('Failed to update relationship:', error);
+            this.showError('Failed to update relationship');
+        }
+    }
+    
+    async deleteRelationship() {
+        if (!this.selectedEdge) {
+            this.showError('No edge selected');
+            return;
+        }
+        
+        const edgeData = this.edges.get(this.selectedEdge.id());
+        const confirmed = confirm(`Are you sure you want to delete this relationship?\n\nType: "${edgeData?.relationshipLabel || 'Unknown'}"\n\nThis action cannot be undone.`);
+        
+        if (!confirmed) {
+            return;
+        }
+        
+        try {
+            await this.apiClient.delete(`/mindmap/edges/${this.selectedEdge.id()}`);
+            
+            // Remove from graph
+            this.selectedEdge.remove();
+            
+            // Remove from local data
+            this.edges.delete(this.selectedEdge.id());
+            
+            // Close modal
+            document.getElementById('editRelationshipModal').style.display = 'none';
+            this.selectedEdge = null;
+            
+            this.showMessage('Relationship deleted successfully');
+        } catch (error) {
+            console.error('Failed to delete relationship:', error);
+            this.showError('Failed to delete relationship');
+        }
+    }
+    
+    async fetchRelationshipSuggestions(query) {
+        if (query.length < 2) {
+            document.getElementById('editRelationshipSuggestions').style.display = 'none';
+            return;
+        }
+        
+        try {
+            const response = await this.apiClient.get(`/mindmap/labels/suggestions?q=${query}`);
+            const suggestions = response;
+            
+            const suggestionsDiv = document.getElementById('editRelationshipSuggestions');
+            suggestionsDiv.innerHTML = '';
+            
+            suggestions.forEach(label => {
+                const div = document.createElement('div');
+                div.className = 'relationship-suggestion';
+                div.textContent = label;
+                div.onclick = () => {
+                    document.getElementById('editRelationshipLabel').value = label;
+                    suggestionsDiv.style.display = 'none';
+                };
+                suggestionsDiv.appendChild(div);
+            });
+            
+            suggestionsDiv.style.display = suggestions.length > 0 ? 'block' : 'none';
+        } catch (error) {
+            console.error('Failed to fetch relationship suggestions:', error);
+            document.getElementById('editRelationshipSuggestions').style.display = 'none';
         }
     }
     
