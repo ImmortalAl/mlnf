@@ -41,6 +41,15 @@ const apiClient = {
     },
 
     /**
+     * Performs a DELETE request.
+     * @param {string} endpoint - The API endpoint to hit.
+     * @returns {Promise<any>} The JSON response from the server.
+     */
+    async delete(endpoint) {
+        return this.request('DELETE', endpoint);
+    },
+
+    /**
      * The core request handling function.
      * @param {string} method - The HTTP method (GET, POST, etc.).
      * @param {string} endpoint - The API endpoint.

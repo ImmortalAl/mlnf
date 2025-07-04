@@ -312,6 +312,12 @@ class NexusEngine {
             }
         });
         
+        document.getElementById('deleteNodeBtn').addEventListener('click', () => {
+            if (this.selectedNode) {
+                this.deleteNode(this.selectedNode.id());
+            }
+        });
+        
         document.getElementById('addCitationBtn').addEventListener('click', () => {
             this.openCitationModal();
         });
@@ -547,6 +553,44 @@ class NexusEngine {
         } catch (error) {
             console.error('Failed to add citation:', error);
             this.showError('Failed to add citation');
+        }
+    }
+    
+    async deleteNode(nodeId) {
+        const nodeData = this.nodes.get(nodeId);
+        if (!nodeData) {
+            this.showError('Node not found');
+            return;
+        }
+        
+        // Confirm deletion
+        const confirmed = confirm(`Are you sure you want to delete the node "${nodeData.title}"?\n\nThis action cannot be undone and will also remove all connections to this node.`);
+        if (!confirmed) {
+            return;
+        }
+        
+        try {
+            await this.apiClient.delete(`/mindmap/nodes/${nodeId}`);
+            
+            // Remove from graph immediately
+            const node = this.cy.getElementById(nodeId);
+            if (node.length > 0) {
+                // If this is the selected node, deselect first
+                if (this.selectedNode && this.selectedNode.id() === nodeId) {
+                    this.deselectAll();
+                }
+                
+                // Remove node (this also removes connected edges)
+                node.remove();
+            }
+            
+            // Remove from local data
+            this.nodes.delete(nodeId);
+            
+            this.showMessage('Node deleted successfully');
+        } catch (error) {
+            console.error('Failed to delete node:', error);
+            this.showError('Failed to delete node');
         }
     }
     
