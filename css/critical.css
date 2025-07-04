@@ -21,7 +21,11 @@ html {
 }
 
 body {
-    background: linear-gradient(180deg, rgba(13, 13, 26, 0.2), var(--primary)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+    /* Primary background with fallback */
+    background-color: var(--background, #0d0d1a); /* Fallback solid color */
+    background: 
+        linear-gradient(180deg, rgba(13, 13, 26, 0.2), var(--primary)), 
+        url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
     color: var(--text);
     font-family: var(--font-primary, 'Montserrat', sans-serif);
     line-height: 1.6;
@@ -47,8 +51,11 @@ body.light-theme {
     --success: #2e7d32;
     --warning: #ff8f00;
     --danger: #c62828;
-    background: linear-gradient(180deg, rgba(240, 240, 245, 0.2), #ffffff), 
-                url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+    /* Light theme background with fallback */
+    background-color: #ffffff; /* Fallback solid color */
+    background: 
+        linear-gradient(180deg, rgba(240, 240, 245, 0.2), #ffffff), 
+        url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
 }
 
 body.light-theme .feature-card,
@@ -115,10 +122,19 @@ main {
     position: relative;
     z-index: 1;
     flex: 1;
-    padding: 3rem 2rem;
-    max-width: 1440px;
-    margin: 0 auto;
+    padding: 0; /* Remove main padding that creates clearance around content */
+    max-width: none; /* Allow full width */
+    margin: 0;
     width: 100%;
+}
+
+/* Page content padding - apply to sections inside main instead */
+.page-header, .placeholder-content, .mindmap-section {
+    padding: 2rem;
+}
+
+.page-header {
+    padding-top: 3rem; /* Extra top padding for first section */
 }
 
 /* ==========================================

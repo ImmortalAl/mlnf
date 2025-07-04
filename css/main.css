@@ -3,14 +3,7 @@
 @import 'utilities.css';
 
 /* Layout */
-body {
-    background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
-    color: var(--text);
-}
-
-body.light-theme {
-    background: linear-gradient(180deg, var(--primary), rgba(255, 255, 255, 0.85)), url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80&duotone=FFFFFF,CCCCFF') center/cover fixed;
-}
+/* Body background is now handled in critical.css - removing duplicate definitions */
 
 /* Main Layout */
 main {
