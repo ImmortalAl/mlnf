@@ -18,8 +18,11 @@ class MLNFThemeManager {
         if (savedTheme) {
             this.currentTheme = savedTheme;
         } else {
-            this.currentTheme = prefersDark ? 'dark' : 'light';
+            // Default to dark theme for MLNF
+            this.currentTheme = 'dark';
         }
+        
+        console.log('[Theme] Initializing with theme:', this.currentTheme);
         
         // Apply theme immediately
         this.applyTheme(this.currentTheme);

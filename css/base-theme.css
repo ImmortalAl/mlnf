@@ -88,4 +88,78 @@
     --surface-secondary: var(--background-secondary);
     --surface-tertiary: var(--background-tertiary);
     --border-color: var(--border);
+}
+
+/* Light Theme Variables */
+body.light-theme {
+    /* Primary Colors */
+    --primary: #ffffff;
+    --secondary: #f8fafc;
+    --accent: #ff5e78;
+    
+    /* Text Colors */
+    --text: #1a202c;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    
+    /* Background Colors */
+    --background: #ffffff;
+    --background-secondary: #f7fafc;
+    --background-tertiary: #edf2f7;
+    
+    /* Interactive Elements */
+    --hover: #e2e8f0;
+    --active: #cbd5e0;
+    --focus: #a0aec0;
+    
+    /* Status Colors */
+    --success: #48bb78;
+    --warning: #ed8936;
+    --error: #f56565;
+    --info: #4299e1;
+    
+    /* Borders & Shadows */
+    --border: #e2e8f0;
+    --border-light: #f7fafc;
+    --shadow: rgba(0, 0, 0, 0.1);
+    
+    /* Additional Design System Variables */
+    --text-bright: #000000;
+    --text-primary: var(--text);
+    --primary-darker: #f7fafc;
+    --primary-darkest: #edf2f7;
+    --accent-tarnished: rgba(255, 94, 120, 0.1);
+    --accent-bright: #ff1744;
+    --surface-primary: var(--background);
+    --surface-secondary: var(--background-secondary);
+    --surface-tertiary: var(--background-tertiary);
+    --border-color: var(--border);
+}
+
+/* Dark Theme Variables (Default) */
+body.dark-theme {
+    /* Use existing root variables as base */
+}
+
+/* Gradients for both themes */
+:root {
+    --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--background-tertiary) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--accent) 0%, #ff8fa3 100%);
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+}
+
+/* Base body styling for all themes */
+body {
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header styling that works with both themes */
+header {
+    background-color: var(--background-secondary);
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
 } 

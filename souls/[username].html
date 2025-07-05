@@ -11,7 +11,7 @@
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" href="../favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="../css/base-theme.css">
+    <link rel="stylesheet" href="../css/base-theme.css?v=2.0">
     <link rel="stylesheet" href="../css/styles.css?v=7.1">
     <link rel="stylesheet" href="../components/shared/styles.css?v=7.0">
     <!-- Only load critical blog styles for profile pages - reduced CSS load -->
@@ -330,6 +330,46 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
         }
 
+        /* Header layout fixes */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background-color: var(--background-secondary);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
         /* Header theme toggle */
         .header-theme-toggle {
             background: none;
@@ -340,12 +380,25 @@
             padding: 0.5rem;
             border-radius: var(--border-radius);
             transition: var(--transition);
-            margin-right: 1rem;
         }
 
         .header-theme-toggle:hover {
             background: rgba(255, 94, 120, 0.1);
             color: var(--accent);
+        }
+
+        @media (max-width: 920px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            header {
+                padding: 1rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -676,7 +729,7 @@
     <script src="../components/shared/config.js?v=1.2"></script>
     
     <!-- Theme Manager - Load early for immediate theme application -->
-    <script src="../components/shared/themeManager.js?v=1.1"></script>
+    <script src="../components/shared/themeManager.js?v=1.2"></script>
     
     <!-- Core MLNF Components -->
     <script src="../components/shared/mlnf-core.js?v=1.2"></script>
