@@ -92,44 +92,44 @@
 
 /* Light Theme Variables */
 body.light-theme {
-    /* Primary Colors */
+    /* Primary Colors - Better contrast for readability */
     --primary: #ffffff;
-    --secondary: #f8fafc;
-    --accent: #ff5e78;
+    --secondary: #f1f5f9;
+    --accent: #dc2626;
     
-    /* Text Colors */
-    --text: #1a202c;
-    --text-secondary: #4a5568;
-    --text-muted: #718096;
+    /* Text Colors - Much darker for better readability */
+    --text: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
     
-    /* Background Colors */
+    /* Background Colors - Better separation */
     --background: #ffffff;
-    --background-secondary: #f7fafc;
-    --background-tertiary: #edf2f7;
+    --background-secondary: #f8fafc;
+    --background-tertiary: #e2e8f0;
     
     /* Interactive Elements */
-    --hover: #e2e8f0;
-    --active: #cbd5e0;
-    --focus: #a0aec0;
+    --hover: #f1f5f9;
+    --active: #e2e8f0;
+    --focus: #94a3b8;
     
     /* Status Colors */
-    --success: #48bb78;
-    --warning: #ed8936;
-    --error: #f56565;
-    --info: #4299e1;
+    --success: #16a34a;
+    --warning: #ea580c;
+    --error: #dc2626;
+    --info: #2563eb;
     
-    /* Borders & Shadows */
-    --border: #e2e8f0;
-    --border-light: #f7fafc;
-    --shadow: rgba(0, 0, 0, 0.1);
+    /* Borders & Shadows - More defined */
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+    --shadow: rgba(15, 23, 42, 0.15);
     
     /* Additional Design System Variables */
     --text-bright: #000000;
     --text-primary: var(--text);
-    --primary-darker: #f7fafc;
-    --primary-darkest: #edf2f7;
-    --accent-tarnished: rgba(255, 94, 120, 0.1);
-    --accent-bright: #ff1744;
+    --primary-darker: #e2e8f0;
+    --primary-darkest: #cbd5e1;
+    --accent-tarnished: rgba(220, 38, 38, 0.1);
+    --accent-bright: #b91c1c;
     --surface-primary: var(--background);
     --surface-secondary: var(--background-secondary);
     --surface-tertiary: var(--background-tertiary);
@@ -162,4 +162,111 @@ header {
     background-color: var(--background-secondary);
     border-bottom: 1px solid var(--border);
     color: var(--text);
+}
+
+/* Light theme specific improvements for better readability */
+body.light-theme .profile-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid #cbd5e1;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+body.light-theme .profile-bio,
+body.light-theme .profile-blogs {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #dc2626;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .profile-bio h3,
+body.light-theme .profile-blogs h3 {
+    color: #dc2626;
+}
+
+body.light-theme .profile-name {
+    color: #dc2626;
+}
+
+body.light-theme .profile-username {
+    color: #334155;
+    opacity: 1;
+}
+
+body.light-theme .meta-item {
+    color: #475569;
+}
+
+body.light-theme .meta-item i {
+    color: #dc2626;
+}
+
+body.light-theme .blog-preview {
+    background: #f8fafc;
+    border-left: 3px solid #dc2626;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-theme .blog-preview h4 {
+    color: #0f172a;
+}
+
+body.light-theme .blog-preview .content {
+    color: #334155;
+}
+
+body.light-theme .blog-preview .date {
+    color: #64748b;
+}
+
+body.light-theme .soul-comments {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+body.light-theme .soul-comments > h3 {
+    color: #dc2626;
+}
+
+body.light-theme .comment-author-name {
+    color: #dc2626;
+}
+
+body.light-theme .comment-author-date {
+    color: #64748b;
+}
+
+/* Light theme button improvements */
+body.light-theme .action-btn.btn-primary {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: #ffffff;
+    border: none;
+}
+
+body.light-theme .action-btn.btn-secondary {
+    background: transparent;
+    color: #dc2626;
+    border: 2px solid #dc2626;
+}
+
+body.light-theme .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+}
+
+/* Light theme floating buttons */
+body.light-theme .floating-buttons button {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+body.light-theme .floating-buttons button:hover {
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+/* Light theme header improvements */
+body.light-theme .header-theme-toggle:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
 } 
