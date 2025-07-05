@@ -24,6 +24,9 @@ class MLNFThemeManager {
         // Apply theme immediately
         this.applyTheme(this.currentTheme);
         
+        // Connect existing theme toggle buttons
+        this.connectExistingToggles();
+        
         // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
             if (!localStorage.getItem(this.themeKey)) {
@@ -32,7 +35,28 @@ class MLNFThemeManager {
         });
     }
 
+    connectExistingToggles() {
+        // Small delay to ensure DOM is fully ready
+        setTimeout(() => {
+            // Find and connect existing theme toggle buttons
+            const toggleButtons = document.querySelectorAll('[data-theme-toggle]');
+            console.log('[Theme] Found toggle buttons:', toggleButtons.length);
+            
+            toggleButtons.forEach(button => {
+                // Remove any existing click listeners to avoid duplicates
+                button.removeEventListener('click', this.handleToggleClick);
+                // Add new click listener
+                button.addEventListener('click', () => {
+                    console.log('[Theme] Toggle clicked, current theme:', this.currentTheme);
+                    this.toggleTheme();
+                });
+            });
+        }, 100);
+    }
+
     applyTheme(theme) {
+        console.log('[Theme] Applying theme:', theme);
+        
         // Remove existing theme classes
         document.body.classList.remove('light-theme', 'dark-theme');
         
@@ -42,6 +66,8 @@ class MLNFThemeManager {
         } else {
             document.body.classList.add('dark-theme');
         }
+        
+        console.log('[Theme] Body classes after apply:', document.body.className);
         
         // Update theme color meta tag
         const themeColor = theme === 'light' ? '#ffffff' : '#0d0d1a';
@@ -103,7 +129,14 @@ class MLNFThemeManager {
 }
 
 // Initialize theme manager globally
-window.MLNFTheme = new MLNFThemeManager();
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.MLNFTheme = new MLNFThemeManager();
+    });
+} else {
+    // DOM already loaded
+    window.MLNFTheme = new MLNFThemeManager();
+}
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
