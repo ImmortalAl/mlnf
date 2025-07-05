@@ -269,4 +269,21 @@ body.light-theme .floating-buttons button:hover {
 body.light-theme .header-theme-toggle:hover {
     background: rgba(220, 38, 38, 0.1);
     color: #dc2626;
+}
+
+/* Light theme footer improvements */
+body.light-theme footer {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #334155;
+    border-top: 2px solid #cbd5e1;
+    box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme footer p {
+    color: #475569;
+}
+
+body.light-theme footer p:first-child {
+    color: #0f172a;
+    font-weight: 600;
 } 
