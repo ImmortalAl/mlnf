@@ -61,7 +61,7 @@ body.light-theme {
     background-color: #ffffff; /* Fallback solid color */
     background: 
         linear-gradient(180deg, rgba(240, 240, 245, 0.2), #ffffff), 
-        url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
 }
 
 body.light-theme .feature-card,
