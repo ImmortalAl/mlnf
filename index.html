@@ -673,16 +673,14 @@
                     const userData = JSON.parse(localStorage.getItem('user') || '{}');
                     
                     if (heroSignupButton && heroLoginButton) {
-                        heroSignupButton.textContent = 'View My Soul';
-                        heroSignupButton.href = '/profile';
+                        // Hide the signup button since profile is now integrated with Eternal Hearth
+                        heroSignupButton.style.display = 'none';
                         
                         heroLoginButton.textContent = 'Enter Eternal Hearth';
                         heroLoginButton.href = '/lander.html';
                         
-                        // Remove any existing event listeners by cloning and replacing the elements
-                        const newSignupButton = heroSignupButton.cloneNode(true);
+                        // Remove any existing event listeners by cloning and replacing the login button
                         const newLoginButton = heroLoginButton.cloneNode(true);
-                        heroSignupButton.parentNode.replaceChild(newSignupButton, heroSignupButton);
                         heroLoginButton.parentNode.replaceChild(newLoginButton, heroLoginButton);
                         
                     }
