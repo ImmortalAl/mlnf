@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../css/blog-critical.css?v=7.0">
     <link rel="stylesheet" href="../css/active-users.css?v=7.0">
     <link rel="stylesheet" href="../css/souls-listing.css">
-    <link rel="stylesheet" href="../css/soul-comments.css">
+    <link rel="stylesheet" href="../css/soul-comments.css?v=1.1">
     <script src="/components/shared/messageModal.js"></script>
     <script src="/components/shared/mlnf-core.js"></script>
     <style>
@@ -598,6 +598,9 @@
     <!-- Avatar System -->
     <script src="../js/mlnf-avatar-system.js?v=2.1"></script>
     
+    <!-- Comments System -->
+    <script src="../components/shared/comments.js?v=1.0"></script>
+    
     <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -666,7 +669,15 @@
                 
                 // Initialize profile comments
                 if (window.MLNF && window.MLNF.CommentsSystem) {
-                    new window.MLNF.CommentsSystem('profile', username, 'profileComments');
+                    console.log('[Profile] Initializing comments for profile:', username);
+                    try {
+                        const commentsInstance = new window.MLNF.CommentsSystem('profile', username, 'profileComments');
+                        console.log('[Profile] Comments system initialized successfully');
+                    } catch (error) {
+                        console.error('[Profile] Failed to initialize comments:', error);
+                    }
+                } else {
+                    console.error('[Profile] Comments system not available');
                 }
                 
                 // Set up message button

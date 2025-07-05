@@ -1,6 +1,38 @@
 /* Soul Comments System - Mystical Profile Comments */
 /* Ethereal whispers between eternal souls */
 
+/* Comment Author Fallback Styles */
+.comment-author-fallback {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.comment-author-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    object-fit: cover;
+}
+
+.comment-author-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-author-name {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.comment-author-date {
+    color: var(--text);
+    opacity: 0.7;
+    font-size: 0.85rem;
+}
+
 /* Soul Comments Section */
 .soul-comments {
     margin-top: 3rem;

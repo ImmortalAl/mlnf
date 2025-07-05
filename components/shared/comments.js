@@ -54,32 +54,56 @@ class CommentsSystem {
         if (!listContainer) return;
         
         try {
+            console.log(`[Comments] Loading comments for ${this.targetType}/${this.targetId}`);
+            
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            
+            // Only add auth header if user is logged in
+            if (this.token) {
+                headers['Authorization'] = `Bearer ${this.token}`;
+            }
+            
             const response = await fetch(
                 `${window.MLNF_CONFIG.API_BASE_URL}/comments/${this.targetType}/${this.targetId}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${this.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
+                { headers }
             );
+            
+            console.log(`[Comments] Response status: ${response.status}`);
             
             if (!response.ok) {
                 if (response.status === 404) {
                     // Comments endpoint doesn't exist for this type, show empty state
+                    console.log('[Comments] 404 - No comments endpoint for this type');
                     this.comments = [];
                     this.renderComments();
                     return;
                 }
-                throw new Error('Failed to fetch comments');
+                throw new Error(`Failed to fetch comments: ${response.status}`);
             }
             
-            this.comments = await response.json();
+            const data = await response.json();
+            console.log('[Comments] Loaded comments:', data);
+            
+            // Handle different response formats
+            if (Array.isArray(data)) {
+                this.comments = data;
+            } else if (data.comments && Array.isArray(data.comments)) {
+                this.comments = data.comments;
+            } else if (data.docs && Array.isArray(data.docs)) {
+                this.comments = data.docs;
+            } else {
+                console.warn('[Comments] Unexpected response format:', data);
+                this.comments = [];
+            }
+            
             this.renderComments();
         } catch (error) {
-            console.error('Error loading comments:', error);
-            if (error.message.includes('404') || error.message.includes('Failed to fetch comments')) {
-                // Show empty state for unsupported comment types
+            console.error('[Comments] Error loading comments:', error);
+            
+            // Check if it's a network error or API not available
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                 this.comments = [];
                 this.renderComments();
             } else {
@@ -128,19 +152,36 @@ class CommentsSystem {
         commentDiv.id = `comment-${comment._id}`;
         
         // Create unified author display using MLNF Avatar System
-        const authorDisplay = window.MLNFAvatars.createUserDisplay({
-            username: comment.author.username,
-            title: comment.author.title || 'Eternal Soul',
-            status: `${formattedDate}${editedText}`,
-            avatarSize: 'sm',
-            displaySize: 'xs',
-            compact: true,
-            mystical: comment.author.isVIP || comment.author.role === 'admin',
-            online: comment.author.online,
-            customAvatar: comment.author.avatar,
-            usernameStyle: 'immortal',
-            enableUnifiedNavigation: true
-        });
+        let authorDisplay;
+        
+        if (window.MLNFAvatars && window.MLNFAvatars.createUserDisplay) {
+            authorDisplay = window.MLNFAvatars.createUserDisplay({
+                username: comment.author.username,
+                title: comment.author.title || 'Eternal Soul',
+                status: `${formattedDate}${editedText}`,
+                avatarSize: 'sm',
+                displaySize: 'xs',
+                compact: true,
+                mystical: comment.author.isVIP || comment.author.role === 'admin',
+                online: comment.author.online,
+                customAvatar: comment.author.avatar,
+                usernameStyle: 'immortal',
+                enableUnifiedNavigation: true
+            });
+        } else {
+            // Fallback if avatar system not available
+            authorDisplay = document.createElement('div');
+            authorDisplay.className = 'comment-author-fallback';
+            authorDisplay.innerHTML = `
+                <img src="${comment.author.avatar || '/assets/images/default.jpg'}" 
+                     alt="${comment.author.username}" 
+                     class="comment-author-avatar" />
+                <div class="comment-author-info">
+                    <span class="comment-author-name">${comment.author.username}</span>
+                    <span class="comment-author-date">${formattedDate}${editedText}</span>
+                </div>
+            `;
+        }
         
         // Create comment header with author display and actions
         const commentHeader = document.createElement('div');
