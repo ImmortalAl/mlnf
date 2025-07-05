@@ -144,6 +144,7 @@
                 <h1 id="mainHeading" class="eternal font-immortal-heading text-immortal-glow">Naturally Free Forever</h1>
                 <p>Beyond the chains of time and tyranny, we rise as an eternal sanctuary for liberated spirits. Manifest your truth, transcend the mortal coil, and join a timeless collective unshackled by fleeting powers. Experience true freedom.</p>
                 <div class="hero-buttons">
+                    <a href="javascript:void(0)" class="btn btn-primary" id="heroSignupButton">Embrace Immortality</a>
                     <a href="javascript:void(0)" class="btn btn-outline" id="heroLoginButton">Enter The Sanctuary</a>
                 </div>
             </div>
@@ -660,29 +661,43 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const heroSignupButton = document.getElementById('heroSignupButton');
             const heroLoginButton = document.getElementById('heroLoginButton');
             
             // Check if user is logged in
             const token = localStorage.getItem('sessionToken');
             
             if (token) {
-                // User is logged in - update button to be proper link
+                // User is logged in - update buttons to be proper links
                 try {
                     const userData = JSON.parse(localStorage.getItem('user') || '{}');
                     
-                    if (heroLoginButton) {
+                    if (heroSignupButton && heroLoginButton) {
+                        // Hide the signup button since profile is now integrated with Eternal Hearth
+                        heroSignupButton.style.display = 'none';
+                        
                         heroLoginButton.textContent = 'Enter Eternal Hearth';
                         heroLoginButton.href = '/lander.html';
                         
                         // Remove any existing event listeners by cloning and replacing the login button
                         const newLoginButton = heroLoginButton.cloneNode(true);
                         heroLoginButton.parentNode.replaceChild(newLoginButton, heroLoginButton);
+                        
                     }
                 } catch (error) {
                     // Error parsing user data
                 }
             } else {
                 // User is not logged in - add modal event listeners
+                if (heroSignupButton) {
+                    heroSignupButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.MLNF && window.MLNF.openSoulModal) {
+                            window.MLNF.openSoulModal('register');
+                        }
+                    });
+                }
+                
                 if (heroLoginButton) {
                     heroLoginButton.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -691,6 +706,7 @@
                         }
                     });
                 }
+                
             }
             
             // Active users sidebar toggle is handled by components/shared/activeUsers.js
