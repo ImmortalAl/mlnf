@@ -596,12 +596,19 @@
     <script src="../components/shared/messageModal.js?v=2.4"></script>
     
     <!-- Avatar System -->
-    <script src="../js/mlnf-avatar-system.js?v=2.0"></script>
+    <script src="../js/mlnf-avatar-system.js?v=2.1"></script>
     
     <!-- Initialize MLNF -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // mlnf-core.js handles component initialization automatically
+            
+            // Initialize MLNF Avatar System
+            if (!window.MLNFAvatars && window.MLNFAvatarSystem) {
+                window.MLNFAvatars = new window.MLNFAvatarSystem();
+                console.log('[Profile] MLNF Avatar System initialized');
+            }
+            
             loadProfile();
         });
 
@@ -696,7 +703,27 @@
             const username = profileHeader.querySelector('.profile-username');
             const status = profileHeader.querySelector('.profile-status');
 
-            if (avatar) avatar.src = userData.avatar || '../assets/images/default.jpg';
+            // Use MLNF Avatar System for consistent avatar handling
+            if (avatar && window.MLNFAvatars) {
+                const avatarUrl = window.MLNFAvatars.generateAvatarUrl(
+                    userData.username,
+                    150, // Large size for profile
+                    userData.avatar
+                );
+                avatar.src = avatarUrl;
+                
+                // Add fallback handling
+                avatar.onerror = function() {
+                    console.log('[Profile] Avatar failed to load, using fallback');
+                    // Use absolute path for fallback
+                    this.src = '/assets/images/default.jpg';
+                    this.onerror = null; // Prevent infinite loop
+                };
+            } else if (avatar) {
+                // Fallback if avatar system not loaded
+                avatar.src = userData.avatar || '/assets/images/default.jpg';
+            }
+            
             if (name) name.textContent = userData.displayName || userData.username;
             if (username) username.textContent = `@${userData.username}`;
             if (status) status.textContent = userData.status || 'No status set';
@@ -712,16 +739,41 @@
         }
 
         async function loadUserBlogs(username) {
+            const blogsList = document.querySelector('.user-blogs-list');
+            
             try {
+                console.log('[Profile] Loading blogs for user:', username);
                 const response = await window.apiClient.get(`/blogs?author=${username}`);
-                const data = response;
-                const blogs = data.docs || data;
+                console.log('[Profile] Blog API response:', response);
+                
+                // Handle different possible response structures
+                let blogs = [];
+                if (response) {
+                    if (Array.isArray(response)) {
+                        blogs = response;
+                    } else if (response.docs && Array.isArray(response.docs)) {
+                        blogs = response.docs;
+                    } else if (response.data && Array.isArray(response.data)) {
+                        blogs = response.data;
+                    } else if (response.blogs && Array.isArray(response.blogs)) {
+                        blogs = response.blogs;
+                    } else {
+                        console.warn('[Profile] Unexpected blog response structure:', response);
+                    }
+                }
+                
+                console.log('[Profile] Processed blogs array:', blogs);
                 renderBlogs(blogs);
             } catch (error) {
-                console.error('Error fetching user blogs:', error);
-                const blogsSection = document.querySelector('.profile-blogs');
-                if (blogsSection) {
-                    blogsSection.innerHTML = '<p class="error">Failed to load soul scrolls. Please try again later.</p>';
+                console.error('[Profile] Error fetching user blogs:', error);
+                if (blogsList) {
+                    blogsList.innerHTML = `
+                        <div class="no-blogs">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Failed to load soul scrolls. Please try again later.</p>
+                            <small>${error.message || 'Unknown error'}</small>
+                        </div>
+                    `;
                 }
             }
         }
@@ -740,16 +792,29 @@
                 return;
             }
 
-            blogsList.innerHTML = blogs.map(blog => `
-                <div class="blog-preview" onclick="window.location.href='/pages/blog.html?id=${blog._id}'">
-                    <h4>${blog.title}</h4>
-                    <div class="content">${blog.content.substring(0, 200)}...</div>
-                    <div class="date">
-                        <i class="fas fa-calendar"></i>
-                        ${new Date(blog.createdAt).toLocaleDateString()}
+            blogsList.innerHTML = blogs.map(blog => {
+                // Safely extract blog data with fallbacks
+                const blogId = blog._id || blog.id || '';
+                const title = blog.title || 'Untitled Scroll';
+                const content = blog.content || blog.description || blog.excerpt || '';
+                const createdAt = blog.createdAt || blog.created_at || blog.date || new Date().toISOString();
+                
+                // Safely truncate content
+                const truncatedContent = content.length > 200 ? 
+                    content.substring(0, 200) + '...' : 
+                    content || 'No preview available';
+                
+                return `
+                    <div class="blog-preview" onclick="window.location.href='/pages/blog.html?id=${blogId}'">
+                        <h4>${title}</h4>
+                        <div class="content">${truncatedContent}</div>
+                        <div class="date">
+                            <i class="fas fa-calendar"></i>
+                            ${new Date(createdAt).toLocaleDateString()}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         function setupMessageButton(username, userData) {
