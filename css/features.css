@@ -1,5 +1,5 @@
 /* MLNF Features CSS - Page-specific features loaded last */
-/* Version: 5.1.0 - Refined Soul Scrolls highlight cards with subtle elegance */
+/* Version: 5.2.0 - Fixed mobile padding for proper text spacing */
 /* Last Updated: 2025-07-06 */
 /* Performance: Asynchronously loaded after core styles for enhanced UI features */
 
@@ -442,7 +442,7 @@ body.light-theme .debate-position h4 {
 /* Mobile responsiveness with better spacing */
 @media (max-width: 768px) {
     .scroll-highlight-card {
-        padding: 2.5rem 2rem;
+        padding: 3rem 3rem;
         border-radius: 18px;
         margin-bottom: 2rem;
     }
@@ -465,6 +465,14 @@ body.light-theme .debate-position h4 {
     
     .scroll-highlight-card:hover {
         transform: translateY(-4px);
+    }
+}
+
+/* Extra spacing for very small mobile screens */
+@media (max-width: 480px) {
+    .scroll-highlight-card {
+        padding: 2.5rem 2.5rem;
+        margin: 0 1rem 2rem 1rem;
     }
 }
 
