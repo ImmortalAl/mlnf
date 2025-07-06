@@ -1,5 +1,5 @@
 /* MLNF Layout CSS - Main content structure loaded after critical CSS */
-/* Version: 1.0.0 - Performance optimized split */
+/* Version: 8.0.0 - Refined spacing and cleaner visual hierarchy */
 
 /* ==========================================
    PAGE HEADER STYLES
@@ -228,11 +228,12 @@ body.light-theme .section-title p {
    SECTION WRAPPERS
    ========================================== */
 
-/* Section Wrappers */
+/* Section Wrappers - Consistent Refined Spacing */
 .features-section,
 .highlights-section,
 .mindmap-section {
-    padding: 4.5rem 2rem;
+    padding: 4rem 2rem;
+    margin-bottom: 2rem;
     z-index: 1;
 }
 
@@ -240,13 +241,13 @@ body.light-theme .section-title p {
    GRID LAYOUTS
    ========================================== */
 
-/* Grid Layouts */
+/* Grid Layouts - Refined Spacing */
 .features-grid,
 .highlight-grid,
 .debate-preview-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2.5rem;
+    gap: 2rem;
     max-width: 1440px;
     margin: 2.5rem auto;
     align-items: stretch; /* Ensure equal height cards */
