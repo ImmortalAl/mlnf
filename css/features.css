@@ -1160,39 +1160,55 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .souls-highlight-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
-    margin: 2rem 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    margin: 3rem auto;
     position: relative;
     z-index: 1;
+    max-width: 1000px;
+    align-items: stretch;
 }
 
 .soul-highlight-card {
     background: var(--background-secondary);
-    border-radius: var(--border-radius);
-    padding: 2rem;
+    border-radius: 20px;
+    padding: 2.5rem;
     border: 2px solid rgba(255, 94, 120, 0.2);
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     position: relative;
-    overflow: hidden;
-    min-height: 400px;
-    margin-bottom: 5rem;
+    overflow: visible;
+    min-height: 480px;
+    margin-bottom: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .soul-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 20px;
+    z-index: -1;
+}
+
+.soul-highlight-card::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 94, 120, 0.05) 50%, transparent 100%);
-    opacity: 0;
-    transition: var(--transition);
+    background: radial-gradient(circle at center, transparent 0%, rgba(255, 94, 120, 0.03) 100%);
+    pointer-events: none;
 }
 
 .soul-highlight-card:hover::before {
@@ -1200,19 +1216,78 @@ body .floating-buttons button.theme-toggle#themeToggle {
 }
 
 .soul-highlight-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-    box-shadow: 0 15px 35px rgba(255, 94, 120, 0.2);
+    transform: translateY(-8px) scale(1.02);
+    border-color: transparent;
+    box-shadow: 0 20px 40px rgba(255, 94, 120, 0.25),
+                0 0 60px rgba(255, 94, 120, 0.1);
+}
+
+.soul-highlight-card:hover::before {
+    opacity: 0.3;
+    animation: immortalGlow 2s ease-in-out infinite;
+}
+
+@keyframes immortalGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
 }
 
 .soul-card-founder {
-    background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 202, 40, 0.1));
-    border-color: var(--accent);
+    background: linear-gradient(135deg, 
+                rgba(255, 94, 120, 0.08) 0%, 
+                rgba(255, 202, 40, 0.08) 50%,
+                rgba(255, 94, 120, 0.05) 100%);
+    border-image: linear-gradient(135deg, #ff5e78, #ffca28, #ff5e78) 1;
+    position: relative;
+}
+
+.soul-card-founder::before {
+    background: linear-gradient(45deg, transparent, #ffca28, #ff5e78, transparent);
+}
+
+/* Founder Crown Icon */
+.soul-card-founder .soul-display-container::after {
+    content: '\u2666';
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 30px;
+    color: #ffca28;
+    transform: rotate(45deg);
+    animation: sparkle 3s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.6; transform: rotate(45deg) scale(1); }
+    50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
 }
 
 .soul-card-featured {
-    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(96, 165, 250, 0.1));
-    border-color: #4ade80;
+    background: linear-gradient(135deg, 
+                rgba(74, 222, 128, 0.08) 0%, 
+                rgba(96, 165, 250, 0.08) 50%,
+                rgba(74, 222, 128, 0.05) 100%);
+    border-image: linear-gradient(135deg, #4ade80, #60a5fa, #4ade80) 1;
+}
+
+.soul-card-featured::before {
+    background: linear-gradient(45deg, transparent, #60a5fa, #4ade80, transparent);
+}
+
+/* Featured Star Icon */
+.soul-card-featured .soul-display-container::after {
+    content: '\u2605';
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 30px;
+    color: #60a5fa;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; }
 }
 
 .soul-card-content {
@@ -1226,13 +1301,30 @@ body .floating-buttons button.theme-toggle#themeToggle {
 }
 
 .soul-display-container {
-    margin: 1rem 0;
-    min-height: 140px;
+    margin: 2rem 0;
+    min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-    padding: 0.5rem;
+    padding: 1rem;
+    position: relative;
+}
+
+.soul-display-container::before {
+    content: '∞';
+    position: absolute;
+    font-size: 120px;
+    opacity: 0.03;
+    font-weight: 300;
+    color: var(--accent);
+    z-index: -1;
+    animation: floatInfinity 20s ease-in-out infinite;
+}
+
+@keyframes floatInfinity {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
 }
 
 .loading-soul {
@@ -1254,11 +1346,11 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-highlight-card .soul-card-actions {
     display: flex !important;
-    gap: 0.75rem;
+    gap: 1rem;
     justify-content: center !important;
-    align-items: center;
-    margin-top: auto;
-    flex-wrap: wrap;
+    align-items: stretch;
+    margin-top: 2rem;
+    flex-wrap: nowrap;
     width: 100%;
     padding: 0 !important;
     flex-shrink: 0;
@@ -1270,27 +1362,46 @@ body .floating-buttons button.theme-toggle#themeToggle {
     background: var(--gradient-accent) !important;
     color: white !important;
     border: none !important;
-    padding: 0.8rem 1.2rem !important;
-    border-radius: 25px !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    min-width: 120px;
-    width: auto !important;
-    max-width: 180px;
+    padding: 1rem 1.5rem !important;
+    border-radius: 30px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    flex: 1;
+    min-width: 0;
     text-align: center !important;
     margin: 0 !important;
-    display: block !important;
+    display: inline-flex !important;
     box-sizing: border-box;
-    font-weight: 700;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.soul-highlight-card .soul-message-btn::before,
+.soul-highlight-card .soul-profile-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.soul-highlight-card .soul-message-btn:hover::before,
+.soul-highlight-card .soul-profile-btn:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .soul-profile-btn {
@@ -1299,8 +1410,9 @@ body .floating-buttons button.theme-toggle#themeToggle {
 }
 
 .soul-message-btn:hover, .soul-profile-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 94, 120, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255, 94, 120, 0.4),
+                0 0 40px rgba(255, 94, 120, 0.2);
 }
 
 .soul-card-featured .soul-message-btn {
@@ -1357,24 +1469,41 @@ body .floating-buttons button.theme-toggle#themeToggle {
 }
 
 .soul-highlight-card .mlnf-avatar--xl {
-    border: 3px solid rgba(255, 94, 120, 0.3);
-    transition: var(--transition);
+    border: 4px solid rgba(255, 94, 120, 0.2);
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .soul-highlight-card:hover .mlnf-avatar--xl {
     border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(255, 94, 120, 0.3);
+    box-shadow: 0 0 30px rgba(255, 94, 120, 0.4),
+                0 0 60px rgba(255, 94, 120, 0.2);
+    transform: scale(1.05);
+}
+
+.soul-card-founder .mlnf-avatar--xl {
+    border-image: linear-gradient(135deg, #ff5e78, #ffca28) 1;
+}
+
+.soul-card-featured .mlnf-avatar--xl {
+    border-image: linear-gradient(135deg, #4ade80, #60a5fa) 1;
 }
 
 .soul-highlight-card .mlnf-username--mystical {
     /* Font now properly inherited from !important rules above */
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     margin-bottom: 0.5rem;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 1.4;
+    background: linear-gradient(45deg, var(--accent), #ffca28);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-weight: 700;
 }
 
 .soul-highlight-card .mlnf-user-title {
@@ -1399,9 +1528,56 @@ body .floating-buttons button.theme-toggle#themeToggle {
     line-height: 1.2;
 }
 
+/* Responsive Design for Soul Highlight Cards */
+@media (max-width: 768px) {
+    .souls-highlight-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin: 2rem auto;
+    }
+    
+    .soul-highlight-card {
+        min-height: 420px;
+        padding: 2rem;
+    }
+    
+    .soul-display-container {
+        min-height: 160px;
+    }
+    
+    .soul-display-container::before {
+        font-size: 80px;
+    }
+    
+    .soul-highlight-card .soul-card-actions {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    
+    .soul-highlight-card .soul-message-btn, 
+    .soul-highlight-card .soul-profile-btn {
+        min-width: 140px;
+        flex: 1 1 45%;
+        padding: 0.9rem 1.2rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .soul-highlight-card {
+        padding: 1.5rem;
+        min-height: 380px;
+    }
+    
+    .soul-highlight-card .soul-message-btn, 
+    .soul-highlight-card .soul-profile-btn {
+        flex: 1 1 100%;
+    }
+}
+
 /* ==========================================
    ANONYMOUS MESSAGE MODAL STYLING
-   ========================================== */
+   ==========================================
 
 /* Anonymous Message Modal Styling */
 .anonymous-message-modal {
