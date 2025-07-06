@@ -1273,29 +1273,39 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-display-container {
     margin: 2rem 0;
-    min-height: 200px;
+    min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-    padding: 1rem;
+    padding: 1.5rem;
     position: relative;
+    background: radial-gradient(circle at center, 
+                rgba(255, 255, 255, 0.02) 0%, 
+                transparent 70%);
+    border-radius: 50%;
 }
 
 .soul-display-container::before {
-    content: '∞';
+    content: '';
     position: absolute;
-    font-size: 120px;
-    opacity: 0.03;
-    font-weight: 300;
-    color: var(--accent);
-    z-index: -1;
-    animation: floatInfinity 20s ease-in-out infinite;
+    inset: -50px;
+    background: radial-gradient(circle at center,
+                rgba(255, 94, 120, 0.1) 0%,
+                transparent 50%);
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: pulse 4s ease-in-out infinite;
 }
 
-@keyframes floatInfinity {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+.soul-highlight-card:hover .soul-display-container::before {
+    opacity: 0.6;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(0.95); }
+    50% { transform: scale(1.05); }
 }
 
 .loading-soul {
@@ -1492,50 +1502,89 @@ body .floating-buttons button.theme-toggle#themeToggle {
     line-height: 1.2;
 }
 
+/* Enhanced Loading Animation */
+.soul-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 94, 120, 0.2);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
 /* Responsive Design for Soul Highlight Cards */
 @media (max-width: 768px) {
     .souls-highlight-container {
         grid-template-columns: 1fr;
         gap: 2rem;
         margin: 2rem auto;
+        animation: mobileSlideUp 0.8s ease-out;
     }
     
     .soul-highlight-card {
-        min-height: 420px;
-        padding: 2rem;
+        min-height: 450px;
+        padding: 2.5rem 2rem;
+        transform: none !important;
+        margin-bottom: 1rem;
+    }
+    
+    .soul-highlight-card:hover {
+        transform: translateY(-5px) !important;
     }
     
     .soul-display-container {
-        min-height: 160px;
-    }
-    
-    .soul-display-container::before {
-        font-size: 80px;
+        min-height: 180px;
+        padding: 1rem;
     }
     
     .soul-highlight-card .soul-card-actions {
         flex-wrap: wrap;
         gap: 0.75rem;
+        margin-top: 2rem;
     }
     
     .soul-highlight-card .soul-message-btn, 
     .soul-highlight-card .soul-profile-btn {
-        min-width: 140px;
+        min-width: 120px;
+        max-width: none;
         flex: 1 1 45%;
-        padding: 0.9rem 1.2rem !important;
-        font-size: 0.85rem !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 0.875rem !important;
     }
 }
 
+@keyframes mobileSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}"
+
 @media (max-width: 480px) {
     .soul-highlight-card {
-        padding: 1.5rem;
-        min-height: 380px;
+        padding: 2rem 1.5rem;
+        min-height: 400px;
     }
     
     .soul-highlight-card .soul-message-btn, 
     .soul-highlight-card .soul-profile-btn {
         flex: 1 1 100%;
+        max-width: none;
+        margin-bottom: 0.5rem;
+    }
+    
+    .soul-highlight-card .mlnf-username--mystical {
+        font-size: 1.3rem;
     }
 }
 
