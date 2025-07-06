@@ -1177,7 +1177,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
     min-height: 480px;
     margin-bottom: 0;
     display: flex;
@@ -1245,22 +1245,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     background: linear-gradient(45deg, transparent, #ffca28, #ff5e78, transparent);
 }
 
-/* Founder Crown Icon */
-.soul-card-founder .soul-display-container::after {
-    content: '\u2666';
-    position: absolute;
-    top: -10px;
-    right: 10px;
-    font-size: 30px;
-    color: #ffca28;
-    transform: rotate(45deg);
-    animation: sparkle 3s ease-in-out infinite;
-}
-
-@keyframes sparkle {
-    0%, 100% { opacity: 0.6; transform: rotate(45deg) scale(1); }
-    50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
-}
+/* Remove decorative icons - they were causing issues */
 
 .soul-card-featured {
     background: linear-gradient(135deg, 
@@ -1274,21 +1259,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     background: linear-gradient(45deg, transparent, #60a5fa, #4ade80, transparent);
 }
 
-/* Featured Star Icon */
-.soul-card-featured .soul-display-container::after {
-    content: '\u2605';
-    position: absolute;
-    top: -10px;
-    right: 10px;
-    font-size: 30px;
-    color: #60a5fa;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.1); opacity: 1; }
-}
+/* Featured card styling handled by gradient borders */
 
 .soul-card-content {
     margin-top: 0;
@@ -1359,15 +1330,16 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-highlight-card .soul-message-btn, 
 .soul-highlight-card .soul-profile-btn {
-    background: var(--gradient-accent) !important;
+    background: linear-gradient(135deg, #ff5e78, #ff8fa3) !important;
     color: white !important;
     border: none !important;
-    padding: 1rem 1.5rem !important;
-    border-radius: 30px !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
+    padding: 0.75rem 1.25rem !important;
+    border-radius: 25px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
     flex: 1;
     min-width: 0;
+    max-width: 140px;
     text-align: center !important;
     margin: 0 !important;
     display: inline-flex !important;
@@ -1377,31 +1349,21 @@ body .floating-buttons button.theme-toggle#themeToggle {
     text-decoration: none;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    gap: 0.4rem;
+    text-transform: none;
+    letter-spacing: normal;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 
-.soul-highlight-card .soul-message-btn::before,
-.soul-highlight-card .soul-profile-btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+.soul-highlight-card .soul-profile-btn {
+    background: linear-gradient(135deg, #1a1a33, #2a4066) !important;
+    border: 1px solid rgba(255, 94, 120, 0.3) !important;
 }
 
-.soul-highlight-card .soul-message-btn:hover::before,
-.soul-highlight-card .soul-profile-btn:hover::before {
-    width: 300px;
-    height: 300px;
+.soul-card-featured .soul-message-btn {
+    background: linear-gradient(135deg, #4ade80, #60a5fa) !important;
 }
 
 .soul-profile-btn {
@@ -1409,10 +1371,22 @@ body .floating-buttons button.theme-toggle#themeToggle {
     border: 2px solid var(--accent);
 }
 
-.soul-message-btn:hover, .soul-profile-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(255, 94, 120, 0.4),
-                0 0 40px rgba(255, 94, 120, 0.2);
+.soul-highlight-card .soul-message-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 94, 120, 0.3);
+    background: linear-gradient(135deg, #ff8fa3, #ff5e78) !important;
+}
+
+.soul-highlight-card .soul-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(42, 64, 102, 0.4);
+    background: linear-gradient(135deg, #2a4066, #1a1a33) !important;
+    border-color: rgba(255, 94, 120, 0.5) !important;
+}
+
+.soul-card-featured .soul-message-btn:hover {
+    box-shadow: 0 6px 20px rgba(74, 222, 128, 0.3);
+    background: linear-gradient(135deg, #60a5fa, #4ade80) !important;
 }
 
 .soul-card-featured .soul-message-btn {
@@ -1469,24 +1443,14 @@ body .floating-buttons button.theme-toggle#themeToggle {
 }
 
 .soul-highlight-card .mlnf-avatar--xl {
-    border: 4px solid rgba(255, 94, 120, 0.2);
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.4s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .soul-highlight-card:hover .mlnf-avatar--xl {
-    border-color: var(--accent);
-    box-shadow: 0 0 30px rgba(255, 94, 120, 0.4),
-                0 0 60px rgba(255, 94, 120, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     transform: scale(1.05);
-}
-
-.soul-card-founder .mlnf-avatar--xl {
-    border-image: linear-gradient(135deg, #ff5e78, #ffca28) 1;
-}
-
-.soul-card-featured .mlnf-avatar--xl {
-    border-image: linear-gradient(135deg, #4ade80, #60a5fa) 1;
 }
 
 .soul-highlight-card .mlnf-username--mystical {
