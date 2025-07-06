@@ -1,5 +1,5 @@
 /* MLNF Features CSS - Page-specific features loaded last */
-/* Version: 5.2.0 - Fixed mobile padding for proper text spacing */
+/* Version: 5.3.0 - Force override conflicting highlight-item padding */
 /* Last Updated: 2025-07-06 */
 /* Performance: Asynchronously loaded after core styles for enhanced UI features */
 
@@ -197,7 +197,7 @@ body.light-theme .debate-position h4 {
         rgba(26, 26, 51, 0.92) 100%);
     border: 2px solid rgba(var(--accent-rgb, 255, 94, 120), 0.25);
     border-radius: 20px;
-    padding: 3rem 2.5rem;
+    padding: 3rem 2.5rem !important;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(12px);
@@ -442,7 +442,7 @@ body.light-theme .debate-position h4 {
 /* Mobile responsiveness with better spacing */
 @media (max-width: 768px) {
     .scroll-highlight-card {
-        padding: 3rem 3rem;
+        padding: 3rem 3rem !important;
         border-radius: 18px;
         margin-bottom: 2rem;
     }
@@ -471,7 +471,7 @@ body.light-theme .debate-position h4 {
 /* Extra spacing for very small mobile screens */
 @media (max-width: 480px) {
     .scroll-highlight-card {
-        padding: 2.5rem 2.5rem;
+        padding: 2.5rem 2.5rem !important;
         margin: 0 1rem 2rem 1rem;
     }
 }
