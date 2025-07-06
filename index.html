@@ -944,13 +944,10 @@
         // Create meta section
         const metaDiv = document.createElement('div');
         metaDiv.className = 'highlight-meta';
-        let metaContent = `<span class="date">${date}</span>`;
-        
-        if (cardType === 'editorial') {
-            metaContent += '<span class="editorial-badge"><i class="fas fa-star"></i> Curator\'s Choice</span>';
-        }
-        
-        metaContent += '<span class="read-more-indicator">Read full scroll →</span>';
+        const metaContent = `
+            <span class="date">${date}</span>
+            <span class="read-more-indicator">Read full scroll →</span>
+        `;
         metaDiv.innerHTML = metaContent;
         
         // Assemble highlight card
