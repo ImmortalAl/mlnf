@@ -1996,77 +1996,113 @@ main {
 .dual-highlight-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem;
-    max-width: 1200px;
+    gap: 3rem;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 1rem;
-    animation: cardsSlideIn 0.6s ease-out;
+    padding: 0 2rem;
+    animation: cardsSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    perspective: 1000px;
 }
 
 @keyframes cardsSlideIn {
-    from {
+    0% {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(50px) rotateX(15deg);
     }
-    to {
+    50% {
+        opacity: 0.6;
+        transform: translateY(20px) rotateX(5deg);
+    }
+    100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) rotateX(0deg);
     }
 }
 
 .highlight-card {
     background: linear-gradient(135deg, 
-                var(--background-secondary) 0%,
-                rgba(26, 26, 51, 0.95) 100%);
-    border-radius: 20px;
+                rgba(13, 13, 26, 0.95) 0%,
+                rgba(26, 26, 51, 0.98) 30%,
+                rgba(37, 37, 74, 0.95) 70%,
+                rgba(26, 26, 51, 0.98) 100%);
+    border-radius: 24px;
     padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
     position: relative;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px) saturate(1.8);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 0 20px rgba(255, 94, 120, 0.02);
+    transform-style: preserve-3d;
 }
 
 .highlight-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, 
-                transparent, 
-                var(--accent), 
-                transparent);
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, 
+                rgba(255, 94, 120, 0.4) 0%,
+                rgba(255, 143, 163, 0.3) 25%,
+                rgba(181, 172, 246, 0.3) 50%,
+                rgba(125, 91, 166, 0.3) 75%,
+                rgba(255, 94, 120, 0.4) 100%);
+    border-radius: 26px;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    filter: blur(1px);
 }
 
 .highlight-card:hover::before {
     opacity: 1;
+    animation: borderGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+    0% {
+        filter: blur(1px) brightness(1);
+        transform: scale(1);
+    }
+    100% {
+        filter: blur(2px) brightness(1.2);
+        transform: scale(1.01);
+    }
 }
 
 .highlight-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 60px rgba(255, 94, 120, 0.1),
-                inset 0 2px 0 rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 94, 120, 0.3);
+    transform: translateY(-12px) scale(1.03) rotateX(5deg);
+    box-shadow: 
+        0 35px 80px rgba(0, 0, 0, 0.5),
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(255, 94, 120, 0.15),
+        0 0 120px rgba(181, 172, 246, 0.1),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2),
+        inset 0 0 30px rgba(255, 94, 120, 0.05);
+    border-color: rgba(255, 94, 120, 0.4);
 }
 
 .highlight-card .card-header {
     background: linear-gradient(135deg, 
-                rgba(255, 94, 120, 0.9) 0%, 
-                rgba(255, 143, 163, 0.8) 100%);
+                rgba(255, 94, 120, 0.95) 0%, 
+                rgba(255, 143, 163, 0.9) 30%,
+                rgba(181, 172, 246, 0.85) 70%,
+                rgba(125, 91, 166, 0.9) 100%);
     color: white;
-    padding: 2rem 2rem 1.5rem 2rem;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
     border-bottom: none;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .highlight-card .card-header::before {
@@ -2076,52 +2112,98 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at top right, 
-                rgba(255, 255, 255, 0.1) 0%, 
+    background: radial-gradient(ellipse at top right, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 30%,
                 transparent 70%);
     pointer-events: none;
+    opacity: 0.8;
+}
+
+.highlight-card .card-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 20%,
+                rgba(255, 255, 255, 0.6) 50%,
+                rgba(255, 255, 255, 0.3) 80%,
+                transparent 100%);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .highlight-card .card-header h3 {
-    margin: 0 0 0.75rem 0;
-    font-size: 1.4rem;
-    font-weight: 700;
+    margin: 0 0 1rem 0;
+    font-size: 1.6rem;
+    font-weight: 800;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     position: relative;
-    z-index: 1;
-    font-family: 'Montserrat', sans-serif;
-    letter-spacing: 0.02em;
+    z-index: 2;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.03em;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 255, 255, 0.95) 50%,
+                rgba(255, 255, 255, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .highlight-card .card-header h3 i {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    font-size: 1.4rem;
+    opacity: 1;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    color: rgba(255, 255, 255, 0.95);
+    animation: iconFloat 3s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-2px) rotate(5deg);
+    }
 }
 
 .highlight-card .card-header p {
     margin: 0;
-    font-size: 0.95rem;
-    opacity: 0.9;
-    font-weight: 400;
+    font-size: 1rem;
+    opacity: 0.95;
+    font-weight: 500;
     position: relative;
-    z-index: 1;
+    z-index: 2;
     font-style: italic;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.01em;
+    line-height: 1.4;
 }
 
 .highlight-card .card-content {
-    padding: 2rem;
+    padding: 2.5rem;
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 300px;
+    min-height: 320px;
     position: relative;
     background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.02) 0%, 
-                transparent 50%);
+                rgba(255, 255, 255, 0.03) 0%, 
+                rgba(255, 94, 120, 0.01) 25%,
+                transparent 50%,
+                rgba(181, 172, 246, 0.01) 75%,
+                rgba(255, 255, 255, 0.02) 100%);
 }
 
 .highlight-card .card-content::before {
@@ -2130,11 +2212,14 @@ main {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 1px;
+    height: 2px;
     background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 94, 120, 0.2), 
-                transparent);
+                transparent 0%,
+                rgba(255, 94, 120, 0.1) 20%,
+                rgba(255, 94, 120, 0.3) 50%,
+                rgba(181, 172, 246, 0.2) 70%,
+                transparent 100%);
+    border-radius: 0 0 24px 24px;
 }
 
 .highlight-card .highlight-item {
@@ -2144,42 +2229,165 @@ main {
     margin: 0;
     text-decoration: none;
     color: var(--text-primary);
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: block;
     flex: 1;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .highlight-card .highlight-item:hover {
-    background: var(--background-tertiary);
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    margin: -1rem;
+    background: linear-gradient(135deg, 
+                rgba(255, 94, 120, 0.08) 0%,
+                rgba(181, 172, 246, 0.05) 50%,
+                rgba(255, 94, 120, 0.03) 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: -1.5rem;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    backdrop-filter: blur(10px);
 }
 
 .highlight-card .highlight-item.loading {
     text-align: center;
     color: var(--text-muted);
     font-style: italic;
+    position: relative;
+    padding: 3rem 1rem;
+}
+
+.highlight-card .highlight-item.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(255, 94, 120, 0.3);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: loadingSpin 1s linear infinite;
+}
+
+@keyframes loadingSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .highlight-card .highlight-item.empty {
     text-align: center;
     color: var(--text-muted);
-    padding: 2rem 1rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.02) 0%,
+                rgba(255, 94, 120, 0.01) 50%,
+                rgba(255, 255, 255, 0.01) 100%);
+    border: 1px dashed rgba(255, 94, 120, 0.2);
+    border-radius: 12px;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.highlight-card .highlight-item.empty::before {
+    content: '📜';
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+    animation: emptyFloat 2s ease-in-out infinite;
+}
+
+@keyframes emptyFloat {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-5px);
+        opacity: 0.8;
+    }
 }
 
 .highlight-card .highlight-item.empty small {
     display: block;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    opacity: 0.7;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    font-style: italic;
+    color: var(--text-secondary);
 }
 
 /* Editorial Choice Card Specific Styling */
 .editorial-choice-card .card-header {
     background: linear-gradient(135deg, 
-                rgba(255, 202, 40, 0.9) 0%, 
-                rgba(245, 158, 11, 0.8) 100%);
+                rgba(255, 202, 40, 0.95) 0%, 
+                rgba(245, 158, 11, 0.9) 30%,
+                rgba(251, 191, 36, 0.9) 60%,
+                rgba(217, 119, 6, 0.95) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.editorial-choice-card .card-header::before {
+    background: radial-gradient(ellipse at top left, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.15) 30%,
+                transparent 70%);
+}
+
+.editorial-choice-card::before {
+    background: linear-gradient(135deg, 
+                rgba(255, 202, 40, 0.5) 0%,
+                rgba(245, 158, 11, 0.4) 25%,
+                rgba(251, 191, 36, 0.4) 50%,
+                rgba(217, 119, 6, 0.4) 75%,
+                rgba(255, 202, 40, 0.5) 100%);
+}
+
+.editorial-choice-card:hover {
+    box-shadow: 
+        0 35px 80px rgba(0, 0, 0, 0.5),
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(255, 202, 40, 0.2),
+        0 0 120px rgba(245, 158, 11, 0.15),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2),
+        inset 0 0 30px rgba(255, 202, 40, 0.08);
+}
+
+/* Advanced Interaction States */
+.highlight-card {
+    will-change: transform, box-shadow;
+}
+
+.highlight-card:active {
+    transform: translateY(-8px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+.highlight-card .card-header h3 {
+    will-change: transform;
+}
+
+.highlight-card:hover .card-header h3 i {
+    transform: translateY(-1px) rotate(5deg) scale(1.1);
+}
+
+/* Performance optimizations */
+.highlight-card * {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.highlight-card::before,
+.highlight-card::after,
+.highlight-card .card-header::before,
+.highlight-card .card-header::after {
+    will-change: opacity, transform;
 }
 
 .editorial-choice-card .card-header h3 i {
@@ -2250,20 +2458,47 @@ main {
 @media (max-width: 768px) {
     .dual-highlight-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 0.5rem;
+        gap: 2rem;
+        padding: 0 1rem;
+        perspective: none;
+    }
+    
+    .highlight-card {
+        border-radius: 20px;
+        transform-style: initial;
+    }
+    
+    .highlight-card:hover {
+        transform: translateY(-8px) scale(1.02);
     }
     
     .highlight-card .card-header {
-        padding: 1rem 1.25rem;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
     }
     
     .highlight-card .card-header h3 {
-        font-size: 1rem;
+        font-size: 1.3rem;
+        gap: 0.75rem;
+    }
+    
+    .highlight-card .card-header h3 i {
+        font-size: 1.2rem;
     }
     
     .highlight-card .card-content {
-        padding: 1.25rem;
+        padding: 2rem 1.5rem;
+        min-height: 280px;
+    }
+    
+    @keyframes cardsSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }
 
