@@ -1,5 +1,5 @@
 /* MLNF Features CSS - Page-specific features loaded last */
-/* Version: 5.3.0 - Force override conflicting highlight-item padding */
+/* Version: 5.4.0 - Fixed mysterious dot and mobile text spacing */
 /* Last Updated: 2025-07-06 */
 /* Performance: Asynchronously loaded after core styles for enhanced UI features */
 
@@ -415,6 +415,8 @@ body.light-theme .debate-position h4 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
 }
 
 .scroll-highlight-card .date {
@@ -461,6 +463,14 @@ body.light-theme .debate-position h4 {
     .scroll-highlight-card .highlight-meta {
         margin-top: 2rem;
         padding-top: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .scroll-highlight-card .date {
+        display: block;
+        margin-bottom: 0.5rem;
     }
     
     .scroll-highlight-card:hover {
@@ -580,19 +590,7 @@ body.light-theme .debate-position h4 {
     font-style: italic;
 }
 
-/* Floating particle effect for scroll highlights */
-.scroll-highlight-card::after {
-    content: '';
-    position: absolute;
-    top: 10%;
-    right: 10%;
-    width: 4px;
-    height: 4px;
-    background: radial-gradient(circle, rgba(255, 202, 40, 0.8), transparent);
-    border-radius: 50%;
-    animation: none;
-    pointer-events: none;
-}
+/* Removed floating particle effect - was causing unwanted dots */
 
 @keyframes soulParticle {
     0%, 100% {
