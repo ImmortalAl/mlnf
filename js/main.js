@@ -865,3 +865,57 @@ function setupMobileKeyboardDetectionFrontPage(modal) {
 window.openFounderMessage = openFounderMessage;
 window.openFeaturedSoulMessage = openFeaturedSoulMessage;
 window.closeAnonymousMessageModal = closeAnonymousMessageModal;
+
+// Mystical Disclaimer Scroll Reveal
+class DisclaimerReveal {
+    constructor() {
+        this.disclaimerElement = document.querySelector('.censorship-warning');
+        this.init();
+    }
+
+    init() {
+        if (!this.disclaimerElement) return;
+
+        // Create intersection observer for scroll-triggered reveal
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '-50px 0px -50px 0px'
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.revealDisclaimer();
+                }
+            });
+        }, observerOptions);
+
+        this.observer.observe(this.disclaimerElement);
+    }
+
+    revealDisclaimer() {
+        // Add reveal class with slight delay for dramatic effect
+        setTimeout(() => {
+            this.disclaimerElement.classList.add('in-view');
+        }, 300);
+
+        // Add mystical sound effect trigger (if audio is implemented)
+        this.triggerMysticalEffect();
+
+        // Disconnect observer after first reveal
+        this.observer.disconnect();
+    }
+
+    triggerMysticalEffect() {
+        // Optional: Add particle effects or sound here
+        // Could trigger custom event for other systems to listen to
+        window.dispatchEvent(new CustomEvent('disclaimer-revealed', {
+            detail: { element: this.disclaimerElement }
+        }));
+    }
+}
+
+// Initialize disclaimer reveal when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new DisclaimerReveal();
+});
