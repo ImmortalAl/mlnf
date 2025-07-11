@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="css/critical.css?v=7.0">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
-    <link rel="stylesheet" href="css/styles.css?v=8.5">
+    <link rel="stylesheet" href="css/styles.css?v=8.6">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
     <link rel="preload" href="css/layout.css?v=8.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -41,8 +41,8 @@
     <noscript><link rel="stylesheet" href="css/features.css?v=5.4"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="components/shared/styles.css?v=8.5" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=8.5"></noscript>
+    <link rel="preload" href="components/shared/styles.css?v=8.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=8.6"></noscript>
     
     <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
     <link rel="preload" href="css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -391,19 +391,55 @@
                 <h2 id="mindmapHeading" class="font-immortal-mystical text-immortal-gradient">Infinite Nexus</h2>
                 <p>Our Living Web Binds the Unbound</p>
             </div>
-            <div class="mindmap-preview" id="mindmapPreview">
-                <div class="mindmap-node main">Liberation</div>
-                <div class="mindmap-node node-truth">Truth</div>
-                <div class="mindmap-node node-freedom">Freedom</div>
-                <div class="mindmap-node node-eternity">Eternity</div>
-                <div class="mindmap-node node-unity">Unity</div>
-                <div class="mindmap-line line-1"></div>
-                <div class="mindmap-line line-2"></div>
-                <div class="mindmap-line line-3"></div>
-                <div class="mindmap-line line-4"></div>
+            
+            <!-- Interactive Preview Controls -->
+            <div class="mindmap-preview-controls">
+                <div class="mindmap-search-container">
+                    <input type="text" id="mindmapPreviewSearch" placeholder="Search the Nexus..." 
+                           class="mindmap-search-input" />
+                    <button id="mindmapPreviewSearchBtn" class="mindmap-search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="mindmap-stats" id="mindmapStats">
+                    <span class="loading-stats">Loading stats...</span>
+                </div>
             </div>
+            
+            <!-- Interactive Preview Container -->
+            <div class="mindmap-preview interactive" id="mindmapPreview">
+                <div class="mindmap-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading Nexus preview...</p>
+                </div>
+                
+                <!-- Nodes will be populated by JavaScript -->
+                <div id="mindmapPreviewNodes" class="mindmap-preview-nodes"></div>
+                
+                <!-- Connections will be drawn by JavaScript -->
+                <svg id="mindmapPreviewConnections" class="mindmap-preview-connections">
+                    <!-- SVG lines will be drawn here -->
+                </svg>
+            </div>
+            
+            <!-- Node Details Tooltip -->
+            <div id="mindmapPreviewTooltip" class="mindmap-preview-tooltip">
+                <div class="tooltip-header">
+                    <h4 class="tooltip-title"></h4>
+                    <span class="tooltip-score"></span>
+                </div>
+                <div class="tooltip-content"></div>
+                <div class="tooltip-meta">
+                    <span class="tooltip-creator"></span>
+                    <span class="tooltip-connections"></span>
+                </div>
+                <div class="tooltip-actions">
+                    <button class="btn btn-sm btn-primary" id="exploreNodeBtn">Explore Node</button>
+                </div>
+            </div>
+            
             <div class="section-footer">
-                <a href="pages/mindmap.html" class="btn btn-primary">Join Nexus</a>
+                <a href="pages/mindmap.html" class="btn btn-primary">Join Full Nexus</a>
             </div>
         </section>
     </main>
@@ -497,7 +533,8 @@
     
     <!-- Avatar System -->
     <script src="js/mlnf-avatar-system.js?v=2.1"></script>
-    <script src="js/main.js?v=2.3"></script>
+    <script src="js/main.js?v=2.4"></script>
+    <script src="js/mindmap-preview.js?v=1.2"></script>
     
     <!-- Optimized Hero Particles - Hardware Accelerated -->
     <script>

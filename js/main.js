@@ -877,9 +877,10 @@ class DisclaimerReveal {
         if (!this.disclaimerElement) return;
 
         // Create intersection observer for scroll-triggered reveal
+        // Only trigger when user has scrolled past the hero section
         const observerOptions = {
-            threshold: 0.2,
-            rootMargin: '-50px 0px -50px 0px'
+            threshold: 0.1,
+            rootMargin: '-200px 0px -200px 0px'
         };
 
         this.observer = new IntersectionObserver((entries) => {
