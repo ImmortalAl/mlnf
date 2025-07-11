@@ -3129,7 +3129,7 @@ nav a {
     }
 }
 
-/* Hide floating theme toggle button - theme toggle is now in user menu */
-.floating-buttons .theme-toggle {
+/* Show floating theme toggle button only for logged-out users */
+body.user-logged-in .floating-buttons .theme-toggle {
     display: none !important;
 }

@@ -25,6 +25,7 @@ function updateUserMenu() {
   const cachedUser = localStorage.getItem('user');
 
   if (token && cachedUser) {
+    document.body.classList.add('user-logged-in');
     userMenuContainer.style.display = 'flex'; // Or 'block' or 'inline-block' depending on desired layout
     headerAuthButtonsContainer.style.display = 'none';
     headerAuthButtonsContainer.innerHTML = ''; // Clear any old buttons
@@ -65,12 +66,14 @@ function updateUserMenu() {
     } catch (error) {
       console.error('[userMenu.js] Error parsing user data:', error);
       // Fallback to logged-out state if error
+      document.body.classList.remove('user-logged-in');
       userMenuContainer.style.display = 'none';
       userMenuContainer.innerHTML = '';
       headerAuthButtonsContainer.style.display = 'flex'; // Assuming flex for column layout
       populateHeaderAuthButtons(headerAuthButtonsContainer);
     }
   } else {
+    document.body.classList.remove('user-logged-in');
     userMenuContainer.style.display = 'none';
     userMenuContainer.innerHTML = ''; // Clear it
     headerAuthButtonsContainer.style.display = 'flex'; // Assuming flex for column layout
@@ -180,6 +183,7 @@ function setupUserMenuEvents() {
 function handleLogout() {
   localStorage.removeItem('sessionToken');
   localStorage.removeItem('user');
+  document.body.classList.remove('user-logged-in');
   
   updateUserMenu(); // This will also trigger updateActiveUsersButtonVisibility
   
