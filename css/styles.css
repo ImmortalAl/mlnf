@@ -3128,4 +3128,8 @@ nav a {
         transform: translateY(-4px) \!important;
     }
 }
-EOF < /dev/null
+
+/* Hide floating theme toggle button - theme toggle is now in user menu */
+.floating-buttons .theme-toggle {
+    display: none !important;
+}

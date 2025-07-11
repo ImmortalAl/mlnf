@@ -53,6 +53,8 @@ function updateUserMenu() {
         <a href="/admin/"><i class="fas fa-crown"></i> Admin Panel</a>
         ` : ''}
         <div class="divider"></div>
+        <a href="#" id="themeToggleMenu"><i class="fas fa-moon"></i> <span id="themeToggleText">Light Mode</span></a>
+        <div class="divider"></div>
         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Transcend Session</a>
       `;
       
@@ -115,6 +117,25 @@ function populateHeaderAuthButtons(container) {
   }
 }
 
+// Update theme menu text and icon based on current theme
+function updateThemeMenuText() {
+  const themeToggleMenu = document.getElementById('themeToggleMenu');
+  const themeToggleText = document.getElementById('themeToggleText');
+  
+  if (themeToggleMenu && themeToggleText && window.MLNFTheme) {
+    const currentTheme = window.MLNFTheme.getTheme();
+    const icon = themeToggleMenu.querySelector('i');
+    
+    if (currentTheme === 'dark') {
+      themeToggleText.textContent = 'Light Mode';
+      if (icon) icon.className = 'fas fa-sun';
+    } else {
+      themeToggleText.textContent = 'Dark Mode';
+      if (icon) icon.className = 'fas fa-moon';
+    }
+  }
+}
+
 // Setup event listeners for user menu (dropdown toggle, logout)
 function setupUserMenuEvents() {
   const userMenuBtn = document.getElementById('userMenuBtn'); // This might not exist if logged out
@@ -137,6 +158,21 @@ function setupUserMenuEvents() {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', handleLogout);
+  }
+  
+  // Theme toggle menu item
+  const themeToggleMenu = document.getElementById('themeToggleMenu');
+  if (themeToggleMenu) {
+    themeToggleMenu.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.MLNFTheme) {
+        window.MLNFTheme.toggleTheme();
+        updateThemeMenuText();
+      }
+    });
+    
+    // Update initial text based on current theme
+    updateThemeMenuText();
   }
 }
 
@@ -190,6 +226,9 @@ function initUserMenu() {
   
   validateUserSession(); // Validate and then update UI
   // updateUserMenu(); // This is now called by validateUserSession
+  
+  // Listen for theme changes to update menu text
+  window.addEventListener('mlnf-theme-changed', updateThemeMenuText);
 }
 
 // Export the initialization function
