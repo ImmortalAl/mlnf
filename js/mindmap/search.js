@@ -199,7 +199,7 @@ class MindmapSearch {
         modal.className = 'modal';
         modal.innerHTML = `
             <div class="modal-content">
-                <span class="close" onclick="this.parentElement.parentElement.style.display='none'">×</span>
+                <span class="close" onclick="document.getElementById('filterModal').classList.remove('show')">×</span>
                 <h3>Search Filters</h3>
                 <form id="filterForm">
                     <div>
