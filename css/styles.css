@@ -47,33 +47,7 @@
 
 /* Note: Main layout styles are in critical.css for performance */
 
-/* === 3. GENERAL BUTTON STYLES === */
-.btn {
-    padding: 0.7rem 1.4rem;
-    border-radius: var(--border-radius);
-    font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.85rem;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-appearance: none;
-    appearance: none;
-    user-select: none;
-    /* Mobile touch optimizations */
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    min-height: 44px; /* Minimum touch target size */
-    min-width: 44px;
-}
+/* === 3. BUTTON STYLES MOVED TO /css/components/buttons.css === */
 
 /* === 4. FORM ELEMENTS (SELECT, DROPDOWNS) === */
 select {
@@ -152,16 +126,7 @@ body.light-theme select option:checked {
     background-color: rgba(214, 45, 77, 0.2);
 }
 
-.btn-primary {
-    background: var(--gradient-accent);
-    color: var(--primary);
-    border: none;
-    min-width: 140px;
-    padding: 0.8rem 1.6rem;
-    font-size: 0.9rem;
-    animation: pulseBtn 2s infinite ease-in-out;
-    box-shadow: 0 4px 12px rgba(var(--accent-rgb, 255, 94, 120), 0.25);
-}
+/* .btn-primary moved to /css/components/buttons.css */
 
 .btn-outline {
     background: transparent;
@@ -174,22 +139,7 @@ body.light-theme select option:checked {
     animation: none;
 }
 
-.btn-primary:hover {
-    box-shadow: 0 8px 25px rgba(var(--accent-rgb, 255, 94, 120), 0.4), 
-                0 0 30px rgba(var(--accent-rgb, 255, 94, 120), 0.3);
-    transform: translateY(-3px) scale(1.02);
-}
-
-@keyframes pulseBtn {
-    0%, 100% { 
-        box-shadow: 0 4px 12px rgba(var(--accent-rgb, 255, 94, 120), 0.25),
-                    0 0 10px rgba(var(--accent-rgb, 255, 94, 120), 0.2); 
-    }
-    50% { 
-        box-shadow: 0 6px 20px rgba(var(--accent-rgb, 255, 94, 120), 0.35),
-                    0 0 20px rgba(var(--accent-rgb, 255, 94, 120), 0.3); 
-    }
-}
+/* .btn-primary:hover and @keyframes pulseBtn moved to /css/components/buttons.css */
 
 /* Header Structure */
 /* Header styles moved to critical.css for above-fold loading */
