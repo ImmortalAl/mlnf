@@ -412,7 +412,7 @@ body.light-theme .hero p {
     text-align: center;
     max-width: 1200px;
     margin: 0 auto;
-    gap: 1rem;
+    gap: 0.75rem;
     height: 100%;
     min-height: inherit;
 }
@@ -438,12 +438,12 @@ body.light-theme .hero p {
     border: 1px solid rgba(255, 94, 120, 0.4);
     border-radius: 8px;
     position: relative;
-    padding: 1rem 1.25rem;
+    padding: 0.6rem 1.25rem;
     text-align: center;
     margin: 20vh auto 4rem auto;
     max-width: 800px;
     width: calc(100% - 4rem);
-    min-height: 80px;
+    min-height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3510,8 +3510,8 @@ body.user-logged-in .floating-buttons .theme-toggle {
 .mystical-interlude {
         margin: 15vh auto 1.5rem auto;
         width: calc(100% - 2rem);
-        padding: 0.75rem 1rem;
-        min-height: 60px;
+        padding: 0.5rem 1rem;
+        min-height: auto;
     }
     
     .censorship-warning p,
@@ -3531,8 +3531,8 @@ body.user-logged-in .floating-buttons .theme-toggle {
 .mystical-interlude {
         margin: 20vh auto 1rem auto;
         width: calc(100% - 1rem);
-        padding: 0.5rem 0.75rem;
-        min-height: 50px;
+        padding: 0.4rem 0.75rem;
+        min-height: auto;
     }
     
     .mystical-interlude .interlude-content {
@@ -3555,8 +3555,8 @@ body.user-logged-in .floating-buttons .theme-toggle {
 @media (min-width: 1200px) {
     .censorship-warning,
 .mystical-interlude {
-        padding: 2.5rem 2rem;
-        min-height: 140px;
+        padding: 1rem 2rem;
+        min-height: auto;
         max-width: 1200px;
     }
     
@@ -3572,8 +3572,8 @@ body.user-logged-in .floating-buttons .theme-toggle {
 @media (min-width: 1920px) {
     .censorship-warning,
 .mystical-interlude {
-        padding: 5rem 4rem;
-        min-height: 250px;
+        padding: 1.2rem 3rem;
+        min-height: auto;
     }
     
     .censorship-warning p,
