@@ -430,7 +430,7 @@ body.light-theme .hero p {
     margin: 0;
 }
 
-/* Mystical Gateway Disclaimer */
+/* Mystical Gateway Disclaimer - Earned Discovery */
 .censorship-warning,
 .mystical-interlude {
     background: linear-gradient(135deg, rgba(13, 13, 26, 0.85) 0%, rgba(26, 26, 51, 0.80) 100%);
@@ -440,7 +440,7 @@ body.light-theme .hero p {
     position: relative;
     padding: 2rem 1.5rem;
     text-align: center;
-    margin: 2rem auto;
+    margin: 20vh auto 3rem auto;
     max-width: 1000px;
     width: calc(100% - 4rem);
     min-height: 120px;
@@ -452,8 +452,8 @@ body.light-theme .hero p {
         inset 0 0 20px rgba(255, 68, 68, 0.05);
     overflow: hidden;
     opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.6s ease-out;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Subtle border effect */
@@ -3507,7 +3507,7 @@ body.user-logged-in .floating-buttons .theme-toggle {
 @media (max-width: 768px) {
     .censorship-warning,
 .mystical-interlude {
-        margin: 1.5rem auto;
+        margin: 10vh auto 2rem auto;
         width: calc(100% - 2rem);
         padding: 1.5rem 1rem;
         min-height: 100px;

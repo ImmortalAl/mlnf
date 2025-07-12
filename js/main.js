@@ -876,11 +876,11 @@ class DisclaimerReveal {
     init() {
         if (!this.disclaimerElement) return;
 
-        // Create intersection observer for scroll-triggered reveal
-        // Only trigger when user has scrolled past the hero section
+        // Create intersection observer for earned discovery reveal
+        // Triggers when user scrolls into the post-hero zone
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '-200px 0px -200px 0px'
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
         };
 
         this.observer = new IntersectionObserver((entries) => {
@@ -895,23 +895,25 @@ class DisclaimerReveal {
     }
 
     revealDisclaimer() {
-        // Add reveal class with slight delay for dramatic effect
+        // Add reveal class with earned discovery delay
         setTimeout(() => {
             this.disclaimerElement.classList.add('in-view');
-        }, 300);
+        }, 500);
 
-        // Add mystical sound effect trigger (if audio is implemented)
-        this.triggerMysticalEffect();
+        // Trigger threshold crossing event
+        this.triggerThresholdCrossing();
 
         // Disconnect observer after first reveal
         this.observer.disconnect();
     }
 
-    triggerMysticalEffect() {
-        // Optional: Add particle effects or sound here
-        // Could trigger custom event for other systems to listen to
-        window.dispatchEvent(new CustomEvent('disclaimer-revealed', {
-            detail: { element: this.disclaimerElement }
+    triggerThresholdCrossing() {
+        // Dispatch threshold crossing event for earned discovery
+        window.dispatchEvent(new CustomEvent('threshold-crossed', {
+            detail: { 
+                element: this.disclaimerElement,
+                message: 'User has crossed into the immortal realm'
+            }
         }));
     }
 }
