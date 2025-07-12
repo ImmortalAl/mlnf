@@ -541,8 +541,8 @@
     to { transform: rotate(360deg); }
 }
 
-/* Filter Modal Styles */
-.modal {
+/* Filter Modal Styles - Specific to mindmap page */
+#filterModal.modal {
     display: none;
     position: fixed;
     top: 0;
@@ -550,19 +550,19 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 1001;
+    z-index: 9999;
     backdrop-filter: blur(5px);
     padding: 20px;
     box-sizing: border-box;
 }
 
-.modal.show {
+#filterModal.modal.show {
     display: flex !important;
     align-items: center;
     justify-content: center;
 }
 
-.modal-content {
+#filterModal .modal-content {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     border-radius: 10px;
     padding: 30px;
@@ -575,13 +575,13 @@
     position: relative;
 }
 
-.modal-content h3 {
+#filterModal .modal-content h3 {
     color: #e94560;
     margin-bottom: 20px;
     font-size: 24px;
 }
 
-.modal-content .close {
+#filterModal .modal-content .close {
     position: absolute;
     top: 15px;
     right: 20px;
@@ -591,25 +591,25 @@
     transition: all 0.3s ease;
 }
 
-.modal-content .close:hover {
+#filterModal .modal-content .close:hover {
     transform: rotate(90deg);
 }
 
-.modal-content form {
+#filterModal .modal-content form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.modal-content label {
+#filterModal .modal-content label {
     color: #f1f1f1;
     font-weight: 500;
     margin-bottom: 5px;
     display: block;
 }
 
-.modal-content input[type="text"],
-.modal-content input[type="range"] {
+#filterModal .modal-content input[type="text"],
+#filterModal .modal-content input[type="range"] {
     width: 100%;
     padding: 12px;
     background: rgba(15, 52, 96, 0.5);
@@ -620,25 +620,25 @@
     transition: all 0.3s ease;
 }
 
-.modal-content input[type="text"]:focus {
+#filterModal .modal-content input[type="text"]:focus {
     outline: none;
     border-color: #e94560;
     box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
 }
 
-.modal-content input[type="range"] {
+#filterModal .modal-content input[type="range"] {
     padding: 0;
     background: transparent;
     border: none;
 }
 
-.modal-content input[type="range"]::-webkit-slider-track {
+#filterModal .modal-content input[type="range"]::-webkit-slider-track {
     background: rgba(15, 52, 96, 0.5);
     height: 8px;
     border-radius: 4px;
 }
 
-.modal-content input[type="range"]::-webkit-slider-thumb {
+#filterModal .modal-content input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     width: 20px;
     height: 20px;
@@ -647,7 +647,7 @@
     cursor: pointer;
 }
 
-.modal-content button {
+#filterModal .modal-content button {
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
@@ -657,23 +657,23 @@
     font-size: 16px;
 }
 
-.modal-content button[type="submit"] {
+#filterModal .modal-content button[type="submit"] {
     background: linear-gradient(135deg, #e94560 0%, #c41e3a 100%);
     color: white;
 }
 
-.modal-content button[type="submit"]:hover {
+#filterModal .modal-content button[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
 }
 
-.modal-content button[type="button"] {
+#filterModal .modal-content button[type="button"] {
     background: rgba(233, 69, 96, 0.2);
     color: #f1f1f1;
     border: 1px solid rgba(233, 69, 96, 0.5);
 }
 
-.modal-content button[type="button"]:hover {
+#filterModal .modal-content button[type="button"]:hover {
     background: rgba(233, 69, 96, 0.4);
     transform: translateY(-2px);
 }
