@@ -1467,15 +1467,7 @@ body.light-theme .mlnf-avatar {
 
 
 /* Debate Arena Specific Section */
-.highlights.debate-arena {
-    padding: 4rem 2rem;
-    background: var(--gradient-secondary);
-    border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.35);
-    border-radius: var(--border-radius);
-    margin: 2.5rem auto !important;
-    max-width: 1440px;
-    width: calc(100% - 4rem) !important;
-}
+/* Debate arena styling moved to features.css for consistency */
 
 .debate-arena .section-title {
     margin-bottom: 2rem;
@@ -2972,26 +2964,9 @@ nav a {
 
 /* Welcome modal CSS removed - was interfering with other modals */
 
-/* Echoes Unbound Agora Section - Greek Democracy Theme */
-.echoes-unbound-agora {
-    background: linear-gradient(135deg, rgba(26, 26, 51, 0.95), rgba(42, 64, 102, 0.9));
-    border-radius: var(--border-radius-lg);
-    padding: 3rem 2rem;
-    margin: 3rem 0;
-    border: 2px solid rgba(255, 94, 120, 0.3);
-    position: relative;
-    overflow: hidden;
-}
+/* Echoes Unbound Agora Section - styling moved to features.css for consistency */
 
-/* Eternal Souls Highlight Section - Clean Finalized Theme */
-.eternal-souls-highlight {
-    background: linear-gradient(135deg, rgba(26, 26, 51, 0.7), rgba(42, 64, 102, 0.6));
-    border-radius: var(--border-radius-lg);
-    padding: 3rem 2rem;
-    margin: 3rem 0;
-    border: 2px solid rgba(255, 94, 120, 0.2);
-    position: relative;
-}
+/* Eternal Souls Highlight Section - styling moved to features.css for consistency */
 
 .echoes-unbound-agora::before {
     content: '';
