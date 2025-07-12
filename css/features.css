@@ -682,14 +682,14 @@ body.light-theme .debate-position h4 {
    ========================================== */
 
 /* Debate Arena Specific Section */
-.debate-arena {
+.highlights.debate-arena {
     padding: 4rem 2rem;
     background: var(--gradient-secondary);
     border: 1px solid rgba(var(--accent-rgb, 255, 94, 120), 0.35);
     border-radius: var(--border-radius);
-    margin: 2.5rem auto;
+    margin: 2.5rem auto !important;
     max-width: 1440px;
-    width: calc(100% - 4rem);
+    width: calc(100% - 4rem) !important;
 }
 
 .debate-arena .section-title {
