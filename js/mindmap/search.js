@@ -190,7 +190,7 @@ class MindmapSearch {
             this.createFilterModal();
         }
         
-        document.getElementById('filterModal').style.display = 'block';
+        document.getElementById('filterModal').classList.add('show');
     }
     
     createFilterModal() {
@@ -218,7 +218,7 @@ class MindmapSearch {
                     <div class="filter-buttons">
                         <button type="submit">Apply Filters</button>
                         <button type="button" id="clearFiltersBtn">Clear Filters</button>
-                        <button type="button" onclick="document.getElementById('filterModal').style.display='none'">Cancel</button>
+                        <button type="button" onclick="document.getElementById('filterModal').classList.remove('show')">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -241,7 +241,7 @@ class MindmapSearch {
         
         document.getElementById('clearFiltersBtn').addEventListener('click', () => {
             this.clearFilters();
-            document.getElementById('filterModal').style.display = 'none';
+            document.getElementById('filterModal').classList.remove('show');
         });
     }
     
@@ -274,7 +274,7 @@ class MindmapSearch {
     
     applyFilters() {
         // Close filter modal
-        document.getElementById('filterModal').style.display = 'none';
+        document.getElementById('filterModal').classList.remove('show');
         
         // Get active filters
         const filters = this.getActiveFilters();
