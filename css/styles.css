@@ -1474,6 +1474,7 @@ body.light-theme .mlnf-avatar {
     border-radius: var(--border-radius);
     margin: 2.5rem auto;
     max-width: 1440px;
+    width: calc(100% - 4rem);
 }
 
 .debate-arena .section-title {
