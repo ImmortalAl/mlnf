@@ -440,7 +440,7 @@ body.light-theme .hero p {
     position: relative;
     padding: 2rem 1.5rem;
     text-align: center;
-    margin: 20vh auto 3rem auto;
+    margin: 40vh auto 5rem auto;
     max-width: 1000px;
     width: calc(100% - 4rem);
     min-height: 120px;
@@ -3507,7 +3507,7 @@ body.user-logged-in .floating-buttons .theme-toggle {
 @media (max-width: 768px) {
     .censorship-warning,
 .mystical-interlude {
-        margin: 10vh auto 2rem auto;
+        margin: 20vh auto 3rem auto;
         width: calc(100% - 2rem);
         padding: 1.5rem 1rem;
         min-height: 100px;
