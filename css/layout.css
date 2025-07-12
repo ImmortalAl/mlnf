@@ -161,6 +161,19 @@ body.light-theme .hero p {
     border-radius: var(--border-radius);
 }
 
+/* Mobile responsive positioning for disclaimer */
+@media (max-width: 768px) {
+    .censorship-warning {
+        margin: 4rem auto 1.5rem auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .censorship-warning {
+        margin: 3rem auto 1rem auto;
+    }
+}
+
 .censorship-warning p {
     font-size: 1.1rem;
     line-height: 1.7;
