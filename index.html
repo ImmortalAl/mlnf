@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="css/critical.css?v=7.0">
     
     <!-- 3. GLOBAL STYLES - Site-wide styles loaded synchronously -->
-    <link rel="stylesheet" href="css/styles.css?v=8.6">
+    <link rel="stylesheet" href="css/styles.css?v=8.7">
     
     <!-- 4. PROGRESSIVE LOADING - Non-critical CSS loaded asynchronously -->
     <link rel="preload" href="css/layout.css?v=8.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -41,8 +41,8 @@
     <noscript><link rel="stylesheet" href="css/features.css?v=5.4"></noscript>
     
     <!-- 5. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="components/shared/styles.css?v=8.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=8.6"></noscript>
+    <link rel="preload" href="components/shared/styles.css?v=8.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=8.7"></noscript>
     
     <!-- 6. PAGE-SPECIFIC (lazy loaded) -->
     <link rel="preload" href="css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -150,10 +150,12 @@
             </div>
         </section>
 
-        <div class="censorship-warning" role="alert">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p>BEWARE: This realm harbors eternal truths that defy ephemeral control.</p>
-        </div>
+        <section class="mystical-interlude" role="alert" aria-label="Threshold Warning">
+            <div class="interlude-content">
+                <div class="warning-symbol">⚡</div>
+                <p class="warning-text">WARNING: Immortal thought zone ahead. Here forbidden wisdom flows unfiltered, eternal truths shatter paradigms, and no mortal authority censors consciousness.</p>
+            </div>
+        </section>
 
         <section class="features" id="features" aria-labelledby="featuresHeading">
             <div class="section-title">
@@ -533,7 +535,7 @@
     
     <!-- Avatar System -->
     <script src="js/mlnf-avatar-system.js?v=2.1"></script>
-    <script src="js/main.js?v=2.4"></script>
+    <script src="js/main.js?v=2.5"></script>
     <script src="js/mindmap-preview.js?v=1.2"></script>
     
     <!-- Optimized Hero Particles - Hardware Accelerated -->

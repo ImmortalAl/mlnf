@@ -869,7 +869,7 @@ window.closeAnonymousMessageModal = closeAnonymousMessageModal;
 // Mystical Disclaimer Scroll Reveal
 class DisclaimerReveal {
     constructor() {
-        this.disclaimerElement = document.querySelector('.censorship-warning');
+        this.disclaimerElement = document.querySelector('.censorship-warning, .mystical-interlude');
         this.init();
     }
 

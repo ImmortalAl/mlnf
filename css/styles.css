@@ -404,8 +404,24 @@ body.light-theme .hero p {
     }
 }
 
+/* Mystical Interlude Specific Styles */
+.mystical-interlude .interlude-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mystical-interlude .warning-symbol {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 /* Mystical Gateway Disclaimer */
-.censorship-warning {
+.censorship-warning,
+.mystical-interlude {
     background: linear-gradient(135deg, rgba(13, 13, 26, 0.98) 0%, rgba(26, 26, 51, 0.95) 100%);
     backdrop-filter: blur(8px);
     border: 2px solid transparent;
@@ -430,7 +446,8 @@ body.light-theme .hero p {
 }
 
 /* Animated border effect */
-.censorship-warning::before {
+.censorship-warning::before,
+.mystical-interlude::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -451,17 +468,20 @@ body.light-theme .hero p {
 }
 
 /* Reveal animation when in view */
-.censorship-warning.in-view {
+.censorship-warning.in-view,
+.mystical-interlude.in-view {
     opacity: 1;
     transform: translateY(0);
 }
 
-.censorship-warning.in-view::before {
+.censorship-warning.in-view,
+.mystical-interlude.in-view::before {
     opacity: 1;
 }
 
 /* Inner glow effect */
-.censorship-warning::after {
+.censorship-warning::after,
+.mystical-interlude::after {
     content: '';
     position: absolute;
     top: 0;
@@ -475,7 +495,8 @@ body.light-theme .hero p {
     animation: innerPulse 4s ease-in-out infinite;
 }
 
-body.light-theme .censorship-warning {
+body.light-theme .censorship-warning,
+.mystical-interlude {
     background: linear-gradient(135deg, rgba(240, 240, 245, 0.98) 0%, rgba(250, 250, 255, 0.95) 100%);
     box-shadow: 
         0 -20px 40px rgba(255, 68, 68, 0.1),
@@ -483,7 +504,8 @@ body.light-theme .censorship-warning {
         inset 0 0 60px rgba(255, 68, 68, 0.05);
 }
 
-.censorship-warning p {
+.censorship-warning p,
+.mystical-interlude .warning-text {
     font-size: 1.3rem;
     line-height: 1.8;
     font-weight: 600;
@@ -498,14 +520,16 @@ body.light-theme .censorship-warning {
     /* Remove gradient text for better clarity */
 }
 
-body.light-theme .censorship-warning p {
+body.light-theme .censorship-warning p,
+.mystical-interlude .warning-text {
     color: #2d1b69;
     text-shadow: 
         0 0 20px rgba(255, 68, 68, 0.6),
         0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.censorship-warning i {
+.censorship-warning i,
+.mystical-interlude .warning-symbol {
     font-size: 2rem;
     margin-right: 1rem;
     color: #ff4444;
@@ -3487,35 +3511,41 @@ body.user-logged-in .floating-buttons .theme-toggle {
 
 /* Responsive disclaimer positioning for different viewports */
 @media (max-width: 768px) {
-    .censorship-warning {
+    .censorship-warning,
+.mystical-interlude {
         padding: 2rem 1.5rem;
         min-height: 120px;
     }
     
-    .censorship-warning p {
+    .censorship-warning p,
+.mystical-interlude .warning-text {
         font-size: 1.1rem;
         line-height: 1.6;
     }
     
-    .censorship-warning i {
+    .censorship-warning i,
+.mystical-interlude .warning-symbol {
         font-size: 1.5rem;
         margin-right: 0.75rem;
     }
 }
 
 @media (max-width: 480px) {
-    .censorship-warning {
+    .censorship-warning,
+.mystical-interlude {
         padding: 1.5rem 1rem;
         min-height: 100px;
     }
     
-    .censorship-warning p {
+    .censorship-warning p,
+.mystical-interlude .warning-text {
         font-size: 1rem;
         font-weight: 700;
         letter-spacing: 0.6px;
     }
     
-    .censorship-warning i {
+    .censorship-warning i,
+.mystical-interlude .warning-symbol {
         display: block;
         margin: 0 auto 0.5rem;
         font-size: 1.8rem;
@@ -3524,12 +3554,14 @@ body.user-logged-in .floating-buttons .theme-toggle {
 
 /* Large screens - cinematic presentation */
 @media (min-width: 1200px) {
-    .censorship-warning {
+    .censorship-warning,
+.mystical-interlude {
         padding: 4rem 3rem;
         min-height: 200px;
     }
     
-    .censorship-warning p {
+    .censorship-warning p,
+.mystical-interlude .warning-text {
         font-size: 1.5rem;
         max-width: 900px;
         margin: 0 auto;
@@ -3538,12 +3570,14 @@ body.user-logged-in .floating-buttons .theme-toggle {
 
 /* Ultra-wide screens */
 @media (min-width: 1920px) {
-    .censorship-warning {
+    .censorship-warning,
+.mystical-interlude {
         padding: 5rem 4rem;
         min-height: 250px;
     }
     
-    .censorship-warning p {
+    .censorship-warning p,
+.mystical-interlude .warning-text {
         font-size: 1.7rem;
         max-width: 1200px;
     }
