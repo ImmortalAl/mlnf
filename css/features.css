@@ -689,10 +689,19 @@ body.light-theme .debate-position h4 {
     border-radius: var(--border-radius);
     margin: 2.5rem auto;
     max-width: 1440px;
+    width: calc(100% - 4rem);
 }
 
 .debate-arena .section-title {
     margin-bottom: 2rem;
+}
+
+.debate-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch;
+    margin-top: 2rem;
 }
 
 /* ==========================================
