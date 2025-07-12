@@ -164,13 +164,13 @@ body.light-theme .hero p {
 /* Mobile responsive positioning for disclaimer */
 @media (max-width: 768px) {
     .censorship-warning {
-        margin: 4rem auto 1.5rem auto;
+        margin: 15vh auto 1.5rem auto;
     }
 }
 
 @media (max-width: 480px) {
     .censorship-warning {
-        margin: 3rem auto 1rem auto;
+        margin: 20vh auto 1rem auto;
     }
 }
 
