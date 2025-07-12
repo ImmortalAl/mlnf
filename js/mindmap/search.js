@@ -4,7 +4,6 @@
  */
 class MindmapSearch {
     constructor(nexusEngine) {
-        console.log('MindmapSearch constructor called');
         this.nexusEngine = nexusEngine;
         this.apiClient = window.apiClient;
         this.searchResults = [];
@@ -18,11 +17,9 @@ class MindmapSearch {
     }
     
     setupEventHandlers() {
-        console.log('Setting up event handlers');
         const searchInput = document.getElementById('mindmap-search');
         const searchBtn = document.getElementById('search-btn');
         const filterBtn = document.getElementById('filter-btn');
-        console.log('Filter button element:', filterBtn);
         
         // Search input with debouncing
         searchInput.addEventListener('input', (e) => {
@@ -46,7 +43,6 @@ class MindmapSearch {
         
         // Filter button
         filterBtn.addEventListener('click', () => {
-            console.log('Filter button clicked');
             this.showFilterModal();
         });
         
@@ -189,25 +185,12 @@ class MindmapSearch {
     }
     
     showFilterModal() {
-        console.log('showFilterModal called');
         // Create filter modal if it doesn't exist
         if (!document.getElementById('filterModal')) {
-            console.log('Creating filter modal');
             this.createFilterModal();
         }
         
-        const modal = document.getElementById('filterModal');
-        console.log('Filter modal element:', modal);
-        console.log('Modal classes before:', modal.className);
-        modal.classList.add('show');
-        console.log('Modal classes after:', modal.className);
-        const computedStyle = window.getComputedStyle(modal);
-        console.log('Modal computed display:', computedStyle.display);
-        console.log('Modal computed position:', computedStyle.position);
-        console.log('Modal computed z-index:', computedStyle.zIndex);
-        console.log('Modal computed opacity:', computedStyle.opacity);
-        console.log('Modal computed visibility:', computedStyle.visibility);
-        console.log('Modal bounding rect:', modal.getBoundingClientRect());
+        document.getElementById('filterModal').classList.add('show');
     }
     
     createFilterModal() {
