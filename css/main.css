@@ -1,5 +1,5 @@
 /* Import modular CSS files */
-@import 'variables.css';
+@import 'base-theme.css';
 @import 'utilities.css';
 
 /* Layout */

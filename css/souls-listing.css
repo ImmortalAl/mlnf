@@ -163,9 +163,6 @@
     display: inline-block;
 }
 
-/* REMOVED: .online-indicator - replaced by global .online-dot system */
-
-/* REMOVED: Duplicate online indicator styles - now handled globally as .online-dot in styles.css */
 
 .profile-card-info h3 {
     font-size: 1.3rem;
