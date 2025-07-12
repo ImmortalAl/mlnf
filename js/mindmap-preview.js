@@ -53,7 +53,8 @@ class MindmapPreview {
     async loadPreviewData() {
         try {
             console.log('MindmapPreview: Loading preview data...');
-            const response = await fetch('/api/mindmap/preview');
+            const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+            const response = await fetch(`${apiBaseUrl}/mindmap/preview`);
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
