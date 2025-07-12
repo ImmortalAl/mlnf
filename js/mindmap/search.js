@@ -201,7 +201,13 @@ class MindmapSearch {
         console.log('Modal classes before:', modal.className);
         modal.classList.add('show');
         console.log('Modal classes after:', modal.className);
-        console.log('Modal computed display:', window.getComputedStyle(modal).display);
+        const computedStyle = window.getComputedStyle(modal);
+        console.log('Modal computed display:', computedStyle.display);
+        console.log('Modal computed position:', computedStyle.position);
+        console.log('Modal computed z-index:', computedStyle.zIndex);
+        console.log('Modal computed opacity:', computedStyle.opacity);
+        console.log('Modal computed visibility:', computedStyle.visibility);
+        console.log('Modal bounding rect:', modal.getBoundingClientRect());
     }
     
     createFilterModal() {
