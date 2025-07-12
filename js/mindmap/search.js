@@ -215,8 +215,11 @@ class MindmapSearch {
                         <label for="filterCreator">Creator Username</label>
                         <input type="text" id="filterCreator" placeholder="username">
                     </div>
-                    <button type="submit">Apply Filters</button>
-                    <button type="button" onclick="document.getElementById('filterModal').style.display='none'">Cancel</button>
+                    <div class="filter-buttons">
+                        <button type="submit">Apply Filters</button>
+                        <button type="button" id="clearFiltersBtn">Clear Filters</button>
+                        <button type="button" onclick="document.getElementById('filterModal').style.display='none'">Cancel</button>
+                    </div>
                 </form>
             </div>
         `;
@@ -234,6 +237,11 @@ class MindmapSearch {
         document.getElementById('filterForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.applyFilters();
+        });
+        
+        document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+            this.clearFilters();
+            document.getElementById('filterModal').style.display = 'none';
         });
     }
     
@@ -268,9 +276,104 @@ class MindmapSearch {
         // Close filter modal
         document.getElementById('filterModal').style.display = 'none';
         
-        // Re-run search with filters
+        // Get active filters
+        const filters = this.getActiveFilters();
+        
+        // If there's a search query, re-run search with filters
         const searchInput = document.getElementById('mindmap-search');
-        this.performSearch(searchInput.value);
+        if (searchInput.value.trim()) {
+            this.performSearch(searchInput.value);
+            return;
+        }
+        
+        // If no search query, apply visual filters to current view
+        this.applyVisualFilters(filters);
+    }
+    
+    applyVisualFilters(filters) {
+        const cy = window.nexusEngine?.cy;
+        if (!cy) return;
+        
+        // Get all nodes
+        const nodes = cy.nodes();
+        
+        nodes.forEach(node => {
+            let visible = true;
+            const nodeData = node.data();
+            
+            // Check credibility filter
+            if (filters.minCredibility && nodeData.credibility < filters.minCredibility) {
+                visible = false;
+            }
+            
+            // Check tags filter
+            if (filters.tags && filters.tags.length > 0) {
+                const nodeTags = nodeData.tags || [];
+                const hasMatchingTag = filters.tags.some(filterTag => 
+                    nodeTags.some(nodeTag => 
+                        nodeTag.toLowerCase().includes(filterTag.toLowerCase())
+                    )
+                );
+                if (!hasMatchingTag) {
+                    visible = false;
+                }
+            }
+            
+            // Check creator filter
+            if (filters.creator) {
+                const creator = nodeData.creator?.username || '';
+                if (!creator.toLowerCase().includes(filters.creator.toLowerCase())) {
+                    visible = false;
+                }
+            }
+            
+            // Apply visibility
+            if (visible) {
+                node.removeClass('filtered-out');
+                node.style('opacity', 1);
+            } else {
+                node.addClass('filtered-out');
+                node.style('opacity', 0.2);
+            }
+        });
+        
+        // Also filter edges connected to hidden nodes
+        const edges = cy.edges();
+        edges.forEach(edge => {
+            const source = edge.source();
+            const target = edge.target();
+            
+            if (source.hasClass('filtered-out') || target.hasClass('filtered-out')) {
+                edge.style('opacity', 0.1);
+            } else {
+                edge.style('opacity', 1);
+            }
+        });
+        
+        console.log('Visual filters applied:', filters);
+    }
+    
+    clearFilters() {
+        const cy = window.nexusEngine?.cy;
+        if (!cy) return;
+        
+        // Reset all nodes and edges to visible
+        cy.nodes().removeClass('filtered-out').style('opacity', 1);
+        cy.edges().style('opacity', 1);
+        
+        // Reset filter form
+        if (document.getElementById('minCredibility')) {
+            document.getElementById('minCredibility').value = 0;
+            document.getElementById('credibilityValue').textContent = '0';
+        }
+        if (document.getElementById('filterTags')) {
+            document.getElementById('filterTags').value = '';
+        }
+        if (document.getElementById('filterCreator')) {
+            document.getElementById('filterCreator').value = '';
+        }
+        
+        console.log('Filters cleared');
     }
     
     escapeHtml(text) {
