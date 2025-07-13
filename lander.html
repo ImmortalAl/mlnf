@@ -2188,15 +2188,22 @@
             const privacySettingsBtn = null; // No separate privacy button - unified in Soul Forge
             const closeSoulModal = document.getElementById('closeSoulModal');
             
-            // Button elements found and ready
+            console.log('Soul Sanctum Debug:', { 
+                viewProfileBtn: !!viewProfileBtn, 
+                editProfileBtn: !!editProfileBtn, 
+                closeSoulModal: !!closeSoulModal 
+            });
             
             if (viewProfileBtn) {
+                console.log('Setting up View Soul Essence button handler');
                 // View Soul Essence button found - opens public profile page
                 const viewHandler = (e) => {
+                    console.log('View Soul Essence clicked!');
                     e.preventDefault();
                     e.stopPropagation();
                     // Navigate to user's public profile page
-                    const username = getCurrentUsername(); // We'll need to implement this
+                    const username = getCurrentUsername();
+                    console.log('Username:', username);
                     if (username) {
                         window.location.href = `/souls/${username}`;
                     } else {
@@ -2209,8 +2216,10 @@
             }
             
             if (editProfileBtn) {
+                console.log('Setting up Cultivate Essence button handler');
                 // Cultivate Essence button found - opens Soul Forge modal
                 const editHandler = (e) => {
+                    console.log('Cultivate Essence clicked!');
                     e.preventDefault();
                     e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
@@ -2688,11 +2697,6 @@
             const modal = document.getElementById('soulManagementModal');
             if (modal) {
                 modal.classList.remove('active');
-                // Hide the inner soul-modal content
-                const modalContent = modal.querySelector('.soul-modal');
-                if (modalContent) {
-                    modalContent.classList.remove('active');
-                }
                 modal.setAttribute('aria-hidden', 'true');
                 
                 // Restore body scroll
@@ -2704,7 +2708,6 @@
                     activeButton.focus();
                     activeButton.removeAttribute('data-recently-clicked');
                 }
-                
             }
         }
         
