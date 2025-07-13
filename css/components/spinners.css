@@ -1,0 +1,319 @@
+/* MLNF Spinner Components */
+/* Centralized loading animations and spinner variants */
+
+/* === BASE SPINNER KEYFRAMES === */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes pulseScale {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1; 
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 0.7; 
+    }
+}
+
+@keyframes relicSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+/* === SPINNER SIZE VARIANTS === */
+
+/* Small spinner (16px) - for buttons and inline elements */
+.spinner-sm {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Default spinner (24px) - for general loading states */
+.spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border-color, rgba(255, 94, 120, 0.2));
+    border-top: 3px solid var(--accent, #ff5e78);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+/* Medium spinner (40px) - for content areas */
+.spinner-md {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color, rgba(255, 94, 120, 0.2));
+    border-top: 4px solid var(--accent, #ff5e78);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+/* Large spinner (60px) - for page loading */
+.spinner-lg {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--border-color, rgba(255, 94, 120, 0.2));
+    border-top: 4px solid var(--accent, #ff5e78);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+}
+
+/* === THEMED SPINNER VARIANTS === */
+
+/* Soul-themed spinner */
+.spinner-soul {
+    border-color: rgba(255, 94, 120, 0.15);
+    border-top-color: var(--accent, #ff5e78);
+    animation: spin 1.2s ease-in-out infinite;
+}
+
+/* Mystical themed spinner */
+.spinner-mystical {
+    border-color: rgba(181, 172, 246, 0.2);
+    border-top-color: #b5acf6;
+    animation: spin 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Relic/Ancient themed spinner - keeps unique design */
+.spinner-relic {
+    width: 60px;
+    height: 60px;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    position: relative;
+    animation: relicSpin 1.5s ease-in-out infinite;
+}
+
+.spinner-relic::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, 
+        var(--gold, #d4af37) 0%, 
+        var(--gold-light, #f7e98e) 50%, 
+        var(--gold-dark, #b8860b) 100%);
+    z-index: -1;
+}
+
+.spinner-relic::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--background, #0d0d1a);
+}
+
+/* === ANIMATION VARIANTS === */
+
+/* Smooth linear spinning */
+.spinner-smooth {
+    animation-timing-function: linear;
+}
+
+/* Bouncy easing */
+.spinner-bounce {
+    animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* With scale effect */
+.spinner-scale {
+    animation: spin 1s linear infinite, pulseScale 2s ease-in-out infinite;
+}
+
+/* Pulsing without rotation */
+.spinner-pulse {
+    border: 3px solid var(--accent, #ff5e78);
+    border-radius: 50%;
+    animation: pulseScale 1.5s ease-in-out infinite;
+}
+
+/* === LOADING CONTAINERS === */
+
+/* Generic loading state container */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.loading-text {
+    color: var(--text-secondary, #c9b3e0);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Specific loading contexts */
+.loading-comments {
+    min-height: 60px;
+    padding: 1rem;
+}
+
+.loading-soul {
+    min-height: 120px;
+    padding: 2rem;
+}
+
+.loading-chronicles {
+    min-height: 80px;
+    padding: 1.5rem;
+}
+
+/* === BUTTON LOADING STATES === */
+
+/* Button with spinner (inherits from buttons.css) */
+.btn-loading .spinner-sm {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+}
+
+/* === OVERLAY LOADING === */
+
+/* Full page loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 13, 26, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+}
+
+.loading-overlay .spinner-lg {
+    margin-bottom: 2rem;
+}
+
+/* Content area loading */
+.loading-content {
+    position: relative;
+    min-height: 200px;
+}
+
+.loading-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 46, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+    .spinner-lg {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .spinner-md {
+        width: 32px;
+        height: 32px;
+        border-width: 3px;
+    }
+    
+    .loading-container {
+        min-height: 80px;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .spinner-lg {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+    }
+    
+    .loading-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* === ACCESSIBILITY === */
+@media (prefers-reduced-motion: reduce) {
+    .spinner,
+    .spinner-sm,
+    .spinner-md,
+    .spinner-lg,
+    .spinner-relic {
+        animation: none;
+    }
+    
+    .loading-text {
+        animation: none;
+        opacity: 1;
+    }
+    
+    /* Provide alternative loading indication */
+    .spinner::after {
+        content: '⏳';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.8em;
+    }
+}
+
+/* Screen reader text for loading states */
+.sr-loading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .spinner,
+    .spinner-sm,
+    .spinner-md,
+    .spinner-lg {
+        border-width: 4px;
+        border-color: transparent;
+        border-top-color: currentColor;
+    }
+}

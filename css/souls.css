@@ -99,20 +99,7 @@ main {
     padding: 3rem;
 }
 
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid rgba(255, 94, 120, 0.2);
-    border-top: 4px solid var(--accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+/* Large spinner styles moved to /css/components/spinners.css - use .spinner-lg class */
 
 .error-message {
     background: rgba(255, 68, 68, 0.2);
