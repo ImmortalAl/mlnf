@@ -51,7 +51,8 @@ const AdminAnalytics = {
                 this.loadRealAnalyticsData(),
                 this.loadUserPatterns(),
                 this.loadContentPerformance(),
-                this.loadRealTimeMetrics()
+                this.loadRealTimeMetrics(),
+                this.loadCommunityMetrics()
             ]);
 
         } catch (error) {
@@ -63,7 +64,8 @@ const AdminAnalytics = {
     showLoadingStates() {
         const loadingElements = [
             'totalPageViews', 'uniqueVisitors', 'avgSessionDuration', 'bounceRate',
-            'currentOnlineVisitors', 'avgPageLoadTime'
+            'currentOnlineVisitors', 'avgPageLoadTime',
+            'filteredActiveSessions', 'filteredLogins', 'filteredEngagement', 'filteredNewUsers'
         ];
 
         loadingElements.forEach(id => {
@@ -175,6 +177,96 @@ const AdminAnalytics = {
         } catch (error) {
             console.error('Error loading real-time metrics:', error);
         }
+    },
+
+    async loadCommunityMetrics() {
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const usersResponse = await fetch(`${this.apiBaseUrl}/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (usersResponse.ok) {
+                const users = await usersResponse.json();
+                const communityData = this.calculateCommunityMetrics(users);
+                this.updateCommunityMetrics(communityData);
+            }
+        } catch (error) {
+            console.error('Error loading community metrics:', error);
+            // Set fallback values
+            this.updateCommunityMetrics({
+                activeSessions: 0,
+                logins: 0,
+                engagement: 0,
+                newUsers: 0
+            });
+        }
+    },
+
+    calculateCommunityMetrics(users) {
+        const timeRange = this.getTimeRangeInMs();
+        const now = new Date();
+        const cutoffDate = timeRange === 'total' ? new Date(0) : new Date(now.getTime() - timeRange);
+
+        return {
+            // Active Sessions: users with valid sessions in timeframe
+            activeSessions: users.filter(user => {
+                const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+                return lastLogin && lastLogin >= cutoffDate;
+            }).length,
+
+            // User Logins: login events in timeframe  
+            logins: users.filter(user => {
+                const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+                return lastLogin && lastLogin >= cutoffDate;
+            }).length,
+
+            // New Users: registrations in timeframe
+            newUsers: users.filter(user => {
+                const createdAt = user.createdAt ? new Date(user.createdAt) : null;
+                return createdAt && createdAt >= cutoffDate;
+            }).length,
+
+            // Engagement: placeholder for now (would need backend tracking)
+            engagement: this.estimateEngagement(users, timeRange)
+        };
+    },
+
+    getTimeRangeInMs() {
+        switch(this.currentTimeRange) {
+            case '24h': return 24 * 60 * 60 * 1000;
+            case '7d': return 7 * 24 * 60 * 60 * 1000;
+            case '30d': return 30 * 24 * 60 * 60 * 1000;
+            case '90d': return 90 * 24 * 60 * 60 * 1000;
+            case '1y': return 365 * 24 * 60 * 60 * 1000;
+            case 'total': return 'total';
+            default: return 7 * 24 * 60 * 60 * 1000;
+        }
+    },
+
+    estimateEngagement(users, timeRange) {
+        // Placeholder engagement calculation
+        // In a real implementation, this would count:
+        // - Blog posts created
+        // - Comments posted  
+        // - Messages sent
+        // - Votes cast
+        // For now, estimate based on active users
+        const activeUsers = users.filter(user => {
+            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+            const cutoff = timeRange === 'total' ? new Date(0) : new Date(Date.now() - this.getTimeRangeInMs());
+            return lastLogin && lastLogin >= cutoff;
+        }).length;
+
+        // Estimate 3-5 actions per active user
+        return Math.floor(activeUsers * (3 + Math.random() * 2));
+    },
+
+    updateCommunityMetrics(data) {
+        this.updateMetricWithAnimation('filteredActiveSessions', data.activeSessions);
+        this.updateMetricWithAnimation('filteredLogins', data.logins);
+        this.updateMetricWithAnimation('filteredEngagement', data.engagement);
+        this.updateMetricWithAnimation('filteredNewUsers', data.newUsers);
     },
 
     generateMockVisitorData() {

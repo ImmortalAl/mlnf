@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=3.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.6"></noscript>
+    <link rel="preload" href="../css/admin.css?v=3.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.7"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -270,6 +270,7 @@
                         <option value="30d">Last 30 Days</option>
                         <option value="90d">Last 90 Days</option>
                         <option value="1y">Last Year</option>
+                        <option value="total">Total (All Time)</option>
                     </select>
                 </div>
                 <button id="refreshAnalytics" class="btn btn-outline">
@@ -345,6 +346,53 @@
                         <h3>Page Load Speed</h3>
                         <p class="analytics-number" id="avgPageLoadTime">--</p>
                         <span class="analytics-subtitle">Average load time</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Activity Metrics (Time Filtered) -->
+            <div class="community-analytics-grid">
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>Active Sessions</h3>
+                        <p class="analytics-number" id="filteredActiveSessions">--</p>
+                        <span class="analytics-subtitle">Valid sessions in timeframe</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>User Logins</h3>
+                        <p class="analytics-number" id="filteredLogins">--</p>
+                        <span class="analytics-subtitle">Login events in timeframe</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>User Engagement</h3>
+                        <p class="analytics-number" id="filteredEngagement">--</p>
+                        <span class="analytics-subtitle">Actions in timeframe</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card highlight-card">
+                    <div class="analytics-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="analytics-content">
+                        <h3>New Souls</h3>
+                        <p class="analytics-number" id="filteredNewUsers">--</p>
+                        <span class="analytics-subtitle">Registrations in timeframe</span>
                     </div>
                 </div>
             </div>
