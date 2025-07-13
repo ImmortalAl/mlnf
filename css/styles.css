@@ -3434,7 +3434,7 @@ body.user-logged-in .floating-buttons .theme-toggle {
 @media (max-width: 768px) {
     .censorship-warning,
 .mystical-interlude {
-        margin: 15vh auto 1.5rem auto;
+        margin: 15vh auto 3.5rem auto;
         width: calc(100% - 2rem);
         padding: 0.5rem 1rem;
         min-height: auto;
@@ -3455,7 +3455,7 @@ body.user-logged-in .floating-buttons .theme-toggle {
 @media (max-width: 480px) {
     .censorship-warning,
 .mystical-interlude {
-        margin: 20vh auto 1rem auto;
+        margin: 20vh auto 3rem auto;
         width: calc(100% - 1rem);
         padding: 0.4rem 0.75rem;
         min-height: auto;
