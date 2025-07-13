@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
     <link rel="canonical" href="https://mlnf.net">
-    <title>MLNF Headquarters</title>
+    <title>Soul Sanctum - MLNF</title>
     <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
     <link rel="stylesheet" href="css/base-theme.css">
     
@@ -33,8 +33,8 @@
     <link rel="preload" href="css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="css/lander.css?v=2.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/lander.css?v=2.4"></noscript>
+    <link rel="preload" href="css/lander.css?v=3.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/lander.css?v=3.0"></noscript>
     
     <!-- Soul Management Modal Styles -->
     <style>
@@ -292,13 +292,203 @@
             }
         }
         
-        /* Content flow improvements */
-        .profile-bio-mini {
-            margin-top: 1rem;
-            padding: 1rem;
+        /* Soul Forge Modal Styles */
+        .soul-forge-modal {
+            background: linear-gradient(135deg, var(--secondary, #1a1a33) 0%, var(--primary, #0d0d1a) 100%);
+            border-radius: 12px;
+            max-width: 700px;
+            width: 95%;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            border: 1px solid var(--accent, #ff5e78);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .forge-modal-header {
+            padding: 2rem 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        
+        .forge-modal-header h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .forge-modal-header p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        
+        .soul-forge-form {
+            padding: 2rem;
+        }
+        
+        .soul-forge-avatar {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .forge-avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            margin-bottom: 1rem;
+            display: block;
+            margin: 0 auto 1rem auto;
+        }
+        
+        .avatar-controls {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .soul-identity-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .forge-input, .forge-textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(255, 94, 120, 0.3);
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .forge-input:focus, .forge-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(255, 94, 120, 0.1);
+        }
+        
+        .forge-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .immortal-boundaries {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        
+        .immortal-boundaries h3 {
+            margin: 0 0 1.5rem 0;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        
+        .boundary-setting {
+            margin-bottom: 1.5rem;
+        }
+        
+        .boundary-setting:last-child {
+            margin-bottom: 0;
+        }
+        
+        .boundary-setting > label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .toggle-group {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .toggle-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 94, 120, 0.2);
             background: rgba(255, 255, 255, 0.02);
-            border-radius: 6px;
-            border-left: 3px solid var(--accent, #ff5e78);
+        }
+        
+        .toggle-option:hover {
+            background: rgba(255, 94, 120, 0.1);
+        }
+        
+        .toggle-option input[type="radio"] {
+            margin: 0;
+        }
+        
+        .toggle-option input[type="radio"]:checked + span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .forge-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        
+        .forge-actions .btn {
+            flex: 1;
+            max-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        /* Mobile responsive for Soul Forge */
+        @media (max-width: 768px) {
+            .soul-forge-modal {
+                width: 98%;
+                max-height: calc(100vh - 40px);
+                border-radius: 8px;
+            }
+            
+            .forge-modal-header {
+                padding: 1.5rem 1rem 1rem;
+            }
+            
+            .soul-forge-form {
+                padding: 1rem;
+            }
+            
+            .soul-identity-section {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .toggle-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .forge-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .forge-actions .btn {
+                max-width: 100%;
+            }
         }
         
         .form-actions {
@@ -1335,168 +1525,103 @@
     </div>
 
     <!-- Soul Management Modal - MOVED BEFORE HEADER to fix DOM stacking -->
+    <!-- Soul Forge Modal (Unified Profile Management) -->
     <div id="soulManagementModal" class="modal" aria-hidden="true">
-        <div class="modal-content soul-modal">
+        <div class="modal-content soul-forge-modal">
             <button class="close-modal" id="closeSoulModal" aria-label="Close modal">×</button>
             
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h2 id="modalTitle">My Eternal Soul</h2>
+            <!-- Soul Forge Header -->
+            <div class="forge-modal-header">
+                <h2>Soul Forge</h2>
+                <p>Cultivate your immortal essence</p>
             </div>
             
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <!-- Tab Navigation -->
-                <div class="soul-tabs" role="tablist" aria-label="Soul management options">
-                    <button class="soul-tab active" data-tab="profile" role="tab" aria-selected="true" aria-controls="profileTab">Profile</button>
-                    <button class="soul-tab" data-tab="edit" role="tab" aria-selected="false" aria-controls="editTab">Edit</button>
-                    <button class="soul-tab" data-tab="privacy" role="tab" aria-selected="false" aria-controls="privacyTab">Privacy</button>
+            <!-- Unified Soul Form -->
+            <div class="soul-forge-form">
+                <!-- Avatar Section -->
+                <div class="soul-forge-avatar">
+                    <img id="forgeAvatar" src="/assets/images/default.jpg" alt="Soul Avatar" class="forge-avatar-img">
+                    <div class="avatar-controls">
+                        <input type="text" id="avatarUrl" placeholder="Avatar URL" class="forge-input">
+                    </div>
                 </div>
                 
-                <!-- Profile Overview Tab -->
-                <div id="profileTab" class="soul-tab-content active" role="tabpanel" aria-labelledby="profile-tab">
-                    <div class="profile-overview-enhanced">
-                        <!-- Profile Hero Section -->
-                        <div class="profile-hero">
-                            <div class="profile-background"></div>
-                            <div class="profile-main-info">
-                                <div class="profile-avatar-container">
-                                    <img id="modalProfileAvatar" src="/assets/images/default.jpg" alt="Profile Avatar" class="profile-avatar-enhanced">
-                                    <div class="avatar-status-indicator"></div>
-                                </div>
-                                <div class="profile-identity">
-                                    <h2 id="modalProfileName" class="profile-name-enhanced">Loading...</h2>
-                                    <p id="modalProfileUsername" class="profile-username-enhanced">@loading</p>
-                                    <div class="profile-status-container">
-                                        <i class="fas fa-quote-left status-icon"></i>
-                                        <span id="modalProfileStatus" class="profile-status-enhanced">Setting eternal status...</span>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Identity Section -->
+                <div class="soul-identity-section">
+                    <div class="form-group">
+                        <label for="eternalNameInput">Eternal Name</label>
+                        <input type="text" id="eternalNameInput" placeholder="Your immortal identity" class="forge-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="soulWhisperInput">Soul Whisper</label>
+                        <input type="text" id="soulWhisperInput" placeholder="Your mystical status" class="forge-input">
+                    </div>
+                </div>
+                
+                <!-- Soul Chronicle Section -->
+                <div class="form-group">
+                    <label for="soulChronicle">Soul Chronicle</label>
+                    <textarea id="soulChronicle" placeholder="Chronicle your immortal essence..." class="forge-textarea"></textarea>
+                </div>
+                
+                <!-- Immortal Boundaries Section -->
+                <div class="immortal-boundaries">
+                    <h3>Immortal Boundaries</h3>
+                    
+                    <div class="boundary-setting">
+                        <label>Reveal to Mortals</label>
+                        <div class="toggle-group">
+                            <label class="toggle-option">
+                                <input type="radio" name="profileVisibility" value="public" checked>
+                                <span>Revealed</span>
+                            </label>
+                            <label class="toggle-option">
+                                <input type="radio" name="profileVisibility" value="private">
+                                <span>Veiled</span>
+                            </label>
                         </div>
-
-                        <!-- Stats Grid -->
-                        <div class="profile-stats-enhanced">
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-scroll"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <span class="stat-value-enhanced" id="modalPostsCount">0</span>
-                                    <span class="stat-label-enhanced">Scrolls</span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-comments"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <span class="stat-value-enhanced" id="modalCommentsCount">0</span>
-                                    <span class="stat-label-enhanced">Echoes</span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <span class="stat-value-enhanced" id="modalConnectionsCount">0</span>
-                                    <span class="stat-label-enhanced">Connections</span>
-                                </div>
-                            </div>
+                    </div>
+                    
+                    <div class="boundary-setting">
+                        <label>Soul Echoes</label>
+                        <div class="toggle-group">
+                            <label class="toggle-option">
+                                <input type="radio" name="messaging" value="enabled" checked>
+                                <span>Open</span>
+                            </label>
+                            <label class="toggle-option">
+                                <input type="radio" name="messaging" value="disabled">
+                                <span>Sealed</span>
+                            </label>
                         </div>
-
-                        <!-- Bio Section -->
-                        <div class="profile-bio-enhanced">
-                            <div class="bio-header">
-                                <i class="fas fa-user-circle bio-icon"></i>
-                                <h3>Soul Biography</h3>
-                            </div>
-                            <div class="bio-content">
-                                <p id="modalProfileBio">Loading biographical essence...</p>
-                            </div>
-                        </div>
-
-                        <!-- Additional Info Cards -->
-                        <div class="profile-extras">
-                            <div class="info-card">
-                                <div class="info-header">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span>Journey Started</span>
-                                </div>
-                                <div class="info-content" id="memberSince">
-                                    Loading...
-                                </div>
-                            </div>
-                            <div class="info-card">
-                                <div class="info-header">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Last Active</span>
-                                </div>
-                                <div class="info-content" id="lastActive">
-                                    Online now
-                                </div>
-                            </div>
+                    </div>
+                    
+                    <div class="boundary-setting">
+                        <label>Eternal Directory</label>
+                        <div class="toggle-group">
+                            <label class="toggle-option">
+                                <input type="radio" name="directoryListing" value="listed" checked>
+                                <span>Inscribed</span>
+                            </label>
+                            <label class="toggle-option">
+                                <input type="radio" name="directoryListing" value="unlisted">
+                                <span>Hidden</span>
+                            </label>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Edit Profile Tab -->
-                <div id="editTab" class="soul-tab-content" role="tabpanel" aria-labelledby="edit-tab">
-                    <form id="profileEditForm" class="profile-edit-form">
-                        <div class="form-group">
-                            <label for="editDisplayName">Display Name</label>
-                            <input type="text" id="editDisplayName" placeholder="Your eternal name">
-                        </div>
-                        <div class="form-group">
-                            <label for="editStatus">Status</label>
-                            <input type="text" id="editStatus" placeholder="Your eternal status" maxlength="100">
-                        </div>
-                        <div class="form-group">
-                            <label for="editBio">Biography</label>
-                            <textarea id="editBio" placeholder="Share your eternal essence..." rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="editAvatar">Avatar URL</label>
-                            <input type="url" id="editAvatar" placeholder="https://...">
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                            <button type="button" class="btn btn-secondary" onclick="resetProfileForm()">Reset</button>
-                        </div>
-                    </form>
-                </div>
-                
-                <!-- Privacy Settings Tab -->
-                <div id="privacyTab" class="soul-tab-content" role="tabpanel" aria-labelledby="privacy-tab">
-                    <div class="privacy-settings-grid">
-                        <div class="privacy-setting">
-                            <label for="privacyVisibilitySetting"><i class="fas fa-eye"></i> Profile Visibility</label>
-                            <select id="privacyVisibilitySetting">
-                                <option value="public">🌍 Public</option>
-                                <option value="connections">👥 Connections Only</option>
-                                <option value="private">🔒 Private</option>
-                            </select>
-                        </div>
-                        <div class="privacy-setting">
-                            <label for="privacyMessagingSetting"><i class="fas fa-envelope"></i> Soul Messaging</label>
-                            <select id="privacyMessagingSetting">
-                                <option value="enabled">💬 Everyone</option>
-                                <option value="connections">👤 Connections Only</option>
-                                <option value="disabled">🚫 Disabled</option>
-                            </select>
-                        </div>
-                        <div class="privacy-setting">
-                            <label for="privacyDirectorySetting"><i class="fas fa-search"></i> Directory Listing</label>
-                            <select id="privacyDirectorySetting">
-                                <option value="listed">📋 Listed</option>
-                                <option value="unlisted">👻 Unlisted</option>
-                            </select>
-                        </div>
-                        <div class="privacy-actions">
-                            <button id="savePrivacySettings" class="btn btn-primary" onclick="handlePrivacyUpdate()">💾 Save Privacy Settings</button>
-                        </div>
-                    </div>
+                <!-- Action Buttons -->
+                <div class="forge-actions">
+                    <button type="button" id="restoreEssenceBtn" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i>
+                        Restore Essence
+                    </button>
+                    <button type="submit" id="forgeChangesBtn" class="btn btn-primary">
+                        <i class="fas fa-hammer"></i>
+                        Forge Changes
+                    </button>
                 </div>
             </div>
         </div>
@@ -1549,115 +1674,58 @@
     </header>
 
     <main>
-        <!-- Quick Actions Bar (Sticky Top) -->
-        <div class="quick-actions-bar" id="quickActionsBar">
-            <div class="quick-actions-content">
-                <button class="quick-action-btn" id="quickProfileBtn" title="Quick Profile Access">
-                    <i class="fas fa-user"></i>
-                </button>
-                <button class="quick-action-btn" id="quickPostBtn" title="Quick Post">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <button class="quick-action-btn" id="quickNotificationsBtn" title="Notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge" id="notificationBadge">3</span>
-                </button>
-                <button class="quick-action-btn" id="refreshBtn" title="Refresh Activity">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-            </div>
-        </div>
-        <!-- Soul Status Card (Collapsible) -->
-        <div class="soul-status-card" id="soulStatusCard">
-            <div class="soul-status-header" id="soulStatusHeader">
-                <div class="soul-status-info">
-                    <img id="quickAvatarImg" src="/assets/images/default.jpg" alt="Your Soul" class="quick-avatar">
-                    <div class="soul-status-text">
-                        <h3 id="quickDisplayName">Eternal Seeker</h3>
-                        <p id="quickStatus">Living eternally free</p>
-                    </div>
-                </div>
-                <button class="collapse-btn" id="collapseStatusBtn">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-            </div>
-            <div class="soul-status-details" id="soulStatusDetails">
-                <div class="soul-quick-stats">
-                    <div class="quick-stat">
-                        <span class="quick-stat-value" id="quickScrollsCount">0</span>
-                        <span class="quick-stat-label">Scrolls</span>
-                    </div>
-                    <div class="quick-stat">
-                        <span class="quick-stat-value" id="quickEchoesCount">0</span>
-                        <span class="quick-stat-label">Echoes</span>
-                    </div>
-                    <div class="quick-stat">
-                        <span class="quick-stat-value" id="quickConnectionsCount">0</span>
-                        <span class="quick-stat-label">Connections</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <section class="welcome-section">
-            <h2>Welcome to the Eternal Hearth</h2>
-            <p>Your personal headquarters within the MLNF sanctuary</p>
-            <div class="card-grid">
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-user-circle"></i>
-                        <h3>My Soul</h3>
-                    </div>
-                    <p>View and manage your eternal presence</p>
-                    <div class="hub-card-actions mobile-optimized">
-                        <button id="viewProfileBtn" class="btn btn-primary">View Profile</button>
-                        <button id="editProfileBtn" class="btn btn-secondary">Edit Profile</button>
-                        <button id="privacySettingsBtn" class="btn btn-outline">Privacy</button>
-                    </div>
-                </div>
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-scroll"></i>
-                        <h3>My Scrolls</h3>
-                    </div>
-                    <p>Manage your eternal writings</p>
-                    <div class="hub-card-actions">
-                        <a href="/pages/blog.html?filter=mine" class="btn btn-primary">View Scrolls</a>
-                        <a href="/pages/blog.html?action=new" class="btn">New Scroll</a>
-                    </div>
-                </div>
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-comments"></i>
-                        <h3>My Echoes</h3>
-                    </div>
-                    <p>See your contributions to the eternal discourse</p>
-                    <div class="hub-card-actions">
-                        <a href="/pages/messageboard.html?filter=mine" class="btn btn-primary">View Echoes</a>
-                        <a href="/pages/messageboard.html?action=new" class="btn">New Thread</a>
-                    </div>
-                </div>
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-users"></i>
-                        <h3>Eternal Souls</h3>
-                    </div>
-                    <p>Explore other immortal spirits</p>
-                    <div class="hub-card-actions">
-                        <a href="/souls" class="btn btn-primary">Explore Souls</a>
-                        <a href="/souls?action=search" class="btn">Find Soul</a>
+        <!-- Soul Presence Banner -->
+        <section class="soul-presence">
+            <div class="soul-presence-content">
+                <img id="soulAvatar" src="/assets/images/default.jpg" alt="Your Soul" class="soul-avatar">
+                <div class="soul-identity">
+                    <h2 id="eternalName">Eternal Seeker</h2>
+                    <div class="soul-whisper-container">
+                        <p id="soulWhisper" class="soul-whisper editable" contenteditable="false">Click to set your soul whisper...</p>
+                        <button id="editWhisperBtn" class="edit-whisper-btn" title="Edit Soul Whisper">
+                            <i class="fas fa-edit"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
-
-        <section class="quick-post-section">
-            <h2>Eternal Dispatch</h2>
-            <p>Share your thoughts with the eternal collective</p>
-            <div class="quick-post-container">
+        
+        <!-- Essence Chamber -->
+        <section class="essence-chamber">
+            <div class="essence-actions">
+                <button id="viewSoulEssenceBtn" class="btn btn-primary">
+                    <i class="fas fa-eye"></i>
+                    View Soul Essence
+                </button>
+                <button id="cultivateEssenceBtn" class="btn btn-secondary">
+                    <i class="fas fa-edit"></i>
+                    Cultivate Essence
+                </button>
+            </div>
+        </section>
+        
+        <!-- Inscription Forge (Collapsible Multi-Purpose Editor) -->
+        <section class="inscription-forge">
+            <div class="forge-header">
+                <h2>Inscription Forge</h2>
+                <div class="forge-tabs">
+                    <button class="forge-tab active" data-type="scroll">
+                        <i class="fas fa-scroll"></i>
+                        Inscribe Scroll
+                    </button>
+                    <button class="forge-tab" data-type="chronicle">
+                        <i class="fas fa-newspaper"></i>
+                        Chronicle News
+                    </button>
+                </div>
+                <button id="toggleForgeBtn" class="toggle-forge-btn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="forge-content" id="forgeContent">
                 <div class="form-group">
-                    <label for="postTitle">Title Your Thought</label>
-                    <input type="text" id="postTitle" placeholder="Enter a title for your eternal thought...">
+                    <label for="postTitle">Title Your Inscription</label>
+                    <input type="text" id="postTitle" placeholder="Name your eternal thought...">
                 </div>
                 <div id="editor-container">
                     <div id="editor"></div>
@@ -1667,68 +1735,63 @@
                         <option value="" disabled selected>Slumbering Scrolls</option>
                         <!-- Drafts will be populated here -->
                     </select>
-                    <button id="saveDraftButton" class="btn btn-secondary">Save as Draft</button>
+                    <button id="saveDraftButton" class="btn btn-secondary">Save to Slumber</button>
                     <button id="publishButton" class="btn btn-primary">Eternalize</button>
                 </div>
             </div>
         </section>
-
-        <!-- ZOMBIE MODAL SURGICALLY REMOVED - COMPLETE -->
-                <div class="secondary-tools-grid">
-                    <button class="secondary-tool-btn">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Analytics</span>
-                    </button>
-                    <button class="secondary-tool-btn">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </button>
-                    <button class="secondary-tool-btn">
-                        <i class="fas fa-question-circle"></i>
-                        <span>Help</span>
-                    </button>
-                    <button class="secondary-tool-btn">
-                        <i class="fas fa-share-alt"></i>
-                        <span>Share</span>
+        
+        <!-- Recent Scrolls -->
+        <section class="recent-scrolls">
+            <div class="section-header">
+                <h2>Recent Scrolls</h2>
+                <a href="/pages/blog.html?filter=mine" class="witness-all-link">
+                    Witness All Scrolls
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="scrolls-list" id="recentScrollsList">
+                <div class="empty-state">
+                    <i class="fas fa-feather-alt"></i>
+                    <p>Your scrolls await inscription...</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('toggleForgeBtn').click()">
+                        Begin Your First Scroll
                     </button>
                 </div>
             </div>
-        </div>
-        
-        <section class="recent-activity" id="recentActivitySection">
-            <div class="activity-header">
-                <h2>Recent Eternal Activity</h2>
-                <button class="refresh-activity-btn" id="refreshActivityBtn" title="Pull to refresh">
+        </section>
+
+        <!-- Realm Reverberations -->
+        <section class="realm-reverberations" id="realmReverberationsSection">
+            <div class="section-header">
+                <h2>Realm Reverberations</h2>
+                <button class="refresh-activity-btn" id="refreshActivityBtn" title="Refresh realm activity">
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
-            <div class="pull-to-refresh-indicator" id="pullToRefreshIndicator">
-                <i class="fas fa-arrow-down"></i>
-                <span>Pull to refresh</span>
-            </div>
             <div class="activity-grid">
                 <div class="activity-card">
-                    <h3>Soul Activity</h3>
+                    <h3>Soul Stirrings</h3>
                     <ul id="soulActivity">
-                        <li>Loading activity...</li>
+                        <li class="empty-activity">The realm slumbers in silence...</li>
                     </ul>
                 </div>
                 <div class="activity-card">
-                    <h3>Latest Scrolls</h3>
+                    <h3>Latest Inscriptions</h3>
                     <ul id="latestPosts">
-                        <li>Loading scrolls...</li>
+                        <li class="empty-activity">Awaiting eternal wisdom...</li>
                     </ul>
                 </div>
                 <div class="activity-card">
-                    <h3>Recent Echoes</h3>
+                    <h3>Echo Chamber</h3>
                     <ul id="recentDiscussions">
-                        <li>Loading discussions...</li>
+                        <li class="empty-activity">No echoes resound...</li>
                     </ul>
                 </div>
                 <div class="activity-card">
-                    <h3>Sanctuary News</h3>
+                    <h3>Realm Chronicles</h3>
                     <ul id="sanctuaryNews">
-                        <li>Loading news...</li>
+                        <li class="empty-activity">The chronicles await...</li>
                     </ul>
                 </div>
             </div>

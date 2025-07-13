@@ -1,4 +1,4 @@
-/* lander.css - Styles for the Eternal Hearth (lander) page */
+/* lander.css - Styles for the Soul Sanctum page */
 
 :root {
     --primary: #0d0d1a;
@@ -11,6 +11,7 @@
     --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
     --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
     --border-radius: 10px;
+    --soul-glow: 0 0 20px rgba(255, 94, 120, 0.3);
 }
 
 body {
@@ -49,8 +50,285 @@ h3 {
     margin-bottom: 0.5rem;
 }
 
-.welcome-section p {
+/* Soul Presence Banner */
+.soul-presence {
+    background: var(--gradient-secondary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 94, 120, 0.25);
+    box-shadow: var(--soul-glow);
+}
+
+.soul-presence-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.soul-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    object-fit: cover;
+    box-shadow: var(--soul-glow);
+}
+
+.soul-identity {
+    flex: 1;
+}
+
+.soul-identity h2 {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.soul-whisper-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.soul-whisper {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    min-width: 300px;
+    cursor: pointer;
+}
+
+.soul-whisper:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.soul-whisper.editing {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent);
+    outline: none;
+}
+
+.edit-whisper-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 94, 120, 0.3);
+    color: var(--accent);
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.edit-whisper-btn:hover {
+    background: rgba(255, 94, 120, 0.1);
+    border-color: var(--accent);
+}
+
+/* Essence Chamber */
+.essence-chamber {
+    background: var(--gradient-secondary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 94, 120, 0.25);
+}
+
+.essence-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.essence-actions .btn {
+    flex: 1;
+    max-width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Inscription Forge */
+.inscription-forge {
+    background: var(--gradient-secondary);
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 94, 120, 0.25);
+    overflow: hidden;
+}
+
+.forge-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 94, 120, 0.1);
+}
+
+.forge-header h2 {
+    margin: 0;
+}
+
+.forge-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.forge-tab {
+    background: transparent;
+    border: 1px solid rgba(255, 94, 120, 0.3);
+    color: var(--text);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.forge-tab.active {
+    background: var(--gradient-accent);
+    color: var(--primary);
+    border-color: transparent;
+}
+
+.forge-tab:hover:not(.active) {
+    border-color: var(--accent);
+    background: rgba(255, 94, 120, 0.1);
+}
+
+.toggle-forge-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: var(--transition);
+}
+
+.toggle-forge-btn i {
+    transition: transform 0.3s ease;
+}
+
+.inscription-forge.collapsed .toggle-forge-btn i {
+    transform: rotate(180deg);
+}
+
+.forge-content {
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    max-height: 600px;
+    overflow: hidden;
+}
+
+.inscription-forge.collapsed .forge-content {
+    max-height: 0;
+    padding: 0 1.5rem;
+}
+
+/* Recent Scrolls */
+.recent-scrolls {
+    background: var(--gradient-secondary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 94, 120, 0.25);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.witness-all-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.witness-all-link:hover {
+    transform: translateX(5px);
+}
+
+.scrolls-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.scroll-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--accent);
+    transition: var(--transition);
+}
+
+.scroll-item:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow);
+}
+
+.scroll-title {
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.scroll-snippet {
+    opacity: 0.8;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.scroll-meta {
+    font-size: 0.9rem;
+    opacity: 0.6;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    opacity: 0.7;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.empty-state p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* Realm Reverberations */
+.realm-reverberations {
+    background: var(--gradient-secondary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 94, 120, 0.25);
+}
+
+.empty-activity {
+    opacity: 0.6;
+    font-style: italic;
 }
 
 .card-grid {
@@ -260,6 +538,75 @@ footer {
     h2 {
         font-size: 1.4rem;
         text-align: center;
+    }
+    
+    /* Soul Presence Mobile */
+    .soul-presence-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .soul-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .soul-identity h2 {
+        font-size: 1.6rem;
+    }
+    
+    .soul-whisper-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .soul-whisper {
+        min-width: auto;
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Essence Chamber Mobile */
+    .essence-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .essence-actions .btn {
+        max-width: 100%;
+        padding: 0.85rem;
+    }
+    
+    /* Inscription Forge Mobile */
+    .forge-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .forge-tabs {
+        justify-content: center;
+    }
+    
+    .forge-tab {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    /* Recent Scrolls Mobile */
+    .section-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .scroll-item {
+        padding: 1rem;
+    }
+    
+    .empty-state {
+        padding: 2rem 1rem;
     }
     
     .welcome-section h2 {
