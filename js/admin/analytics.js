@@ -213,15 +213,12 @@ const AdminAnalytics = {
         this.updateMetricWithAnimation('totalPageViews', this.formatNumber(data.overview.totalContent * 50)); // Estimate page views
         this.updateMetricWithAnimation('uniqueVisitors', this.formatNumber(data.overview.totalUsers));
         this.updateMetricWithAnimation('avgSessionDuration', this.formatDuration(180 + Math.random() * 240)); // Placeholder
-        this.updateMetricWithAnimation('bounceRate', '42%'); // Placeholder
-        this.updateMetricWithAnimation('currentOnlineVisitors', data.overview.onlineUsers);
+        // Note: currentOnlineVisitors now represents "active sessions" (30-day window)
+        this.updateMetricWithAnimation('currentOnlineVisitors', data.overview.activeSessionUsers || data.overview.onlineUsers);
         this.updateMetricWithAnimation('avgPageLoadTime', '1.8s'); // Placeholder
 
-        // Update eternal analytics specific metrics
+        // Update eternal analytics specific metrics  
         this.updateMetricWithAnimation('dailyActive', data.overview.dailyActiveUsers || data.overview.activeUsers);
-        this.updateMetricWithAnimation('contentRate', (data.content.recentBlogs + data.content.recentThreads) + '/day');
-        this.updateMetricWithAnimation('engagement', data.overview.engagementRate + '%');
-        this.updateMetricWithAnimation('errorRate', '0.2%'); // Placeholder
 
         // Update change indicators (calculated from data trends)
         const userGrowth = data.overview.newUsers > 0 ? ((data.overview.newUsers / data.overview.totalUsers) * 100).toFixed(1) : '0';

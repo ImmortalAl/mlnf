@@ -221,7 +221,8 @@ const AdminDashboard = {
             if (usersResponse.ok) {
                 const users = await usersResponse.json();
                 const stats = {
-                    onlineUsers: users.filter(u => u.online).length,
+                    // With 30-day sessions, "online" = has valid session (logged in within 30 days)
+                    onlineUsers: this.countActiveSessionUsers(users),
                     dailyActiveUsers: this.countDailyActiveUsers(users)
                 };
                 
@@ -245,6 +246,17 @@ const AdminDashboard = {
                 elements[key].textContent = stats[key] || '0';
             }
         });
+    },
+
+    countActiveSessionUsers(users) {
+        // 30-day sessions: anyone with valid session is considered "online"
+        // This assumes backend properly expires sessions after 30 days
+        // For now, we'll use lastLogin as proxy until backend implements session expiry
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        return users.filter(user => {
+            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+            return lastLogin && lastLogin >= thirtyDaysAgo;
+        }).length;
     },
 
     countDailyActiveUsers(users) {
