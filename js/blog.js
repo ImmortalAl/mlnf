@@ -441,6 +441,9 @@ function showModalWithLoading(modal) {
     modal.style.zIndex = '10000';
     document.body.classList.add('modal-open');
     
+    // Add click-outside-to-close functionality
+    setupModalClickOutside(modal);
+    
     // Show loading state
     const modalLoading = document.getElementById('modalLoading');
     const modalBody = document.getElementById('modalBody');
@@ -793,6 +796,7 @@ function closeBlogModal() {
     
     // Clean up event listeners
     document.removeEventListener('keydown', handleModalKeyboard);
+    cleanupModalClickOutside();
     
     // Clean up comments system
     if (commentsSystem) {
@@ -801,6 +805,35 @@ function closeBlogModal() {
     
     // Reset the opening flag
     window._blogModalOpening = false;
+}
+
+// Click-outside-to-close functionality
+let modalClickOutsideHandler = null;
+
+function setupModalClickOutside(modal) {
+    // Remove any existing handler first
+    cleanupModalClickOutside();
+    
+    // Create new handler
+    modalClickOutsideHandler = function(event) {
+        // Only close if clicking directly on the modal background (not on modal content)
+        if (event.target === modal) {
+            closeBlogModal();
+        }
+    };
+    
+    // Add the click listener to the modal
+    modal.addEventListener('click', modalClickOutsideHandler);
+}
+
+function cleanupModalClickOutside() {
+    if (modalClickOutsideHandler) {
+        const modal = document.getElementById('blogModal');
+        if (modal) {
+            modal.removeEventListener('click', modalClickOutsideHandler);
+        }
+        modalClickOutsideHandler = null;
+    }
 }
 
 // Share current post  
