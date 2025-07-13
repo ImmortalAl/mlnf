@@ -220,24 +220,24 @@ const AdminDashboard = {
 
             if (usersResponse.ok) {
                 const users = await usersResponse.json();
-                this.updateOverviewStats({
-                    totalUsers: users.length,
+                const stats = {
                     onlineUsers: users.filter(u => u.online).length,
-                    newUsersToday: this.countNewUsersToday(users),
-                    activeUsersWeek: this.countActiveUsersWeek(users)
-                });
+                    dailyActiveUsers: this.countDailyActiveUsers(users)
+                };
+                
+                this.updateSimplifiedStats(stats);
+                this.loadRecentActiveUsers(users);
+                this.loadPlatformHealth();
             }
         } catch (error) {
             console.error('Error loading overview stats:', error);
         }
     },
 
-    updateOverviewStats(stats) {
+    updateSimplifiedStats(stats) {
         const elements = {
-            totalUsers: document.getElementById('totalUsers'),
             onlineUsers: document.getElementById('onlineUsers'),
-            newUsersToday: document.getElementById('newUsersToday'),
-            activeUsersWeek: document.getElementById('activeUsersWeek')
+            dailyActiveUsers: document.getElementById('dailyActiveUsers')
         };
 
         Object.keys(elements).forEach(key => {
@@ -245,6 +245,61 @@ const AdminDashboard = {
                 elements[key].textContent = stats[key] || '0';
             }
         });
+    },
+
+    countDailyActiveUsers(users) {
+        const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        return users.filter(user => {
+            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+            return lastLogin && lastLogin >= yesterday;
+        }).length;
+    },
+
+    loadRecentActiveUsers(users) {
+        const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+        const recentUsers = users.filter(user => {
+            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+            return lastLogin && lastLogin >= twoHoursAgo;
+        }).sort((a, b) => new Date(b.lastLogin) - new Date(a.lastLogin)).slice(0, 5);
+
+        const container = document.getElementById('recentActiveUsers');
+        if (container) {
+            const loadingDiv = container.querySelector('.activity-loading');
+            if (recentUsers.length === 0) {
+                if (loadingDiv) loadingDiv.textContent = 'No recent activity';
+            } else {
+                const activityHtml = recentUsers.map(user => {
+                    const timeAgo = this.formatTimeAgo(new Date(user.lastLogin));
+                    const status = user.online ? 'online now' : timeAgo;
+                    return `<div class="recent-user">• ${user.displayName || user.username} - ${status}</div>`;
+                }).join('');
+                
+                if (loadingDiv) {
+                    loadingDiv.innerHTML = activityHtml;
+                    loadingDiv.className = 'recent-activity-content';
+                }
+            }
+        }
+    },
+
+    loadPlatformHealth() {
+        // Placeholder values - would be replaced with real health metrics
+        const healthElements = {
+            serverResponseTime: document.getElementById('serverResponseTime'),
+            failedLogins: document.getElementById('failedLogins'),
+            peakHours: document.getElementById('peakHours')
+        };
+
+        // Simulate health metrics (replace with real API calls)
+        if (healthElements.serverResponseTime) {
+            healthElements.serverResponseTime.textContent = '180ms';
+        }
+        if (healthElements.failedLogins) {
+            healthElements.failedLogins.textContent = '3';
+        }
+        if (healthElements.peakHours) {
+            healthElements.peakHours.textContent = '8-10pm EST';
+        }
     },
 
     async loadActivityFeed() {

@@ -51,6 +51,8 @@ class FeedbackSystem {
         this.form = document.getElementById('feedbackForm');
         this.contentTextarea = document.getElementById('feedbackContent');
         this.anonymousCheckbox = document.getElementById('feedbackAnonymous');
+        this.anonymousNameInput = document.getElementById('feedbackAnonymousName');
+        this.anonymousNameGroup = document.getElementById('anonymousNameGroup');
         this.userInfoDisplay = document.getElementById('feedbackUserInfo');
         this.usernameSpan = document.getElementById('feedbackUsername');
         if (!this.modal || !this.form || !this.contentTextarea) return;
@@ -132,6 +134,11 @@ class FeedbackSystem {
     toggleUserInfo() {
         const isAnonymous = this.anonymousCheckbox.checked;
         this.userInfoDisplay.style.display = isAnonymous ? 'none' : 'block';
+        
+        // Show/hide anonymous name field when anonymous is checked
+        if (this.anonymousNameGroup) {
+            this.anonymousNameGroup.style.display = isAnonymous ? 'block' : 'none';
+        }
     }
     async handleSubmit(e) {
         e.preventDefault();
@@ -141,10 +148,12 @@ class FeedbackSystem {
             return;
         }
         const isAnonymous = this.anonymousCheckbox.checked;
+        const anonymousName = this.anonymousNameInput ? this.anonymousNameInput.value.trim() : '';
         const token = localStorage.getItem('sessionToken');
         const feedbackData = {
             content: content,
-            anonymous: isAnonymous
+            anonymous: isAnonymous,
+            ...(isAnonymous && anonymousName && { anonymousName: anonymousName })
         };
         try {
             this.showLoading();

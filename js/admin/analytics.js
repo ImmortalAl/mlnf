@@ -511,21 +511,21 @@ const AdminAnalytics = {
 
     async loadDeviceAnalytics() {
         const deviceData = [
-            { type: 'Desktop', percentage: 45, color: '#ff5e78' },
-            { type: 'Mobile', percentage: 38, color: '#ffca28' },
-            { type: 'Tablet', percentage: 17, color: '#4a90e2' }
+            { type: 'Desktop', users: 1245, percentage: 45 },
+            { type: 'Mobile', users: 1052, percentage: 38 },
+            { type: 'Tablet', users: 470, percentage: 17 }
         ];
 
         const browserData = [
-            { browser: 'Chrome', percentage: 52, color: '#ff5e78' },
-            { browser: 'Firefox', percentage: 23, color: '#ffca28' },
-            { browser: 'Safari', percentage: 15, color: '#4a90e2' },
-            { browser: 'Edge', percentage: 7, color: '#9b59b6' },
-            { browser: 'Other', percentage: 3, color: '#95a5a6' }
+            { browser: 'Chrome', users: 1440, percentage: 52 },
+            { browser: 'Firefox', users: 637, percentage: 23 },
+            { browser: 'Safari', users: 415, percentage: 15 },
+            { browser: 'Edge', users: 194, percentage: 7 },
+            { browser: 'Other', users: 83, percentage: 3 }
         ];
 
-        this.updateDeviceChart(deviceData);
-        this.updateBrowserChart(browserData);
+        this.updateDeviceList(deviceData);
+        this.updateBrowserList(browserData);
     },
 
     async loadGeographicData() {
@@ -606,11 +606,28 @@ const AdminAnalytics = {
         `).join('');
     },
 
+    updateDeviceList(deviceData) {
+        const items = deviceData.map(device => ({
+            label: device.type,
+            value: this.formatNumber(device.users),
+            percentage: device.percentage
+        }));
+        this.updateAnalyticsList('deviceTypes', items);
+    },
+
+    updateBrowserList(browserData) {
+        const items = browserData.map(browser => ({
+            label: browser.browser,
+            value: this.formatNumber(browser.users),
+            percentage: browser.percentage
+        }));
+        this.updateAnalyticsList('browserUsage', items);
+    },
+
     initCharts() {
         this.createTrafficChart();
         this.createActivityChart();
-        this.createDeviceChart();
-        this.createBrowserChart();
+        // Device and browser data now use lists instead of charts
     },
 
     createTrafficChart() {
@@ -701,14 +718,6 @@ const AdminAnalytics = {
     updateTrafficChart(data) {
         // In a real implementation, this would update Chart.js or similar
         this.createTrafficChart();
-    },
-
-    updateDeviceChart(data) {
-        this.createDeviceChart();
-    },
-
-    updateBrowserChart(data) {
-        this.createBrowserChart();
     },
 
     startRealTimeUpdates() {

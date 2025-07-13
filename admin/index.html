@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=3.5" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.5"></noscript>
+    <link rel="preload" href="../css/admin.css?v=3.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=3.6"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -123,44 +123,40 @@
                 <i class="fas fa-crown"></i> Immortal's Overview
             </h2>
             
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
+            <!-- Active Community Status -->
+            <div class="community-status">
+                <h3><i class="fas fa-users"></i> Active Community</h3>
+                <div class="community-grid">
+                    <div class="community-stat">
+                        <span class="stat-label">Currently Online:</span>
+                        <span class="stat-value" id="onlineUsers">--</span>
                     </div>
-                    <div class="stat-content">
-                        <h3>Total Souls</h3>
-                        <p class="stat-number" id="totalUsers">--</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>Online Now</h3>
-                        <p class="stat-number" id="onlineUsers">--</p>
+                    <div class="community-stat">
+                        <span class="stat-label">Daily Active:</span>
+                        <span class="stat-value" id="dailyActiveUsers">--</span>
                     </div>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-scroll"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>Soul Scrolls</h3>
-                        <p class="stat-number" id="totalPosts">--</p>
-                    </div>
+                <div class="recent-activity-list" id="recentActiveUsers">
+                    <h4>Recent Activity (last 2h)</h4>
+                    <div class="activity-loading">Loading recent souls...</div>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-comments"></i>
+            </div>
+
+            <!-- Platform Health -->
+            <div class="platform-health">
+                <h3><i class="fas fa-heartbeat"></i> Platform Health</h3>
+                <div class="health-grid">
+                    <div class="health-stat">
+                        <span class="stat-label">Server Response:</span>
+                        <span class="stat-value" id="serverResponseTime">--</span>
                     </div>
-                    <div class="stat-content">
-                        <h3>Eternal Echoes</h3>
-                        <p class="stat-number" id="totalMessages">--</p>
+                    <div class="health-stat">
+                        <span class="stat-label">Failed Logins (24h):</span>
+                        <span class="stat-value" id="failedLogins">--</span>
+                    </div>
+                    <div class="health-stat">
+                        <span class="stat-label">Peak Hours:</span>
+                        <span class="stat-value" id="peakHours">--</span>
                     </div>
                 </div>
             </div>
@@ -181,11 +177,6 @@
             
             
             <div class="management-controls">
-                <div class="search-bar">
-                    <input type="text" id="userSearch" placeholder="Search eternal souls...">
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
-                </div>
-                
                 <div class="filter-controls">
                     <select id="filterStatus">
                         <option value="all">All Souls</option>
@@ -324,14 +315,14 @@
                     </div>
                 </div>
 
-                <div class="analytics-card highlight-card">
+                <div class="analytics-card">
                     <div class="analytics-icon">
-                        <i class="fas fa-percentage"></i>
+                        <i class="fas fa-user-friends"></i>
                     </div>
                     <div class="analytics-content">
-                        <h3>Bounce Rate</h3>
-                        <p class="analytics-number" id="bounceRate">--</p>
-                        <span class="analytics-change" id="bounceRateChange">--</span>
+                        <h3>Daily Active Souls</h3>
+                        <p class="analytics-number" id="dailyActive">--</p>
+                        <span class="analytics-subtitle">Active in last 24h</span>
                     </div>
                 </div>
 
@@ -406,14 +397,18 @@
                     <div class="chart-header">
                         <h3>Device Types</h3>
                     </div>
-                    <canvas id="deviceChart"></canvas>
+                    <div id="deviceTypes" class="analytics-list">
+                        <div class="loading">Loading device data...</div>
+                    </div>
                 </div>
 
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3>Browser Usage</h3>
                     </div>
-                    <canvas id="browserChart"></canvas>
+                    <div id="browserUsage" class="analytics-list">
+                        <div class="loading">Loading browser data...</div>
+                    </div>
                 </div>
 
                 <div class="chart-card">
@@ -435,26 +430,44 @@
                 </div>
             </div>
             
-            <!-- Legacy Metrics Grid -->
-            <div class="metrics-grid legacy-metrics">
-                <div class="metric-card">
-                    <h4>Daily Active Souls</h4>
-                    <p class="metric-value" id="dailyActive">--</p>
+            <!-- Community Insights -->
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Private Message Volume</h3>
+                    </div>
+                    <div class="metric-display">
+                        <p class="metric-value" id="privateMessageVolume">--</p>
+                        <span class="metric-subtitle">Messages sent today</span>
+                    </div>
                 </div>
                 
-                <div class="metric-card">
-                    <h4>Content Creation Rate</h4>
-                    <p class="metric-value" id="contentRate">--</p>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Most Active Souls</h3>
+                    </div>
+                    <div id="mostActiveSouls" class="analytics-list">
+                        <div class="loading">Loading active souls...</div>
+                    </div>
                 </div>
                 
-                <div class="metric-card">
-                    <h4>Engagement Score</h4>
-                    <p class="metric-value" id="engagement">--</p>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Comment Depth</h3>
+                    </div>
+                    <div class="metric-display">
+                        <p class="metric-value" id="commentDepth">--</p>
+                        <span class="metric-subtitle">Avg replies per post</span>
+                    </div>
                 </div>
 
-                <div class="metric-card">
-                    <h4>Error Rate</h4>
-                    <p class="metric-value" id="errorRate">--</p>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Most Shared Content</h3>
+                    </div>
+                    <div id="mostSharedContent" class="analytics-list">
+                        <div class="loading">Loading shared content...</div>
+                    </div>
                 </div>
             </div>
         </section>
