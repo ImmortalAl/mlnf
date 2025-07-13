@@ -10,14 +10,14 @@ Welcome to the **Manifest Liberation, Naturally Free** documentation center. All
   - **Contains**: Current development priorities and implementation status
   - **Contains**: Owl messaging email setup instructions
 
-### **🛠️ Development** *(Coming Soon)*
+### **🛠️ Development**
 - **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Setup instructions, workflow, deployment
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Technical architecture and patterns
-- **[API.md](./API.md)** - Backend API documentation
+- **[API.md](./API.md)** - ✅ **NEW** Backend API documentation with all endpoints
 
-### **🎨 Design & Frontend** *(Coming Soon)*
+### **🎨 Design & Frontend**
 - **[CSS-GUIDE.md](./CSS-GUIDE.md)** - Combined CSS architecture and style guide
-- **[UI-COMPONENTS.md](./UI-COMPONENTS.md)** - Component documentation
+- **[UI-COMPONENTS.md](./UI-COMPONENTS.md)** - Component documentation *(Coming Soon)*
 
 ### **📝 Project Management**
 - **[CHANGELOG.md](./CHANGELOG.md)** - Development history and session logs
@@ -45,6 +45,7 @@ This documentation center is being created to consolidate and organize scattered
 - [x] Created centralized docs folder
 - [x] **FEATURES.md** - Consolidated all TODOs and feature documentation
 - [x] Added owl email functionality implementation guide
+- [x] **API.md** - ✅ **NEW** Complete API documentation with all endpoints, auth, and data models
 
 
 ### 📋 **Next Steps**
