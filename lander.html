@@ -2167,6 +2167,7 @@
             // Delay to ensure DOM is fully ready
             setTimeout(() => {
                 initSoulManagement();
+                loadSoulPresenceData();
                 // Soul management initialized
             }, 100);
             
@@ -2182,62 +2183,315 @@
         function initSoulManagement() {
             // Initialize soul management
             // Setup button event listeners
-            const viewProfileBtn = document.getElementById('viewProfileBtn');
-            const editProfileBtn = document.getElementById('editProfileBtn');
-            const privacySettingsBtn = document.getElementById('privacySettingsBtn');
+            const viewProfileBtn = document.getElementById('viewSoulEssenceBtn');
+            const editProfileBtn = document.getElementById('cultivateEssenceBtn');
+            const privacySettingsBtn = null; // No separate privacy button - unified in Soul Forge
             const closeSoulModal = document.getElementById('closeSoulModal');
             
             // Button elements found and ready
             
             if (viewProfileBtn) {
-                // View Profile button found
-                // Add both click and touchend for mobile reliability
+                // View Soul Essence button found - opens public profile page
                 const viewHandler = (e) => {
-                    // View Profile button clicked
                     e.preventDefault();
                     e.stopPropagation();
-                    e.target.setAttribute('data-recently-clicked', 'true');
-                    openSoulModal('profile');
+                    // Navigate to user's public profile page
+                    const username = getCurrentUsername(); // We'll need to implement this
+                    if (username) {
+                        window.location.href = `/souls/${username}`;
+                    } else {
+                        // Fallback: open profile page
+                        window.location.href = '/profile';
+                    }
                 };
                 viewProfileBtn.addEventListener('click', viewHandler);
                 viewProfileBtn.addEventListener('touchend', viewHandler, { passive: false });
-            } else {
-                // View Profile button not found
             }
             
             if (editProfileBtn) {
-                // Edit Profile button found
+                // Cultivate Essence button found - opens Soul Forge modal
                 const editHandler = (e) => {
-                    // Edit Profile button clicked
                     e.preventDefault();
                     e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
-                    openSoulModal('edit');
+                    openSoulForgeModal();
                 };
                 editProfileBtn.addEventListener('click', editHandler);
                 editProfileBtn.addEventListener('touchend', editHandler, { passive: false });
-            } else {
-                // Edit Profile button not found
             }
             
-            if (privacySettingsBtn) {
-                // Privacy Settings button found
-                const privacyHandler = (e) => {
-                    // Privacy Settings button clicked
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.target.setAttribute('data-recently-clicked', 'true');
-                    openSoulModal('privacy');
-                };
-                privacySettingsBtn.addEventListener('click', privacyHandler);
-                privacySettingsBtn.addEventListener('touchend', privacyHandler, { passive: false });
-            } else {
-                // Privacy Settings button not found
-            }
+            // Privacy settings now handled within Soul Forge modal
             
             if (closeSoulModal) {
                 closeSoulModal.addEventListener('click', closeSoulManagementModal);
             }
+            
+            // Initialize Soul Whisper inline editing
+            initSoulWhisperEditing();
+            
+            // Initialize Inscription Forge collapsible functionality
+            initInscriptionForge();
+        }
+        
+        function initSoulWhisperEditing() {
+            const whisperElement = document.getElementById('soulWhisper');
+            const editBtn = document.getElementById('editWhisperBtn');
+            
+            if (!whisperElement || !editBtn) return;
+            
+            let isEditing = false;
+            let originalText = whisperElement.textContent;
+            
+            function startEditing() {
+                if (isEditing) return;
+                
+                isEditing = true;
+                originalText = whisperElement.textContent;
+                whisperElement.contentEditable = true;
+                whisperElement.classList.add('editing');
+                whisperElement.focus();
+                
+                // Select all text
+                const range = document.createRange();
+                range.selectNodeContents(whisperElement);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                editBtn.innerHTML = '<i class="fas fa-check"></i>';
+            }
+            
+            function saveEditing() {
+                if (!isEditing) return;
+                
+                const newText = whisperElement.textContent.trim();
+                if (newText === '') {
+                    whisperElement.textContent = 'Click to set your soul whisper...';
+                } else {
+                    // Save to localStorage/backend
+                    saveSoulWhisper(newText);
+                }
+                
+                isEditing = false;
+                whisperElement.contentEditable = false;
+                whisperElement.classList.remove('editing');
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            }
+            
+            function cancelEditing() {
+                whisperElement.textContent = originalText;
+                isEditing = false;
+                whisperElement.contentEditable = false;
+                whisperElement.classList.remove('editing');
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            }
+            
+            // Event listeners
+            editBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isEditing) {
+                    saveEditing();
+                } else {
+                    startEditing();
+                }
+            });
+            
+            whisperElement.addEventListener('click', () => {
+                if (!isEditing) {
+                    startEditing();
+                }
+            });
+            
+            whisperElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveEditing();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEditing();
+                }
+            });
+            
+            whisperElement.addEventListener('blur', () => {
+                if (isEditing) {
+                    setTimeout(() => {
+                        if (document.activeElement !== editBtn) {
+                            saveEditing();
+                        }
+                    }, 100);
+                }
+            });
+        }
+        
+        function saveSoulWhisper(whisper) {
+            // Save the soul whisper to localStorage and potentially backend
+            try {
+                const user = JSON.parse(localStorage.getItem('user')) || {};
+                user.status = whisper;
+                localStorage.setItem('user', JSON.stringify(user));
+                
+                // TODO: Also save to backend API
+                console.log('Soul whisper saved:', whisper);
+            } catch (e) {
+                console.error('Error saving soul whisper:', e);
+            }
+        }
+        
+        function initInscriptionForge() {
+            const toggleBtn = document.getElementById('toggleForgeBtn');
+            const forge = document.querySelector('.inscription-forge');
+            
+            if (!toggleBtn || !forge) return;
+            
+            let isCollapsed = false;
+            
+            toggleBtn.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                forge.classList.toggle('collapsed', isCollapsed);
+                
+                // Update toggle button icon
+                const icon = toggleBtn.querySelector('i');
+                if (icon) {
+                    icon.className = isCollapsed ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+                }
+            });
+            
+            // Initialize forge tabs
+            const tabs = document.querySelectorAll('.forge-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Update editor placeholder or functionality based on tab
+                    const type = tab.dataset.type;
+                    updateForgeEditor(type);
+                });
+            });
+        }
+        
+        function updateForgeEditor(type) {
+            const titleInput = document.getElementById('postTitle');
+            if (titleInput) {
+                if (type === 'scroll') {
+                    titleInput.placeholder = 'Name your eternal thought...';
+                } else if (type === 'chronicle') {
+                    titleInput.placeholder = 'Title your chronicle...';
+                }
+            }
+        }
+        
+        function setupSoulForgeSubmission() {
+            const forgeBtn = document.getElementById('forgeChangesBtn');
+            const restoreBtn = document.getElementById('restoreEssenceBtn');
+            
+            if (forgeBtn) {
+                forgeBtn.addEventListener('click', handleSoulForgeSubmission);
+            }
+            
+            if (restoreBtn) {
+                restoreBtn.addEventListener('click', () => {
+                    if (confirm('Restore your essence to its previous state?')) {
+                        loadUserDataIntoForge();
+                    }
+                });
+            }
+        }
+        
+        function handleSoulForgeSubmission(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                displayName: document.getElementById('eternalNameInput')?.value || '',
+                status: document.getElementById('soulWhisperInput')?.value || '',
+                bio: document.getElementById('soulChronicle')?.value || '',
+                avatarUrl: document.getElementById('avatarUrl')?.value || '',
+                profileVisibility: document.querySelector('input[name="profileVisibility"]:checked')?.value || 'public',
+                messaging: document.querySelector('input[name="messaging"]:checked')?.value || 'enabled',
+                directoryListing: document.querySelector('input[name="directoryListing"]:checked')?.value || 'listed'
+            };
+            
+            // Save to localStorage
+            try {
+                const user = JSON.parse(localStorage.getItem('user')) || {};
+                Object.assign(user, formData);
+                localStorage.setItem('user', JSON.stringify(user));
+                
+                // Update Soul Presence banner
+                updateSoulPresence(formData);
+                
+                // Close modal
+                closeSoulManagementModal();
+                
+                // Show success message
+                console.log('Soul forged successfully!');
+                
+                // TODO: Save to backend API
+                
+            } catch (e) {
+                console.error('Error forging soul:', e);
+                alert('Error saving changes. Please try again.');
+            }
+        }
+        
+        function updateSoulPresence(userData) {
+            // Update the Soul Presence banner with new data
+            const avatar = document.getElementById('soulAvatar');
+            const name = document.getElementById('eternalName');
+            const whisper = document.getElementById('soulWhisper');
+            
+            if (avatar && userData.avatarUrl) {
+                avatar.src = userData.avatarUrl;
+            }
+            
+            if (name && userData.displayName) {
+                name.textContent = userData.displayName;
+            }
+            
+            if (whisper && userData.status) {
+                whisper.textContent = userData.status;
+            }
+        }
+        
+        function loadSoulPresenceData() {
+            // Load user data into Soul Presence banner on page load
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user) {
+                    updateSoulPresence(user);
+                }
+            } catch (e) {
+                console.error('Error loading soul presence data:', e);
+            }
+        }
+        
+        function setupAvatarPreview() {
+            const avatarInput = document.getElementById('avatarUrl');
+            const avatarImg = document.getElementById('forgeAvatar');
+            
+            if (avatarInput && avatarImg) {
+                avatarInput.addEventListener('input', (e) => {
+                    const url = e.target.value.trim();
+                    if (url) {
+                        // Test if URL is valid by trying to load it
+                        const testImg = new Image();
+                        testImg.onload = () => {
+                            avatarImg.src = url;
+                        };
+                        testImg.onerror = () => {
+                            // Reset to default if URL fails
+                            avatarImg.src = '/assets/images/default.jpg';
+                        };
+                        testImg.src = url;
+                    } else {
+                        avatarImg.src = '/assets/images/default.jpg';
+                    }
+                });
+            }
+        }
             
             // Setup tab switching
             const tabs = document.querySelectorAll('.soul-tab');
@@ -2300,29 +2554,112 @@
             }
         }
         
-        function openSoulModal(tab = 'profile') {
-            // Opening soul modal
-            
+        function openSoulForgeModal() {
+            // Opening Soul Forge modal
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
-                // Modal element not found
+                console.error('Soul Forge modal not found');
                 return;
             }
-            // Modal element found
             
-            // Use proper CSS architecture - let stylesheets handle display
+            // Activate modal
             modal.classList.add('active');
-            // Also activate the inner soul-modal content so it becomes visible
-            const modalContent = modal.querySelector('.soul-modal');
-            if (modalContent) {
-                modalContent.classList.add('active');
-                console.log('✅ Modal content activated');
-            }
             modal.setAttribute('aria-hidden', 'false');
             
-            // Tab switching logic
-            console.log('🔄 Activating tab:', tab);
-            activateTab(tab);
+            // Prevent body scroll on mobile
+            document.body.style.overflow = 'hidden';
+            
+            // Load current user data into form
+            loadUserDataIntoForge();
+            
+            // Setup form submission
+            setupSoulForgeSubmission();
+            
+            // Setup avatar preview
+            setupAvatarPreview();
+            
+            // Focus on first input
+            setTimeout(() => {
+                const firstInput = modal.querySelector('input, textarea');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, 100);
+        }
+        
+        function openSoulModal(tab = 'profile') {
+            // Legacy function - redirect to Soul Forge
+            openSoulForgeModal();
+        }
+        
+        function getCurrentUsername() {
+            // Get current username from auth system
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return user ? user.username : null;
+            } catch (e) {
+                console.error('Error getting username:', e);
+                return null;
+            }
+        }
+        
+        function loadUserDataIntoForge() {
+            // Load current user data into Soul Forge form
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user) return;
+                
+                // Populate avatar
+                const avatarImg = document.getElementById('forgeAvatar');
+                const avatarInput = document.getElementById('avatarUrl');
+                if (avatarImg && user.avatarUrl) {
+                    avatarImg.src = user.avatarUrl;
+                }
+                if (avatarInput && user.avatarUrl) {
+                    avatarInput.value = user.avatarUrl;
+                }
+                
+                // Populate identity fields
+                const nameInput = document.getElementById('eternalNameInput');
+                const whisperInput = document.getElementById('soulWhisperInput');
+                const chronicleInput = document.getElementById('soulChronicle');
+                
+                if (nameInput && user.displayName) {
+                    nameInput.value = user.displayName;
+                }
+                if (whisperInput && user.status) {
+                    whisperInput.value = user.status;
+                }
+                if (chronicleInput && user.bio) {
+                    chronicleInput.value = user.bio;
+                }
+                
+                // Populate privacy settings
+                const profileVisibility = document.getElementsByName('profileVisibility');
+                const messaging = document.getElementsByName('messaging');
+                const directoryListing = document.getElementsByName('directoryListing');
+                
+                if (user.profileVisibility && profileVisibility.length) {
+                    Array.from(profileVisibility).forEach(radio => {
+                        radio.checked = radio.value === user.profileVisibility;
+                    });
+                }
+                
+                if (user.messaging && messaging.length) {
+                    Array.from(messaging).forEach(radio => {
+                        radio.checked = radio.value === user.messaging;
+                    });
+                }
+                
+                if (user.directoryListing && directoryListing.length) {
+                    Array.from(directoryListing).forEach(radio => {
+                        radio.checked = radio.value === user.directoryListing;
+                    });
+                }
+                
+            } catch (e) {
+                console.error('Error loading user data:', e);
+            }
         }
         
         function activateTab(tabName) {
