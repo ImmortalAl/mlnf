@@ -172,6 +172,19 @@
     font-size: 1.2rem;
 }
 
+/* Health indicator styles */
+.health-good {
+    color: #5cb85c !important;
+}
+
+.health-warning {
+    color: #f0ad4e !important;
+}
+
+.health-critical {
+    color: #d9534f !important;
+}
+
 .recent-activity-list {
     background: rgba(0, 0, 0, 0.2);
     border-radius: var(--border-radius);

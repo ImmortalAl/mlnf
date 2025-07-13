@@ -294,23 +294,86 @@ const AdminDashboard = {
         }
     },
 
-    loadPlatformHealth() {
-        // Placeholder values - would be replaced with real health metrics
+    async loadPlatformHealth() {
         const healthElements = {
             serverResponseTime: document.getElementById('serverResponseTime'),
             failedLogins: document.getElementById('failedLogins'),
             peakHours: document.getElementById('peakHours')
         };
 
-        // Simulate health metrics (replace with real API calls)
+        // Real server response time monitoring
         if (healthElements.serverResponseTime) {
-            healthElements.serverResponseTime.textContent = '180ms';
+            try {
+                const startTime = performance.now();
+                const response = await fetch('/health');
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+                
+                healthElements.serverResponseTime.textContent = `${responseTime}ms`;
+                
+                // Add visual indicator based on response time
+                const element = healthElements.serverResponseTime;
+                element.className = 'stat-value';
+                if (responseTime > 500) {
+                    element.classList.add('health-critical');
+                } else if (responseTime > 200) {
+                    element.classList.add('health-warning');
+                } else {
+                    element.classList.add('health-good');
+                }
+            } catch (error) {
+                healthElements.serverResponseTime.textContent = 'Error';
+                healthElements.serverResponseTime.className = 'stat-value health-critical';
+            }
         }
-        if (healthElements.failedLogins) {
-            healthElements.failedLogins.textContent = '3';
-        }
-        if (healthElements.peakHours) {
-            healthElements.peakHours.textContent = '8-10pm EST';
+
+        // Get real platform health data
+        try {
+            const healthResponse = await fetch('/api/activity/platform-health', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            
+            if (healthResponse.ok) {
+                const healthData = await healthResponse.json();
+                
+                if (healthElements.failedLogins) {
+                    healthElements.failedLogins.textContent = healthData.failedLogins;
+                    
+                    // Add visual indicator for failed logins
+                    const element = healthElements.failedLogins;
+                    element.className = 'stat-value';
+                    if (healthData.failedLogins > 10) {
+                        element.classList.add('health-critical');
+                    } else if (healthData.failedLogins > 5) {
+                        element.classList.add('health-warning');
+                    } else {
+                        element.classList.add('health-good');
+                    }
+                }
+                
+                if (healthElements.peakHours) {
+                    healthElements.peakHours.textContent = healthData.peakHours;
+                }
+            } else {
+                // Fallback values if API fails
+                if (healthElements.failedLogins) {
+                    healthElements.failedLogins.textContent = '--';
+                }
+                if (healthElements.peakHours) {
+                    healthElements.peakHours.textContent = '--';
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load platform health data:', error);
+            // Fallback values
+            if (healthElements.failedLogins) {
+                healthElements.failedLogins.textContent = '--';
+            }
+            if (healthElements.peakHours) {
+                healthElements.peakHours.textContent = '--';
+            }
         }
     },
 
