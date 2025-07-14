@@ -80,54 +80,29 @@ const AdminAnalytics = {
     async loadRealAnalyticsData() {
         try {
             const token = localStorage.getItem('sessionToken');
-            console.log('🔍 Attempting to load real analytics from:', `${this.apiBaseUrl}/activity/analytics`);
-            console.log('🔑 Using token:', token ? 'Token present' : 'No token found');
+            if (!token) throw new Error('No authentication token');
             
-            // First test if basic activity endpoint works
-            console.log('🧪 Testing basic activity endpoint first...');
-            const basicResponse = await fetch(`${this.apiBaseUrl}/activity`, {
-                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-            });
-            console.log('📡 Basic activity endpoint status:', basicResponse.status);
-            
-            if (basicResponse.ok) {
-                const basicData = await basicResponse.json();
-                console.log('✅ Basic activity data:', basicData);
-            }
-            
-            // Now try the analytics endpoint
             const response = await fetch(`${this.apiBaseUrl}/activity/analytics?timeRange=${this.currentTimeRange}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            console.log('📡 Analytics API response status:', response.status);
-
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('❌ Analytics API error details:', errorText);
-                
-                // If it's a 404, the endpoint might not be deployed yet
                 if (response.status === 404) {
-                    console.log('🔄 Analytics endpoint not deployed, trying existing endpoints...');
                     await this.loadDataFromExistingEndpoints();
                     return;
                 }
-                
-                throw new Error(`Analytics API error: ${response.status} - ${errorText}`);
+                throw new Error(`Analytics API error: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log('✅ Real analytics data received:', data);
-            console.log('📊 Metrics overview:', data.overview);
             
             this.updateEternalMetrics(data);
             this.updatePopularContent(data.popular);
             this.updateRecentActivity(data.activity);
             
         } catch (error) {
-            console.error('❌ Error loading real analytics:', error);
-            // Fallback to mock data if API fails
-            this.loadFallbackData();
+            console.error('Error loading analytics:', error);
+            await this.loadDataFromExistingEndpoints();
         }
     },
 
@@ -188,7 +163,7 @@ const AdminAnalytics = {
 
             if (usersResponse.ok) {
                 const users = await usersResponse.json();
-                const communityData = this.calculateCommunityMetrics(users);
+                const communityData = await this.calculateCommunityMetrics(users);
                 this.updateCommunityMetrics(communityData);
             }
         } catch (error) {
@@ -203,7 +178,7 @@ const AdminAnalytics = {
         }
     },
 
-    calculateCommunityMetrics(users) {
+    async calculateCommunityMetrics(users) {
         const timeRange = this.getTimeRangeInMs();
         const now = new Date();
         const cutoffDate = timeRange === 'total' ? new Date(0) : new Date(now.getTime() - timeRange);
@@ -227,8 +202,8 @@ const AdminAnalytics = {
                 return createdAt && createdAt >= cutoffDate;
             }).length,
 
-            // Engagement: placeholder for now (would need backend tracking)
-            engagement: this.estimateEngagement(users, timeRange)
+            // Engagement: get from backend or fallback
+            engagement: await this.getEngagementFromBackend(this.currentTimeRange)
         };
     },
 
@@ -244,22 +219,28 @@ const AdminAnalytics = {
         }
     },
 
-    estimateEngagement(users, timeRange) {
-        // Placeholder engagement calculation
-        // In a real implementation, this would count:
-        // - Blog posts created
-        // - Comments posted  
-        // - Messages sent
-        // - Votes cast
-        // For now, estimate based on active users
-        const activeUsers = users.filter(user => {
-            const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
-            const cutoff = timeRange === 'total' ? new Date(0) : new Date(Date.now() - this.getTimeRangeInMs());
-            return lastLogin && lastLogin >= cutoff;
-        }).length;
+    async getEngagementFromBackend(timeRange) {
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/activity/analytics?timeRange=${timeRange}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.overview.totalEngagement || 0;
+            }
+        } catch (error) {
+            console.error('Failed to fetch engagement from backend:', error);
+        }
+        
+        // Fallback: estimate based on user count
+        return this.estimateEngagementFallback(timeRange);
+    },
 
-        // Estimate 3-5 actions per active user
-        return Math.floor(activeUsers * (3 + Math.random() * 2));
+    estimateEngagementFallback(timeRange) {
+        const multipliers = { '24h': 5, '7d': 25, '30d': 80, '90d': 200, '1y': 800, 'total': 1200 };
+        return multipliers[timeRange] || 25;
     },
 
     updateCommunityMetrics(data) {

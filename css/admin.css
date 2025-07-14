@@ -271,6 +271,43 @@
     color: var(--accent);
 }
 
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.activity-header h3 {
+    margin: 0;
+}
+
+.refresh-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 94, 120, 0.3);
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.refresh-btn:hover {
+    background: rgba(255, 94, 120, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.refresh-btn.rotating i {
+    animation: spin 0.5s linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .activity-feed {
     max-height: 400px;
     overflow-y: auto;
