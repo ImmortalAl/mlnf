@@ -250,50 +250,43 @@ const AdminAnalytics = {
     },
 
     updateTrafficMetrics(data) {
-        // Update the new traffic overview metrics
-        this.updateMetricWithAnimation('uniqueVisitors', this.formatNumber(data.overview.uniqueVisitors));
-        this.updateMetricWithAnimation('totalVisits', this.formatNumber(data.overview.totalVisits));
-        this.updateMetricWithAnimation('totalPages', this.formatNumber(data.overview.totalPages));
-        this.updateMetricWithAnimation('totalHits', this.formatNumber(data.overview.totalHits));
+        // Update the new traffic overview metrics with fallbacks
+        const overview = data?.overview || {};
+        this.updateMetricWithAnimation('uniqueVisitors', this.formatNumber(overview.uniqueVisitors || 0));
+        this.updateMetricWithAnimation('totalVisits', this.formatNumber(overview.totalVisits || 0));
+        this.updateMetricWithAnimation('totalPages', this.formatNumber(overview.totalPages || 0));
+        this.updateMetricWithAnimation('totalHits', this.formatNumber(overview.totalHits || 0));
     },
 
     updateDeviceStats(data) {
-        // Update device and browser lists
-        if (data.deviceStats) {
-            const deviceItems = data.deviceStats.map(device => ({
-                label: device.type,
-                value: this.formatNumber(device.count),
-                percentage: device.percentage
-            }));
-            this.updateAnalyticsList('deviceTypes', deviceItems);
-        }
+        // Update device and browser lists with fallbacks
+        const deviceItems = data?.deviceStats?.map(device => ({
+            label: device.type,
+            value: this.formatNumber(device.count),
+            percentage: device.percentage
+        })) || [];
+        this.updateAnalyticsList('deviceTypes', deviceItems);
 
-        if (data.browserStats) {
-            const browserItems = data.browserStats.map(browser => ({
-                label: browser.browser,
-                value: this.formatNumber(browser.count),
-                percentage: browser.percentage
-            }));
-            this.updateAnalyticsList('browserUsage', browserItems);
-        }
+        const browserItems = data?.browserStats?.map(browser => ({
+            label: browser.browser,
+            value: this.formatNumber(browser.count),
+            percentage: browser.percentage
+        })) || [];
+        this.updateAnalyticsList('browserUsage', browserItems);
 
-        if (data.geoStats) {
-            const geoItems = data.geoStats.map(geo => ({
-                label: geo.country,
-                value: this.formatNumber(geo.visitors),
-                percentage: 100 // Calculate relative percentage
-            }));
-            this.updateAnalyticsList('geographicData', geoItems);
-        }
+        const geoItems = data?.geoStats?.map(geo => ({
+            label: geo.country,
+            value: this.formatNumber(geo.visitors),
+            percentage: 100 // Calculate relative percentage
+        })) || [];
+        this.updateAnalyticsList('geographicData', geoItems);
 
-        if (data.searchQueries) {
-            const queryItems = data.searchQueries.map(query => ({
-                label: query.query,
-                value: this.formatNumber(query.count),
-                percentage: 100 // Calculate relative percentage
-            }));
-            this.updateAnalyticsList('searchQueries', queryItems);
-        }
+        const queryItems = data?.searchQueries?.map(query => ({
+            label: query.query,
+            value: this.formatNumber(query.count),
+            percentage: 100 // Calculate relative percentage
+        })) || [];
+        this.updateAnalyticsList('searchQueries', queryItems);
     },
 
     updateCommunityMetrics(data) {
@@ -357,26 +350,27 @@ const AdminAnalytics = {
     },
 
     updatePopularContent(data) {
-        // Update popular pages from analytics data
-        if (data.popularPages && data.popularPages.length > 0) {
-            const popularItems = data.popularPages.map((page, index) => ({
-                label: page.title || page.url || 'Unknown Page',
-                value: this.formatNumber(page.views),
-                percentage: index === 0 ? 100 : Math.round((page.views / data.popularPages[0].views) * 100)
-            }));
-            this.updateAnalyticsList('popularPages', popularItems);
-        }
+        // Update popular pages from analytics data with fallbacks
+        const popularItems = data?.popularPages?.map((page, index) => ({
+            label: page.title || page.url || 'Unknown Page',
+            value: this.formatNumber(page.views),
+            percentage: index === 0 ? 100 : Math.round((page.views / data.popularPages[0].views) * 100)
+        })) || [];
+        this.updateAnalyticsList('popularPages', popularItems);
 
-        // Update top referrers from analytics data
-        if (data.topReferrers && data.topReferrers.length > 0) {
-            const referrerItems = data.topReferrers.map((ref, index) => ({
-                label: ref.source,
-                value: this.formatNumber(ref.visits),
-                percentage: index === 0 ? 100 : Math.round((ref.visits / data.topReferrers[0].visits) * 100)
-            }));
-            this.updateAnalyticsList('topReferrers', referrerItems);
-        } else if (data.popular) {
-            // Fallback to old structure
+        // Update top referrers from analytics data with fallbacks
+        const referrerItems = data?.topReferrers?.map((ref, index) => ({
+            label: ref.source,
+            value: this.formatNumber(ref.visits),
+            percentage: index === 0 ? 100 : Math.round((ref.visits / data.topReferrers[0].visits) * 100)
+        })) || [];
+        this.updateAnalyticsList('topReferrers', referrerItems);
+
+        // Handle case where no data is available from either source
+        if ((!data?.popularPages || data.popularPages.length === 0) && 
+            (!data?.topReferrers || data.topReferrers.length === 0) && 
+            data?.popular) {
+            // Fallback to old structure if available
             if (data.popular.blogs && data.popular.blogs.length > 0) {
                 const popularBlogs = data.popular.blogs.map(blog => ({
                     label: blog.title || 'Untitled Soul Scroll',
@@ -738,6 +732,17 @@ const AdminAnalytics = {
     updateAnalyticsList(containerId, items) {
         const container = document.getElementById(containerId);
         if (!container) return;
+
+        if (!items || items.length === 0) {
+            container.innerHTML = `
+                <div class="analytics-no-data">
+                    <i class="fas fa-chart-line" style="opacity: 0.3; font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <p>No data available for this time period</p>
+                    <small>Data will appear as souls interact with the site</small>
+                </div>
+            `;
+            return;
+        }
 
         container.innerHTML = items.map(item => `
             <div class="analytics-list-item">
