@@ -52,6 +52,22 @@ const AdminFeedback = {
                 throw new Error('No authentication token found');
             }
 
+            // Debug: Check who we're authenticated as
+            try {
+                const debugResponse = await fetch(`${this.apiBaseUrl}/debug/whoami`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (debugResponse.ok) {
+                    const debugData = await debugResponse.json();
+                    console.log('Current user auth status:', debugData);
+                    if (!debugData.isAdmin) {
+                        console.warn('User is not an admin! Role:', debugData.role);
+                    }
+                }
+            } catch (debugError) {
+                console.error('Debug check failed:', debugError);
+            }
+
             // Try multiple potential API endpoints for feedback
             const endpoints = [
                 `${this.apiBaseUrl}/messages/feedback`,  // Primary endpoint
@@ -65,23 +81,34 @@ const AdminFeedback = {
 
             for (const endpoint of endpoints) {
                 try {
+                    console.log(`Trying feedback endpoint: ${endpoint}`);
                     response = await fetch(endpoint, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
                     
+                    console.log(`Response from ${endpoint}:`, response.status, response.statusText);
+                    
                     if (response.ok) {
+                        console.log(`Success! Using endpoint: ${endpoint}`);
                         break; // Success, exit loop
                     } else if (response.status === 404) {
                         lastError = `Endpoint not found: ${endpoint}`;
                         response = null;
                         continue; // Try next endpoint
+                    } else if (response.status === 403) {
+                        const errorData = await response.json().catch(() => ({}));
+                        lastError = `Access denied: ${errorData.error || 'Admin role required'}`;
+                        console.error('403 Forbidden:', errorData);
+                        response = null;
+                        continue;
                     } else {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                 } catch (fetchError) {
                     lastError = `${endpoint}: ${fetchError.message}`;
+                    console.error(`Failed to fetch ${endpoint}:`, fetchError);
                     response = null;
                     continue; // Try next endpoint
                 }
