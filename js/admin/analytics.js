@@ -298,35 +298,25 @@ const AdminAnalytics = {
         }
     },
 
-    generateMockVisitorData() {
-        // Generate realistic mock data based on time range
-        const baseViews = 12500;
-        const baseVisitors = 3200;
-        const multiplier = this.getTimeRangeMultiplier();
-
-        return {
-            totalPageViews: Math.floor(baseViews * multiplier + Math.random() * 1000),
-            uniqueVisitors: Math.floor(baseVisitors * multiplier + Math.random() * 300),
-            avgSessionDuration: this.formatDuration(Math.floor(180 + Math.random() * 240)), // 3-7 minutes
-            bounceRate: Math.floor(35 + Math.random() * 25), // 35-60%
-            currentOnlineVisitors: Math.floor(15 + Math.random() * 45), // 15-60 online
-            avgPageLoadTime: (1.2 + Math.random() * 1.8).toFixed(1), // 1.2-3.0 seconds
-            pageViewsChange: Math.floor((Math.random() - 0.5) * 20), // -10% to +10%
-            visitorsChange: Math.floor((Math.random() - 0.5) * 15),
-            sessionChange: Math.floor((Math.random() - 0.5) * 10),
-            bounceChange: Math.floor((Math.random() - 0.5) * 8)
+    showAnalyticsError(message) {
+        // Show user-friendly error message when analytics fail to load
+        const errorData = {
+            overview: { uniqueVisitors: 0, totalVisits: 0, totalPages: 0, totalHits: 0 },
+            popularPages: [],
+            topReferrers: [],
+            deviceStats: [],
+            browserStats: [],
+            geoStats: [],
+            searchQueries: []
         };
-    },
-
-    getTimeRangeMultiplier() {
-        const multipliers = {
-            '24h': 0.05,
-            '7d': 0.3,
-            '30d': 1,
-            '90d': 2.5,
-            '1y': 12
-        };
-        return multipliers[this.currentTimeRange] || 1;
+        
+        // Update with empty data to show "No data available" messages
+        this.updateTrafficMetrics(errorData);
+        this.updatePopularContent(errorData);
+        this.updateDeviceStats(errorData);
+        
+        // Show error in a prominent location
+        this.showError('Analytics data temporarily unavailable', message);
     },
 
     updateEternalMetrics(data) {
@@ -394,23 +384,23 @@ const AdminAnalytics = {
     updateRecentActivity(activityData) {
         // Update recent activity display
         if (activityData.recentBlogs) {
-            console.log('Recent Soul Scrolls:', activityData.recentBlogs.length);
+            // Recent blogs data available
         }
         if (activityData.recentThreads) {
-            console.log('Recent Echoes:', activityData.recentThreads.length);
+            // Recent threads data available
         }
         if (activityData.newUsers) {
-            console.log('New Souls:', activityData.newUsers.length);
+            // New users data available
         }
     },
 
     updateActivityPatterns(patternData) {
         // Update activity pattern visualizations
         if (patternData.hourlyActivity) {
-            console.log('Hourly activity patterns loaded:', patternData.hourlyActivity.length, 'data points');
+            // Hourly activity patterns available
         }
         if (patternData.dailyRegistrations) {
-            console.log('Daily registration patterns loaded:', patternData.dailyRegistrations.length, 'data points');
+            // Daily registration patterns available
         }
     },
 
@@ -442,28 +432,19 @@ const AdminAnalytics = {
         // Show recent activity indicator
         const totalRecentActivity = realtimeData.recentActivity.total;
         if (totalRecentActivity > 0) {
-            console.log(`🔥 ${totalRecentActivity} souls active in last 5 minutes`);
+            // Recent activity detected
         }
     },
 
-    loadFallbackData() {
-        // Fallback to mock data if real API fails
-        console.log('⚠️ Loading fallback mock data due to API failure');
-        
-        const mockData = this.generateMockVisitorData();
-        this.updateVisitorMetrics(mockData);
-        
-        // Continue with other mock data
-        this.loadTrafficData();
-        this.loadPopularContent();
-        this.loadDeviceAnalytics();
-        this.loadGeographicData();
-        this.loadSearchAnalytics();
+    handleAnalyticsFailure(error) {
+        // Handle analytics API failure gracefully
+        console.error('Analytics API failed:', error);
+        this.showAnalyticsError('Unable to connect to analytics service');
     },
 
     async loadDataFromExistingEndpoints() {
         try {
-            console.log('🔄 Loading real data from existing endpoints...');
+            // Loading real data from existing endpoints
             const token = localStorage.getItem('sessionToken');
             
             // Get real user data
@@ -473,7 +454,7 @@ const AdminAnalytics = {
             
             if (usersResponse.ok) {
                 const users = await usersResponse.json();
-                console.log('✅ Real user data loaded:', users.length, 'users');
+                // Real user data loaded successfully
                 
                 // Calculate real metrics from user data
                 const realMetrics = this.calculateRealMetricsFromUsers(users);
@@ -491,8 +472,8 @@ const AdminAnalytics = {
             console.error('Error loading existing endpoint data:', error);
         }
         
-        // If all else fails, use mock data
-        this.loadFallbackData();
+        // If all else fails, show error state
+        this.handleAnalyticsFailure('All analytics endpoints failed');
     },
 
     calculateRealMetricsFromUsers(users) {
@@ -576,127 +557,6 @@ const AdminAnalytics = {
         }
     },
 
-    async loadTrafficData() {
-        // Generate traffic chart data
-        const trafficData = this.generateTrafficData();
-        this.updateTrafficChart(trafficData);
-    },
-
-    generateTrafficData() {
-        const days = this.getDaysForRange();
-        const data = [];
-        
-        for (let i = 0; i < days; i++) {
-            const baseViews = 400 + Math.random() * 300;
-            const baseVisitors = baseViews * (0.3 + Math.random() * 0.4);
-            
-            data.push({
-                date: this.getDateForDaysAgo(days - i - 1),
-                pageViews: Math.floor(baseViews),
-                uniqueVisitors: Math.floor(baseVisitors)
-            });
-        }
-        
-        return data;
-    },
-
-    getDaysForRange() {
-        const ranges = {
-            '24h': 24, // Hours
-            '7d': 7,
-            '30d': 30,
-            '90d': 90,
-            '1y': 365
-        };
-        return ranges[this.currentTimeRange] || 7;
-    },
-
-    getDateForDaysAgo(daysAgo) {
-        const date = new Date();
-        date.setDate(date.getDate() - daysAgo);
-        return date;
-    },
-
-    async loadPopularContent() {
-        const popularPages = [
-            { url: '/', title: 'Homepage', views: 3240, percentage: 100 },
-            { url: '/souls/', title: 'Eternal Souls Directory', views: 1890, percentage: 58 },
-            { url: '/blog/', title: 'Soul Scrolls', views: 1456, percentage: 45 },
-            { url: '/messageboard/', title: 'Echoes Unbound', views: 1123, percentage: 35 },
-            { url: '/news/', title: 'Eternal News', views: 887, percentage: 27 }
-        ];
-
-        const referrers = [
-            { source: 'Direct', visits: 2134, percentage: 100 },
-            { source: 'Google Search', visits: 1456, percentage: 68 },
-            { source: 'Social Media', visits: 892, percentage: 42 },
-            { source: 'Other Sites', visits: 456, percentage: 21 },
-            { source: 'Email', visits: 234, percentage: 11 }
-        ];
-
-        this.updateAnalyticsList('popularPages', popularPages.map(page => ({
-            label: page.title,
-            value: this.formatNumber(page.views),
-            percentage: page.percentage
-        })));
-
-        this.updateAnalyticsList('topReferrers', referrers.map(ref => ({
-            label: ref.source,
-            value: this.formatNumber(ref.visits),
-            percentage: ref.percentage
-        })));
-    },
-
-    async loadDeviceAnalytics() {
-        const deviceData = [
-            { type: 'Desktop', users: 1245, percentage: 45 },
-            { type: 'Mobile', users: 1052, percentage: 38 },
-            { type: 'Tablet', users: 470, percentage: 17 }
-        ];
-
-        const browserData = [
-            { browser: 'Chrome', users: 1440, percentage: 52 },
-            { browser: 'Firefox', users: 637, percentage: 23 },
-            { browser: 'Safari', users: 415, percentage: 15 },
-            { browser: 'Edge', users: 194, percentage: 7 },
-            { browser: 'Other', users: 83, percentage: 3 }
-        ];
-
-        this.updateDeviceList(deviceData);
-        this.updateBrowserList(browserData);
-    },
-
-    async loadGeographicData() {
-        const geoData = [
-            { country: 'United States', visitors: 1245, percentage: 100 },
-            { country: 'Canada', visitors: 456, percentage: 37 },
-            { country: 'United Kingdom', visitors: 234, percentage: 19 },
-            { country: 'Germany', visitors: 189, percentage: 15 },
-            { country: 'Australia', visitors: 123, percentage: 10 }
-        ];
-
-        this.updateAnalyticsList('geographicData', geoData.map(geo => ({
-            label: geo.country,
-            value: this.formatNumber(geo.visitors),
-            percentage: geo.percentage
-        })));
-    },
-
-    async loadSearchAnalytics() {
-        const searchData = [
-            { query: 'eternal souls', searches: 234, percentage: 100 },
-            { query: 'manifest liberation', searches: 189, percentage: 81 },
-            { query: 'soul scrolls', searches: 145, percentage: 62 },
-            { query: 'immortal wisdom', searches: 98, percentage: 42 },
-            { query: 'naturally free', searches: 76, percentage: 32 }
-        ];
-
-        this.updateAnalyticsList('searchQueries', searchData.map(search => ({
-            label: search.query,
-            value: this.formatNumber(search.searches),
-            percentage: search.percentage
-        })));
-    },
 
     async loadPerformanceMetrics() {
         // Update legacy metrics
@@ -717,11 +577,17 @@ const AdminAnalytics = {
         }
     },
 
-    updateLegacyMetrics(users) {
+    async updateLegacyMetrics(users) {
         const dailyActive = this.calculateDailyActive(users);
-        const contentRate = '12/day'; // Placeholder
-        const engagement = '87%'; // Placeholder
-        const errorRate = '0.3%'; // Placeholder
+        
+        // Calculate real content rate from activity data
+        const contentRate = await this.calculateContentRate();
+        
+        // Calculate real engagement from analytics data
+        const engagement = await this.calculateEngagementRate();
+        
+        // Calculate error rate from server metrics (placeholder for now - requires error tracking)
+        const errorRate = '< 0.1%';
 
         this.updateMetricElement('dailyActive', dailyActive);
         this.updateMetricElement('contentRate', contentRate);
@@ -889,6 +755,47 @@ const AdminAnalytics = {
             const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
             return lastLogin && lastLogin >= today;
         }).length;
+    },
+
+    async calculateContentRate() {
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/activity/analytics?timeRange=24h`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const totalContent = (data.summary?.totalBlogs || 0) + (data.summary?.totalThreads || 0);
+                return `${totalContent}/day`;
+            }
+        } catch (error) {
+            // Fallback calculation
+        }
+        return 'N/A';
+    },
+
+    async calculateEngagementRate() {
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/analytics/summary?timeRange=24h`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const visitors = data.overview?.uniqueVisitors || 0;
+                const engagements = data.overview?.totalHits || 0;
+                
+                if (visitors > 0) {
+                    const rate = Math.round((engagements / visitors) * 100);
+                    return `${Math.min(rate, 100)}%`;
+                }
+            }
+        } catch (error) {
+            // Fallback calculation
+        }
+        return 'N/A';
     },
 
     updateMetricElement(id, value) {
