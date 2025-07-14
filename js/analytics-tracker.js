@@ -180,12 +180,12 @@ const MLNFAnalytics = {
     getDeviceType() {
         const userAgent = navigator.userAgent.toLowerCase();
         if (/tablet|ipad|playbook|silk/.test(userAgent)) {
-            return 'tablet';
+            return 'Tablet';
         }
         if (/mobile|iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/.test(userAgent)) {
-            return 'mobile';
+            return 'Mobile';
         }
-        return 'desktop';
+        return 'Desktop';
     },
 
     // Detect browser
