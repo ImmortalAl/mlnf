@@ -82,23 +82,29 @@ const AdminAnalytics = {
             const token = localStorage.getItem('sessionToken');
             if (!token) throw new Error('No authentication token');
             
-            const response = await fetch(`${this.apiBaseUrl}/activity/analytics?timeRange=${this.currentTimeRange}`, {
+            // Load from new analytics summary endpoint
+            const response = await fetch(`${this.apiBaseUrl}/analytics/summary?timeRange=${this.currentTimeRange}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            if (!response.ok) {
-                if (response.status === 404) {
-                    await this.loadDataFromExistingEndpoints();
-                    return;
-                }
-                throw new Error(`Analytics API error: ${response.status}`);
+            if (response.ok) {
+                const data = await response.json();
+                this.updateTrafficMetrics(data);
+                this.updatePopularContent(data);
+                this.updateDeviceStats(data);
+                return;
             }
 
-            const data = await response.json();
-            
-            this.updateEternalMetrics(data);
-            this.updatePopularContent(data.popular);
-            this.updateRecentActivity(data.activity);
+            // Fallback to activity endpoint
+            const activityResponse = await fetch(`${this.apiBaseUrl}/activity/analytics?timeRange=${this.currentTimeRange}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (activityResponse.ok) {
+                const activityData = await activityResponse.json();
+                this.updateCommunityMetrics(activityData);
+                this.updatePopularContent(activityData.popular);
+            }
             
         } catch (error) {
             console.error('Error loading analytics:', error);
@@ -243,11 +249,60 @@ const AdminAnalytics = {
         return multipliers[timeRange] || 25;
     },
 
+    updateTrafficMetrics(data) {
+        // Update the new traffic overview metrics
+        this.updateMetricWithAnimation('uniqueVisitors', this.formatNumber(data.overview.uniqueVisitors));
+        this.updateMetricWithAnimation('totalVisits', this.formatNumber(data.overview.totalVisits));
+        this.updateMetricWithAnimation('totalPages', this.formatNumber(data.overview.totalPages));
+        this.updateMetricWithAnimation('totalHits', this.formatNumber(data.overview.totalHits));
+    },
+
+    updateDeviceStats(data) {
+        // Update device and browser lists
+        if (data.deviceStats) {
+            const deviceItems = data.deviceStats.map(device => ({
+                label: device.type,
+                value: this.formatNumber(device.count),
+                percentage: device.percentage
+            }));
+            this.updateAnalyticsList('deviceTypes', deviceItems);
+        }
+
+        if (data.browserStats) {
+            const browserItems = data.browserStats.map(browser => ({
+                label: browser.browser,
+                value: this.formatNumber(browser.count),
+                percentage: browser.percentage
+            }));
+            this.updateAnalyticsList('browserUsage', browserItems);
+        }
+
+        if (data.geoStats) {
+            const geoItems = data.geoStats.map(geo => ({
+                label: geo.country,
+                value: this.formatNumber(geo.visitors),
+                percentage: 100 // Calculate relative percentage
+            }));
+            this.updateAnalyticsList('geographicData', geoItems);
+        }
+
+        if (data.searchQueries) {
+            const queryItems = data.searchQueries.map(query => ({
+                label: query.query,
+                value: this.formatNumber(query.count),
+                percentage: 100 // Calculate relative percentage
+            }));
+            this.updateAnalyticsList('searchQueries', queryItems);
+        }
+    },
+
     updateCommunityMetrics(data) {
-        this.updateMetricWithAnimation('filteredActiveSessions', data.activeSessions);
-        this.updateMetricWithAnimation('filteredLogins', data.logins);
-        this.updateMetricWithAnimation('filteredEngagement', data.engagement);
-        this.updateMetricWithAnimation('filteredNewUsers', data.newUsers);
+        if (data.overview) {
+            this.updateMetricWithAnimation('filteredActiveSessions', data.overview.activeUsers || 0);
+            this.updateMetricWithAnimation('filteredLogins', data.overview.activeUsers || 0);
+            this.updateMetricWithAnimation('filteredEngagement', data.overview.totalEngagement || 0);
+            this.updateMetricWithAnimation('filteredNewUsers', data.overview.newUsers || 0);
+        }
     },
 
     generateMockVisitorData() {
@@ -301,25 +356,44 @@ const AdminAnalytics = {
         this.updateChangeIndicator('bounceRateChange', Math.floor(Math.random() * 8) - 4);
     },
 
-    updatePopularContent(popularData) {
-        // Update popular blogs
-        if (popularData.blogs && popularData.blogs.length > 0) {
-            const popularBlogs = popularData.blogs.map(blog => ({
-                label: blog.title || 'Untitled Soul Scroll',
-                value: blog.totalEngagement || 0,
-                percentage: 100
+    updatePopularContent(data) {
+        // Update popular pages from analytics data
+        if (data.popularPages && data.popularPages.length > 0) {
+            const popularItems = data.popularPages.map((page, index) => ({
+                label: page.title || page.url || 'Unknown Page',
+                value: this.formatNumber(page.views),
+                percentage: index === 0 ? 100 : Math.round((page.views / data.popularPages[0].views) * 100)
             }));
-            this.updateAnalyticsList('popularPages', popularBlogs);
+            this.updateAnalyticsList('popularPages', popularItems);
         }
 
-        // Update popular threads as referrers
-        if (popularData.threads && popularData.threads.length > 0) {
-            const activeThreads = popularData.threads.map(thread => ({
-                label: thread.title || 'Untitled Echo',
-                value: thread.replyCount || 0,
-                percentage: 100
+        // Update top referrers from analytics data
+        if (data.topReferrers && data.topReferrers.length > 0) {
+            const referrerItems = data.topReferrers.map((ref, index) => ({
+                label: ref.source,
+                value: this.formatNumber(ref.visits),
+                percentage: index === 0 ? 100 : Math.round((ref.visits / data.topReferrers[0].visits) * 100)
             }));
-            this.updateAnalyticsList('topReferrers', activeThreads);
+            this.updateAnalyticsList('topReferrers', referrerItems);
+        } else if (data.popular) {
+            // Fallback to old structure
+            if (data.popular.blogs && data.popular.blogs.length > 0) {
+                const popularBlogs = data.popular.blogs.map(blog => ({
+                    label: blog.title || 'Untitled Soul Scroll',
+                    value: blog.totalEngagement || 0,
+                    percentage: 100
+                }));
+                this.updateAnalyticsList('popularPages', popularBlogs);
+            }
+
+            if (data.popular.threads && data.popular.threads.length > 0) {
+                const activeThreads = data.popular.threads.map(thread => ({
+                    label: thread.title || 'Untitled Echo',
+                    value: thread.replyCount || 0,
+                    percentage: 100
+                }));
+                this.updateAnalyticsList('topReferrers', activeThreads);
+            }
         }
     },
 

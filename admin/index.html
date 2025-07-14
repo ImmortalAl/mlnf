@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=4.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=4.0"></noscript>
+    <link rel="preload" href="../css/admin.css?v=4.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=4.1"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -292,40 +292,59 @@
                     <h3><i class="fas fa-rocket"></i> Site Traffic Overview</h3>
                 </div>
                 <div class="analytics-grid traffic-grid">
-                <div class="analytics-card highlight-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-eye"></i>
+                    <div class="analytics-card highlight-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>Unique Visitors</h4>
+                            <p class="analytics-number" id="uniqueVisitors">--</p>
+                            <span class="metric-description">Registered + unregistered</span>
+                        </div>
                     </div>
-                    <div class="analytics-content">
-                        <h3>Total Page Views</h3>
-                        <p class="analytics-number" id="totalPageViews">--</p>
-                        <span class="analytics-change" id="pageViewsChange">--</span>
+
+                    <div class="analytics-card highlight-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>Number of Visits</h4>
+                            <p class="analytics-number" id="totalVisits">--</p>
+                            <span class="metric-description">Sessions started</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card highlight-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>Pages</h4>
+                            <p class="analytics-number" id="totalPages">--</p>
+                            <span class="metric-description">HTML page requests</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card highlight-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-mouse"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>Hits</h4>
+                            <p class="analytics-number" id="totalHits">--</p>
+                            <span class="metric-description">All resource requests</span>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="analytics-card highlight-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="analytics-content">
-                        <h3>Unique Visitors</h3>
-                        <p class="analytics-number" id="uniqueVisitors">--</p>
-                        <span class="analytics-change" id="uniqueVisitorsChange">--</span>
-                    </div>
+            <!-- Tier 2: Community Health -->
+            <div class="analytics-tier">
+                <div class="tier-header">
+                    <h3><i class="fas fa-heart"></i> Community Activity</h3>
                 </div>
-
-                <div class="analytics-card highlight-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="analytics-content">
-                        <h3>Avg. Session Duration</h3>
-                        <p class="analytics-number" id="avgSessionDuration">--</p>
-                        <span class="analytics-change" id="sessionDurationChange">--</span>
-                    </div>
-                </div>
-
-                <div class="analytics-card">
+                <div class="analytics-grid community-grid">
+                    <div class="analytics-card highlight-card">
                     <div class="analytics-icon">
                         <i class="fas fa-user-friends"></i>
                     </div>
@@ -768,7 +787,7 @@
     <!-- Admin Components -->
     <script src="../js/admin/dashboard.js?v=1.5"></script>
     <script src="../js/admin/userManagement.js?v=2.6"></script>
-    <script src="../js/admin/analytics.js?v=4.0"></script>
+    <script src="../js/admin/analytics.js?v=4.1"></script>
     <script src="../js/admin/feedback.js?v=2.3"></script>
     
     <!-- Analytics Tracking System -->
