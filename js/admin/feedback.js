@@ -46,16 +46,17 @@ const AdminFeedback = {
                 mobileCards.innerHTML = '<div class="loading">Summoning immortal feedback...</div>';
             }
             
-            const token = localStorage.getItem('sessionToken');
+            // Try both possible token storage keys
+            const token = localStorage.getItem('sessionToken') || localStorage.getItem('token');
             if (!token) {
                 throw new Error('No authentication token found');
             }
 
             // Try multiple potential API endpoints for feedback
             const endpoints = [
+                `${this.apiBaseUrl}/messages/feedback`,  // Primary endpoint
                 `${this.apiBaseUrl}/feedback`,
                 `${this.apiBaseUrl}/admin/feedback`,
-                `${this.apiBaseUrl}/messages/feedback`,
                 `${this.apiBaseUrl}/contact`
             ];
 
@@ -90,11 +91,14 @@ const AdminFeedback = {
                 // If all endpoints failed, show a message but don't error out
                 const message = lastError || 'Feedback API not available';
                 console.warn('Feedback API warning:', message);
+                console.log('All attempted endpoints:', endpoints);
+                console.log('Last error details:', lastError);
                 
                 // Show placeholder message instead of error
                 this.feedbacks = [];
                 this.filteredFeedbacks = [];
                 this.renderFeedbackTable();
+                this.showError('Feedback system not configured', 'No feedback endpoints are available. Please check backend configuration.');
                 return;
             }
 
@@ -212,10 +216,24 @@ const AdminFeedback = {
             return;
         }
 
-        // Open message modal for direct reply
-        if (typeof MLNF !== 'undefined' && MLNF.openMessageModal) {
-            MLNF.openMessageModal(feedback.username || 'Anonymous', feedback._id);
+        console.log('Attempting to reply to feedback:', feedback);
+        console.log('MLNF object:', typeof MLNF, MLNF);
+        console.log('openMessageModal function:', typeof MLNF?.openMessageModal);
+
+        // Check if message modal system is available
+        if (typeof MLNF !== 'undefined' && typeof MLNF.openMessageModal === 'function') {
+            try {
+                const username = feedback.username || feedback.email || 'Anonymous';
+                console.log('Opening message modal for:', username);
+                MLNF.openMessageModal(username);
+            } catch (error) {
+                console.error('Error opening message modal:', error);
+                this.showError('Failed to open message modal', error.message);
+                // Fallback to feedback details modal
+                this.showFeedbackModal(feedback);
+            }
         } else {
+            console.warn('Message modal not available, showing feedback modal');
             // Fallback: show modal with feedback details
             this.showFeedbackModal(feedback);
         }
@@ -255,12 +273,13 @@ const AdminFeedback = {
         }
 
         try {
-            const token = localStorage.getItem('sessionToken');
+            // Try both possible token storage keys
+            const token = localStorage.getItem('sessionToken') || localStorage.getItem('token');
             if (!token) {
                 throw new Error('No authentication token found');
             }
 
-            const response = await fetch(`${this.apiBaseUrl}/feedback/${feedbackId}`, {
+            const response = await fetch(`${this.apiBaseUrl}/messages/feedback/${feedbackId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
