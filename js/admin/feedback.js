@@ -9,7 +9,10 @@ const AdminFeedback = {
     itemsPerPage: 10,
 
     init() {
+        console.log('MLNF_CONFIG:', window.MLNF_CONFIG);
+        console.log('API_BASE_URL from config:', window.MLNF_CONFIG?.API_BASE_URL);
         this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+        console.log('Final API base URL:', this.apiBaseUrl);
         this.loadFeedback();
         this.setupEventListeners();
     },

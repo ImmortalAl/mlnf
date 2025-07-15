@@ -734,8 +734,10 @@
                 return;
             }
             
-            // Verify admin role via API
-            fetch(`${window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api'}/debug/whoami`, {
+            // Verify admin role via API  
+            const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+            console.log('Auth check - API base URL:', apiBaseUrl);
+            fetch(`${apiBaseUrl}/debug/whoami`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             .then(response => response.json())
