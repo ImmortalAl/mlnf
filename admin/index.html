@@ -105,6 +105,9 @@
     <!-- Mobile Navigation Overlay -->
     <div class="admin-nav-overlay" id="mobileNavOverlay"></div>
     
+    <!-- Standard Navigation Overlay -->
+    <div class="nav-overlay" id="navOverlay"></div>
+    
     <!-- Mobile Navigation Menu -->
     <nav class="admin-nav-mobile" id="mobileNavMenu">
         <div class="nav-header">
@@ -599,6 +602,16 @@
         </button>
     </div>
 
+    <!-- Authentication Modal -->
+    <div id="soulModal" class="soul-modal" aria-hidden="true">
+        <div class="soul-modal-content" role="dialog" aria-labelledby="soulModalTitle">
+            <h2 id="soulModalTitle">Enter the Eternal Realm</h2>
+            <div class="soul-modal-body">
+                <!-- Auth form will be populated by authModal.js -->
+            </div>
+        </div>
+    </div>
+
     <!-- User Action Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
@@ -794,10 +807,18 @@
         })();
     </script>
     
+    <!-- Config MUST be loaded first -->
+    <script src="../components/shared/config.js?v=1.3"></script>
+    
+    <!-- Theme Manager - Load early for immediate theme application -->
+    <script src="../components/shared/themeManager.js?v=1.2"></script>
+    
     <!-- Core MLNF Components -->
-    <script src="../components/shared/authManager.js?v=1.2"></script>
-    <script src="../components/shared/apiClient.js?v=1.2"></script>
-    <script src="../components/shared/navigation.js?v=1.2"></script>
+    <script src="../components/shared/mlnf-core.js?v=1.3"></script>
+    <script src="../components/shared/authManager.js?v=1.3"></script>
+    <script src="../components/shared/authModal.js?v=1.2"></script>
+    <script src="../components/shared/apiClient.js?v=1.3"></script>
+    <script src="../components/shared/navigation.js?v=1.3"></script>
     <script src="../components/shared/userMenu.js?v=1.6"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=2.4"></script>
@@ -1203,6 +1224,12 @@
             
             if (typeof MLNF !== 'undefined') {
                 try {
+                    MLNF.initThemeManager();
+                } catch (error) {
+                    console.warn('Theme manager init skipped on admin page:', error.message);
+                }
+                
+                try {
                     MLNF.initNavigation();
                 } catch (error) {
                     console.warn('Navigation init skipped on admin page:', error.message);
@@ -1212,6 +1239,12 @@
                     MLNF.initUserMenu();
                 } catch (error) {
                     console.warn('User menu init skipped on admin page:', error.message);
+                }
+                
+                try {
+                    MLNF.initAuthModal();
+                } catch (error) {
+                    console.warn('Auth modal init skipped on admin page:', error.message);
                 }
                 
                 try {
@@ -1250,6 +1283,9 @@
                     }
                 }
             }, 1000);
+            
+            // Initialize floating buttons
+            initFloatingButtons();
             
             // Initialize admin components with delay to ensure all scripts are loaded
             setTimeout(() => {
@@ -1305,17 +1341,63 @@
             initMobileNavigation();
         });
         
+        // Floating Buttons Functions
+        function initFloatingButtons() {
+            const floatingShowUsersBtn = document.getElementById('floatingShowUsersBtn');
+            const themeToggle = document.querySelector('[data-theme-toggle]');
+            
+            // Floating active users button
+            if (floatingShowUsersBtn) {
+                floatingShowUsersBtn.addEventListener('click', () => {
+                    // Try to open active users sidebar
+                    const activeUsers = document.getElementById('activeUsers');
+                    if (activeUsers) {
+                        activeUsers.classList.add('active');
+                    }
+                });
+            }
+            
+            // Theme toggle button
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    // Use MLNF theme toggle if available
+                    if (typeof MLNF !== 'undefined' && typeof MLNF.toggleTheme === 'function') {
+                        MLNF.toggleTheme();
+                    } else {
+                        // Fallback theme toggle
+                        document.body.classList.toggle('dark-theme');
+                        const icon = themeToggle.querySelector('i');
+                        if (icon) {
+                            icon.classList.toggle('fa-moon');
+                            icon.classList.toggle('fa-sun');
+                        }
+                    }
+                });
+            }
+        }
+        
         // Mobile Navigation Functions
         function initMobileNavigation() {
             const mobileNavToggle = document.getElementById('mobileNavToggle');
+            const standardMobileNavToggle = document.getElementById('standardMobileNavToggle');
             const mobileNavOverlay = document.getElementById('mobileNavOverlay');
             const mobileNavMenu = document.getElementById('mobileNavMenu');
             const mobileNavClose = document.getElementById('mobileNavClose');
             
-            // Mobile nav toggle
+            // Admin mobile nav toggle
             if (mobileNavToggle) {
                 mobileNavToggle.addEventListener('click', () => {
                     toggleMobileNav(true);
+                });
+            }
+            
+            // Standard site mobile nav toggle
+            if (standardMobileNavToggle) {
+                standardMobileNavToggle.addEventListener('click', () => {
+                    // Use MLNF navigation toggle if available
+                    if (typeof MLNF !== 'undefined' && typeof MLNF.toggleMobileNav === 'function') {
+                        MLNF.toggleMobileNav();
+                    }
                 });
             }
             
