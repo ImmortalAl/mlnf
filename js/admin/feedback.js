@@ -47,10 +47,13 @@ const AdminFeedback = {
             }
             
             // Try both possible token storage keys
-            const token = localStorage.getItem('sessionToken') || localStorage.getItem('token');
+            let token = localStorage.getItem('sessionToken') || localStorage.getItem('token');
             if (!token) {
-                throw new Error('No authentication token found');
+                console.warn('No token found in localStorage. Keys:', Object.keys(localStorage));
+                throw new Error('No authentication token found - please log in again');
             }
+            
+            console.log('Using token from storage:', token ? 'Found' : 'Missing');
 
             // Debug: Check who we're authenticated as
             try {
