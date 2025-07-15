@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=5.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.7"></noscript>
+    <link rel="preload" href="../css/admin.css?v=5.8" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.8"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -96,13 +96,6 @@
         </div>
     </header>
 
-    <!-- Standard Site Navigation Menu (Desktop/Tablet) -->
-    <nav class="main-nav admin-main-nav">
-        <ul>
-            <!-- Navigation will be populated by navigation.js -->
-        </ul>
-    </nav>
-
     <!-- Mobile Navigation Overlay -->
     <div class="admin-nav-overlay" id="mobileNavOverlay"></div>
     
@@ -136,6 +129,13 @@
             </button>
         </div>
         <ul class="mobile-nav-list">
+            <!-- Navigation will be populated by navigation.js -->
+        </ul>
+    </nav>
+
+    <!-- Standard Site Navigation Menu (Desktop/Tablet) - Above Admin Tabs -->
+    <nav class="main-nav admin-main-nav">
+        <ul>
             <!-- Navigation will be populated by navigation.js -->
         </ul>
     </nav>
@@ -1250,6 +1250,39 @@
                 
                 try {
                     MLNF.initUserMenu();
+                    
+                    // MLNF.initUserMenu() also skips admin pages, so populate user menu manually
+                    const userMenuContainer = document.getElementById('userMenuContainer');
+                    if (userMenuContainer) {
+                        const token = localStorage.getItem('sessionToken');
+                        const cachedUser = localStorage.getItem('user');
+                        
+                        if (token && cachedUser) {
+                            try {
+                                const userData = JSON.parse(cachedUser);
+                                const DEFAULT_AVATAR = '/assets/images/default.jpg';
+                                
+                                userMenuContainer.innerHTML = `
+                                    <button class="user-menu-btn" id="userMenuBtn">
+                                        <img src="${userData.avatar || DEFAULT_AVATAR}" alt="User Avatar" id="userMenuAvatar">
+                                        <span id="userMenuName">${userData.displayName || userData.username || 'Soul Seeker'}</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="user-dropdown" id="userDropdown">
+                                        <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
+                                        <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+                                        <div class="divider"></div>
+                                        <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Transcend</a>
+                                    </div>
+                                `;
+                                
+                                userMenuContainer.style.display = 'flex';
+                                console.log('✅ User menu populated manually for admin page');
+                            } catch (e) {
+                                console.warn('Error parsing user data:', e);
+                            }
+                        }
+                    }
                 } catch (error) {
                     console.warn('User menu init skipped on admin page:', error.message);
                 }
