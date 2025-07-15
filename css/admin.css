@@ -1578,6 +1578,13 @@
     border-radius: 50%;
 }
 
+/* Show admin main nav only on desktop and tablet */
+@media (min-width: 769px) {
+    .admin-main-nav {
+        display: block !important; /* Override shared styles hiding main-nav */
+    }
+}
+
 /* Tablet Responsiveness for Admin Navigation */
 @media (max-width: 1024px) and (min-width: 769px) {
     .admin-main-nav ul {

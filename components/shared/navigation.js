@@ -71,12 +71,14 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
 }
 
 function injectNavigation() {
-    const mainNavUl = document.querySelector('nav.main-nav ul');
+    const mainNavUls = document.querySelectorAll('nav.main-nav ul');
     const mobileNavList = document.querySelector('.mobile-nav-list'); // Target for mobile links
     const currentPath = window.location.pathname;
 
-    if (mainNavUl) {
-        mainNavUl.innerHTML = generateNavLinksHTML(currentPath, 'main');
+    if (mainNavUls.length > 0) {
+        mainNavUls.forEach(mainNavUl => {
+            mainNavUl.innerHTML = generateNavLinksHTML(currentPath, 'main');
+        });
     } else {
         console.warn('Main navigation UL not found. Main links not injected.');
     }
