@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth Debug Test</title>
+</head>
+<body>
+    <h1>Authentication Debug</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testAuth() {
+            const results = document.getElementById('results');
+            
+            // Check localStorage
+            const sessionToken = localStorage.getItem('sessionToken');
+            const token = localStorage.getItem('token');
+            
+            results.innerHTML = `
+                <h2>LocalStorage Check:</h2>
+                <p>sessionToken: ${sessionToken ? 'EXISTS ✅' : 'MISSING ❌'}</p>
+                <p>token: ${token ? 'EXISTS ✅' : 'MISSING ❌'}</p>
+                <p>All localStorage keys: ${Object.keys(localStorage).join(', ')}</p>
+                
+                <h2>API Tests:</h2>
+                <div id="apiTests">Testing...</div>
+            `;
+            
+            const apiTests = document.getElementById('apiTests');
+            const testToken = sessionToken || token;
+            
+            if (!testToken) {
+                apiTests.innerHTML = '<p>❌ No token found - cannot test API</p>';
+                return;
+            }
+            
+            // Test whoami endpoint
+            try {
+                const response = await fetch('https://mlnf-auth.onrender.com/api/debug/whoami', {
+                    headers: { 'Authorization': `Bearer ${testToken}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    apiTests.innerHTML += `
+                        <p>✅ /debug/whoami: SUCCESS</p>
+                        <p>Username: ${data.username}</p>
+                        <p>Role: ${data.role}</p>
+                        <p>Is Admin: ${data.isAdmin}</p>
+                    `;
+                    
+                    // Test feedback endpoint
+                    try {
+                        const feedbackResponse = await fetch('https://mlnf-auth.onrender.com/api/messages/feedback', {
+                            headers: { 'Authorization': `Bearer ${testToken}` }
+                        });
+                        
+                        if (feedbackResponse.ok) {
+                            const feedbackData = await feedbackResponse.json();
+                            apiTests.innerHTML += `
+                                <p>✅ /messages/feedback: SUCCESS</p>
+                                <p>Feedback count: ${feedbackData.length}</p>
+                            `;
+                        } else {
+                            apiTests.innerHTML += `
+                                <p>❌ /messages/feedback: ${feedbackResponse.status} ${feedbackResponse.statusText}</p>
+                            `;
+                        }
+                    } catch (error) {
+                        apiTests.innerHTML += `<p>❌ /messages/feedback: ${error.message}</p>`;
+                    }
+                    
+                } else {
+                    apiTests.innerHTML += `
+                        <p>❌ /debug/whoami: ${response.status} ${response.statusText}</p>
+                    `;
+                }
+            } catch (error) {
+                apiTests.innerHTML += `<p>❌ Auth test failed: ${error.message}</p>`;
+            }
+        }
+        
+        testAuth();
+    </script>
+</body>
+</html>
