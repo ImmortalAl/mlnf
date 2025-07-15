@@ -971,13 +971,23 @@
         display: none;
     }
     
+    .main-nav {
+        display: none !important;
+    }
+    
     .admin-nav-toggle {
         display: block;
         order: 1;
     }
     
-    .admin-user {
+    .mobile-nav-toggle {
+        display: block !important;
         order: 2;
+        margin-left: 0.5rem;
+    }
+    
+    .admin-user {
+        order: 3;
         gap: 0.5rem;
     }
     

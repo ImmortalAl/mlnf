@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=5.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.0"></noscript>
+    <link rel="preload" href="../css/admin.css?v=5.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.1"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -76,13 +76,13 @@
             </ul>
         </nav>
         
-        <!-- Mobile Navigation Toggle -->
-        <button class="admin-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <!-- Admin Mobile Navigation Toggle -->
+        <button class="admin-nav-toggle" id="adminMobileNavToggle" aria-label="Toggle admin navigation">
             <i class="fas fa-bars"></i>
         </button>
         
         <!-- Standard Site Mobile Navigation Toggle -->
-        <button class="mobile-nav-toggle" id="standardMobileNavToggle" aria-label="Toggle navigation">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
         
@@ -106,7 +106,7 @@
     <div class="admin-nav-overlay" id="mobileNavOverlay"></div>
     
     <!-- Standard Navigation Overlay -->
-    <div class="nav-overlay" id="navOverlay"></div>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
     
     <!-- Mobile Navigation Menu -->
     <nav class="admin-nav-mobile" id="mobileNavMenu">
@@ -1234,6 +1234,7 @@
                 
                 try {
                     MLNF.initNavigation();
+                    console.log('✅ Standard navigation initialized successfully');
                 } catch (error) {
                     console.warn('Navigation init skipped on admin page:', error.message);
                 }
@@ -1342,6 +1343,7 @@
             
             // Initialize mobile navigation
             initMobileNavigation();
+            console.log('✅ Admin mobile navigation initialized');
         });
         
         // Floating Buttons Functions
@@ -1390,26 +1392,15 @@
         
         // Mobile Navigation Functions
         function initMobileNavigation() {
-            const mobileNavToggle = document.getElementById('mobileNavToggle');
-            const standardMobileNavToggle = document.getElementById('standardMobileNavToggle');
+            const adminMobileNavToggle = document.getElementById('adminMobileNavToggle');
             const mobileNavOverlay = document.getElementById('mobileNavOverlay');
             const mobileNavMenu = document.getElementById('mobileNavMenu');
             const mobileNavClose = document.getElementById('mobileNavClose');
             
             // Admin mobile nav toggle
-            if (mobileNavToggle) {
-                mobileNavToggle.addEventListener('click', () => {
+            if (adminMobileNavToggle) {
+                adminMobileNavToggle.addEventListener('click', () => {
                     toggleMobileNav(true);
-                });
-            }
-            
-            // Standard site mobile nav toggle
-            if (standardMobileNavToggle) {
-                standardMobileNavToggle.addEventListener('click', () => {
-                    // Use MLNF navigation toggle if available
-                    if (typeof MLNF !== 'undefined' && typeof MLNF.toggleMobileNav === 'function') {
-                        MLNF.toggleMobileNav();
-                    }
                 });
             }
             
