@@ -49,6 +49,9 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
     }
     // For any other navType, we use allLinks by default
 
+    console.log(`generateNavLinksHTML called with navType: ${navType}, path: ${currentPath}`);
+    console.log(`Links to render (${linksToRender.length}):`, linksToRender);
+    
     const finalHTML = linksToRender.map(link => {
         const isActive = normalizedCurrentPath === link.href || 
                        (link.href !== "/" && normalizedCurrentPath.startsWith(link.href)) || 
@@ -65,8 +68,12 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
         const linkContent = navType === 'main' 
             ? `<i class="${link.icon}"></i><span>${linkText}</span>` 
             : `<i class="${link.icon}"></i> ${link.text}`;
-        return `<li><a href="${link.href}" class="${isActive ? 'active' : ''}">${linkContent}</a></li>`;
+        const linkHTML = `<li><a href="${link.href}" class="${isActive ? 'active' : ''}">${linkContent}</a></li>`;
+        console.log(`Generated link HTML: ${linkHTML}`);
+        return linkHTML;
     }).join('');
+    
+    console.log(`Final HTML output: ${finalHTML}`);
     return finalHTML;
 }
 
@@ -79,8 +86,11 @@ function injectNavigation() {
         console.log(`Found ${mainNavUls.length} main navigation UL elements`);
         mainNavUls.forEach((mainNavUl, index) => {
             const linksHTML = generateNavLinksHTML(currentPath, 'main');
+            console.log(`Generated HTML for nav ${index + 1}:`, linksHTML);
+            console.log(`Generated HTML length: ${linksHTML.length}`);
             mainNavUl.innerHTML = linksHTML;
-            console.log(`Populated main nav ${index + 1} with ${linksHTML.length} characters of HTML`);
+            console.log(`After setting innerHTML, nav ${index + 1} children:`, mainNavUl.children.length);
+            console.log(`Nav ${index + 1} innerHTML after setting:`, mainNavUl.innerHTML);
         });
     } else {
         console.warn('Main navigation UL not found. Main links not injected.');
