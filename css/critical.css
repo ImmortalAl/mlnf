@@ -177,8 +177,8 @@ header {
     right: 0;
     z-index: 2500;
     min-height: var(--header-height, 70px);
-    width: 100vw; /* Use viewport width */
-    margin-left: calc(-50vw + 50%); /* Pull to left edge */
+    width: 100%;
+    margin-left: 0;
     box-sizing: border-box;
 }
 
