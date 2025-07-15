@@ -723,6 +723,35 @@
     <!-- Config MUST be loaded first -->
     <script src="../components/shared/config.js?v=1.2"></script>
     
+    <!-- Admin Authentication Check -->
+    <script>
+        // Check if user is logged in and has admin role
+        (function() {
+            const token = localStorage.getItem('sessionToken');
+            if (!token) {
+                alert('Admin access requires authentication. Redirecting to login...');
+                window.location.href = '/?login=admin';
+                return;
+            }
+            
+            // Verify admin role via API
+            fetch(`${window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api'}/debug/whoami`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.isAdmin) {
+                    alert('Admin access denied. Insufficient privileges.');
+                    window.location.href = '/';
+                }
+            })
+            .catch(error => {
+                console.warn('Could not verify admin status:', error);
+                // Continue loading - might be offline or local development
+            });
+        })();
+    </script>
+    
     <!-- Core MLNF Components -->
     <script src="../components/shared/authManager.js?v=1.2"></script>
     <script src="../components/shared/apiClient.js?v=1.2"></script>
