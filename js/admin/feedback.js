@@ -118,17 +118,41 @@ const AdminFeedback = {
             }
 
             if (!response || !response.ok) {
-                // If all endpoints failed, show a message but don't error out
+                // If all endpoints failed, show detailed error info
                 const message = lastError || 'Feedback API not available';
-                console.warn('Feedback API warning:', message);
-                console.log('All attempted endpoints:', endpoints);
-                console.log('Last error details:', lastError);
+                console.error('❌ ALL FEEDBACK ENDPOINTS FAILED');
+                console.error('Attempted endpoints:', endpoints);
+                console.error('Last error:', lastError);
+                console.error('API Base URL:', this.apiBaseUrl);
+                console.error('Token present:', !!token);
                 
-                // Show placeholder message instead of error
+                // Show detailed error to user
                 this.feedbacks = [];
                 this.filteredFeedbacks = [];
                 this.renderFeedbackTable();
-                this.showError('Feedback system not configured', 'No feedback endpoints are available. Please check backend configuration.');
+                
+                // Show actual error message to user instead of generic one
+                this.showError('Feedback Failed', `All endpoints failed. Last error: ${lastError}`);
+                
+                // TEMPORARY: Add mock data for testing reply functionality
+                console.log('🔧 Adding mock feedback data for testing...');
+                this.feedbacks = [
+                    {
+                        _id: 'mock1',
+                        message: 'This is test feedback from a user',
+                        username: 'testuser',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        _id: 'mock2', 
+                        message: 'Another piece of feedback about the site',
+                        username: 'anotheruser',
+                        createdAt: new Date(Date.now() - 86400000).toISOString()
+                    }
+                ];
+                this.filteredFeedbacks = [...this.feedbacks];
+                this.renderFeedbackTable();
+                console.log('🔧 Mock feedback loaded - you can now test the reply button');
                 return;
             }
 
