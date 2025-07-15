@@ -1236,6 +1236,14 @@
                 try {
                     MLNF.initNavigation();
                     console.log('✅ Standard navigation initialized successfully');
+                    
+                    // MLNF.initNavigation() skips admin pages, so call injectNavigation directly
+                    if (typeof MLNF.injectNavigation === 'function') {
+                        MLNF.injectNavigation();
+                        console.log('✅ Navigation injection called directly for admin page');
+                    } else {
+                        console.warn('MLNF.injectNavigation not available');
+                    }
                 } catch (error) {
                     console.warn('Navigation init skipped on admin page:', error.message);
                 }
