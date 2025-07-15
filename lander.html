@@ -2144,6 +2144,9 @@
             initQuillEditor();
             fetchActivities();
             
+            // Load user profile data and update avatar
+            await loadUserProfile();
+            
             // Load user's drafts
             await loadDrafts();
             
@@ -2202,14 +2205,8 @@
                     e.preventDefault();
                     e.stopPropagation();
                     // Navigate to user's public profile page
-                    const username = getCurrentUsername();
-                    console.log('Username:', username);
-                    if (username) {
-                        window.location.href = `/souls/${username}`;
-                    } else {
-                        // Fallback: open profile page
-                        window.location.href = '/profile';
-                    }
+                    // Stay on Soul Sanctum page and show profile modal instead of redirecting
+                    openSoulForgeModal();
                 };
                 viewProfileBtn.addEventListener('click', viewHandler);
                 viewProfileBtn.addEventListener('touchend', viewHandler, { passive: false });
@@ -2417,7 +2414,7 @@
                 displayName: document.getElementById('eternalNameInput')?.value || '',
                 status: document.getElementById('soulWhisperInput')?.value || '',
                 bio: document.getElementById('soulChronicle')?.value || '',
-                avatarUrl: document.getElementById('avatarUrl')?.value || '',
+                avatar: document.getElementById('avatarUrl')?.value || '',
                 profileVisibility: document.querySelector('input[name="profileVisibility"]:checked')?.value || 'public',
                 messaging: document.querySelector('input[name="messaging"]:checked')?.value || 'enabled',
                 directoryListing: document.querySelector('input[name="directoryListing"]:checked')?.value || 'listed'
@@ -2452,8 +2449,15 @@
             const name = document.getElementById('eternalName');
             const whisper = document.getElementById('soulWhisper');
             
-            if (avatar && userData.avatarUrl) {
-                avatar.src = userData.avatarUrl;
+            if (avatar) {
+                if (userData.avatar) {
+                    avatar.src = userData.avatar;
+                } else if (userData.username && window.MLNFAvatarSystem) {
+                    // Use MLNF Avatar System fallback if no custom avatar
+                    avatar.src = window.MLNFAvatarSystem.generateAvatarUrl(userData.username);
+                } else {
+                    avatar.src = '/assets/images/default.jpg';
+                }
             }
             
             if (name && userData.displayName) {
@@ -2560,11 +2564,11 @@
                 // Populate avatar
                 const avatarImg = document.getElementById('forgeAvatar');
                 const avatarInput = document.getElementById('avatarUrl');
-                if (avatarImg && user.avatarUrl) {
-                    avatarImg.src = user.avatarUrl;
+                if (avatarImg && user.avatar) {
+                    avatarImg.src = user.avatar;
                 }
-                if (avatarInput && user.avatarUrl) {
-                    avatarInput.value = user.avatarUrl;
+                if (avatarInput && user.avatar) {
+                    avatarInput.value = user.avatar;
                 }
                 
                 // Populate identity fields
@@ -2716,6 +2720,19 @@
                 
                 const userData = await response.json();
                 // Profile data loaded successfully
+                
+                // Update localStorage with fresh user data
+                localStorage.setItem('user', JSON.stringify(userData));
+                
+                // Update main dashboard avatar
+                const mainAvatar = document.getElementById('soulAvatar');
+                if (mainAvatar && userData.avatar) {
+                    mainAvatar.src = userData.avatar;
+                }
+                
+                // Also update soul presence to ensure consistency
+                updateSoulPresence(userData);
+                
                 populateProfileModal(userData);
                 
             } catch (error) {
