@@ -591,6 +591,9 @@
         </div>
         <div id="userList"></div>
     </aside>
+    
+    <!-- Active Users Overlay -->
+    <div class="active-users-overlay" id="activeUsersOverlay"></div>
 
     <!-- Floating Buttons -->
     <div class="floating-buttons">
@@ -1349,10 +1352,19 @@
             // Floating active users button
             if (floatingShowUsersBtn) {
                 floatingShowUsersBtn.addEventListener('click', () => {
-                    // Try to open active users sidebar
-                    const activeUsers = document.getElementById('activeUsers');
-                    if (activeUsers) {
-                        activeUsers.classList.add('active');
+                    // Use the same logic as the main show users button
+                    const showUsersBtn = document.getElementById('showUsersBtn');
+                    if (showUsersBtn) {
+                        showUsersBtn.click();
+                    } else {
+                        // Fallback if main button doesn't exist
+                        const activeUsers = document.getElementById('activeUsers');
+                        const activeUsersOverlay = document.getElementById('activeUsersOverlay');
+                        if (activeUsers && activeUsersOverlay) {
+                            activeUsers.classList.add('active');
+                            activeUsersOverlay.classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }
                     }
                 });
             }
