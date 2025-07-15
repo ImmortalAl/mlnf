@@ -139,23 +139,31 @@ const AdminFeedback = {
             let data;
             try {
                 const responseText = await response.text();
-                console.log('Raw response:', responseText);
+                console.log('Raw response length:', responseText.length);
+                console.log('Raw response content:', responseText.substring(0, 200));
                 
                 if (responseText.trim() === '') {
                     console.log('Empty response - no feedback available');
                     data = [];
                 } else {
                     data = JSON.parse(responseText);
+                    console.log('Parsed data type:', Array.isArray(data) ? 'array' : typeof data);
+                    console.log('Parsed data length/keys:', Array.isArray(data) ? data.length : Object.keys(data));
                 }
             } catch (parseError) {
                 console.error('Failed to parse response:', parseError);
+                console.error('Response that failed to parse:', responseText);
                 data = [];
             }
             
             this.feedbacks = Array.isArray(data) ? data : data.feedbacks || data.messages || [];
             this.filteredFeedbacks = [...this.feedbacks];
             
-            console.log('Processed feedback data:', this.feedbacks);
+            console.log('Final feedback array:', this.feedbacks);
+            console.log('Number of feedback items:', this.feedbacks.length);
+            if (this.feedbacks.length > 0) {
+                console.log('First feedback item:', this.feedbacks[0]);
+            }
             this.renderFeedbackTable();
 
         } catch (error) {
