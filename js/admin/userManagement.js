@@ -584,7 +584,7 @@ const UserManagement = {
                 modal: !!modal,
                 modalTitle: !!modalTitle,
                 modalContent: !!modalContent
-            });
+            }));
             this.showError('Modal system is not properly initialized');
         }
     },
