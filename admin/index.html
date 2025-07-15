@@ -65,7 +65,14 @@
                 <li><a href="#curation"><i class="fas fa-star"></i> Content Curation</a></li>
                 <li><a href="#analytics"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
                 <li><a href="#feedback"><i class="fas fa-heart"></i> Eternal Feedback</a></li>
-                <li><a href="/"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
+                <li><a href="/lander.html"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Standard Site Navigation -->
+        <nav class="main-nav">
+            <ul>
+                <!-- Navigation will be populated by navigation.js -->
             </ul>
         </nav>
         
@@ -73,6 +80,16 @@
         <button class="admin-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
+        
+        <!-- Standard Site Mobile Navigation Toggle -->
+        <button class="mobile-nav-toggle" id="standardMobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div>
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;"></div>
+        </div>
         
         <div class="admin-user">
             <button id="showUsersBtn" class="btn btn-outline" title="Active Souls">
@@ -102,7 +119,20 @@
             <li><a href="#curation" class="mobile-nav-link"><i class="fas fa-star"></i> Content Curation</a></li>
             <li><a href="#analytics" class="mobile-nav-link"><i class="fas fa-chart-bar"></i> Eternal Analytics</a></li>
             <li><a href="#feedback" class="mobile-nav-link"><i class="fas fa-heart"></i> Eternal Feedback</a></li>
-            <li><a href="/" class="mobile-nav-link"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
+            <li><a href="/lander.html" class="mobile-nav-link"><i class="fas fa-home"></i> Return to Sanctuary</a></li>
+        </ul>
+    </nav>
+
+    <!-- Standard Site Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="sidebar-header">
+            <h2>Eternal Navigation</h2>
+            <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="mobile-nav-list">
+            <!-- Navigation will be populated by navigation.js -->
         </ul>
     </nav>
 
@@ -558,6 +588,16 @@
         </div>
         <div id="userList"></div>
     </aside>
+
+    <!-- Floating Buttons -->
+    <div class="floating-buttons">
+        <button class="show-users-btn" id="floatingShowUsersBtn" aria-label="Show active users">
+            <i class="fas fa-users"></i>
+        </button>
+        <button class="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
 
     <!-- User Action Modal -->
     <div id="userModal" class="modal">
@@ -1201,8 +1241,12 @@
                     console.warn('Active users initialization not available - this is expected on admin page');
                     // Don't try to reload the script - just gracefully degrade
                     const showUsersBtn = document.getElementById('showUsersBtn');
+                    const floatingShowUsersBtn = document.getElementById('floatingShowUsersBtn');
                     if (showUsersBtn) {
                         showUsersBtn.style.display = 'none';
+                    }
+                    if (floatingShowUsersBtn) {
+                        floatingShowUsersBtn.style.display = 'none';
                     }
                 }
             }, 1000);
