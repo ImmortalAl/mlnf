@@ -76,8 +76,11 @@ function injectNavigation() {
     const currentPath = window.location.pathname;
 
     if (mainNavUls.length > 0) {
-        mainNavUls.forEach(mainNavUl => {
-            mainNavUl.innerHTML = generateNavLinksHTML(currentPath, 'main');
+        console.log(`Found ${mainNavUls.length} main navigation UL elements`);
+        mainNavUls.forEach((mainNavUl, index) => {
+            const linksHTML = generateNavLinksHTML(currentPath, 'main');
+            mainNavUl.innerHTML = linksHTML;
+            console.log(`Populated main nav ${index + 1} with ${linksHTML.length} characters of HTML`);
         });
     } else {
         console.warn('Main navigation UL not found. Main links not injected.');

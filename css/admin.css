@@ -1585,6 +1585,13 @@
     }
 }
 
+/* Debug styles - temporary to ensure visibility */
+.admin-main-nav {
+    border: 2px solid red !important; /* Temporary debug border */
+    min-height: 60px !important;
+    background: rgba(255, 0, 0, 0.1) !important; /* Temporary debug background */
+}
+
 /* Tablet Responsiveness for Admin Navigation */
 @media (max-width: 1024px) and (min-width: 769px) {
     .admin-main-nav ul {
