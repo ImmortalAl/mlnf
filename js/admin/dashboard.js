@@ -417,19 +417,25 @@ const AdminDashboard = {
                 })
             ]);
 
-            // Process responses
+            // Process responses with proper error handling
             const [blogs, comments, threads, users] = await Promise.all([
-                blogsRes.ok ? blogsRes.json() : [],
-                commentsRes.ok ? commentsRes.json() : [],
-                threadsRes.ok ? threadsRes.json() : [],
-                usersRes.ok ? usersRes.json() : []
+                blogsRes.ok ? blogsRes.json().catch(() => []) : [],
+                commentsRes.ok ? commentsRes.json().catch(() => []) : [],
+                threadsRes.ok ? threadsRes.json().catch(() => []) : [],
+                usersRes.ok ? usersRes.json().catch(() => []) : []
             ]);
+
+            // Ensure all responses are arrays
+            const safeBlogs = Array.isArray(blogs) ? blogs : [];
+            const safeComments = Array.isArray(comments) ? comments : [];
+            const safeThreads = Array.isArray(threads) ? threads : [];
+            const safeUsers = Array.isArray(users) ? users : [];
 
             // Combine and format activities
             const activities = [];
 
             // Add blog activities
-            blogs.forEach(blog => {
+            safeBlogs.forEach(blog => {
                 if (blog.author && blog.createdAt) {
                     activities.push({
                         type: 'blog_created',
@@ -441,7 +447,7 @@ const AdminDashboard = {
             });
 
             // Add comment activities
-            comments.forEach(comment => {
+            safeComments.forEach(comment => {
                 if (comment.author && comment.createdAt) {
                     const preview = comment.content ? comment.content.substring(0, 50) + '...' : '';
                     activities.push({
@@ -454,7 +460,7 @@ const AdminDashboard = {
             });
 
             // Add thread activities
-            threads.forEach(thread => {
+            safeThreads.forEach(thread => {
                 if (thread.author && thread.createdAt) {
                     activities.push({
                         type: 'thread_created',
@@ -467,7 +473,7 @@ const AdminDashboard = {
 
             // Add new user activities
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-            users.forEach(user => {
+            safeUsers.forEach(user => {
                 if (user.createdAt && new Date(user.createdAt) > oneDayAgo) {
                     activities.push({
                         type: 'user_joined',

@@ -9,12 +9,7 @@ const AdminFeedback = {
     itemsPerPage: 10,
 
     init() {
-        console.log('🔧 AdminFeedback.init() called');
-        console.log('MLNF_CONFIG:', window.MLNF_CONFIG);
-        console.log('API_BASE_URL from config:', window.MLNF_CONFIG?.API_BASE_URL);
         this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
-        console.log('Final API base URL:', this.apiBaseUrl);
-        console.log('🔧 About to call loadFeedback()');
         this.loadFeedback();
         this.setupEventListeners();
     },
@@ -54,26 +49,22 @@ const AdminFeedback = {
             // Try both possible token storage keys
             let token = localStorage.getItem('sessionToken') || localStorage.getItem('token');
             if (!token) {
-                console.warn('No token found in localStorage. Keys:', Object.keys(localStorage));
                 throw new Error('No authentication token found - please log in again');
             }
-            
-            console.log('Using token from storage:', token ? 'Found' : 'Missing');
 
-            // Debug: Check who we're authenticated as
+            // Verify admin authentication
             try {
                 const debugResponse = await fetch(`${this.apiBaseUrl}/debug/whoami`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (debugResponse.ok) {
                     const debugData = await debugResponse.json();
-                    console.log('Current user auth status:', debugData);
                     if (!debugData.isAdmin) {
-                        console.warn('User is not an admin! Role:', debugData.role);
+                        throw new Error('Admin privileges required');
                     }
                 }
             } catch (debugError) {
-                console.error('Debug check failed:', debugError);
+                console.error('Authentication verification failed:', debugError);
             }
 
             // Try multiple potential API endpoints for feedback
@@ -89,17 +80,13 @@ const AdminFeedback = {
 
             for (const endpoint of endpoints) {
                 try {
-                    console.log(`Trying feedback endpoint: ${endpoint}`);
                     response = await fetch(endpoint, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
                     
-                    console.log(`Response from ${endpoint}:`, response.status, response.statusText);
-                    
                     if (response.ok) {
-                        console.log(`Success! Using endpoint: ${endpoint}`);
                         break; // Success, exit loop
                     } else if (response.status === 404) {
                         lastError = `Endpoint not found: ${endpoint}`;
@@ -108,7 +95,6 @@ const AdminFeedback = {
                     } else if (response.status === 403) {
                         const errorData = await response.json().catch(() => ({}));
                         lastError = `Access denied: ${errorData.error || 'Admin role required'}`;
-                        console.error('403 Forbidden:', errorData);
                         response = null;
                         continue;
                     } else {
@@ -116,60 +102,35 @@ const AdminFeedback = {
                     }
                 } catch (fetchError) {
                     lastError = `${endpoint}: ${fetchError.message}`;
-                    console.error(`Failed to fetch ${endpoint}:`, fetchError);
                     response = null;
                     continue; // Try next endpoint
                 }
             }
 
             if (!response || !response.ok) {
-                // If all endpoints failed, show detailed error info
-                const message = lastError || 'Feedback API not available';
-                console.error('❌ ALL FEEDBACK ENDPOINTS FAILED');
-                console.error('Attempted endpoints:', endpoints);
-                console.error('Last error:', lastError);
-                console.error('API Base URL:', this.apiBaseUrl);
-                console.error('Token present:', !!token);
-                
-                // Show detailed error to user
+                // If all endpoints failed, show error
                 this.feedbacks = [];
                 this.filteredFeedbacks = [];
                 this.renderFeedbackTable();
-                
-                // Show actual error message to user instead of generic one
-                this.showError('Feedback Failed', `All endpoints failed. Last error: ${lastError}`);
+                this.showError('Feedback unavailable', 'Unable to load feedback data');
                 return;
             }
 
             let data;
             try {
                 const responseText = await response.text();
-                console.log('Raw response length:', responseText.length);
-                console.log('Raw response content:', responseText.substring(0, 200));
-                
                 if (responseText.trim() === '') {
-                    console.log('Empty response - no feedback available');
                     data = [];
                 } else {
                     data = JSON.parse(responseText);
-                    console.log('Parsed data type:', Array.isArray(data) ? 'array' : typeof data);
-                    console.log('Parsed data length/keys:', Array.isArray(data) ? data.length : Object.keys(data));
                 }
             } catch (parseError) {
-                console.error('Failed to parse response:', parseError);
-                console.error('Response that failed to parse:', responseText);
+                console.error('Failed to parse feedback response:', parseError);
                 data = [];
             }
             
             this.feedbacks = Array.isArray(data) ? data : data.feedbacks || data.messages || [];
             this.filteredFeedbacks = [...this.feedbacks];
-            
-            console.log('Final feedback array:', this.feedbacks);
-            console.log('Number of feedback items:', this.feedbacks.length);
-            if (this.feedbacks.length > 0) {
-                console.log('First feedback item:', JSON.stringify(this.feedbacks[0], null, 2));
-                console.log('First feedback keys:', Object.keys(this.feedbacks[0]));
-            }
             this.renderFeedbackTable();
 
         } catch (error) {
@@ -275,48 +236,33 @@ const AdminFeedback = {
     },
 
     replyToFeedback(feedbackId) {
-        console.log('🔧 replyToFeedback called with ID:', feedbackId);
-        console.log('🔧 All feedback IDs:', this.feedbacks.map(f => f._id || f.id));
-        
         const feedback = this.feedbacks.find(f => (f._id || f.id) === feedbackId);
         if (!feedback) {
-            console.error('❌ Feedback not found! ID:', feedbackId);
-            console.error('❌ Available feedback:', this.feedbacks);
             this.showError('Feedback not found');
             return;
         }
-
-        console.log('✅ Found feedback:', JSON.stringify(feedback, null, 2));
-        console.log('MLNF object:', typeof MLNF, MLNF);
-        console.log('openMessageModal function:', typeof MLNF?.openMessageModal);
 
         // Check if feedback is anonymous or from a real user
         const isAnonymous = feedback.anonymous || !feedback.sender || feedback.sender.username === 'Anonymous';
         
         if (isAnonymous) {
-            console.log('Anonymous feedback - showing feedback details modal');
             this.showFeedbackModal(feedback);
         } else if (typeof MLNF !== 'undefined' && typeof MLNF.openMessageModal === 'function') {
             try {
                 // Get the actual username from the sender object
                 const username = feedback.sender?.username || feedback.username || feedback.email;
                 if (!username || username === 'Anonymous') {
-                    console.log('No valid username found - showing feedback modal');
                     this.showFeedbackModal(feedback);
                     return;
                 }
                 
-                console.log('Opening message modal for:', username);
                 MLNF.openMessageModal(username);
             } catch (error) {
                 console.error('Error opening message modal:', error);
                 this.showError('Failed to open message modal', error.message);
-                // Fallback to feedback details modal
                 this.showFeedbackModal(feedback);
             }
         } else {
-            console.warn('Message modal not available, showing feedback modal');
-            // Fallback: show modal with feedback details
             this.showFeedbackModal(feedback);
         }
     },
