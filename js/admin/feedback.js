@@ -290,10 +290,22 @@ const AdminFeedback = {
         console.log('MLNF object:', typeof MLNF, MLNF);
         console.log('openMessageModal function:', typeof MLNF?.openMessageModal);
 
-        // Check if message modal system is available
-        if (typeof MLNF !== 'undefined' && typeof MLNF.openMessageModal === 'function') {
+        // Check if feedback is anonymous or from a real user
+        const isAnonymous = feedback.anonymous || !feedback.sender || feedback.sender.username === 'Anonymous';
+        
+        if (isAnonymous) {
+            console.log('Anonymous feedback - showing feedback details modal');
+            this.showFeedbackModal(feedback);
+        } else if (typeof MLNF !== 'undefined' && typeof MLNF.openMessageModal === 'function') {
             try {
-                const username = feedback.username || feedback.email || 'Anonymous';
+                // Get the actual username from the sender object
+                const username = feedback.sender?.username || feedback.username || feedback.email;
+                if (!username || username === 'Anonymous') {
+                    console.log('No valid username found - showing feedback modal');
+                    this.showFeedbackModal(feedback);
+                    return;
+                }
+                
                 console.log('Opening message modal for:', username);
                 MLNF.openMessageModal(username);
             } catch (error) {
@@ -313,6 +325,13 @@ const AdminFeedback = {
         const modal = document.createElement('div');
         modal.className = 'modal active';
         modal.style.display = 'flex';
+        
+        // Extract sender info
+        const senderName = feedback.sender?.username || feedback.sender?.displayName || 
+                          feedback.feedbackMeta?.username || feedback.username || 
+                          feedback.email || 'Anonymous';
+        const isAnonymous = feedback.anonymous || senderName === 'Anonymous';
+        
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
@@ -321,16 +340,33 @@ const AdminFeedback = {
                 </div>
                 <div class="modal-body">
                     <div class="feedback-detail">
-                        <p><strong>From:</strong> ${this.escapeHtml(feedback.username || feedback.email || 'Anonymous')}</p>
-                        <p><strong>Date:</strong> ${new Date(feedback.createdAt || Date.now()).toLocaleString()}</p>
+                        <p><strong>From:</strong> ${this.escapeHtml(senderName)}${isAnonymous ? ' (Anonymous)' : ''}</p>
+                        <p><strong>Date:</strong> ${new Date(feedback.createdAt || feedback.timestamp || Date.now()).toLocaleString()}</p>
                         <div class="feedback-message">
                             <strong>Message:</strong>
                             <p>${this.escapeHtml(feedback.message || feedback.content || 'No message')}</p>
                         </div>
+                        ${!isAnonymous && feedback.sender?.username ? `
+                            <div class="feedback-reply-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                                <h4>Send Reply</h4>
+                                <textarea id="feedbackReplyText" style="width: 100%; min-height: 100px; margin: 10px 0;" placeholder="Type your reply here..."></textarea>
+                            </div>
+                        ` : `
+                            <div class="feedback-note" style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <p style="margin: 0; color: var(--text-secondary);">
+                                    <i class="fas fa-info-circle"></i> Cannot reply to anonymous feedback
+                                </p>
+                            </div>
+                        `}
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
+                    ${!isAnonymous && feedback.sender?.username ? `
+                        <button class="btn btn-primary" onclick="AdminFeedback.sendReplyFromModal('${feedback.sender.username}', '${feedback._id}')">
+                            <i class="fas fa-paper-plane"></i> Send Reply
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-outline" onclick="this.closest('.modal').remove()">Close</button>
                 </div>
             </div>
         `;
@@ -438,6 +474,39 @@ const AdminFeedback = {
             AdminDashboard.showSuccess(message);
         } else {
             alert(`Success: ${message}`);
+        }
+    },
+    
+    async sendReplyFromModal(username, feedbackId) {
+        const replyText = document.getElementById('feedbackReplyText')?.value;
+        if (!replyText?.trim()) {
+            alert('Please enter a reply message');
+            return;
+        }
+        
+        try {
+            const token = localStorage.getItem('sessionToken') || localStorage.getItem('token');
+            const response = await fetch(`${this.apiBaseUrl}/messages/send`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    recipientUsername: username,
+                    content: `Re: Feedback - ${replyText}`
+                })
+            });
+            
+            if (response.ok) {
+                this.showSuccess('Reply sent successfully');
+                document.querySelector('.modal')?.remove();
+            } else {
+                throw new Error(`Failed to send reply: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            this.showError('Failed to send reply', error.message);
         }
     }
 };
