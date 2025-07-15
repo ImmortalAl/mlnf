@@ -9,10 +9,12 @@ const AdminFeedback = {
     itemsPerPage: 10,
 
     init() {
+        console.log('🔧 AdminFeedback.init() called');
         console.log('MLNF_CONFIG:', window.MLNF_CONFIG);
         console.log('API_BASE_URL from config:', window.MLNF_CONFIG?.API_BASE_URL);
         this.apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
         console.log('Final API base URL:', this.apiBaseUrl);
+        console.log('🔧 About to call loadFeedback()');
         this.loadFeedback();
         this.setupEventListeners();
     },
@@ -165,7 +167,8 @@ const AdminFeedback = {
             console.log('Final feedback array:', this.feedbacks);
             console.log('Number of feedback items:', this.feedbacks.length);
             if (this.feedbacks.length > 0) {
-                console.log('First feedback item:', this.feedbacks[0]);
+                console.log('First feedback item:', JSON.stringify(this.feedbacks[0], null, 2));
+                console.log('First feedback keys:', Object.keys(this.feedbacks[0]));
             }
             this.renderFeedbackTable();
 
@@ -272,13 +275,18 @@ const AdminFeedback = {
     },
 
     replyToFeedback(feedbackId) {
+        console.log('🔧 replyToFeedback called with ID:', feedbackId);
+        console.log('🔧 All feedback IDs:', this.feedbacks.map(f => f._id || f.id));
+        
         const feedback = this.feedbacks.find(f => (f._id || f.id) === feedbackId);
         if (!feedback) {
+            console.error('❌ Feedback not found! ID:', feedbackId);
+            console.error('❌ Available feedback:', this.feedbacks);
             this.showError('Feedback not found');
             return;
         }
 
-        console.log('Attempting to reply to feedback:', feedback);
+        console.log('✅ Found feedback:', JSON.stringify(feedback, null, 2));
         console.log('MLNF object:', typeof MLNF, MLNF);
         console.log('openMessageModal function:', typeof MLNF?.openMessageModal);
 
