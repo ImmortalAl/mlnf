@@ -1548,7 +1548,7 @@ nav.admin-main-nav.main-nav {
 }
 
 .admin-main-nav a {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     align-items: center;
     text-decoration: none;
@@ -1559,6 +1559,8 @@ nav.admin-main-nav.main-nav {
     font-size: 0.9rem;
     font-weight: 500;
     position: relative;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .admin-main-nav a i {
@@ -1608,6 +1610,15 @@ nav.admin-main-nav.main-nav {
 .admin-main-nav ul {
     border: 2px solid blue !important; /* Debug border for UL */
     min-height: 60px !important;
+}
+
+.admin-main-nav li {
+    border: 1px solid green !important; /* Debug border for LI */
+}
+
+.admin-main-nav a {
+    border: 1px solid yellow !important; /* Debug border for links */
+    background: rgba(255, 255, 0, 0.1) !important; /* Debug background */
 }
 
 /* Tablet Responsiveness for Admin Navigation */
