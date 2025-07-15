@@ -1552,7 +1552,7 @@ nav.admin-main-nav.main-nav {
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: var(--text);
+    color: #ffffff !important; /* Force white text */
     transition: var(--transition);
     padding: 0.5rem 1rem;
     border-radius: var(--border-radius);
@@ -1561,12 +1561,18 @@ nav.admin-main-nav.main-nav {
     position: relative;
     opacity: 1 !important;
     visibility: visible !important;
+    z-index: 1000;
+    height: auto;
+    min-height: 40px;
 }
 
 .admin-main-nav a i {
-    font-size: 1.2rem;
+    font-size: 1.2rem !important;
     margin-bottom: 0.3rem;
-    color: var(--accent);
+    color: #ff5e78 !important; /* Force accent color */
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .admin-main-nav a:hover {
@@ -1612,6 +1618,16 @@ nav.admin-main-nav.main-nav {
     min-height: 60px !important;
 }
 
+.admin-main-nav ul::before {
+    content: "UL CONTENT HERE" !important;
+    color: white !important;
+    font-size: 16px !important;
+    display: block !important;
+    text-align: center !important;
+    background: rgba(255, 0, 0, 0.5) !important;
+    padding: 10px !important;
+}
+
 .admin-main-nav li {
     border: 1px solid green !important; /* Debug border for LI */
 }
@@ -1619,6 +1635,16 @@ nav.admin-main-nav.main-nav {
 .admin-main-nav a {
     border: 1px solid yellow !important; /* Debug border for links */
     background: rgba(255, 255, 0, 0.1) !important; /* Debug background */
+}
+
+.admin-main-nav a::before {
+    content: "LINK" !important;
+    color: red !important;
+    font-size: 10px !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
 }
 
 /* Tablet Responsiveness for Admin Navigation */
