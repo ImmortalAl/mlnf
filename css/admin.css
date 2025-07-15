@@ -986,6 +986,10 @@
         margin-left: 0.5rem;
     }
     
+    .admin-main-nav {
+        display: none !important;
+    }
+    
     .admin-user {
         order: 3;
         gap: 0.5rem;
@@ -1505,6 +1509,90 @@
     color: var(--text-muted);
     padding: 2rem;
     font-style: italic;
+}
+
+/* Admin Main Navigation Styles */
+.admin-main-nav {
+    background: rgba(13, 13, 26, 0.95);
+    border-bottom: 1px solid rgba(255, 94, 120, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.admin-main-nav ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.admin-main-nav li {
+    list-style: none;
+}
+
+.admin-main-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
+    transition: var(--transition);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    position: relative;
+}
+
+.admin-main-nav a i {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+    color: var(--accent);
+}
+
+.admin-main-nav a:hover {
+    background: rgba(255, 94, 120, 0.1);
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.admin-main-nav a.active {
+    background: rgba(255, 94, 120, 0.2);
+    color: var(--accent);
+}
+
+.admin-main-nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+/* Tablet Responsiveness for Admin Navigation */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .admin-main-nav ul {
+        gap: 1.5rem;
+        padding: 0 1.5rem;
+    }
+    
+    .admin-main-nav a {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .admin-main-nav a i {
+        font-size: 1.1rem;
+    }
 }
 
 /* Mobile Responsiveness for Curation */

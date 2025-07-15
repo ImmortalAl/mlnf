@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=5.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.1"></noscript>
+    <link rel="preload" href="../css/admin.css?v=5.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.2"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -69,12 +69,6 @@
             </ul>
         </nav>
         
-        <!-- Standard Site Navigation -->
-        <nav class="main-nav">
-            <ul>
-                <!-- Navigation will be populated by navigation.js -->
-            </ul>
-        </nav>
         
         <!-- Admin Mobile Navigation Toggle -->
         <button class="admin-nav-toggle" id="adminMobileNavToggle" aria-label="Toggle admin navigation">
@@ -135,6 +129,13 @@
             </button>
         </div>
         <ul class="mobile-nav-list">
+            <!-- Navigation will be populated by navigation.js -->
+        </ul>
+    </nav>
+
+    <!-- Standard Site Navigation Menu (Desktop/Tablet) -->
+    <nav class="main-nav admin-main-nav">
+        <ul>
             <!-- Navigation will be populated by navigation.js -->
         </ul>
     </nav>
