@@ -133,32 +133,29 @@ const AdminFeedback = {
                 
                 // Show actual error message to user instead of generic one
                 this.showError('Feedback Failed', `All endpoints failed. Last error: ${lastError}`);
-                
-                // TEMPORARY: Add mock data for testing reply functionality
-                console.log('🔧 Adding mock feedback data for testing...');
-                this.feedbacks = [
-                    {
-                        _id: 'mock1',
-                        message: 'This is test feedback from a user',
-                        username: 'testuser',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        _id: 'mock2', 
-                        message: 'Another piece of feedback about the site',
-                        username: 'anotheruser',
-                        createdAt: new Date(Date.now() - 86400000).toISOString()
-                    }
-                ];
-                this.filteredFeedbacks = [...this.feedbacks];
-                this.renderFeedbackTable();
-                console.log('🔧 Mock feedback loaded - you can now test the reply button');
                 return;
             }
 
-            const data = await response.json();
+            let data;
+            try {
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+                
+                if (responseText.trim() === '') {
+                    console.log('Empty response - no feedback available');
+                    data = [];
+                } else {
+                    data = JSON.parse(responseText);
+                }
+            } catch (parseError) {
+                console.error('Failed to parse response:', parseError);
+                data = [];
+            }
+            
             this.feedbacks = Array.isArray(data) ? data : data.feedbacks || data.messages || [];
             this.filteredFeedbacks = [...this.feedbacks];
+            
+            console.log('Processed feedback data:', this.feedbacks);
             this.renderFeedbackTable();
 
         } catch (error) {
