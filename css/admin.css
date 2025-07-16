@@ -1,11 +1,63 @@
 /* Eternal Dominion - Admin Panel Styles */
 
+/* Admin Header - secondary header for admin tabs */
+.admin-header {
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.15), rgba(165, 42, 42, 0.2));
+    border-bottom: 1px solid rgba(255, 94, 120, 0.3);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 98;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.admin-logo i {
+    font-size: 1.5rem;
+}
+
 /* Admin-specific overrides */
 .admin-container {
     padding: 2rem;
     max-width: 1400px;
     margin: 0 auto;
-    min-height: calc(100vh - 150px);
+    min-height: calc(100vh - 200px);
+}
+
+/* Mobile navigation styling specific to admin */
+@media (max-width: 920px) {
+    .admin-nav {
+        display: none;
+    }
+    
+    .admin-nav-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .admin-nav-toggle:hover {
+        color: var(--text);
+    }
+}
+
+@media (min-width: 921px) {
+    .admin-nav-toggle {
+        display: none;
+    }
 }
 
 /* Admin User Area */

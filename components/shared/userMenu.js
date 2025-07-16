@@ -6,10 +6,6 @@
 
 // Update user dropdown menu based on authentication status
 function updateUserMenu() {
-  // Skip user menu updates on admin pages - they have their own auth UI
-  if (window.location.pathname.includes('/admin')) {
-    return;
-  }
   
   const API_BASE_URL = window.MLNF_CONFIG.API_BASE_URL;
   const DEFAULT_AVATAR = window.MLNF_CONFIG.DEFAULT_AVATAR;

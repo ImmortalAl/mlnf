@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/admin.css?v=5.8" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/admin.css?v=5.8"></noscript>
+    <link rel="preload" href="../css/admin.css?v=6.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/admin.css?v=6.0"></noscript>
     
     <!-- 7. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -46,17 +46,39 @@
 </head>
 <body>
     
+    <!-- Site Navigation Header (like other pages) -->
     <header>
         <div class="logo">
             <a href="/">
                 <i class="fas fa-infinity"></i>
                 <div class="title-stack">
                     <span class="full-title">
-                        <span class="title-line-one">Immortal's Sanctum</span>
+                        <span class="title-line-one">Manifest Liberation</span>
+                        <span class="title-line-two">Naturally Free</span>
                     </span>
-                    <span class="short-title">MLNF Admin</span>
+                    <span class="short-title">MLNF</span>
                 </div>
             </a>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="main-nav admin-main-nav">
+            <ul>
+                <!-- Navigation will be populated by navigation.js -->
+            </ul>
+        </nav>
+        <div class="header-controls">
+            <div class="user-menu" id="userMenuContainer"></div>
+            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;"></div>
+        </div>
+    </header>
+
+    <!-- Admin Panel Header (admin tabs) -->
+    <header class="admin-header">
+        <div class="admin-logo">
+            <i class="fas fa-crown"></i>
+            <span>Immortal's Sanctum</span>
         </div>
         <nav class="admin-nav">
             <ul>
@@ -69,21 +91,10 @@
             </ul>
         </nav>
         
-        
         <!-- Admin Mobile Navigation Toggle -->
         <button class="admin-nav-toggle" id="adminMobileNavToggle" aria-label="Toggle admin navigation">
             <i class="fas fa-bars"></i>
         </button>
-        
-        <!-- Standard Site Mobile Navigation Toggle -->
-        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
-            <i class="fas fa-bars"></i>
-        </button>
-        
-        <div class="header-controls">
-            <div class="user-menu" id="userMenuContainer"></div>
-            <div class="header-auth-buttons" id="headerAuthButtonsContainer" style="display: none;"></div>
-        </div>
         
         <div class="admin-user">
             <button id="showUsersBtn" class="btn btn-outline" title="Active Souls">
@@ -96,13 +107,26 @@
         </div>
     </header>
 
-    <!-- Mobile Navigation Overlay -->
-    <div class="admin-nav-overlay" id="mobileNavOverlay"></div>
-    
-    <!-- Standard Navigation Overlay -->
+    <!-- Site Navigation Mobile Overlay -->
     <div class="mobile-overlay" id="mobileOverlay"></div>
     
-    <!-- Mobile Navigation Menu -->
+    <!-- Site Navigation Mobile Menu -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="sidebar-header">
+            <h2>Eternal Navigation</h2>
+            <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="mobile-nav-list">
+            <!-- Navigation will be populated by navigation.js -->
+        </ul>
+    </nav>
+
+    <!-- Admin Mobile Navigation Overlay -->
+    <div class="admin-nav-overlay" id="mobileNavOverlay"></div>
+    
+    <!-- Admin Mobile Navigation Menu -->
     <nav class="admin-nav-mobile" id="mobileNavMenu">
         <div class="nav-header">
             <h3>Admin Menu</h3>
@@ -120,25 +144,6 @@
         </ul>
     </nav>
 
-    <!-- Standard Site Mobile Navigation -->
-    <nav class="mobile-nav" id="mobileNav">
-        <div class="sidebar-header">
-            <h2>Eternal Navigation</h2>
-            <button class="close-sidebar" id="closeMobileNav" aria-label="Close mobile navigation">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <ul class="mobile-nav-list">
-            <!-- Navigation will be populated by navigation.js -->
-        </ul>
-    </nav>
-
-    <!-- Standard Site Navigation Menu (Desktop/Tablet) - Above Admin Tabs -->
-    <nav class="main-nav admin-main-nav">
-        <ul>
-            <!-- Navigation will be populated by navigation.js -->
-        </ul>
-    </nav>
 
     <main class="admin-container">
         <!-- Mobile Section Tabs -->
@@ -822,8 +827,8 @@
     <script src="../components/shared/authManager.js?v=1.3"></script>
     <script src="../components/shared/authModal.js?v=1.2"></script>
     <script src="../components/shared/apiClient.js?v=1.3"></script>
-    <script src="../components/shared/navigation.js?v=1.6"></script>
-    <script src="../components/shared/userMenu.js?v=1.6"></script>
+    <script src="../components/shared/navigation.js?v=1.7"></script>
+    <script src="../components/shared/userMenu.js?v=1.7"></script>
     <script src="../components/shared/activeUsers.js?v=1.2"></script>
     <script src="../components/shared/messageModal.js?v=2.4"></script>
     
@@ -1235,56 +1240,14 @@
                 
                 try {
                     MLNF.initNavigation();
-                    console.log('✅ Standard navigation initialized successfully');
-                    
-                    // MLNF.initNavigation() skips admin pages, so call injectNavigation directly
-                    if (typeof MLNF.injectNavigation === 'function') {
-                        MLNF.injectNavigation();
-                        console.log('✅ Navigation injection called directly for admin page');
-                    } else {
-                        console.warn('MLNF.injectNavigation not available');
-                    }
                 } catch (error) {
-                    console.warn('Navigation init skipped on admin page:', error.message);
+                    console.warn('Navigation init failed:', error.message);
                 }
                 
                 try {
                     MLNF.initUserMenu();
-                    
-                    // MLNF.initUserMenu() also skips admin pages, so populate user menu manually
-                    const userMenuContainer = document.getElementById('userMenuContainer');
-                    if (userMenuContainer) {
-                        const token = localStorage.getItem('sessionToken');
-                        const cachedUser = localStorage.getItem('user');
-                        
-                        if (token && cachedUser) {
-                            try {
-                                const userData = JSON.parse(cachedUser);
-                                const DEFAULT_AVATAR = '/assets/images/default.jpg';
-                                
-                                userMenuContainer.innerHTML = `
-                                    <button class="user-menu-btn" id="userMenuBtn">
-                                        <img src="${userData.avatar || DEFAULT_AVATAR}" alt="User Avatar" id="userMenuAvatar">
-                                        <span id="userMenuName">${userData.displayName || userData.username || 'Soul Seeker'}</span>
-                                        <i class="fas fa-chevron-down"></i>
-                                    </button>
-                                    <div class="user-dropdown" id="userDropdown">
-                                        <a href="/lander.html"><i class="fas fa-fire"></i> Eternal Hearth</a>
-                                        <a href="/profile"><i class="fas fa-user"></i> Profile</a>
-                                        <div class="divider"></div>
-                                        <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Transcend</a>
-                                    </div>
-                                `;
-                                
-                                userMenuContainer.style.display = 'flex';
-                                console.log('✅ User menu populated manually for admin page');
-                            } catch (e) {
-                                console.warn('Error parsing user data:', e);
-                            }
-                        }
-                    }
                 } catch (error) {
-                    console.warn('User menu init skipped on admin page:', error.message);
+                    console.warn('User menu init failed:', error.message);
                 }
                 
                 try {
@@ -1302,8 +1265,6 @@
             
             // Initialize active users with proper error handling
             setTimeout(() => {
-                
-                // Try multiple initialization approaches
                 if (typeof MLNF !== 'undefined' && typeof MLNF.initActiveUsers === 'function') {
                     try {
                         MLNF.initActiveUsers();
@@ -1316,17 +1277,6 @@
                     } catch (error) {
                         console.error('Error with global initActiveUsers:', error);
                     }
-                } else {
-                    console.warn('Active users initialization not available - this is expected on admin page');
-                    // Don't try to reload the script - just gracefully degrade
-                    const showUsersBtn = document.getElementById('showUsersBtn');
-                    const floatingShowUsersBtn = document.getElementById('floatingShowUsersBtn');
-                    if (showUsersBtn) {
-                        showUsersBtn.style.display = 'none';
-                    }
-                    if (floatingShowUsersBtn) {
-                        floatingShowUsersBtn.style.display = 'none';
-                    }
                 }
             }, 1000);
             
@@ -1335,49 +1285,17 @@
             
             // Initialize admin components with delay to ensure all scripts are loaded
             setTimeout(() => {
-                console.log('Initializing admin components...');
-                console.log('Available globals:', {
-                    AdminDashboard: typeof AdminDashboard,
-                    UserManagement: typeof UserManagement,
-                    AdminAnalytics: typeof AdminAnalytics,
-                    AdminFeedback: typeof AdminFeedback,
-                    MLNF_CONFIG: typeof window.MLNF_CONFIG
-                });
-                
                 if (typeof AdminDashboard !== 'undefined') {
-                    console.log('Initializing AdminDashboard');
                     AdminDashboard.init();
-                } else {
-                    console.error('AdminDashboard not found - check script loading');
-                }
-                
-                // Don't auto-init UserManagement - let AdminDashboard handle it
-                if (typeof UserManagement !== 'undefined') {
-                    console.log('UserManagement available for lazy initialization');
-                } else {
-                    console.error('UserManagement not found - check script loading');
                 }
                 
                 if (typeof AdminAnalytics !== 'undefined') {
-                    console.log('Initializing AdminAnalytics');
                     AdminAnalytics.init();
-                } else {
-                    console.error('AdminAnalytics not found - check script loading');
                 }
                 
                 if (typeof AdminFeedback !== 'undefined') {
-                    console.log('Initializing AdminFeedback');
                     AdminFeedback.init();
-                } else {
-                    console.error('AdminFeedback not found - check script loading');
                 }
-                
-                // Test section switching after initialization
-                setTimeout(() => {
-                    console.log('Testing section availability...');
-                    const sections = document.querySelectorAll('.admin-section');
-                    console.log('Available sections:', Array.from(sections).map(s => ({ id: s.id, hasActiveClass: s.classList.contains('active') })));
-                }, 100);
             }, 500);
             
             // Initialize curation highlights
@@ -1385,7 +1303,6 @@
             
             // Initialize mobile navigation
             initMobileNavigation();
-            console.log('✅ Admin mobile navigation initialized');
         });
         
         // Floating Buttons Functions

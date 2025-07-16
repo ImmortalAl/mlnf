@@ -49,31 +49,23 @@ function generateNavLinksHTML(currentPath, navType = 'main') {
     }
     // For any other navType, we use allLinks by default
 
-    console.log(`generateNavLinksHTML called with navType: ${navType}, path: ${currentPath}`);
-    console.log(`Links to render (${linksToRender.length}):`, linksToRender);
-    
     const finalHTML = linksToRender.map(link => {
         const isActive = normalizedCurrentPath === link.href || 
                        (link.href !== "/" && normalizedCurrentPath.startsWith(link.href)) || 
-                       (link.href.endsWith('.html') && normalizedCurrentPath.endsWith(link.href)); // Added check for .html files locally
+                       (link.href.endsWith('.html') && normalizedCurrentPath.endsWith(link.href));
         
         let linkText = link.text;
         if (navType === 'main' && link.text.includes(' ')) {
-            // For main nav, if text has a space, replace the first one with <br> for two-line effect
             linkText = link.text.replace(' ', '<br>');
         }
 
-        // For main nav, wrap icon and text in a span for precise underlining
-        // The icon is now stacked above the (potentially two-line) text due to CSS flex-direction: column on the 'a' tag
         const linkContent = navType === 'main' 
             ? `<i class="${link.icon}"></i><span>${linkText}</span>` 
             : `<i class="${link.icon}"></i> ${link.text}`;
         const linkHTML = `<li><a href="${link.href}" class="${isActive ? 'active' : ''}">${linkContent}</a></li>`;
-        console.log(`Generated link HTML: ${linkHTML}`);
         return linkHTML;
     }).join('');
     
-    console.log(`Final HTML output: ${finalHTML}`);
     return finalHTML;
 }
 
@@ -83,30 +75,15 @@ function injectNavigation() {
     const currentPath = window.location.pathname;
 
     if (mainNavUls.length > 0) {
-        console.log(`Found ${mainNavUls.length} main navigation UL elements`);
-        mainNavUls.forEach((mainNavUl, index) => {
+        mainNavUls.forEach((mainNavUl) => {
             const linksHTML = generateNavLinksHTML(currentPath, 'main');
-            console.log(`Generated HTML for nav ${index + 1}:`, linksHTML);
-            console.log(`Generated HTML length: ${linksHTML.length}`);
             mainNavUl.innerHTML = linksHTML;
-            console.log(`After setting innerHTML, nav ${index + 1} children:`, mainNavUl.children.length);
-            console.log(`Nav ${index + 1} innerHTML after setting:`, mainNavUl.innerHTML);
         });
-    } else {
-        console.warn('Main navigation UL not found. Main links not injected.');
     }
 
     if (mobileNavList) {
-        // Generate mobile links (can include more, like auth, handled separately if needed)
-        // For now, mobile nav will also filter "Home" on homepage, but keeps "Eternal Hearth"
-        // If Eternal Hearth should also be removed from mobile, adjust navType logic or filter here
-        let mobileLinksHTML = generateNavLinksHTML(currentPath, 'mobile'); // Use 'mobile' type
-
-        // Set the main navigation links - mobile nav is for navigation only
+        let mobileLinksHTML = generateNavLinksHTML(currentPath, 'mobile');
         mobileNavList.innerHTML = mobileLinksHTML;
-
-    } else {
-        console.warn('Mobile navigation list UL not found. Mobile links not injected.');
     }
 }
 
@@ -151,14 +128,6 @@ function setupMobileNavEvents() {
         // Close mobile nav if a link inside it is clicked - this will be called initially and after auth links update
         setupMobileNavLinkHandlers();
 
-    } else {
-        console.warn('[navigation.js] One or more mobile navigation elements not found. Events not attached.');
-        console.warn('[navigation.js] Missing elements:', {
-            mobileNavToggle: !mobileNavToggle ? 'MISSING' : 'found',
-            mobileNav: !mobileNav ? 'MISSING' : 'found', 
-            closeMobileNav: !closeMobileNav ? 'MISSING' : 'found',
-            mobileOverlay: !mobileOverlay ? 'MISSING' : 'found'
-        });
     }
 }
 
@@ -189,11 +158,7 @@ function setupMobileNavLinkHandlers() {
 
 // Initialize navigation
 function initNavigation() {
-    // Skip navigation injection on admin pages
-    if (window.location.pathname.includes('/admin')) {
-        return;
-    }
-    
+    // Allow navigation injection on admin pages now
     injectNavigation();
     setupMobileNavEvents();
 }
