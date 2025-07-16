@@ -219,11 +219,6 @@ async function validateUserSession() {
 
 // Initialize user menu
 function initUserMenu() {
-  // Skip user menu initialization on admin pages
-  if (window.location.pathname.includes('/admin')) {
-    return;
-  }
-  
   validateUserSession(); // Validate and then update UI
   // updateUserMenu(); // This is now called by validateUserSession
   
