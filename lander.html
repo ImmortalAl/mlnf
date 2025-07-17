@@ -1761,41 +1761,6 @@
             </div>
         </section>
 
-        <!-- Realm Reverberations -->
-        <section class="realm-reverberations" id="realmReverberationsSection">
-            <div class="section-header">
-                <h2>Realm Reverberations</h2>
-                <button class="refresh-activity-btn" id="refreshActivityBtn" title="Refresh realm activity">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-            </div>
-            <div class="activity-grid">
-                <div class="activity-card">
-                    <h3>Soul Stirrings</h3>
-                    <ul id="soulActivity">
-                        <li class="empty-activity">The realm slumbers in silence...</li>
-                    </ul>
-                </div>
-                <div class="activity-card">
-                    <h3>Latest Inscriptions</h3>
-                    <ul id="latestPosts">
-                        <li class="empty-activity">Awaiting eternal wisdom...</li>
-                    </ul>
-                </div>
-                <div class="activity-card">
-                    <h3>Echo Chamber</h3>
-                    <ul id="recentDiscussions">
-                        <li class="empty-activity">No echoes resound...</li>
-                    </ul>
-                </div>
-                <div class="activity-card">
-                    <h3>Realm Chronicles</h3>
-                    <ul id="sanctuaryNews">
-                        <li class="empty-activity">The chronicles await...</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
     </main>
 
     <footer>
@@ -1820,57 +1785,6 @@
     <script>
         let quill;
         
-        async function fetchActivities() {
-            try {
-                // Simulate activity data (replace with actual API calls)
-                const soulActivity = [
-                    { text: 'EternalSeeker joined the sanctuary', link: '/souls/EternalSeeker' },
-                    { text: 'LiberatedMind updated their profile', link: '/souls/LiberatedMind' },
-                    { text: 'TruthSeeker connected with 3 souls', link: '/souls/TruthSeeker' }
-                ];
-                
-                const latestPosts = [
-                    { text: 'The Nature of Eternal Truth', link: '/pages/blog.html?post=1' },
-                    { text: 'Beyond Mortal Constraints', link: '/pages/blog.html?post=2' },
-                    { text: 'Liberation Through Consciousness', link: '/pages/blog.html?post=3' }
-                ];
-                
-                const recentDiscussions = [
-                    { text: 'The Meaning of Eternal Freedom', link: '/pages/messageboard.html?thread=1' },
-                    { text: 'Consciousness Beyond Physical Form', link: '/pages/messageboard.html?thread=2' },
-                    { text: 'The Illusion of Time in Liberation', link: '/pages/messageboard.html?thread=3' }
-                ];
-                
-                const sanctuaryNews = [
-                    { text: 'New Soul Scrolls feature released', link: '/pages/news.html?article=1' },
-                    { text: 'Sanctuary expansion coming soon', link: '/pages/news.html?article=2' },
-                    { text: 'Join our upcoming Wisdom Circle event', link: '/pages/news.html?article=3' }
-                ];
-                
-                // Populate soul activity
-                document.getElementById('soulActivity').innerHTML = soulActivity.map(item => 
-                    `<li><a href="${item.link}">${item.text}</a></li>`
-                ).join('');
-                
-                // Populate latest posts
-                document.getElementById('latestPosts').innerHTML = latestPosts.map(item => 
-                    `<li><a href="${item.link}">${item.text}</a></li>`
-                ).join('');
-                
-                // Populate recent discussions
-                document.getElementById('recentDiscussions').innerHTML = recentDiscussions.map(item => 
-                    `<li><a href="${item.link}">${item.text}</a></li>`
-                ).join('');
-                
-                // Populate sanctuary news
-                document.getElementById('sanctuaryNews').innerHTML = sanctuaryNews.map(item => 
-                    `<li><a href="${item.link}">${item.text}</a></li>`
-                ).join('');
-                
-            } catch (error) {
-                // Error fetching activities
-            }
-        }
         
         function initQuillEditor() {
             quill = new Quill('#editor', {
@@ -2142,7 +2056,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Initialize components
             initQuillEditor();
-            fetchActivities();
             
             // Load user profile data and update avatar
             await loadUserProfile();
@@ -3145,7 +3058,7 @@
                 isPulling = false;
                 
                 if (pullDistance > 100) {
-                    await refreshActivity();
+                    // Pull to refresh - functionality removed with realm reverberations
                 }
                 
                 indicator.classList.remove('show');
@@ -3179,16 +3092,6 @@
                 });
             }
             
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', async () => {
-                    refreshBtn.classList.add('spinning');
-                    await refreshActivity();
-                    setTimeout(() => {
-                        refreshBtn.classList.remove('spinning');
-                    }, 1000);
-                    navigator.vibrate(150);
-                });
-            }
         }
         
         function initBottomSheet() {
@@ -3374,12 +3277,6 @@
             return outputArray;
         }
         
-        async function refreshActivity() {
-            // Simulate activity refresh
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await fetchActivities();
-            // Activity refreshed
-        }
         
         function showNotifications() {
             // Placeholder for notifications display
