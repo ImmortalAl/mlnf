@@ -16,14 +16,7 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     }
     
     let scrollTimeout = null;
-    let debugMode = false; // Disabled - debug logging was for troubleshooting only
     let DISABLE_ALL_SCROLLING = false; // Re-enabled since scrolling wasn't the problem
-
-    function logDebug(message, data = {}) {
-        if (debugMode) {
-            console.log(`[MessageModal Debug] ${message}`, data);
-        }
-    }
 
     function scrollToBottom() {
         // Simplified scroll - just scroll to bottom immediately
@@ -35,18 +28,6 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     function addMessageToUI(content, isSent, isError = false, timestamp = new Date(), shouldScroll = true) {
         if(!messageHistoryElement) return;
         
-        logDebug('Adding message to UI', {
-            content: content.substring(0, 50) + '...',
-            isSent,
-            isError,
-            shouldScroll,
-            messageCount: messageHistoryElement.children.length,
-            scrollDimensions: {
-                scrollTop: messageHistoryElement.scrollTop,
-                scrollHeight: messageHistoryElement.scrollHeight,
-                clientHeight: messageHistoryElement.clientHeight
-            }
-        });
         
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isSent ? 'sent' : 'received'} ${isError ? 'error' : ''}`;
@@ -54,14 +35,6 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         messageDiv.innerHTML = `<span class="message-text">${escapeHTML(content)}</span><span class="message-time">${time}</span>`;
         messageHistoryElement.appendChild(messageDiv);
         
-        logDebug('Message added to DOM', {
-            newMessageCount: messageHistoryElement.children.length,
-            newScrollDimensions: {
-                scrollTop: messageHistoryElement.scrollTop,
-                scrollHeight: messageHistoryElement.scrollHeight,
-                clientHeight: messageHistoryElement.clientHeight
-            }
-        });
         
         // Use debounced scroll only for new messages
         if (shouldScroll) {
@@ -91,13 +64,6 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
     function displayMessages(messages) {
         if(!messageHistoryElement) return;
         
-        logDebug('Displaying messages', {
-            messageCount: messages.length,
-            containerBefore: {
-                innerHTML: messageHistoryElement.innerHTML.length,
-                children: messageHistoryElement.children.length
-            }
-        });
         
         messageHistoryElement.innerHTML = '';
         if (messages.length === 0) {
@@ -108,17 +74,9 @@ let messageModal, recipientNameElement, messageInputElement, messageHistoryEleme
         if (!currentUser) return;
         const currentUserId = currentUser.id || currentUser._id;
         
-        logDebug('Processing messages for display', { currentUserId });
-        
         messages.forEach((message, index) => {
-            logDebug(`Processing message ${index + 1}/${messages.length}`, {
-                sender: message.sender?.username,
-                isSent: (message.sender._id || message.sender.id) === currentUserId
-            });
             addMessageToUI(message.content, (message.sender._id || message.sender.id) === currentUserId, false, new Date(message.timestamp), false);
         });
-        
-        logDebug('All messages processed, scrolling to bottom');
         // Use the same debounced scroll for consistency
         scrollToBottom();
     }
@@ -254,24 +212,15 @@ async function openMessageModal(username) {
 }
 
     function handleIncomingMessage(data) {
-        logDebug('Incoming WebSocket message received', {
-            modalActive: messageModal?.classList.contains('active'),
-            currentRecipient: currentRecipientUsername,
-            sender: data.sender?.username,
-            recipient: data.recipient?.username,
-            messagePreview: data.content?.substring(0, 30) + '...'
-        });
         
         // Only handle messages if modal is open and it's for the current conversation
         if (!messageModal || !messageModal.classList.contains('active') || !currentRecipientUsername) {
-            logDebug('Ignoring WebSocket message - modal not active or no recipient');
             return;
         }
         
         // Check if message is part of current conversation
         const currentUser = JSON.parse(localStorage.getItem('user'));
         if (!currentUser) {
-            logDebug('Ignoring WebSocket message - no current user');
             return;
         }
         
@@ -279,19 +228,9 @@ async function openMessageModal(username) {
         const isFromCurrentRecipient = data.sender._id === currentRecipientUsername || data.sender.username === currentRecipientUsername;
         const isToCurrentUser = data.recipient._id === currentUserId || data.recipient.id === currentUserId;
         
-        logDebug('WebSocket message analysis', {
-            currentUserId,
-            isFromCurrentRecipient,
-            isToCurrentUser,
-            shouldAddMessage: isFromCurrentRecipient && isToCurrentUser
-        });
-        
         if (isFromCurrentRecipient && isToCurrentUser) {
-            logDebug('Adding WebSocket message to UI');
             // Add the incoming message using our proper debounced scroll system
             addMessageToUI(data.content, false, false, new Date(data.timestamp), true);
-        } else {
-            logDebug('Ignoring WebSocket message - not for current conversation');
         }
     }
 
