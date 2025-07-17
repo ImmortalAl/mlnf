@@ -2070,10 +2070,11 @@ footer {
     border-top: 3px solid var(--accent);
     padding: 1.5rem 0 1rem 0; /* Remove horizontal padding */
     margin-top: auto; /* Pushes footer to bottom if content is short */
-    margin-left: calc(-50vw + 50%); /* Pull to left edge */
+    margin-left: 0; /* Reset margin */
     margin-right: 0; /* Ensure no margins */
-    width: 100vw; /* Use viewport width */
+    width: 100%; /* Use full width */
     position: relative;
+    flex-shrink: 0; /* Don't shrink in flexbox */
 }
 
 .footer-content {

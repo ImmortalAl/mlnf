@@ -114,6 +114,7 @@ body.light-theme .mindmap-line {
 main {
     position: relative;
     z-index: 1;
+    flex: 1 0 auto; /* Grow to fill space but don't shrink */
     padding: 0; /* Remove main padding that creates clearance around content */
     max-width: none; /* Allow full width */
     margin: 0;
