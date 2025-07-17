@@ -2329,14 +2329,35 @@
             });
         }
         
-        function saveSoulWhisper(whisper) {
-            // Save the soul whisper to localStorage and potentially backend
+        async function saveSoulWhisper(whisper) {
+            // Save the soul whisper to localStorage and backend
             try {
                 const user = JSON.parse(localStorage.getItem('user')) || {};
                 user.status = whisper;
                 localStorage.setItem('user', JSON.stringify(user));
                 
-                // TODO: Also save to backend API
+                // Save to backend API
+                const token = localStorage.getItem('sessionToken');
+                if (token) {
+                    const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+                    const response = await fetch(`${apiBaseUrl}/users/me`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: whisper })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to save status to backend:', response.statusText);
+                    } else {
+                        console.log('Soul whisper saved to backend successfully');
+                    }
+                } else {
+                    console.warn('No auth token found, status not saved to backend');
+                }
+                
                 console.log('Soul whisper saved:', whisper);
             } catch (e) {
                 console.error('Error saving soul whisper:', e);
@@ -2406,7 +2427,7 @@
             }
         }
         
-        function handleSoulForgeSubmission(e) {
+        async function handleSoulForgeSubmission(e) {
             e.preventDefault();
             
             // Collect form data
@@ -2426,6 +2447,37 @@
                 Object.assign(user, formData);
                 localStorage.setItem('user', JSON.stringify(user));
                 
+                // Save to backend API
+                const token = localStorage.getItem('sessionToken');
+                if (token) {
+                    const apiBaseUrl = window.MLNF_CONFIG?.API_BASE_URL || 'https://mlnf-auth.onrender.com/api';
+                    const response = await fetch(`${apiBaseUrl}/users/me`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            displayName: formData.displayName,
+                            status: formData.status,
+                            bio: formData.bio,
+                            avatar: formData.avatar
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to save soul forge to backend:', response.statusText);
+                        alert('Changes saved locally but failed to sync with server. Please try again.');
+                        return;
+                    } else {
+                        console.log('Soul forged and saved to backend successfully!');
+                    }
+                } else {
+                    console.warn('No auth token found, soul forge not saved to backend');
+                    alert('Please log in to save your changes permanently.');
+                    return;
+                }
+                
                 // Update Soul Presence banner
                 updateSoulPresence(formData);
                 
@@ -2434,8 +2486,6 @@
                 
                 // Show success message
                 console.log('Soul forged successfully!');
-                
-                // TODO: Save to backend API
                 
             } catch (e) {
                 console.error('Error forging soul:', e);
