@@ -1705,7 +1705,7 @@
         </section>
         
         <!-- Inscription Forge (Collapsible Multi-Purpose Editor) -->
-        <section class="inscription-forge">
+        <section class="inscription-forge collapsed">
             <div class="forge-header">
                 <h2>Inscription Forge</h2>
                 <div class="forge-tabs">
@@ -2283,7 +2283,7 @@
             
             if (!toggleBtn || !forge) return;
             
-            let isCollapsed = false;
+            let isCollapsed = true; // Start collapsed
             
             toggleBtn.addEventListener('click', () => {
                 isCollapsed = !isCollapsed;
