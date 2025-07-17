@@ -35,13 +35,16 @@ body {
     font-family: var(--font-primary, 'Montserrat', sans-serif);
     line-height: 1.6;
     min-height: 100vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    overflow-y: auto;
     /* Optimize for mobile touch */
     -webkit-overflow-scrolling: touch;
     margin: 0; /* Ensure no body margins */
     padding: 0; /* Ensure no body padding */
+    position: relative;
 }
 
 /* ==========================================

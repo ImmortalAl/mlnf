@@ -34,9 +34,10 @@ function injectSoulModal() {
     </div>
   `;
   
-  // Create a container for the modal
+  // Create a container for the modal with proper positioning
   const modalContainer = document.createElement('div');
   modalContainer.innerHTML = modalHTML;
+  modalContainer.style.cssText = 'position: fixed; top: 0; left: 0; pointer-events: none; z-index: 0;';
   
   // Append to body
   document.body.appendChild(modalContainer);
