@@ -3193,6 +3193,11 @@
         
         function initBottomSheet() {
             const bottomSheet = document.getElementById('bottomSheet');
+            if (!bottomSheet) {
+                console.warn('Bottom sheet element not found, skipping initialization');
+                return;
+            }
+            
             let startY = 0;
             let currentY = 0;
             let isOpen = false;
