@@ -359,7 +359,8 @@ class MLNFAvatarSystem {
             usernameStyle = 'immortal', // 'immortal', 'mystical', 'eternal', or 'default'
             clickable = true,
             onClick = null,
-            enableUnifiedNavigation = true
+            enableUnifiedNavigation = true,
+            banned = false
         } = options;
 
         // Create container
@@ -367,6 +368,7 @@ class MLNFAvatarSystem {
         const containerClasses = ['mlnf-user-display', `mlnf-user-display--${displaySize}`];
         
         if (compact) containerClasses.push('mlnf-user-display--compact');
+        if (banned) containerClasses.push('mlnf-user-display--banned');
         if (clickable) container.style.cursor = 'pointer';
         
         container.className = containerClasses.join(' ');
@@ -392,6 +394,15 @@ class MLNFAvatarSystem {
         }
         usernameEl.className = usernameClasses.join(' ');
         usernameEl.textContent = username;
+        
+        // Add ban icon if user is banned
+        if (banned) {
+            const banIcon = document.createElement('i');
+            banIcon.className = 'fas fa-ban mlnf-ban-icon';
+            banIcon.title = 'This soul has been banned';
+            usernameEl.appendChild(document.createTextNode(' '));
+            usernameEl.appendChild(banIcon);
+        }
 
         // Create title element
         const titleEl = document.createElement('span');
@@ -415,7 +426,7 @@ class MLNFAvatarSystem {
         container.appendChild(userInfo);
 
         // Add unified click handler with enhanced navigation
-        if (enableUnifiedNavigation && clickable) {
+        if (enableUnifiedNavigation && clickable && !banned) {
             // Create unified click handler with keyboard shortcuts
             const unifiedHandler = MLNFProfileRouter.createUnifiedClickHandler(username);
             container.addEventListener('click', unifiedHandler);
