@@ -627,7 +627,7 @@ const UserManagement = {
             }
 
             this.showSuccess('User banned successfully');
-            await this.refreshUsers();
+            await this.loadUsers();
         } catch (error) {
             this.showError('Failed to ban user', error.message);
         }
@@ -653,14 +653,14 @@ const UserManagement = {
             }
 
             this.showSuccess('User unbanned successfully');
-            await this.refreshUsers();
+            await this.loadUsers();
         } catch (error) {
             this.showError('Failed to unban user', error.message);
         }
     },
 
     async deleteUser(userId) {
-        const user = this.users.find(u => (u._id || u.id) === userId);
+        const user = this.allUsers.find(u => (u._id || u.id) === userId);
         if (!user) {
             this.showError('User not found');
             return;
@@ -691,7 +691,7 @@ const UserManagement = {
             }
 
             this.showSuccess(`User ${user.username} has been permanently deleted`);
-            await this.refreshUsers();
+            await this.loadUsers();
         } catch (error) {
             this.showError('Failed to delete user', error.message);
         }
