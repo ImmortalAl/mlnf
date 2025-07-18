@@ -228,6 +228,9 @@ const UserManagement = {
                                 <i class="fas fa-check"></i>
                             </button>`
                         }
+                        <button class="action-btn delete" onclick="UserManagement.deleteUser('${user._id || user.id}')" title="Delete User">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `).join('');
@@ -277,6 +280,9 @@ const UserManagement = {
                                 <i class="fas fa-check"></i> Unban
                             </button>`
                         }
+                        <button class="action-btn delete" onclick="UserManagement.deleteUser('${user._id || user.id}')" title="Delete User">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -384,6 +390,9 @@ const UserManagement = {
                             <i class="fas fa-check"></i> Unban Soul
                         </button>`
                     }
+                    <button class="btn btn-danger" onclick="UserManagement.deleteUser('${user._id || user.id}'); UserManagement.closeModal();" style="background: #ef4444; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; color: white;">
+                        <i class="fas fa-trash"></i> Delete Soul
+                    </button>
                     <button class="btn btn-secondary" onclick="UserManagement.closeModal();" style="background: rgba(var(--accent-rgb), 0.2); border: 1px solid var(--accent); padding: 0.5rem 1rem; border-radius: 0.25rem; color: var(--text);">
                         <i class="fas fa-times"></i> Close
                     </button>
@@ -595,6 +604,96 @@ const UserManagement = {
             modal.classList.remove('active');
             modal.style.display = 'none';
             modal.setAttribute('aria-hidden', 'true');
+        }
+    },
+
+    async banUser(userId) {
+        if (!confirm('Are you sure you want to ban this soul?')) return;
+        
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ banned: true })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to ban user');
+            }
+
+            this.showSuccess('User banned successfully');
+            await this.refreshUsers();
+        } catch (error) {
+            this.showError('Failed to ban user', error.message);
+        }
+    },
+
+    async unbanUser(userId) {
+        if (!confirm('Are you sure you want to unban this soul?')) return;
+        
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ banned: false })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to unban user');
+            }
+
+            this.showSuccess('User unbanned successfully');
+            await this.refreshUsers();
+        } catch (error) {
+            this.showError('Failed to unban user', error.message);
+        }
+    },
+
+    async deleteUser(userId) {
+        const user = this.users.find(u => (u._id || u.id) === userId);
+        if (!user) {
+            this.showError('User not found');
+            return;
+        }
+
+        // Double confirmation for deletion
+        const firstConfirm = confirm(`Are you sure you want to permanently delete ${user.username}? This action cannot be undone.`);
+        if (!firstConfirm) return;
+
+        const secondConfirm = prompt(`To confirm deletion, please type the username "${user.username}" exactly:`);
+        if (secondConfirm !== user.username) {
+            this.showError('Username confirmation did not match');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to delete user');
+            }
+
+            this.showSuccess(`User ${user.username} has been permanently deleted`);
+            await this.refreshUsers();
+        } catch (error) {
+            this.showError('Failed to delete user', error.message);
         }
     },
 

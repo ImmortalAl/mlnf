@@ -610,6 +610,16 @@
     color: white;
 }
 
+.action-btn.delete {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.action-btn.delete:hover {
+    background: #ef4444;
+    color: white;
+}
+
 /* Pagination */
 .pagination {
     display: flex;
