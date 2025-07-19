@@ -35,11 +35,9 @@ body {
     font-family: var(--font-primary, 'Montserrat', sans-serif);
     line-height: 1.6;
     min-height: 100vh;
-    max-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    overflow-y: auto;
     /* Optimize for mobile touch */
     -webkit-overflow-scrolling: touch;
     margin: 0; /* Ensure no body margins */
@@ -171,7 +169,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0; /* Add vertical padding to prevent content cutoff */
+    padding: 0; /* Flush with edges - internal spacing handled by logo/controls containers */
     margin: 0; /* Ensure no default browser margins */
     background: var(--gradient-secondary);
     border-bottom: 2px solid var(--accent);
@@ -377,7 +375,6 @@ nav.main-nav a.active span::after {
 @media (max-width: 768px) {
     header {
         min-height: 60px; /* Reduced height for smaller screens */
-        padding: 0.5rem 0; /* Reduce vertical padding on smaller screens */
     }
     .logo {
         padding-left: 0.75rem; /* Further reduce padding */
