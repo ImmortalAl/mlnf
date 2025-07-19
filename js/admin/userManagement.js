@@ -622,8 +622,14 @@ const UserManagement = {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to ban user');
+                let errorMessage = 'Failed to ban user';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || error.message || errorMessage;
+                } catch (parseError) {
+                    errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                }
+                throw new Error(errorMessage);
             }
 
             this.showSuccess('User banned successfully');
@@ -648,8 +654,14 @@ const UserManagement = {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to unban user');
+                let errorMessage = 'Failed to unban user';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || error.message || errorMessage;
+                } catch (parseError) {
+                    errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                }
+                throw new Error(errorMessage);
             }
 
             this.showSuccess('User unbanned successfully');
@@ -686,8 +698,20 @@ const UserManagement = {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to delete user');
+                let errorMessage = 'Failed to delete user';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || error.message || errorMessage;
+                } catch (parseError) {
+                    // If JSON parsing fails, try to get text response
+                    try {
+                        const textError = await response.text();
+                        errorMessage = textError || `HTTP ${response.status}: ${response.statusText}`;
+                    } catch (textError) {
+                        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                    }
+                }
+                throw new Error(errorMessage);
             }
 
             this.showSuccess(`User ${user.username} has been permanently deleted`);
