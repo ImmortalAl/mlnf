@@ -22,6 +22,19 @@
             margin: 10px 0;
             font-size: 12px;
         }
+        .test-buttons {
+            margin: 20px 0;
+        }
+        .test-buttons button {
+            margin: 10px 0;
+            width: 100%;
+        }
+        .height-test {
+            border: 1px solid red;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 0;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -30,6 +43,14 @@
         
         <div class="form-actions">
             <button id="testButton" class="btn btn-primary">Eternalize</button>
+        </div>
+        
+        <div class="test-buttons">
+            <h4>Comparison Tests:</h4>
+            <button class="btn btn-primary height-test" style="height: 60px;">Eternalize (60px fixed)</button>
+            <button class="btn btn-primary height-test" style="min-height: 60px; padding: 15px;">Eternalize (60px min + 15px pad)</button>
+            <button class="btn btn-primary height-test" style="line-height: 2; padding: 12px;">Eternalize (line-height: 2)</button>
+            <button class="btn btn-primary" style="font-size: 14px; padding: 12px; min-height: 50px;">Eternalize (14px font)</button>
         </div>
         
         <div class="debug-info">
