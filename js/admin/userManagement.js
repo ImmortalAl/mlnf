@@ -75,6 +75,12 @@ const UserManagement = {
                 }
             }
         });
+
+        // Cleanup online status button
+        const cleanupBtn = document.getElementById('cleanupOnlineBtn');
+        if (cleanupBtn) {
+            cleanupBtn.addEventListener('click', () => this.cleanupStaleOnlineUsers());
+        }
     },
 
     async loadUsers() {
@@ -750,6 +756,51 @@ const UserManagement = {
         } else {
             // Fallback to alert
             alert(`Success: ${message}`);
+        }
+    },
+
+    async cleanupStaleOnlineUsers() {
+        if (!confirm('This will set offline all users who have been marked online for more than 30 days. Continue?')) {
+            return;
+        }
+
+        const cleanupBtn = document.getElementById('cleanupOnlineBtn');
+        const originalText = cleanupBtn.innerHTML;
+        
+        try {
+            cleanupBtn.disabled = true;
+            cleanupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cleaning...';
+
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/users/cleanup-online-status`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Cleanup failed: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.cleaned > 0) {
+                this.showSuccess(`Successfully cleaned up ${result.cleaned} stale online users`);
+                console.log('Cleaned up users:', result.details);
+                // Reload the users table to show updated online statuses
+                await this.loadUsers();
+            } else {
+                this.showSuccess('No stale online users found to clean up');
+            }
+
+        } catch (error) {
+            console.error('Cleanup error:', error);
+            this.showError('Failed to cleanup stale online users', error.message);
+        } finally {
+            cleanupBtn.disabled = false;
+            cleanupBtn.innerHTML = originalText;
         }
     }
 };

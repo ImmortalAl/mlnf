@@ -552,6 +552,32 @@
     cursor: pointer;
 }
 
+.cleanup-controls {
+    display: flex;
+    align-items: center;
+}
+
+.cleanup-controls .btn {
+    padding: 0.8rem 1.5rem;
+    background: rgba(255, 193, 7, 0.2);
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    border-radius: var(--border-radius);
+    color: #ffc107;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.cleanup-controls .btn:hover {
+    background: rgba(255, 193, 7, 0.3);
+    border-color: #ffc107;
+}
+
+.cleanup-controls .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Users Table */
 .users-table-wrapper {
     background: rgba(26, 26, 51, 0.8);
