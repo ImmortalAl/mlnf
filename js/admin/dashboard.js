@@ -318,7 +318,12 @@ const AdminDashboard = {
         if (healthElements.serverResponseTime) {
             try {
                 const startTime = performance.now();
-                const response = await fetch('/health');
+                // Use the backend API health endpoint
+                const baseUrl = this.apiBaseUrl.replace('/api', '');
+                const response = await fetch(`${baseUrl}/health`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
                 const endTime = performance.now();
                 const responseTime = Math.round(endTime - startTime);
                 
@@ -402,11 +407,9 @@ const AdminDashboard = {
             activityFeed.innerHTML = '<div class="activity-loading">Loading recent activity...</div>';
 
             // Fetch recent data from multiple sources
-            const [blogsRes, commentsRes, threadsRes, usersRes] = await Promise.all([
+            // Note: Comments endpoint requires target type/id, so we'll skip it for now
+            const [blogsRes, threadsRes, usersRes] = await Promise.all([
                 fetch(`${this.apiBaseUrl}/blogs?limit=10&sort=-createdAt`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                }),
-                fetch(`${this.apiBaseUrl}/comments?limit=10&sort=-createdAt`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }),
                 fetch(`${this.apiBaseUrl}/threads?limit=10&sort=-createdAt`, {
@@ -418,16 +421,14 @@ const AdminDashboard = {
             ]);
 
             // Process responses with proper error handling
-            const [blogs, comments, threads, users] = await Promise.all([
+            const [blogs, threads, users] = await Promise.all([
                 blogsRes.ok ? blogsRes.json().catch(() => []) : [],
-                commentsRes.ok ? commentsRes.json().catch(() => []) : [],
                 threadsRes.ok ? threadsRes.json().catch(() => []) : [],
                 usersRes.ok ? usersRes.json().catch(() => []) : []
             ]);
 
             // Ensure all responses are arrays
             const safeBlogs = Array.isArray(blogs) ? blogs : [];
-            const safeComments = Array.isArray(comments) ? comments : [];
             const safeThreads = Array.isArray(threads) ? threads : [];
             const safeUsers = Array.isArray(users) ? users : [];
 
@@ -446,18 +447,6 @@ const AdminDashboard = {
                 }
             });
 
-            // Add comment activities
-            safeComments.forEach(comment => {
-                if (comment.author && comment.createdAt) {
-                    const preview = comment.content ? comment.content.substring(0, 50) + '...' : '';
-                    activities.push({
-                        type: 'comment_added',
-                        message: `${comment.author.displayName || comment.author.username || 'A soul'} commented: "${preview}"`,
-                        timestamp: new Date(comment.createdAt),
-                        icon: 'fas fa-comment'
-                    });
-                }
-            });
 
             // Add thread activities
             safeThreads.forEach(thread => {

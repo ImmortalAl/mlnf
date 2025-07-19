@@ -136,24 +136,7 @@ async function populateActiveUsersList() {
     userListDiv.innerHTML = '<p class="loading-users">Summoning eternal souls...</p>'; // Loading message
 
     try {
-        // Test basic connectivity to API
-        // Test API connectivity
-        try {
-            // Health endpoint is at root level, not under /api path
-            const baseUrl = window.MLNF_CONFIG.API_BASE_URL.replace('/api', '');
-            const healthCheck = await fetch(`${baseUrl}/health`, { 
-                method: 'GET',
-                mode: 'cors',
-                timeout: 5000
-            });
-            if (!healthCheck.ok) {
-                throw new Error(`API health check failed: ${healthCheck.status}`);
-            }
-        } catch (healthError) {
-            console.warn('[activeUsers.js] API connectivity issue:', healthError.message);
-            userListDiv.innerHTML = '<p class="api-error">Unable to connect to eternal realm. Please try again later.</p>';
-            return;
-        }
+        // Skip health check - the actual API call will determine connectivity
         
         
         // Try the online users endpoint first
