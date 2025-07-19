@@ -347,9 +347,9 @@ const AdminDashboard = {
 
         // Get real platform health data
         try {
-            const healthResponse = await fetch('/api/activity/platform-health', {
+            const healthResponse = await fetch(`${this.apiBaseUrl}/activity/platform-health`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
                 }
             });
             
