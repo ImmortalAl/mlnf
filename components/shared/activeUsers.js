@@ -173,17 +173,17 @@ async function populateActiveUsersList() {
             
             const allUsers = await response.json();
             
-            // Filter for online users or take first few users as active
+            // Filter for online users, excluding banned users
             if (Array.isArray(allUsers)) {
-                fetchedUsers = allUsers.filter(user => user.online === true).slice(0, 10);
+                fetchedUsers = allUsers.filter(user => user.online === true && !user.banned).slice(0, 10);
                 if (fetchedUsers.length === 0) {
-                    // If no online users, show recent users
-                    fetchedUsers = allUsers.slice(0, 5);
+                    // If no online non-banned users, show recent non-banned users
+                    fetchedUsers = allUsers.filter(user => !user.banned).slice(0, 5);
                 }
             } else if (allUsers.users && Array.isArray(allUsers.users)) {
-                fetchedUsers = allUsers.users.filter(user => user.online === true).slice(0, 10);
+                fetchedUsers = allUsers.users.filter(user => user.online === true && !user.banned).slice(0, 10);
                 if (fetchedUsers.length === 0) {
-                    fetchedUsers = allUsers.users.slice(0, 5);
+                    fetchedUsers = allUsers.users.filter(user => !user.banned).slice(0, 5);
                 }
             } else {
                 throw new Error('Unexpected users response format');
