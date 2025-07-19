@@ -678,70 +678,18 @@ const UserManagement = {
             return;
         }
 
-        // Double confirmation for deletion
-        const firstConfirm = confirm(`Are you sure you want to permanently delete ${user.username}? This action cannot be undone.`);
-        if (!firstConfirm) return;
+        // Inform admin that deletion is not supported
+        const useBanInstead = confirm(
+            `User deletion is not supported by the backend.\n\n` +
+            `Would you like to ban ${user.username} instead?\n\n` +
+            `Banned users cannot log in or access the platform.`
+        );
 
-        const secondConfirm = prompt(`To confirm deletion, please type the username "${user.username}" exactly:`);
-        if (secondConfirm !== user.username) {
-            this.showError('Username confirmation did not match');
-            return;
-        }
-
-        try {
-            const token = localStorage.getItem('sessionToken');
-            // Try DELETE first
-            let response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            // If DELETE not supported, try soft delete via PUT
-            if (response.status === 404 || response.status === 405) {
-                response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        deleted: true,
-                        deletedAt: new Date().toISOString(),
-                        active: false 
-                    })
-                });
-                
-                if (response.ok) {
-                    this.showSuccess(`User ${user.username} has been marked as deleted`);
-                    await this.loadUsers();
-                    return;
-                }
-            }
-
-            if (!response.ok) {
-                let errorMessage = 'Failed to delete user';
-                try {
-                    const error = await response.json();
-                    errorMessage = error.error || error.message || errorMessage;
-                } catch (parseError) {
-                    // If JSON parsing fails, try to get text response
-                    try {
-                        const textError = await response.text();
-                        errorMessage = textError || `HTTP ${response.status}: ${response.statusText}`;
-                    } catch (textError) {
-                        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-                    }
-                }
-                throw new Error(errorMessage);
-            }
-
-            this.showSuccess(`User ${user.username} has been permanently deleted`);
-            await this.loadUsers();
-        } catch (error) {
-            this.showError('Failed to delete user', error.message);
-            this.showError('Note: User deletion may not be supported by the backend. Consider banning the user instead.');
+        if (useBanInstead) {
+            // Redirect to ban functionality
+            await this.banUser(userId);
+        } else {
+            this.showError('User deletion cancelled', 'Please use the ban feature to restrict user access.');
         }
     },
 
