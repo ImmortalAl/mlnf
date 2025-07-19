@@ -132,14 +132,27 @@ class MLNFThemeManager {
 }
 
 // Initialize theme manager globally
+function initThemeManager() {
+    if (!window.MLNFTheme) {
+        window.MLNFTheme = new MLNFThemeManager();
+    }
+    return window.MLNFTheme;
+}
+
+// Auto-initialize theme manager
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        window.MLNFTheme = new MLNFThemeManager();
+        initThemeManager();
     });
 } else {
     // DOM already loaded
-    window.MLNFTheme = new MLNFThemeManager();
+    initThemeManager();
 }
+
+// Expose on MLNF namespace
+window.MLNF = window.MLNF || {};
+window.MLNF.initThemeManager = initThemeManager;
+window.MLNF.ThemeManager = MLNFThemeManager;
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
