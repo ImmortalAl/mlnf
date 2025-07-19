@@ -678,18 +678,45 @@ const UserManagement = {
             return;
         }
 
-        // Inform admin that deletion is not supported
-        const useBanInstead = confirm(
-            `User deletion is not supported by the backend.\n\n` +
-            `Would you like to ban ${user.username} instead?\n\n` +
-            `Banned users cannot log in or access the platform.`
-        );
+        if (!confirm(`Are you sure you want to delete ${user.username}? This action cannot be undone.`)) {
+            return;
+        }
 
-        if (useBanInstead) {
-            // Redirect to ban functionality
-            await this.banUser(userId);
-        } else {
-            this.showError('User deletion cancelled', 'Please use the ban feature to restrict user access.');
+        try {
+            const token = localStorage.getItem('sessionToken');
+            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                let errorMessage = 'Failed to delete user';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || error.message || errorMessage;
+                } catch (parseError) {
+                    try {
+                        errorMessage = await response.text() || errorMessage;
+                    } catch (textError) {
+                        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                    }
+                }
+                throw new Error(errorMessage);
+            }
+
+            // Remove from local array
+            this.allUsers = this.allUsers.filter(u => (u._id || u.id) !== userId);
+            this.filteredUsers = this.filteredUsers.filter(u => (u._id || u.id) !== userId);
+            
+            // Re-render the table
+            this.renderUsersTable();
+            this.renderPagination();
+            
+            this.showSuccess(`User ${user.username} has been deleted successfully.`);
+        } catch (error) {
+            this.showError('Failed to delete user', error.message);
         }
     },
 
