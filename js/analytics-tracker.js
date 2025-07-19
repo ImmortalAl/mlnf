@@ -201,7 +201,7 @@ const MLNFAnalytics = {
 
     // Extract search query from referrer
     extractSearchQuery(referrer) {
-        if (!referrer) return null;
+        if (!referrer || referrer === 'direct') return null;
         
         try {
             const url = new URL(referrer);
