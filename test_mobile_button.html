@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/lander.css?v=3.5">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px;
+            background: #333;
+            color: #fff;
+        }
+        .test-container {
+            max-width: 375px;
+            margin: 0 auto;
+            border: 2px solid #ff5e78;
+            padding: 20px;
+        }
+        .debug-info {
+            background: #444;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h3>Mobile Button Test (375px viewport)</h3>
+        
+        <div class="form-actions">
+            <button id="testButton" class="btn btn-primary">Eternalize</button>
+        </div>
+        
+        <div class="debug-info">
+            <div>Screen width: <span id="screenWidth"></span>px</div>
+            <div>Button computed height: <span id="buttonHeight"></span>px</div>
+            <div>Button computed font-size: <span id="buttonFontSize"></span></div>
+            <div>Button computed padding: <span id="buttonPadding"></span></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('testButton');
+            const computedStyle = window.getComputedStyle(button);
+            
+            document.getElementById('screenWidth').textContent = window.innerWidth;
+            document.getElementById('buttonHeight').textContent = button.offsetHeight;
+            document.getElementById('buttonFontSize').textContent = computedStyle.fontSize;
+            document.getElementById('buttonPadding').textContent = computedStyle.padding;
+            
+            console.log('Button debug info:', {
+                height: button.offsetHeight,
+                fontSize: computedStyle.fontSize,
+                lineHeight: computedStyle.lineHeight,
+                padding: computedStyle.padding,
+                minHeight: computedStyle.minHeight
+            });
+        });
+    </script>
+</body>
+</html>

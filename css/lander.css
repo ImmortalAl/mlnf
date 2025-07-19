@@ -817,11 +817,16 @@ footer {
     }
     
     .form-actions .btn {
-        padding: 1.1rem 1rem;
-        min-height: 50px;
-        font-size: 0.95rem;
-        line-height: 1.4;
-        letter-spacing: 0.3px;
+        padding: 1.1rem 1rem !important;
+        min-height: 50px !important;
+        font-size: 0.95rem !important;
+        line-height: 1.4 !important;
+        letter-spacing: 0.3px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: visible !important;
     }
 }
 
