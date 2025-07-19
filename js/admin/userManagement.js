@@ -684,12 +684,7 @@ const UserManagement = {
 
         try {
             const token = localStorage.getItem('sessionToken');
-            const deleteUrl = `${this.apiBaseUrl}/users/${userId}`;
-            console.log('[UserManagement] DELETE request URL:', deleteUrl);
-            console.log('[UserManagement] User ID:', userId);
-            console.log('[UserManagement] API Base URL:', this.apiBaseUrl);
-            
-            const response = await fetch(deleteUrl, {
+            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

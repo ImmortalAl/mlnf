@@ -481,6 +481,39 @@
     flex-wrap: wrap;
 }
 
+.search-controls {
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.search-wrapper input {
+    flex: 1;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 94, 120, 0.3);
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    color: var(--text);
+}
+
+.search-wrapper .search-btn {
+    padding: 0 1.5rem;
+    background: var(--accent);
+    border: none;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    color: var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.search-wrapper .search-btn:hover {
+    background: rgba(255, 94, 120, 0.9);
+}
+
 .search-bar {
     display: flex;
     flex: 1;
@@ -579,6 +612,32 @@
     color: #ff4444;
 }
 
+/* Status badge styles for user management */
+.status-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.status-badge.online {
+    background: rgba(92, 184, 92, 0.2);
+    color: #5cb85c;
+}
+
+.status-badge.offline {
+    background: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+}
+
+.status-badge.banned {
+    background: rgba(220, 38, 127, 0.2);
+    color: #dc267f;
+    border: 1px solid rgba(220, 38, 127, 0.3);
+}
+
 .action-buttons {
     display: flex;
     gap: 0.5rem;
@@ -617,6 +676,26 @@
 
 .action-btn.delete:hover {
     background: #ef4444;
+    color: white;
+}
+
+.action-btn.ban {
+    border-color: #dc267f;
+    color: #dc267f;
+}
+
+.action-btn.ban:hover {
+    background: #dc267f;
+    color: white;
+}
+
+.action-btn.unban {
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+.action-btn.unban:hover {
+    background: #22c55e;
     color: white;
 }
 
