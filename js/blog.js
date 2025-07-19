@@ -120,8 +120,26 @@ async function fetchBlogPosts(page = 1) {
                 contentEl.className = 'content';
                 contentEl.innerHTML = excerpt;
                 
+                // Check if current user is the author for delete button
+                const token = localStorage.getItem('token');
+                let canDelete = false;
+                if (token && isTokenValid(token)) {
+                    try {
+                        const decoded = jwt_decode(token);
+                        canDelete = decoded.id === post.author._id || decoded.role === 'admin';
+                    } catch (error) {
+                        console.error('Token decode error:', error);
+                    }
+                }
+
                 const scrollFooter = document.createElement('div');
                 scrollFooter.className = 'scroll-footer';
+                
+                const deleteButton = canDelete ? 
+                    `<button class="delete-btn" data-post-id="${post._id}" onclick="event.stopPropagation(); confirmDeletePost('${post._id}')" title="Delete this scroll">
+                        <i class="fas fa-trash"></i>
+                    </button>` : '';
+
                 scrollFooter.innerHTML = `
                     <p class="date">${formattedDate}</p>
                     <div class="post-actions">
@@ -133,9 +151,12 @@ async function fetchBlogPosts(page = 1) {
                                 <i class="fas fa-heart-broken"></i> <span class="dislike-count">${post.dislikes ? post.dislikes.length : 0}</span>
                             </button>
                         </div>
-                        <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
-                            🔗 Share this scroll
-                        </button>
+                        <div class="scroll-controls">
+                            <button class="whisper-link" onclick="event.stopPropagation(); sharePost('${post._id}')">
+                                🔗 Share this scroll
+                            </button>
+                            ${deleteButton}
+                        </div>
                     </div>
                 `;
                 
@@ -590,21 +611,31 @@ function updateAuthorInfo(post) {
 
 function updateEditButton(post) {
     const editBtn = document.getElementById('editPostBtn');
-    const token = localStorage.getItem('sessionToken');
-    if (editBtn && isTokenValid(token)) {
+    const deleteBtn = document.getElementById('deletePostBtn');
+    const token = localStorage.getItem('token') || localStorage.getItem('sessionToken');
+    
+    if (isTokenValid(token)) {
         try {
             const decodedToken = jwt_decode(token);
-            if (post.author.username === decodedToken.username || post.author._id === decodedToken.id) {
-                editBtn.style.display = 'inline-flex';
-            } else {
-                editBtn.style.display = 'none';
+            const isAuthor = post.author.username === decodedToken.username || post.author._id === decodedToken.id;
+            const isAdmin = decodedToken.role === 'admin';
+            const canEdit = isAuthor;
+            const canDelete = isAuthor || isAdmin;
+            
+            if (editBtn) {
+                editBtn.style.display = canEdit ? 'inline-flex' : 'none';
+            }
+            if (deleteBtn) {
+                deleteBtn.style.display = canDelete ? 'inline-flex' : 'none';
             }
         } catch (error) {
-            console.error('[blog.js] Error checking edit permissions:', error);
-            editBtn.style.display = 'none';
+            console.error('[blog.js] Error checking permissions:', error);
+            if (editBtn) editBtn.style.display = 'none';
+            if (deleteBtn) deleteBtn.style.display = 'none';
         }
-    } else if (editBtn) {
-        editBtn.style.display = 'none';
+    } else {
+        if (editBtn) editBtn.style.display = 'none';
+        if (deleteBtn) deleteBtn.style.display = 'none';
     }
 }
 
@@ -1259,6 +1290,78 @@ function checkAutoOpen() {
 }
 
 
+// Delete functionality
+async function deletePost(postId) {
+    const token = localStorage.getItem('token') || localStorage.getItem('sessionToken');
+    if (!token) {
+        alert('You must be logged in to delete posts.');
+        return false;
+    }
+
+    try {
+        const response = await fetch(`${BLOG_API_BASE_URL}/blogs/${postId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Failed to delete post: ${response.status}`);
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete scroll: ' + error.message);
+        return false;
+    }
+}
+
+function confirmDeletePost(postId) {
+    const post = blogPosts[postId];
+    if (!post) {
+        alert('Post not found.');
+        return;
+    }
+
+    const confirmMessage = `Are you sure you want to permanently delete the scroll "${post.title}"?\n\nThis action cannot be undone.`;
+    
+    if (confirm(confirmMessage)) {
+        deletePost(postId).then(success => {
+            if (success) {
+                // Remove from UI
+                const postElement = document.getElementById(postId);
+                if (postElement) {
+                    postElement.remove();
+                }
+                
+                // Remove from cache
+                delete blogPosts[postId];
+                
+                // Show success message
+                alert('Scroll has been permanently deleted.');
+                
+                // Close modal if it's open
+                if (currentPostId === postId) {
+                    closeBlogModal();
+                }
+            }
+        });
+    }
+}
+
+function confirmDeleteCurrentPost() {
+    if (currentPostId) {
+        confirmDeletePost(currentPostId);
+    }
+}
+
 // Export new functions to global scope
 window.copyPostLink = copyPostLink;
+window.deletePost = deletePost;
+window.confirmDeletePost = confirmDeletePost;
+window.confirmDeleteCurrentPost = confirmDeleteCurrentPost;
 

@@ -3329,4 +3329,103 @@ body.light-theme .blog-modal-content::-webkit-scrollbar-thumb {
     opacity: 1;
 }
 
+/* Delete Button Styling */
+.delete-btn,
+.delete-post-btn {
+    background: linear-gradient(135deg, 
+        rgba(220, 38, 127, 0.8) 0%, 
+        rgba(190, 24, 93, 0.9) 100%);
+    border: 2px solid rgba(220, 38, 127, 0.4);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    box-shadow: 
+        0 4px 12px rgba(220, 38, 127, 0.2),
+        inset 0 1px 0 rgba(240, 230, 255, 0.1);
+    text-shadow: 0 0 8px rgba(220, 38, 127, 0.3);
+    white-space: nowrap;
+}
+
+.delete-btn:hover,
+.delete-post-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(220, 38, 127, 1) 0%, 
+        rgba(190, 24, 93, 1) 100%);
+    border-color: rgba(220, 38, 127, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 20px rgba(220, 38, 127, 0.4),
+        inset 0 1px 0 rgba(240, 230, 255, 0.2);
+    text-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.delete-btn:active,
+.delete-post-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(220, 38, 127, 0.3);
+}
+
+.delete-btn:focus,
+.delete-post-btn:focus {
+    outline: none;
+    border-color: rgba(220, 38, 127, 0.8);
+    box-shadow: 
+        0 0 0 4px rgba(220, 38, 127, 0.3),
+        0 6px 20px rgba(220, 38, 127, 0.4);
+}
+
+/* Scroll controls layout for card buttons */
+.scroll-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Mobile responsiveness for delete buttons */
+@media (max-width: 768px) {
+    .delete-btn,
+    .delete-post-btn {
+        padding: 0.625rem 1rem;
+        font-size: 0.8rem;
+        min-height: 40px;
+    }
+    
+    .scroll-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+    }
+    
+    .scroll-controls .whisper-link,
+    .scroll-controls .delete-btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .delete-btn,
+    .delete-post-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        min-height: 36px;
+    }
+}
+
 /* ... existing code ... */ 

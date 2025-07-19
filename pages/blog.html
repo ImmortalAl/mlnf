@@ -48,8 +48,8 @@
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
     <!-- Blog-specific modules (lazy loaded) -->
-    <link rel="preload" href="../css/blog-cards.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/blog-cards.css?v=2.3"></noscript>
+    <link rel="preload" href="../css/blog-cards.css?v=2.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/blog-cards.css?v=2.4"></noscript>
     
     <link rel="preload" href="../css/blog-modal.css?v=2.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/blog-modal.css?v=2.3"></noscript>
@@ -204,12 +204,15 @@
                     <button id="editPostBtn" class="edit-post-btn" onclick="editCurrentPost()" style="display: none;">
                         <i class="fas fa-edit"></i> Edit this scroll
                     </button>
+                    <button id="deletePostBtn" class="delete-post-btn" onclick="confirmDeleteCurrentPost()" style="display: none;">
+                        <i class="fas fa-trash"></i> Delete this scroll
+                    </button>
                     <button class="whisper-link" onclick="shareCurrentPost()">
                         <i class="fas fa-share"></i> Share this scroll
                     </button>
-                                            <button class="copy-link-btn" onclick="copyPostLink()">
-                            <i class="fas fa-chain"></i> Copy link
-                        </button>
+                    <button class="copy-link-btn" onclick="copyPostLink()">
+                        <i class="fas fa-chain"></i> Copy link
+                    </button>
                 </div>
                 
                 <!-- Comments Section -->
@@ -236,7 +239,7 @@
     <script src="../components/shared/activeUsers.js?v=1.6"></script>
     <script src="../components/shared/messageModal.js?v=2.5"></script>
     <script src="../components/shared/comments.js?v=1.2"></script>
-    <script src="../js/blog.js?v=2.9"></script>
+    <script src="../js/blog.js?v=3.0"></script>
     <!-- <script src="../js/scripts.js?v=1.2"></script> --> <!-- Legacy script - functionality moved to components -->
     
     <!-- Analytics Tracking System -->
