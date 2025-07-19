@@ -690,12 +690,35 @@ const UserManagement = {
 
         try {
             const token = localStorage.getItem('sessionToken');
-            const response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+            // Try DELETE first
+            let response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            // If DELETE not supported, try soft delete via PUT
+            if (response.status === 404 || response.status === 405) {
+                response = await fetch(`${this.apiBaseUrl}/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        deleted: true,
+                        deletedAt: new Date().toISOString(),
+                        active: false 
+                    })
+                });
+                
+                if (response.ok) {
+                    this.showSuccess(`User ${user.username} has been marked as deleted`);
+                    await this.loadUsers();
+                    return;
+                }
+            }
 
             if (!response.ok) {
                 let errorMessage = 'Failed to delete user';
@@ -718,6 +741,7 @@ const UserManagement = {
             await this.loadUsers();
         } catch (error) {
             this.showError('Failed to delete user', error.message);
+            this.showError('Note: User deletion may not be supported by the backend. Consider banning the user instead.');
         }
     },
 
