@@ -20,7 +20,11 @@ function setupActiveUsersEvents() {
     const closeUsersBtn = document.getElementById('closeUsers'); // The 'X' button inside the sidebar
     const activeUsersOverlay = document.getElementById('activeUsersOverlay');
 
-    // Elements validation completed
+    // Elements validation - check what's missing
+    const missingElements = [];
+    if (!showUsersBtn) missingElements.push('showUsersBtn');
+    if (!activeUsersSidebar) missingElements.push('activeUsers'); 
+    if (!activeUsersOverlay) missingElements.push('activeUsersOverlay');
 
     if (showUsersBtn && activeUsersSidebar && activeUsersOverlay) {
         showUsersBtn.addEventListener('click', () => {
@@ -81,7 +85,14 @@ function setupActiveUsersEvents() {
         activeUsersOverlay.onclick = closeActiveSidebar;
 
     } else {
-        console.warn('[activeUsers.js] Could not find one or more required elements for active users sidebar. Events not fully attached.');
+        if (missingElements.length > 0) {
+            console.warn(`[activeUsers.js] Missing required elements: ${missingElements.join(', ')}. Active users sidebar functionality disabled.`);
+        }
+        // Still try to populate user list if the sidebar exists
+        if (activeUsersSidebar) {
+            populateActiveUsersList();
+        }
+        return; // Exit early
     }
 
     // Future: Populate user list, handle message button clicks, etc.
@@ -293,6 +304,14 @@ function initActiveUsers() {
 // Expose the init function
 window.MLNF = window.MLNF || {};
 window.MLNF.initActiveUsers = initActiveUsers;
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initActiveUsers);
+} else {
+    // DOM is already ready
+    initActiveUsers();
+}
 
 // This component assumes its main HTML structures (#activeUsers sidebar, #showUsersBtn button)
 // are already present in the main HTML file (e.g., index.html).
