@@ -2199,9 +2199,6 @@ footer {
 
 /* For Header & Main Nav responsiveness */
 @media (max-width: 920px) {
-    header {
-        padding: 1rem 1.5rem; /* Adjust padding for smaller screens */
-    }
     .full-title {
         display: none !important; /* Hide full title */
     }
