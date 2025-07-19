@@ -12,6 +12,28 @@ function injectActiveUsersSidebar() {
         overlayContainer.innerHTML = overlayHTML;
         document.body.appendChild(overlayContainer.firstChild);
     }
+
+    // If showUsersBtn is missing but activeUsers sidebar exists, create the button
+    if (!document.getElementById('showUsersBtn') && document.getElementById('activeUsers')) {
+        // Check if floating-buttons container exists
+        let floatingButtons = document.querySelector('.floating-buttons');
+        
+        if (!floatingButtons) {
+            // Create floating buttons container
+            floatingButtons = document.createElement('div');
+            floatingButtons.className = 'floating-buttons';
+            document.body.appendChild(floatingButtons);
+        }
+
+        // Create the show users button
+        const showUsersBtn = document.createElement('button');
+        showUsersBtn.className = 'show-users-btn';
+        showUsersBtn.id = 'showUsersBtn';
+        showUsersBtn.setAttribute('aria-label', 'Show active users');
+        showUsersBtn.innerHTML = '<i class="fas fa-users"></i>';
+        
+        floatingButtons.appendChild(showUsersBtn);
+    }
 }
 
 function setupActiveUsersEvents() {
