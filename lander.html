@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
+    <meta name="version" content="2.1.0">
     <link rel="canonical" href="https://mlnf.net">
     <title>Soul Sanctum - MLNF</title>
     <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
@@ -312,6 +313,145 @@
             border-bottom: 1px solid rgba(255, 94, 120, 0.2);
         }
         
+        .mode-toggle {
+            margin-top: 1rem;
+        }
+        
+        /* Soul Essence View Styles */
+        .soul-essence-view {
+            padding: 2rem;
+            display: none; /* Hidden by default, shown in view mode */
+        }
+        
+        .essence-avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .essence-avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .essence-avatar-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .essence-avatar-glow {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 94, 120, 0.3), transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+            z-index: 1;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        .essence-identity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .essence-field {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 94, 120, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .essence-field:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 94, 120, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .essence-label {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .essence-value {
+            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1.4;
+            min-height: 1.5rem;
+        }
+        
+        .chronicle-field {
+            grid-column: 1 / -1;
+            margin-bottom: 2rem;
+        }
+        
+        .essence-chronicle {
+            color: var(--text);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+        }
+        
+        .essence-boundaries {
+            background: linear-gradient(135deg, rgba(255, 94, 120, 0.1), rgba(255, 94, 120, 0.05));
+            border: 1px solid rgba(255, 94, 120, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .boundaries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .boundary-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 94, 120, 0.2);
+        }
+        
+        .boundary-icon {
+            color: var(--accent);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .boundary-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .boundary-value {
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
         .forge-modal-header h2 {
             margin: 0 0 0.5rem 0;
             font-size: 2rem;
@@ -469,6 +609,25 @@
             
             .soul-forge-form {
                 padding: 1rem;
+            }
+            
+            .soul-essence-view {
+                padding: 1rem;
+            }
+            
+            .essence-identity {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .boundaries-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .essence-avatar-img {
+                width: 100px;
+                height: 100px;
             }
             
             .soul-identity-section {
@@ -1532,11 +1691,71 @@
             
             <!-- Soul Forge Header -->
             <div class="forge-modal-header">
-                <h2>Soul Forge</h2>
-                <p>Cultivate your immortal essence</p>
+                <h2 id="modalTitle">Soul Essence</h2>
+                <p id="modalSubtitle">Witness your immortal essence</p>
+                <div class="mode-toggle">
+                    <button id="switchToEditMode" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-edit"></i> Cultivate Essence
+                    </button>
+                    <button id="switchToViewMode" class="btn btn-primary" style="display: none;">
+                        <i class="fas fa-eye"></i> View Essence
+                    </button>
+                </div>
             </div>
             
-            <!-- Unified Soul Form -->
+            <!-- Soul Essence View (Read-Only) -->
+            <div id="soulEssenceView" class="soul-essence-view">
+                <!-- Avatar Section -->
+                <div class="essence-avatar-section">
+                    <div class="essence-avatar-container">
+                        <img id="viewAvatar" src="/assets/images/default.jpg" alt="Soul Avatar" class="essence-avatar-img">
+                        <div class="essence-avatar-glow"></div>
+                    </div>
+                </div>
+                
+                <!-- Identity Display -->
+                <div class="essence-identity">
+                    <div class="essence-field">
+                        <div class="essence-label">Eternal Name</div>
+                        <div id="viewEternalName" class="essence-value">Loading...</div>
+                    </div>
+                    
+                    <div class="essence-field">
+                        <div class="essence-label">Soul Whisper</div>
+                        <div id="viewSoulWhisper" class="essence-value">Loading...</div>
+                    </div>
+                </div>
+                
+                <!-- Soul Chronicle Display -->
+                <div class="essence-field chronicle-field">
+                    <div class="essence-label">Soul Chronicle</div>
+                    <div id="viewSoulChronicle" class="essence-chronicle">Loading...</div>
+                </div>
+                
+                <!-- Immortal Boundaries Display -->
+                <div class="essence-boundaries">
+                    <div class="essence-label">Immortal Boundaries</div>
+                    <div class="boundaries-grid">
+                        <div class="boundary-display">
+                            <span class="boundary-icon"><i class="fas fa-eye"></i></span>
+                            <span class="boundary-label">Revelation:</span>
+                            <span id="viewProfileVisibility" class="boundary-value">Loading...</span>
+                        </div>
+                        <div class="boundary-display">
+                            <span class="boundary-icon"><i class="fas fa-comment"></i></span>
+                            <span class="boundary-label">Soul Echoes:</span>
+                            <span id="viewMessaging" class="boundary-value">Loading...</span>
+                        </div>
+                        <div class="boundary-display">
+                            <span class="boundary-icon"><i class="fas fa-list"></i></span>
+                            <span class="boundary-label">Directory:</span>
+                            <span id="viewDirectoryListing" class="boundary-value">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unified Soul Form (Editable) -->
             <div class="soul-forge-form">
                 <!-- Avatar Section -->
                 <div class="soul-forge-avatar">
@@ -2117,9 +2336,7 @@
                     console.log('View Soul Essence clicked!');
                     e.preventDefault();
                     e.stopPropagation();
-                    // Navigate to user's public profile page
-                    // Stay on Soul Sanctum page and show profile modal instead of redirecting
-                    openSoulForgeModal();
+                    openSoulForgeModal('view');
                 };
                 viewProfileBtn.addEventListener('click', viewHandler);
                 viewProfileBtn.addEventListener('touchend', viewHandler, { passive: false });
@@ -2133,7 +2350,7 @@
                     e.preventDefault();
                     e.stopPropagation();
                     e.target.setAttribute('data-recently-clicked', 'true');
-                    openSoulForgeModal();
+                    openSoulForgeModal('edit');
                 };
                 editProfileBtn.addEventListener('click', editHandler);
                 editProfileBtn.addEventListener('touchend', editHandler, { passive: false });
@@ -2469,8 +2686,64 @@
             }
         }
         
-        function openSoulForgeModal() {
-            // Opening Soul Forge modal
+        function setupModalMode(mode) {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubtitle = document.getElementById('modalSubtitle');
+            const viewDiv = document.getElementById('soulEssenceView');
+            const editDiv = document.querySelector('.soul-forge-form');
+            const switchToEdit = document.getElementById('switchToEditMode');
+            const switchToView = document.getElementById('switchToViewMode');
+            
+            if (mode === 'view') {
+                modalTitle.textContent = 'Soul Essence';
+                modalSubtitle.textContent = 'Witness your immortal essence';
+                viewDiv.style.display = 'block';
+                editDiv.style.display = 'none';
+                switchToEdit.style.display = 'inline-block';
+                switchToView.style.display = 'none';
+            } else {
+                modalTitle.textContent = 'Soul Forge';
+                modalSubtitle.textContent = 'Cultivate your immortal essence';
+                viewDiv.style.display = 'none';
+                editDiv.style.display = 'block';
+                switchToEdit.style.display = 'none';
+                switchToView.style.display = 'inline-block';
+            }
+            
+            // Setup mode switching buttons
+            switchToEdit.onclick = () => setupModalMode('edit');
+            switchToView.onclick = () => setupModalMode('view');
+        }
+        
+        function populateViewDisplay(userData) {
+            // Populate the view-only display
+            const viewAvatar = document.getElementById('viewAvatar');
+            const viewEternalName = document.getElementById('viewEternalName');
+            const viewSoulWhisper = document.getElementById('viewSoulWhisper');
+            const viewSoulChronicle = document.getElementById('viewSoulChronicle');
+            const viewProfileVisibility = document.getElementById('viewProfileVisibility');
+            const viewMessaging = document.getElementById('viewMessaging');
+            const viewDirectoryListing = document.getElementById('viewDirectoryListing');
+            
+            if (viewAvatar) viewAvatar.src = userData.avatar || '/assets/images/default.jpg';
+            if (viewEternalName) viewEternalName.textContent = userData.displayName || userData.username || 'Unnamed Soul';
+            if (viewSoulWhisper) viewSoulWhisper.textContent = userData.status || 'Wandering the eternal realms...';
+            if (viewSoulChronicle) viewSoulChronicle.textContent = userData.bio || 'The chronicles remain unwritten...';
+            
+            // Privacy settings with friendly labels
+            if (viewProfileVisibility) {
+                viewProfileVisibility.textContent = userData.profileVisibility === 'private' ? 'Veiled' : 'Revealed';
+            }
+            if (viewMessaging) {
+                viewMessaging.textContent = userData.messaging === 'disabled' ? 'Sealed' : 'Open';
+            }
+            if (viewDirectoryListing) {
+                viewDirectoryListing.textContent = userData.directoryListing === 'unlisted' ? 'Hidden' : 'Inscribed';
+            }
+        }
+        
+        function openSoulForgeModal(mode = 'edit') {
+            console.log('Opening Soul Forge modal in', mode, 'mode');
             const modal = document.getElementById('soulManagementModal');
             if (!modal) {
                 console.error('Soul Forge modal not found');
@@ -2484,11 +2757,16 @@
             // Prevent body scroll on mobile
             document.body.style.overflow = 'hidden';
             
-            // Load current user data into form
+            // Set up mode switching
+            setupModalMode(mode);
+            
+            // Load current user data
             loadUserDataIntoForge();
             
-            // Setup form submission
-            setupSoulForgeSubmission();
+            // Setup form submission (only for edit mode)
+            if (mode === 'edit') {
+                setupSoulForgeSubmission();
+            }
             
             // Setup avatar preview
             setupAvatarPreview();
@@ -2571,6 +2849,9 @@
                         radio.checked = radio.value === user.directoryListing;
                     });
                 }
+                
+                // Also populate the view display
+                populateViewDisplay(user);
                 
             } catch (e) {
                 console.error('Error loading user data:', e);
