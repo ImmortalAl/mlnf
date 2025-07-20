@@ -95,16 +95,10 @@ class CommunityModerationSystem {
                         <form id="flagUserForm">
                             <div class="form-group">
                                 <label for="flagReason">Reason for flagging *</label>
-                                <select id="flagReason" name="reason" required>
-                                    <option value="">Select a reason...</option>
-                                    <option value="spam">Spam or repetitive content</option>
-                                    <option value="harassment">Harassment or personal attacks</option>
-                                    <option value="misinformation">Spreading misinformation</option>
-                                    <option value="trolling">Disruptive trolling behavior</option>
-                                    <option value="bad_faith">Arguing in bad faith</option>
-                                    <option value="off_topic">Consistently off-topic posting</option>
-                                    <option value="other">Other (please specify)</option>
-                                </select>
+                                <input type="text" id="flagReason" name="reason" 
+                                       placeholder="Briefly describe why you're flagging this user (e.g., 'harassment', 'spam')" 
+                                       maxlength="200" required>
+                                <small>Be specific but concise. This will be visible to the community.</small>
                             </div>
                             
                             <div class="form-group">
@@ -114,7 +108,7 @@ class CommunityModerationSystem {
                             </div>
                             
                             <div class="flag-warning">
-                                <p><strong>Important:</strong> Flagging is a serious action. False or malicious flags may result in penalties to your account. This will create a community moderation case if enough users flag this person.</p>
+                                <p><strong>Important:</strong> Flagging is a serious action. False or malicious flags may result in penalties to your account. After 3 flags, a community moderation thread will be created.</p>
                             </div>
                             
                             <div class="form-actions">
@@ -164,9 +158,12 @@ class CommunityModerationSystem {
                 this.showNotification('Flag submitted for community review', 'success');
                 this.closeFlagModal();
                 
-                if (data.caseCreated) {
-                    this.showNotification('Moderation case created - community voting has begun', 'info');
-                    this.loadActiveCases();
+                if (data.discussionThreadId) {
+                    this.showNotification('Community review triggered! A moderation thread has been created.', 'info');
+                    // Optionally redirect to the thread
+                    if (confirm('Would you like to view the moderation thread?')) {
+                        window.location.href = `/pages/messageboard.html?openThread=${data.discussionThreadId}`;
+                    }
                 }
             } else {
                 this.showNotification(data.error || 'Failed to submit flag', 'error');
@@ -226,6 +223,50 @@ class CommunityModerationSystem {
             // Mark as seen
             const allSeenCases = [...seenCases, ...newCases.map(c => c._id)];
             localStorage.setItem('seenModerationCases', JSON.stringify(allSeenCases));
+        }
+    }
+
+    async checkForModerationAlerts() {
+        try {
+            const data = await window.apiClient.get('/community-mod/cases?status=voting');
+            
+            if (data.success && data.cases.length > 0) {
+                this.activeCases = data.cases;
+                this.displayModerationAlertBanner();
+            }
+        } catch (error) {
+            console.error('Error checking for moderation alerts:', error);
+        }
+    }
+
+    displayModerationAlertBanner() {
+        // Remove existing banner
+        const existingBanner = document.querySelector('.moderation-alert-banner');
+        if (existingBanner) existingBanner.remove();
+
+        if (this.activeCases.length === 0) return;
+
+        const activeCase = this.activeCases[0]; // Show first active case
+        const lyceumsHeader = document.querySelector('.lyceum-header');
+        
+        if (lyceumsHeader) {
+            const banner = document.createElement('div');
+            banner.className = 'moderation-alert-banner';
+            banner.innerHTML = `
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-content">
+                    <h4>Community Moderation Alert</h4>
+                    <p>User <strong>${activeCase.flaggedUserId.username}</strong> is under community review. 
+                    ${this.activeCases.length} case${this.activeCases.length > 1 ? 's' : ''} need${this.activeCases.length === 1 ? 's' : ''} community input.</p>
+                </div>
+                <button class="btn btn-primary view-thread-btn" onclick="window.location.href='/pages/messageboard.html?openThread=${activeCase.discussionThreadId}'">
+                    <i class="fas fa-comments"></i> View Discussion
+                </button>
+            `;
+            
+            lyceumsHeader.insertAdjacentElement('afterend', banner);
         }
     }
 
