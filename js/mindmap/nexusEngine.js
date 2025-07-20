@@ -76,8 +76,8 @@ class NexusEngine {
                         'text-halign': 'center',
                         'color': '#f1f1f1',
                         'font-size': '14px',
-                        'width': 'mapData(credibility, 0, 100, 40, 120)',
-                        'height': 'mapData(credibility, 0, 100, 40, 120)',
+                        'width': 'mapData(credibilityScore, 0, 100, 40, 120)',
+                        'height': 'mapData(credibilityScore, 0, 100, 40, 120)',
                         'transition-property': 'width, height, background-color',
                         'transition-duration': '0.3s'
                     }
@@ -210,9 +210,10 @@ class NexusEngine {
                 id: nodeData._id,
                 title: nodeData.title,
                 content: nodeData.content,
-                credibility: nodeData.credibility.score,
+                credibilityScore: nodeData.credibility.score,
                 creator: nodeData.creator,
                 tags: nodeData.tags,
+                credibility: nodeData.credibility,
                 ...nodeData
             },
             position: nodeData.position || { x: Math.random() * 500, y: Math.random() * 500 }
@@ -537,7 +538,7 @@ class NexusEngine {
             
             // Update UI
             document.getElementById('credibilityScore').textContent = nodeData.credibility.score;
-            this.selectedNode.data('credibility', nodeData.credibility.score);
+            this.selectedNode.data('credibilityScore', nodeData.credibility.score);
             this.updateNodeCredibilityClass(this.selectedNode.id(), nodeData.credibility.score);
             
             // Update vote buttons
@@ -901,7 +902,7 @@ class NexusEngine {
         const node = this.cy.getElementById(data.nodeId);
         if (node.length > 0) {
             // Update credibility
-            node.data('credibility', data.credibility.score);
+            node.data('credibilityScore', data.credibility.score);
             this.updateNodeCredibilityClass(data.nodeId, data.credibility.score);
             
             // Update local data
