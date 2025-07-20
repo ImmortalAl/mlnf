@@ -610,7 +610,7 @@
 
     <!-- Floating Buttons -->
     <div class="floating-buttons">
-        <button class="show-users-btn" id="floatingShowUsersBtn" aria-label="Show active users">
+        <button class="show-users-btn" id="showUsersBtn" aria-label="Show active users">
             <i class="fas fa-users"></i>
         </button>
         <button class="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme">
@@ -1314,28 +1314,10 @@
         
         // Floating Buttons Functions
         function initFloatingButtons() {
-            const floatingShowUsersBtn = document.getElementById('floatingShowUsersBtn');
             const themeToggle = document.querySelector('[data-theme-toggle]');
             
-            // Floating active users button
-            if (floatingShowUsersBtn) {
-                floatingShowUsersBtn.addEventListener('click', () => {
-                    // Use the same logic as the main show users button
-                    const showUsersBtn = document.getElementById('showUsersBtn');
-                    if (showUsersBtn) {
-                        showUsersBtn.click();
-                    } else {
-                        // Fallback if main button doesn't exist
-                        const activeUsers = document.getElementById('activeUsers');
-                        const activeUsersOverlay = document.getElementById('activeUsersOverlay');
-                        if (activeUsers && activeUsersOverlay) {
-                            activeUsers.classList.add('active');
-                            activeUsersOverlay.classList.add('active');
-                            document.body.style.overflow = 'hidden';
-                        }
-                    }
-                });
-            }
+            // Active users button is now handled by activeUsers.js
+            // No need for duplicate event handling here
             
             // Theme toggle button
             if (themeToggle) {
