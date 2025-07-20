@@ -3091,9 +3091,10 @@ nav a {
 }
 
 .soul-highlight-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-    box-shadow: 0 15px 35px rgba(255, 94, 120, 0.2);
+    transform: translateY(-2px);
+    border-color: rgba(255, 94, 120, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 94, 120, 0.05);
 }
 
 .soul-card-founder {
@@ -3267,8 +3268,8 @@ nav a {
 }
 
 .soul-highlight-card:hover .mlnf-avatar--xl {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(255, 94, 120, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transform: scale(1.02);
 }
 
 .soul-highlight-card .mlnf-username--mystical {
