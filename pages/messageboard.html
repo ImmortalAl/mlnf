@@ -37,8 +37,8 @@
     <link rel="preload" href="../css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/active-users.css?v=7.0"></noscript>
     
-    <link rel="preload" href="../css/messageboard.css?v=1.6" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../css/messageboard.css?v=1.6"></noscript>
+    <link rel="preload" href="../css/messageboard.css?v=1.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/messageboard.css?v=1.7"></noscript>
     
     <!-- Democracy 3.0 Styles -->
     <link rel="preload" href="../css/democracy.css?v=1.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -613,7 +613,6 @@
                     <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="upvote-thread" aria-label="Upvote" ${!isAuthenticated ? 'disabled' : ''}>
                         <i class="fas fa-arrow-up"></i>
                     </button>
-                    <span class="vote-count">${thread.score || 0}</span>
                     <button class="vote-btn ${!isAuthenticated ? 'disabled' : ''}" data-action="downvote-thread" aria-label="Downvote" ${!isAuthenticated ? 'disabled' : ''}>
                         <i class="fas fa-arrow-down"></i>
                     </button>
@@ -949,7 +948,7 @@
                 container.innerHTML = `
                     <h3>${window.escapeHTML(threadData.title)}</h3>
                     <div class="thread-content-full">${DOMPurify.sanitize(threadData.content)}</div>
-                    ${threadData.author && threadData.author.signature ? `<div class="signature">${window.escapeHTML(threadData.author.signature)}</div>` : ''}
+                    ${threadData.author && threadData.author.status ? `<div class="user-status-signature"><i class="fas fa-comment-dots"></i> ${window.escapeHTML(threadData.author.status)}</div>` : ''}
                     ${proposalInterface}
                     <div class="replies-container">
                         ${renderReplies(threadData.replies, threadId)}
@@ -1150,7 +1149,6 @@
                 <div class="reply ${reply.isAnonymous ? 'anonymous' : ''}" data-id="${reply._id}">
                      <div class="thread-voting reply-voting">
                         <button class="vote-btn" data-action="upvote-reply" aria-label="Upvote"><i class="fas fa-arrow-up"></i></button>
-                        <span class="vote-count">${reply.score || 0}</span>
                         <button class="vote-btn" data-action="downvote-reply" aria-label="Downvote"><i class="fas fa-arrow-down"></i></button>
                     </div>
                     <div class="reply-main" data-thread-id="${threadId}">
@@ -1164,7 +1162,7 @@
                             ${canEdit ? `<button class="btn btn-secondary btn-xs edit-reply-btn" data-action="edit-reply" data-reply-id="${reply._id}" data-thread-id="${threadId}"><i class="fas fa-edit"></i> Edit</button>` : ''}
                             ${reply.editHistory && reply.editHistory.length > 0 ? `<button class="btn btn-secondary btn-xs view-edit-history-btn" data-action="view-edit-history" data-reply-id="${reply._id}"><i class="fas fa-history"></i> History (${reply.editHistory.length})</button>` : ''}
                         </div>
-                        ${reply.author && reply.author.signature && !reply.isAnonymous ? `<div class="signature">${escapeHTML(reply.author.signature)}</div>` : ''}
+                        ${reply.author && reply.author.status && !reply.isAnonymous ? `<div class="user-status-signature"><i class="fas fa-comment-dots"></i> ${escapeHTML(reply.author.status)}</div>` : ''}
                     </div>
                 </div>
             `}).join('');
@@ -1733,13 +1731,22 @@
             try {
                 const response = await window.apiClient.post(endpoint, { vote: voteType });
                 
-                // Update UI with new score
+                // Hide vote count since you don't want scores displayed
                 const voteCountElement = element.querySelector('.vote-count');
-                voteCountElement.textContent = response.newScore;
+                if (voteCountElement) {
+                    voteCountElement.style.display = 'none';
+                }
 
-                // Update active button state
+                // Update active button state based on current vote
                 element.querySelectorAll('.vote-btn.active').forEach(btn => btn.classList.remove('active'));
-                voteBtn.classList.add('active');
+                
+                if (response.currentVote) {
+                    // User has an active vote
+                    const activeBtn = element.querySelector(`[data-action*="${response.currentVote}"]`);
+                    if (activeBtn) {
+                        activeBtn.classList.add('active');
+                    }
+                }
 
             } catch (error) {
                 alert(`Error: ${error.error || 'Could not cast vote.'}`);

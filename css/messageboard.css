@@ -1,5 +1,22 @@
 /* Styles specific to the Echoes Unbound message board */
 
+/* User Status Signature */
+.user-status-signature {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 94, 120, 0.1);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.user-status-signature i {
+    margin-right: 0.5rem;
+    color: var(--accent);
+    opacity: 0.6;
+}
+
 /* Active Users Sidebar Styles */
 .sidebar-header {
     display: flex;
