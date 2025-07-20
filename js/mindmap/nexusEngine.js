@@ -147,8 +147,7 @@ class NexusEngine {
             
             // Interaction options
             minZoom: 0.1,
-            maxZoom: 3,
-            wheelSensitivity: 1, // Default value for mainstream mice
+            maxZoom: 3
         });
     }
     
