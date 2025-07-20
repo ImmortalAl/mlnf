@@ -350,17 +350,15 @@ body.light-theme .debate-position h4 {
 }
 
 .scroll-highlight-card:hover::before {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
-/* Subtle hover effects */
+/* Refined, subtle hover effects */
 .scroll-highlight-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(var(--accent-rgb, 255, 94, 120), 0.4);
+    transform: translateY(-2px);
     box-shadow: 
-        0 16px 48px rgba(0, 0, 0, 0.5),
-        0 8px 24px rgba(var(--accent-rgb, 255, 94, 120), 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Soul Scroll Title - Clean Typography */
@@ -1271,10 +1269,10 @@ body .floating-buttons button.theme-toggle#themeToggle {
 
 .soul-highlight-card {
     background: var(--background-secondary);
-    border-radius: 24px;
+    border-radius: 16px;
     padding: 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -1283,7 +1281,7 @@ body .floating-buttons button.theme-toggle#themeToggle {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .soul-highlight-card::before {
@@ -1292,48 +1290,25 @@ body .floating-buttons button.theme-toggle#themeToggle {
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.2), 
-                transparent);
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-.soul-highlight-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     bottom: 0;
-    background: radial-gradient(circle at center, transparent 0%, rgba(255, 94, 120, 0.03) 100%);
+    background: linear-gradient(135deg, 
+                rgba(255, 94, 120, 0.02) 0%, 
+                transparent 50%, 
+                rgba(255, 94, 120, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
     pointer-events: none;
+}
+
+.soul-highlight-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 94, 120, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 94, 120, 0.05);
 }
 
 .soul-highlight-card:hover::before {
     opacity: 1;
-}
-
-.soul-highlight-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25),
-                0 0 40px rgba(255, 94, 120, 0.1);
-}
-
-.soul-highlight-card:hover::before {
-    opacity: 0.3;
-    animation: immortalGlow 2s ease-in-out infinite;
-}
-
-@keyframes immortalGlow {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.5; }
 }
 
 .soul-card-founder {
@@ -1389,23 +1364,17 @@ body .floating-buttons button.theme-toggle#themeToggle {
 .soul-display-container::before {
     content: '';
     position: absolute;
-    inset: -50px;
+    inset: -20px;
     background: radial-gradient(circle at center,
-                rgba(255, 94, 120, 0.1) 0%,
-                transparent 50%);
-    filter: blur(30px);
+                rgba(255, 94, 120, 0.05) 0%,
+                transparent 60%);
+    filter: blur(15px);
     opacity: 0;
-    transition: opacity 0.2s ease;
-    animation: pulse 2.5s ease-in-out infinite;
+    transition: opacity 0.3s ease;
 }
 
 .soul-highlight-card:hover .soul-display-container::before {
-    opacity: 0.4;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(0.95); }
-    50% { transform: scale(1.05); }
+    opacity: 0.6;
 }
 
 .loading-soul {
@@ -1558,8 +1527,8 @@ body .floating-buttons button.theme-toggle#themeToggle {
 }
 
 .soul-highlight-card:hover .mlnf-avatar--xl {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transform: scale(1.02);
 }
 
 .soul-highlight-card .mlnf-username--mystical {
