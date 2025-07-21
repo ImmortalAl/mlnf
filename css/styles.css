@@ -2420,21 +2420,21 @@ main {
     margin: 0 auto;
     padding: 0 2rem;
     animation: cardsSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    perspective: 1000px;
+    /* perspective: 1000px; - OBLITERATED! No more 3D */
 }
 
 @keyframes cardsSlideIn {
     0% {
         opacity: 0;
-        transform: translateY(50px) rotateX(15deg);
+        transform: translateY(30px);
     }
     50% {
         opacity: 0.6;
-        transform: translateY(20px) rotateX(5deg);
+        transform: translateY(10px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0) rotateX(0deg);
+        transform: translateY(0);
     }
 }
 
@@ -2448,7 +2448,7 @@ main {
     padding: 0;
     border: 2px solid transparent;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -2459,7 +2459,7 @@ main {
         0 0 0 1px rgba(255, 255, 255, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.15),
         inset 0 0 20px rgba(255, 94, 120, 0.02);
-    transform-style: preserve-3d;
+    /* transform-style: preserve-3d; - ANNIHILATED! Flat is beautiful */
 }
 
 .highlight-card::before {
@@ -2482,10 +2482,7 @@ main {
     filter: blur(1px);
 }
 
-.highlight-card:hover::before {
-    opacity: 1;
-    animation: borderGlow 2s ease-in-out infinite alternate;
-}
+/* .highlight-card:hover::before - border glow effect removed */
 
 @keyframes borderGlow {
     0% {
@@ -2493,22 +2490,12 @@ main {
         transform: scale(1);
     }
     100% {
-        filter: blur(2px) brightness(1.2);
-        transform: scale(1.01);
+        filter: blur(1.5px) brightness(1.1);
+        transform: scale(1.005);
     }
 }
 
-.highlight-card:hover {
-    transform: translateY(-12px) scale(1.03) rotateX(5deg);
-    box-shadow: 
-        0 35px 80px rgba(0, 0, 0, 0.5),
-        0 15px 40px rgba(0, 0, 0, 0.4),
-        0 0 80px rgba(255, 94, 120, 0.15),
-        0 0 120px rgba(181, 172, 246, 0.1),
-        inset 0 2px 0 rgba(255, 255, 255, 0.2),
-        inset 0 0 30px rgba(255, 94, 120, 0.05);
-    border-color: rgba(255, 94, 120, 0.4);
-}
+/* .highlight-card:hover - deliberately removed to eliminate pop-out effect */
 
 .highlight-card .card-header {
     background: linear-gradient(135deg, 
@@ -2648,7 +2635,7 @@ main {
     margin: 0;
     text-decoration: none;
     color: var(--text-primary);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: block;
     flex: 1;
     position: relative;
@@ -2658,17 +2645,14 @@ main {
 
 .highlight-card .highlight-item:hover {
     background: linear-gradient(135deg, 
-                rgba(255, 94, 120, 0.08) 0%,
-                rgba(181, 172, 246, 0.05) 50%,
-                rgba(255, 94, 120, 0.03) 100%);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin: -1.5rem;
+                rgba(255, 94, 120, 0.05) 0%,
+                rgba(181, 172, 246, 0.03) 50%,
+                rgba(255, 94, 120, 0.02) 100%);
+    border-radius: 12px;
+    transform: translateX(2px);
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-    backdrop-filter: blur(10px);
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset -2px 0 0 rgba(255, 94, 120, 0.3);
 }
 
 .highlight-card .highlight-item.loading {
@@ -2744,20 +2728,49 @@ main {
 /* Advanced Interaction States */
 .highlight-card {
     will-change: transform, box-shadow;
+    /* Comprehensive transform reset to prevent ANY 3D effects */
+    transform: none !important;
 }
 
-.highlight-card:active {
-    transform: translateY(-8px) scale(0.98);
-    transition: all 0.1s ease;
+/* MAXIMUM SPECIFICITY: Bulletproof transform override */
+.highlight-card:hover,
+.highlight-card:active,
+.highlight-card:focus,
+.editorial-choice-card:hover,
+.editorial-choice-card:active,
+.editorial-choice-card:focus,
+.scroll-highlight-card:hover,
+.scroll-highlight-card:active,
+.scroll-highlight-card:focus {
+    transform: none !important;
+    /* Force 2D rendering context */
+    transform-style: flat !important;
+    perspective: none !important;
+    /* Override ANY child transforms that create 3D context */
 }
+
+/* Ultra-specific child element override */
+.highlight-card:hover *,
+.editorial-choice-card:hover *,
+.scroll-highlight-card:hover * {
+    transform: none !important;
+}
+
+/* Specific override for the problematic read-more indicator */
+.scroll-highlight-card:hover .read-more-indicator {
+    transform: none !important;
+    /* Keep the color change but remove transform */
+    color: rgba(255, 202, 40, 0.95);
+    opacity: 1;
+}
+
+/* .highlight-card:active - removed to eliminate ALL 3D effects */
 
 .highlight-card .card-header h3 {
     will-change: transform;
 }
 
-.highlight-card:hover .card-header h3 i {
-    transform: translateY(-1px) rotate(5deg) scale(1.1);
-}
+/* .highlight-card:hover .card-header h3 i - icon hover animation removed */
 
 /* Performance optimizations */
 .highlight-card * {
@@ -2801,9 +2814,7 @@ main {
         max-width: 500px;
     }
     
-    .highlight-card:hover {
-        transform: translateY(-4px) !important;
-    }
+    /* .highlight-card:hover - mobile outer card hover effect removed */
     
     .highlight-card .card-header {
         padding: 2rem 1.5rem 1.5rem 1.5rem;
@@ -2851,15 +2862,7 @@ main {
                 rgba(255, 202, 40, 0.5) 100%);
 }
 
-.editorial-choice-card:hover {
-    box-shadow: 
-        0 35px 80px rgba(0, 0, 0, 0.5),
-        0 15px 40px rgba(0, 0, 0, 0.4),
-        0 0 80px rgba(255, 202, 40, 0.2),
-        0 0 120px rgba(245, 158, 11, 0.15),
-        inset 0 2px 0 rgba(255, 255, 255, 0.2),
-        inset 0 0 30px rgba(255, 202, 40, 0.08);
-}
+/* .editorial-choice-card:hover - deliberately removed to eliminate pop-out effect */
 
 .editorial-choice-card .card-header h3 i {
     color: rgba(255, 255, 255, 0.9);
@@ -2931,7 +2934,7 @@ main {
         grid-template-columns: 1fr;
         gap: 2rem;
         padding: 0 1rem;
-        perspective: none;
+        /* perspective: none; - Already obliterated above! */
     }
     
     @keyframes cardsSlideIn {

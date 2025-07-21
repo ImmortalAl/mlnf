@@ -349,17 +349,9 @@ body.light-theme .debate-position h4 {
     50% { background-position: 100% 50%; }
 }
 
-.scroll-highlight-card:hover::before {
-    opacity: 0.5;
-}
+/* .scroll-highlight-card:hover::before - removed */
 
-/* Refined, subtle hover effects */
-.scroll-highlight-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 4px 16px rgba(0, 0, 0, 0.2);
-}
+/* Outer card hover effect removed - only inner elements animate */
 
 /* Soul Scroll Title - Clean Typography */
 .scroll-title-prominent {
@@ -421,9 +413,10 @@ body.light-theme .debate-position h4 {
     transition: all 0.3s ease;
 }
 
+/* .scroll-highlight-card:hover .read-more-indicator - Transform removed to prevent 3D context */
 .scroll-highlight-card:hover .read-more-indicator {
     color: rgba(255, 202, 40, 0.95);
-    transform: translateX(3px);
+    /* transform: translateX(3px); - REMOVED: This was creating the 3D pop-out effect */
     opacity: 1;
 }
 
@@ -459,9 +452,7 @@ body.light-theme .debate-position h4 {
         margin-bottom: 0.5rem;
     }
     
-    .scroll-highlight-card:hover {
-        transform: translateY(-4px);
-    }
+    /* Mobile: Outer card hover effect removed */
 }
 
 /* Extra spacing for very small mobile screens */
