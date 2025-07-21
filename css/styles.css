@@ -2482,7 +2482,32 @@ main {
     filter: blur(1px);
 }
 
-/* .highlight-card:hover::before - border glow effect removed */
+.highlight-card:hover::before {
+    opacity: 1;
+    background: linear-gradient(45deg, 
+                rgba(255, 94, 120, 0.6) 0%,
+                rgba(181, 172, 246, 0.4) 25%,
+                rgba(255, 202, 40, 0.5) 50%,
+                rgba(181, 172, 246, 0.4) 75%,
+                rgba(255, 94, 120, 0.6) 100%);
+    background-size: 300% 300%;
+    animation: etherealBorder 4s ease-in-out infinite;
+}
+
+@keyframes etherealBorder {
+    0%, 100% { 
+        background-position: 0% 50%;
+        filter: blur(1px) brightness(1);
+    }
+    33% { 
+        background-position: 100% 50%;
+        filter: blur(1.5px) brightness(1.2);
+    }
+    66% { 
+        background-position: 0% 100%;
+        filter: blur(1px) brightness(0.9);
+    }
+}
 
 @keyframes borderGlow {
     0% {
@@ -2495,7 +2520,12 @@ main {
     }
 }
 
-/* .highlight-card:hover - deliberately removed to eliminate pop-out effect */
+.highlight-card:hover {
+    /* No 3D transforms, but MYSTICAL ENCHANTMENT! */
+    filter: drop-shadow(0 0 20px rgba(255, 94, 120, 0.4))
+            drop-shadow(0 0 40px rgba(181, 172, 246, 0.2));
+    transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 .highlight-card .card-header {
     background: linear-gradient(135deg, 
@@ -2645,14 +2675,48 @@ main {
 
 .highlight-card .highlight-item:hover {
     background: linear-gradient(135deg, 
-                rgba(255, 94, 120, 0.05) 0%,
-                rgba(181, 172, 246, 0.03) 50%,
-                rgba(255, 94, 120, 0.02) 100%);
+                rgba(255, 94, 120, 0.08) 0%,
+                rgba(181, 172, 246, 0.06) 30%,
+                rgba(255, 202, 40, 0.04) 60%,
+                rgba(255, 94, 120, 0.05) 100%);
+    background-size: 300% 300%;
     border-radius: 12px;
-    transform: translateX(2px);
+    transform: translateX(3px);
     box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-        inset -2px 0 0 rgba(255, 94, 120, 0.3);
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset -3px 0 0 rgba(255, 94, 120, 0.4),
+        0 0 15px rgba(255, 94, 120, 0.2);
+    animation: breathingGradient 3s ease-in-out infinite;
+}
+
+.highlight-card:hover .mlnf-avatar {
+    animation: avatarGlow 2s ease-in-out infinite alternate;
+    border-color: rgba(255, 202, 40, 0.8) !important;
+}
+
+@keyframes avatarGlow {
+    0% { 
+        box-shadow: 0 0 15px rgba(255, 94, 120, 0.3),
+                    0 0 30px rgba(255, 202, 40, 0.2);
+        filter: brightness(1);
+    }
+    100% { 
+        box-shadow: 0 0 25px rgba(255, 94, 120, 0.6),
+                    0 0 50px rgba(255, 202, 40, 0.4),
+                    0 0 75px rgba(181, 172, 246, 0.2);
+        filter: brightness(1.1);
+    }
+}
+
+@keyframes breathingGradient {
+    0%, 100% { 
+        background-position: 0% 50%;
+        transform: translateX(3px);
+    }
+    50% { 
+        background-position: 100% 50%;
+        transform: translateX(5px);
+    }
 }
 
 .highlight-card .highlight-item.loading {
@@ -2770,7 +2834,22 @@ main {
     will-change: transform;
 }
 
-/* .highlight-card:hover .card-header h3 i - icon hover animation removed */
+.highlight-card:hover .card-header h3 {
+    background: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.9) 25%, 
+                rgba(255, 202, 40, 0.9) 50%, 
+                rgba(255, 255, 255, 0.9) 75%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmerText 2s ease-in-out infinite;
+}
+
+@keyframes shimmerText {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
 
 /* Performance optimizations */
 .highlight-card * {
