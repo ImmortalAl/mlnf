@@ -147,3 +147,6 @@ After completing any task involving file changes, Claude must:
 3. Confirm successful deployment
 
 This ensures continuous deployment and prevents work loss.
+
+// Additional Note for Future Iterations:
+// The user prefers to be asked (pestered) if anything is unclear or unknown during development. This ensures all changes are approved and minimizes the need for backtracking or reworking. Always confirm uncertainties before proceeding.

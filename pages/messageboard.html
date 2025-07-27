@@ -121,20 +121,13 @@
         </nav>
     </header>
 
-    <main class="messageboard-container">
-        <div class="lyceum-header">
-            <div class="lyceum-header-content">
+    <main class="messageboard-container container">
+        <section class="lyceum-header">
             <h2>Echoes Unbound</h2>
-            <p>The eternal forum for ideas, debates, and revelations.</p>
-            </div>
-            <div class="lyceum-header-actions">
-                <button class="btn btn-primary" id="newThreadBtn"><i class="fas fa-plus-circle"></i> New Echo</button>
-            </div>
-        </div>
-
+            <p>Engage in eternal discourse</p>
+        </section>
         <div class="lyceum-grid">
-            <!-- Column 1: Categories -->
-            <aside class="lyceum-column" id="lyceum-categories">
+            <aside class="lyceum-column categories-column" aria-label="Message categories">
                 <h3>Categories</h3>
                 <nav>
                     <ul>
@@ -148,9 +141,7 @@
                     </ul>
                 </nav>
             </aside>
-
-            <!-- Column 2: Thread List -->
-            <section class="lyceum-column" id="lyceum-threads">
+            <section class="lyceum-column threads-column" aria-label="Threads">
                 <div class="thread-controls">
                     <div class="search-bar">
                         <input type="text" id="threadSearch" placeholder="Search echoes..." />
@@ -162,9 +153,7 @@
                     <!-- Threads will be loaded here -->
                 </div>
             </section>
-
-            <!-- Column 3: Active Thread View -->
-            <section class="lyceum-column" id="lyceum-active-thread" style="display: none;">
+            <section class="lyceum-column details-column" aria-label="Thread details">
                 <div class="active-thread-header">
                     <button class="btn btn-secondary btn-sm close-thread-btn" id="closeActiveThread">
                         <i class="fas fa-times"></i> Close

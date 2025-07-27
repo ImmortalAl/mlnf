@@ -307,20 +307,22 @@ section {
 /* 3-Column Grid Layout */
 .lyceum-grid {
     display: grid;
-    grid-template-columns: 250px 1fr 1fr; /* 3 columns */
-    gap: 1.5rem;
+    grid-template-columns: 250px 1fr 1fr;
+    gap: var(--space-lg);
     flex-grow: 1;
     overflow: hidden; /* Prevent container overflow */
+    @media (max-width: var(--bp-md)) {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Individual Columns */
 .lyceum-column {
-    background: rgba(13, 13, 26, 0.3); /* Much more transparent to let cosmic background shine */
-    backdrop-filter: blur(2px) saturate(120%);
-    -webkit-backdrop-filter: blur(2px) saturate(120%);
+    background: var(--bg-tertiary);
     border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: var(--transition);
     border: 1px solid var(--highlight);
-    padding: 1.5rem;
     overflow-y: auto; /* Enable scrolling within columns */
 }
 

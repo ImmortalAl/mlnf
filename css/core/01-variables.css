@@ -1,0 +1,165 @@
+/* MLNF Core Variables - CSS Custom Properties */
+/* Foundation styles that affect the entire application */
+
+:root {
+  /* === COLOR PALETTE === */
+  /* Primary Brand Colors */
+  --primary: #1a0d33;
+  --secondary: #2d1b4e;
+  --accent: #ff5e78;
+  --accent-rgb: 255, 94, 120;
+  
+  /* Extended Palette */
+  --accent-orange: #ff8f00;
+  --accent-purple: #a855f7;
+  --accent-blue: #3b82f6;
+  
+  /* Text Colors */
+  --text: #f0e6ff;
+  --text-secondary: #c9b3e0;
+  --text-muted: #a084c4;
+  
+  /* Background Variations */
+  --bg-primary: var(--primary);
+  --bg-secondary: var(--secondary);
+  --bg-tertiary: #16213e;
+  
+  /* === GRADIENTS === */
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+  --gradient-secondary: linear-gradient(to bottom, var(--secondary), rgba(26, 26, 51, 0.9));
+  --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+  --gradient-mystical: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  
+  /* === TYPOGRAPHY === */
+  /* Font Families */
+  --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Lato', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mystical: 'Cinzel', serif;
+  --font-display: 'Immortal', fantasy;
+  --font-mono: 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --font-xs: 0.75rem;      /* 12px */
+  --font-sm: 0.875rem;     /* 14px */
+  --font-base: 1rem;       /* 16px */
+  --font-lg: 1.125rem;     /* 18px */
+  --font-xl: 1.25rem;      /* 20px */
+  --font-2xl: 1.5rem;      /* 24px */
+  --font-3xl: 1.875rem;    /* 30px */
+  --font-4xl: 2.25rem;     /* 36px */
+  
+  /* Font Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-black: 900;
+  
+  /* === SPACING === */
+  --space-xs: 0.25rem;     /* 4px */
+  --space-sm: 0.5rem;      /* 8px */
+  --space-md: 1rem;        /* 16px */
+  --space-lg: 1.5rem;      /* 24px */
+  --space-xl: 2rem;        /* 32px */
+  --space-2xl: 3rem;       /* 48px */
+  --space-3xl: 4rem;       /* 64px */
+  
+  /* === LAYOUT === */
+  /* Breakpoints (for reference in media queries) */
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  
+  /* Container Widths */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  
+  /* Header & Navigation */
+  --header-height: 70px;
+  --nav-width: 300px;
+  --sidebar-width: 320px;
+  
+  /* === DESIGN TOKENS === */
+  /* Border Radius */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-full: 9999px;
+  --border-radius: 10px; /* Default */
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(var(--accent-rgb), 0.3);
+  --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  
+  /* === ANIMATIONS === */
+  /* Timing Functions */
+  --ease-in-out: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Durations */
+  --duration-fast: 0.15s;
+  --duration-normal: 0.3s;
+  --duration-slow: 0.5s;
+  
+  /* Default Transition */
+  --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  
+  /* === Z-INDEX SCALE === */
+  /* Systematic z-index management */
+  --z-base: 1;
+  --z-content: 10;
+  --z-header: 1000;
+  --z-overlay: 5000;
+  --z-sidebar: 10000;
+  --z-modal: 50000;
+  --z-toast: 100000;
+  --z-tooltip: 200000;
+}
+
+/* === LIGHT THEME OVERRIDES === */
+body.light-theme {
+  --primary: #f0f0f5;
+  --secondary: #ffffff;
+  --text: #2d2d3a;
+  --text-secondary: rgba(45, 45, 58, 0.8);
+  --text-muted: rgba(45, 45, 58, 0.6);
+  
+  --bg-primary: var(--primary);
+  --bg-secondary: var(--secondary);
+  --bg-tertiary: rgba(255, 255, 255, 0.8);
+  
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+  --gradient-secondary: linear-gradient(135deg, var(--secondary), rgba(255, 255, 255, 0.9));
+  --gradient-accent: linear-gradient(45deg, #ff5e78, #ff8f00);
+  --gradient-mystical: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+}
+
+/* === UTILITY CUSTOM PROPERTIES === */
+/* High-contrast for accessibility */
+@media (prefers-contrast: high) {
+  :root {
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition: none;
+    --duration-fast: 0s;
+    --duration-normal: 0s;
+    --duration-slow: 0s;
+  }
+}

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A timeless sanctuary for liberated spirits to manifest truth and freedom.",
   "main": "index.js",
-  "scripts": {
+  "scripts": {"test": "jest",
     "build": "echo 'Static site - no build required'",
     "deploy": "wrangler pages deploy ."
   },
@@ -12,5 +12,20 @@
   "license": "ISC",
   "dependencies": {
     "puppeteer": "^24.11.2"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "jest": "^30.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ImmortalAl/mlnf.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ImmortalAl/mlnf/issues"
+  },
+  "homepage": "https://github.com/ImmortalAl/mlnf#readme"
 }

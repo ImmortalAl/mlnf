@@ -1,5 +1,6 @@
 /* lander.css - Styles for the Soul Sanctum page */
 
+<<<<<<< Updated upstream
 :root {
     --primary: #0d0d1a;
     --secondary: #1a1a33;
@@ -13,16 +14,19 @@
     --border-radius: 10px;
     --soul-glow: 0 0 20px rgba(255, 94, 120, 0.3);
 }
+=======
+@import 'core/01-variables.css';
+>>>>>>> Stashed changes
 
 body {
-    background: linear-gradient(180deg, var(--primary), rgba(13, 13, 26, 0.7)), 
-                url('https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+    background: var(--gradient-primary);
+    background-attachment: fixed;
 }
 
 main {
-    padding: 2rem;
+    padding: var(--space-md);
     flex: 1;
-    max-width: 1440px;
+    max-width: var(--container-xl);
     margin: 0 auto;
     width: 100%;
 }
@@ -30,26 +34,27 @@ main {
 section {
     background: var(--gradient-secondary);
     border-radius: var(--border-radius);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(255, 94, 120, 0.25);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    border: 1px solid rgba(var(--accent-rgb), 0.25);
 }
 
 h2 {
-    font-family: 'Lato', sans-serif;
-    font-size: 1.6rem;
+    font-family: var(--font-body);
+    font-size: var(--font-2xl);
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-md);
 }
 
 h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+    font-size: var(--font-xl);
+    margin-bottom: var(--space-sm);
 }
 
+<<<<<<< Updated upstream
 /* Soul Presence Banner */
 .soul-presence {
     background: var(--gradient-secondary);
@@ -244,6 +249,10 @@ h3 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+=======
+.welcome-section p {
+    margin-bottom: var(--space-lg);
+>>>>>>> Stashed changes
 }
 
 .section-header h2 {
@@ -334,16 +343,16 @@ h3 {
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
 }
 
 .hub-card {
     background: rgba(255, 255, 255, 0.05);
     border-radius: var(--border-radius);
-    padding: 1.5rem;
+    padding: var(--space-lg);
     transition: var(--transition);
-    border: 1px solid rgba(255, 94, 120, 0.1);
+    border: 1px solid rgba(var(--accent-rgb), 0.1);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -546,18 +555,18 @@ footer {
 }
 
 /* Enhanced Mobile Responsive Styles */
-@media (max-width: 768px) {
+@media (max-width: var(--bp-md)) {
     main {
-        padding: 1rem;
+        padding: var(--space-sm);
     }
     
     section {
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: var(--space-md);
+        margin-bottom: var(--space-md);
     }
     
     h2 {
-        font-size: 1.4rem;
+        font-size: var(--font-xl);
         text-align: center;
     }
     
@@ -641,12 +650,12 @@ footer {
     
     .card-grid {
         grid-template-columns: 1fr;
-        gap: 1.25rem;
-        margin-top: 1.25rem;
+        gap: var(--space-md);
+        margin-top: var(--space-md);
     }
     
     .hub-card {
-        padding: 1.25rem;
+        padding: var(--space-lg);
     }
     
     .hub-card-header {
