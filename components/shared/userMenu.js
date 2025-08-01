@@ -106,7 +106,9 @@ function populateHeaderAuthButtons(container) {
   if (headerLoginButton) {
     headerLoginButton.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('[userMenu.js] Login button clicked');
       if (window.MLNF && window.MLNF.openSoulModal) {
+        console.log('[userMenu.js] Calling openSoulModal with login mode');
         window.MLNF.openSoulModal('login');
       } else {
         console.error('[userMenu.js] openSoulModal function not available!');

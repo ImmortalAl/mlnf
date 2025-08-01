@@ -254,7 +254,7 @@ section {
     padding: 1rem;
     border-radius: var(--radius-lg);
     border: 1px solid var(--accent);
-    z-index: 2000;
+    z-index: var(--z-sticky);
     animation: slideIn 0.5s ease-out;
 }
 @keyframes slideIn {
@@ -1611,7 +1611,7 @@ input[type="radio"]:checked + .radio-custom::after {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 10000;
+    z-index: var(--z-notification);
     padding: 1rem 1.5rem;
     border-radius: var(--radius-lg);
     color: white;

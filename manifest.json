@@ -1,6 +1,6 @@
 {
-  "name": "Manifest Liberation, Naturally Free",
-  "short_name": "MLNF",
+  "name": "Immortal Nexus",
+  "short_name": "Nexus",
   "description": "An immortal sanctuary for uncensored thought and eternal truth",
   "start_url": "/lander.html",
   "display": "standalone",
@@ -103,20 +103,20 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "MLNF Homepage - Desktop View"
+      "label": "Immortal Nexus Homepage - Desktop View"
     },
     {
       "src": "assets/screenshots/homepage-narrow.png",
       "sizes": "640x1136",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "MLNF Homepage - Mobile View"
+      "label": "Immortal Nexus Homepage - Mobile View"
     }
   ],
   "related_applications": [],
   "prefer_related_applications": false,
   "scope": "/",
-  "id": "mlnf-pwa",
+  "id": "immortal-nexus-pwa",
   "protocol_handlers": [
     {
       "protocol": "mailto",

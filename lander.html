@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Manifest Liberation, Naturally Free - A refuge for free-thinkers">
+    <meta name="description" content="Immortal Nexus - A refuge for free-thinkers">
     <meta name="version" content="2.1.0">
-    <link rel="canonical" href="https://mlnf.net">
-    <title>Immortal U - Soul Sanctum</title>
+    <link rel="canonical" href="https://immortal.nexus">
+    <title>Soul Sanctum - Immortal Nexus</title>
     <!-- 1. THEME FOUNDATION (MUST BE FIRST) -->
     <link rel="stylesheet" href="css/base-theme.css">
     
@@ -27,8 +27,8 @@
     <noscript><link rel="stylesheet" href="css/features.css?v=6.3"></noscript>
     
     <!-- 4. SHARED COMPONENTS (lazy loaded) -->
-    <link rel="preload" href="components/shared/styles.css?v=10.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=10.0"></noscript>
+    <link rel="preload" href="components/shared/styles.css?v=10.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/shared/styles.css?v=10.3"></noscript>
     
     <!-- 5. PAGE-SPECIFIC (lazy loaded) -->
     <link rel="preload" href="css/active-users.css?v=7.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -37,7 +37,6 @@
     <link rel="preload" href="css/lander.css?v=3.8" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/lander.css?v=3.8"></noscript>
     
-<<<<<<< Updated upstream
     <!-- Soul Management Modal Styles -->
     <style>
         /* Modal System - Simplified after removing stacking context traps */
@@ -1644,8 +1643,6 @@
         }
     </style>
     
-=======
->>>>>>> Stashed changes
     <!-- 6. EXTERNAL RESOURCES (lazy loaded) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous"></noscript>
@@ -1855,10 +1852,10 @@
                 <i class="fas fa-infinity"></i>
                 <div class="title-stack">
                     <span class="full-title">
-                        <span class="title-line-one">Manifest Liberation</span>
-                        <span class="title-line-two">Naturally Free</span>
+                        <span class="title-line-one">Immortal</span>
+                        <span class="title-line-two">Nexus</span>
                     </span>
-                    <span class="short-title">MLNF</span>
+                    <span class="short-title">IN</span>
                 </div>
             </a>
         </div>
@@ -1896,7 +1893,6 @@
     </header>
 
     <main>
-<<<<<<< Updated upstream
         <!-- Soul Presence Banner -->
         <section class="soul-presence">
             <div class="soul-presence-content">
@@ -1908,105 +1904,6 @@
                         <button id="editWhisperBtn" class="edit-whisper-btn" title="Edit Soul Whisper">
                             <i class="fas fa-edit"></i>
                         </button>
-=======
-        <!-- Quick Actions Bar (Sticky Top) -->
-        <div class="quick-actions-bar" id="quickActionsBar">
-            <div class="quick-actions-content">
-                <button class="quick-action-btn" id="quickProfileBtn" title="Quick Profile Access">
-                    <i class="fas fa-user"></i>
-                </button>
-                <button class="quick-action-btn" id="quickPostBtn" title="Quick Post">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <button class="quick-action-btn" id="quickNotificationsBtn" title="Notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge" id="notificationBadge">3</span>
-                </button>
-                <button class="quick-action-btn" id="refreshBtn" title="Refresh Activity">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-            </div>
-        </div>
-        <!-- Soul Status Card (Collapsible) -->
-        <div class="soul-status-card" id="soulStatusCard">
-            <div class="soul-status-header" id="soulStatusHeader">
-                <div class="soul-status-info">
-                    <img id="quickAvatarImg" src="/assets/images/default.jpg" alt="Your Soul" class="quick-avatar">
-                    <div class="soul-status-text">
-                        <h3 id="quickDisplayName">Eternal Seeker</h3>
-                        <p id="quickStatus">Living eternally free</p>
-                    </div>
-                </div>
-                <button class="collapse-btn" id="collapseStatusBtn">
-                    <i class="fas fa-chevron-up"></i>
-                </button>
-            </div>
-            <div class="soul-status-details" id="soulStatusDetails">
-                <div class="soul-quick-stats">
-                    <div class="quick-stat">
-                        <span class="quick-stat-value" id="quickScrollsCount">0</span>
-                        <span class="quick-stat-label">Scrolls</span>
-                    </div>
-                    <div class="quick-stat">
-                        <span class="quick-stat-value" id="quickEchoesCount">0</span>
-                        <span class="quick-stat-label">Echoes</span>
-                    </div>
-                    <div class="quick-stat">
-                        <span class="quick-stat-value" id="quickConnectionsCount">0</span>
-                        <span class="quick-stat-label">Connections</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <section class="welcome-section container">
-            <h2>Welcome to the Eternal Hearth</h2>
-            <p>Your personal headquarters within the MLNF sanctuary</p>
-            <div class="card-grid">
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-user-circle"></i>
-                        <h3>My Soul</h3>
-                    </div>
-                    <p>View and manage your eternal presence</p>
-                    <div class="hub-card-actions mobile-optimized">
-                        <button id="viewProfileBtn" class="btn btn-primary">View Profile</button>
-                        <button id="editProfileBtn" class="btn btn-secondary">Edit Profile</button>
-                        <button id="privacySettingsBtn" class="btn btn-outline">Privacy</button>
-                    </div>
-                </div>
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-scroll"></i>
-                        <h3>My Scrolls</h3>
-                    </div>
-                    <p>Manage your eternal writings</p>
-                    <div class="hub-card-actions">
-                        <a href="/pages/blog.html?filter=mine" class="btn btn-primary">View Scrolls</a>
-                        <a href="/pages/blog.html?action=new" class="btn">New Scroll</a>
-                    </div>
-                </div>
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-comments"></i>
-                        <h3>My Echoes</h3>
-                    </div>
-                    <p>See your contributions to the eternal discourse</p>
-                    <div class="hub-card-actions">
-                        <a href="/pages/messageboard.html?filter=mine" class="btn btn-primary">View Echoes</a>
-                        <a href="/pages/messageboard.html?action=new" class="btn">New Thread</a>
-                    </div>
-                </div>
-                <div class="hub-card">
-                    <div class="hub-card-header">
-                        <i class="fas fa-users"></i>
-                        <h3>Eternal Souls</h3>
-                    </div>
-                    <p>Explore other immortal spirits</p>
-                    <div class="hub-card-actions">
-                        <a href="/souls" class="btn btn-primary">Explore Souls</a>
-                        <a href="/souls?action=search" class="btn">Find Soul</a>
->>>>>>> Stashed changes
                     </div>
                 </div>
             </div>
@@ -2086,18 +1983,18 @@
     </main>
 
     <footer>
-        <p>&copy; 2023 Manifest Liberation, Naturally Free | Embracing Infinity</p>
+        <p>&copy; 2023 Immortal Nexus | Embracing Infinity</p>
     </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
     <!-- Shared MLNF Scripts -->
     <!-- Config MUST be loaded first -->
-    <script src="components/shared/config.js?v=1.4"></script>
+    <script src="components/shared/config.js?v=2.0"></script>
     <script src="components/shared/mlnf-core.js?v=1.3"></script>
     <script src="components/shared/navigation.js?v=1.7"></script>
     <script src="components/shared/userMenu.js?v=1.8"></script>
-    <script src="components/shared/authModal.js?v=1.4"></script>
+    <script src="components/shared/authModal.js?v=2.1"></script>
     <script src="components/shared/messageModal.js?v=2.5"></script>
     <script src="components/shared/activeUsers.js?v=1.6"></script>
     <!-- End Shared MLNF Scripts -->

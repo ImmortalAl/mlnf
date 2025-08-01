@@ -5,45 +5,49 @@
 
 // Create and inject the Soul Modal
 function injectSoulModal() {
-  // Create modal HTML
-  const modalHTML = `
-    <div id="soulModal" class="soul-modal" aria-modal="true" role="dialog" tabindex="-1">
-      <div class="modal-content">
-        <button class="close-modal" aria-label="Close">&times;</button>
-        <h2 id="soulModalTitle">Enter the Sanctuary</h2>
-        <form id="soulLoginForm" autocomplete="on">
-          <label>
-            <span>Soul Identifier (Username)</span>
-            <input type="text" name="username" required autocomplete="username" />
-          </label>
-          <label>
-            <span>Ethereal Key (Password)</span>
-            <input type="password" name="password" required autocomplete="current-password" />
-          </label>
-          <label id="confirmPasswordField" style="display: none;">
-            <span>Confirm Ethereal Key</span>
-            <input type="password" name="confirmPassword" autocomplete="new-password" />
-          </label>
-          <button type="submit" class="modal-btn" id="soulModalSubmit">Transcend</button>
-        </form>
-        <div class="modal-feedback" id="modalFeedback"></div>
-        <p class="modal-toggle-view" id="modalToggleView">
-          New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>
-        </p>
-      </div>
+  console.log('[Auth Modal] Injecting Soul Modal into DOM...');
+  // Create modal element directly
+  const modalDiv = document.createElement('div');
+  modalDiv.id = 'soulModal';
+  modalDiv.className = 'soul-modal';
+  modalDiv.setAttribute('aria-modal', 'true');
+  modalDiv.setAttribute('role', 'dialog');
+  modalDiv.setAttribute('tabindex', '-1');
+  modalDiv.style.cssText = 'z-index: 99999 !important;'; // Ensure highest z-index
+  
+  modalDiv.innerHTML = `
+    <div class="modal-content">
+      <button class="close-modal" aria-label="Close">&times;</button>
+      <h2 id="soulModalTitle">Enter the Sanctuary</h2>
+      <form id="soulLoginForm" autocomplete="on">
+        <label>
+          <span>Soul Identifier (Username)</span>
+          <input type="text" name="username" required autocomplete="username" />
+        </label>
+        <label>
+          <span>Ethereal Key (Password)</span>
+          <input type="password" name="password" required autocomplete="current-password" />
+        </label>
+        <label id="confirmPasswordField" style="display: none;">
+          <span>Confirm Ethereal Key</span>
+          <input type="password" name="confirmPassword" autocomplete="new-password" />
+        </label>
+        <button type="submit" class="modal-btn" id="soulModalSubmit">Transcend</button>
+      </form>
+      <div class="modal-feedback" id="modalFeedback"></div>
+      <p class="modal-toggle-view" id="modalToggleView">
+        New to the Sanctuary? <a href="#" id="switchToRegisterLink">Claim Your Immortality</a>
+      </p>
     </div>
   `;
   
-  // Create a container for the modal with proper positioning
-  const modalContainer = document.createElement('div');
-  modalContainer.innerHTML = modalHTML;
-  modalContainer.style.cssText = 'position: fixed; top: 0; left: 0; pointer-events: none; z-index: 0;';
-  
-  // Append to body
-  document.body.appendChild(modalContainer);
+  // Append directly to body
+  document.body.appendChild(modalDiv);
+  console.log('[Auth Modal] Modal element appended to body');
   
   // Get modal elements
   soulModal = document.getElementById('soulModal');
+  console.log('[Auth Modal] Soul modal element found:', soulModal ? 'YES' : 'NO');
   soulModalTitle = document.getElementById('soulModalTitle');
   soulLoginForm = document.getElementById('soulLoginForm');
   soulModalSubmit = document.getElementById('soulModalSubmit');
@@ -91,6 +95,7 @@ function setSoulModalView(mode) {
 
 // Open the Soul Modal
 function openSoulModal(mode = 'login') {
+  console.log('[Auth Modal] openSoulModal called with mode:', mode);
   if (!soulModal) {
     console.error('[Auth Modal] openSoulModal: soulModal element not found!');
     return;
@@ -98,10 +103,17 @@ function openSoulModal(mode = 'login') {
   
   setSoulModalView(mode);
   soulModal.classList.add('active');
+  soulModal.style.display = 'flex'; // Ensure modal is displayed
+  soulModal.style.zIndex = '99999'; // Force highest z-index
+  soulModal.style.opacity = '1'; // Force opacity
+  soulModal.style.visibility = 'visible'; // Force visibility
+  console.log('[Auth Modal] Modal styles set - opacity:', soulModal.style.opacity, 'visibility:', soulModal.style.visibility, 'z-index:', soulModal.style.zIndex);
   document.body.style.overflow = 'hidden'; // Prevent background scroll
   
   const usernameInput = soulModal.querySelector('input[name="username"]');
-  if (usernameInput) usernameInput.focus();
+  if (usernameInput) {
+    setTimeout(() => usernameInput.focus(), 100); // Delay focus for animation
+  }
 }
 
 // Close the Soul Modal
@@ -112,7 +124,10 @@ function closeSoulModal() {
   }
   
   soulModal.classList.remove('active');
-          document.body.style.removeProperty('overflow'); // Restore background scroll
+  setTimeout(() => {
+    soulModal.style.display = 'none'; // Hide after animation
+  }, 300);
+  document.body.style.removeProperty('overflow'); // Restore background scroll
   
   if (modalFeedback) modalFeedback.textContent = '';
   if (soulLoginForm) soulLoginForm.reset();
@@ -333,12 +348,22 @@ function setupSoulModalEvents() {
 
 // Initialize auth modal
 function initAuthModal() {
+  console.log('[Auth Modal] Initializing auth modal...');
   injectSoulModal();
   setupSoulModalEvents();
+  console.log('[Auth Modal] Auth modal initialization complete');
 }
 
 // Export functions
 window.MLNF = window.MLNF || {};
 window.MLNF.initAuthModal = initAuthModal;
 window.MLNF.openSoulModal = openSoulModal;
-window.MLNF.closeSoulModal = closeSoulModal; 
+window.MLNF.closeSoulModal = closeSoulModal;
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAuthModal);
+} else {
+  // DOM is already loaded
+  initAuthModal();
+} 

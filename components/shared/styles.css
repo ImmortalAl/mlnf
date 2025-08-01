@@ -416,7 +416,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 99999 !important;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -668,7 +668,8 @@
     border-radius: calc(var(--border-radius) / 2); 
     font-size: 0.9rem;
     text-align: center;
-    display: none; /* Hidden by default */
+    display: block; /* Always visible */
+    min-height: 1.2rem; /* Reserve space even when empty */
 }
 /* .modal-feedback.error and .success are already defined and should work if this is the common class */
 
@@ -2427,3 +2428,26 @@ body.light-theme .user-dropdown .divider {
 }
 
 
+
+
+/* CRITICAL: Fix for Soul Modal z-index issues */
+#soulModal,
+.soul-modal {
+    z-index: 99999 !important;
+}
+
+#soulModal.active,
+.soul-modal.active {
+    display: flex !important;
+    z-index: 99999 !important;
+}
+
+.soul-modal .modal-content {
+    z-index: 100000 !important;
+}
+
+/* Ensure close button is clickable */
+.soul-modal .close-modal {
+    z-index: 100001 !important;
+    position: absolute !important;
+}
