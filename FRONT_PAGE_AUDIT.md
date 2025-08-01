@@ -183,19 +183,31 @@ The soul modal (login) is competing with other high z-index elements. The inline
 - User display depends on: mlnf-avatar-system.js, activeUsers.js
 - Messaging depends on: WebSocket, messageModal.js, authManager.js
 
-## Next Steps:
+## Progress Update:
 1. ✅ Implement z-index fix immediately - COMPLETED
    - Added comprehensive z-index system to end of styles.css
-   - Updated styles.css version to 10.2
+   - Updated styles.css version to 10.3
    - Soul modal now has z-index: 100001
-2. Test across all pages
-3. Begin CSS consolidation
-4. Remove identified redundancies
-5. Document changes in CLAUDE.md
+2. ✅ Remove redundant z-index definitions - COMPLETED
+   - Updated blog-modal.css to use CSS variables
+   - Updated messageboard.css to use CSS variables
+   - Replaced hardcoded z-index values with consistent system
+3. ✅ Move inline scripts to external files - COMPLETED
+   - Extracted particle system to js/particleSystem.js
+   - Extracted hero button handlers to js/heroButtons.js
+   - Improved code organization and maintainability
+4. ✅ Remove unused legacy references - COMPLETED
+   - No legacy MLNF references found
+5. ⏳ Consolidate duplicate modal styles - IN PROGRESS
+6. ⏳ Consolidate JavaScript modal management - PENDING
 
-## Fix Applied:
-- Added CSS variables for z-index management in styles.css
-- Set soul modal to z-index: 100001 (above all other elements)
-- Reduced active users sidebar to z-index: 9000
-- Header remains at z-index: 2500
-- All modals now use consistent z-index scale
+## Fixes Applied:
+- **Z-Index System**: CSS variables for consistent layering management
+- **Code Organization**: Moved inline scripts to external files with versioning
+- **Performance**: Reduced HTML file size and improved caching
+- **Maintainability**: Centralized particle system and button logic
+- **Cache Busting**: Updated version numbers for affected files
+
+## Remaining Tasks:
+- Consolidate duplicate modal styles across multiple CSS files
+- Create unified modal management system in JavaScript
