@@ -3586,3 +3586,89 @@ body.user-logged-in .floating-buttons .theme-toggle {
     display: none !important;
 }
 
+/* =================================================================
+   Z-INDEX SYSTEM FIX - Comprehensive layering management
+   ================================================================= */
+
+/* Define z-index layers for consistent stacking */
+:root {
+    /* Z-index scale for proper layering */
+    --z-base: 1;
+    --z-dropdown: 1000;
+    --z-sticky: 2000;
+    --z-header: 2500;
+    --z-drawer: 8000;
+    --z-sidebar: 9000;
+    --z-overlay: 10000;
+    --z-modal-backdrop: 100000;
+    --z-modal: 100001;
+    --z-modal-content: 100002;
+    --z-modal-controls: 100003;
+    --z-notification: 110000;
+    --z-tooltip: 120000;
+}
+
+/* CRITICAL FIX: Soul Modal (Login/Signup) - Ensure it's above everything */
+#soulModal,
+.soul-modal {
+    z-index: var(--z-modal) !important;
+}
+
+#soulModal.active,
+.soul-modal.active {
+    z-index: var(--z-modal) !important;
+}
+
+.soul-modal .modal-content {
+    z-index: var(--z-modal-content) !important;
+    position: relative !important;
+}
+
+.soul-modal .modal-content .close-modal {
+    z-index: var(--z-modal-controls) !important;
+    position: absolute !important;
+}
+
+/* Fix other high z-index elements that might interfere */
+.active-users {
+    z-index: var(--z-sidebar) !important;
+}
+
+.active-users.active {
+    z-index: var(--z-sidebar) !important;
+}
+
+/* Message modal should be at same level as soul modal */
+#messageModal {
+    z-index: var(--z-modal) !important;
+}
+
+/* Feedback modal */
+#feedbackModal {
+    z-index: var(--z-modal) !important;
+}
+
+/* Header and navigation */
+header {
+    z-index: var(--z-header) !important;
+}
+
+.mobile-nav {
+    z-index: calc(var(--z-header) + 100) !important;
+}
+
+.mobile-overlay {
+    z-index: calc(var(--z-header) + 50) !important;
+}
+
+/* Floating buttons */
+.floating-buttons {
+    z-index: var(--z-sticky) !important;
+}
+
+/* Ensure no particle effects interfere */
+.hero-particles,
+.particle-container {
+    z-index: var(--z-base) !important;
+}
+
