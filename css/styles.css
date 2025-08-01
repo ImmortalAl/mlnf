@@ -3600,12 +3600,12 @@ body.user-logged-in .floating-buttons .theme-toggle {
     --z-drawer: 8000;
     --z-sidebar: 9000;
     --z-overlay: 10000;
-    --z-modal-backdrop: 100000;
-    --z-modal: 100001;
-    --z-modal-content: 100002;
-    --z-modal-controls: 100003;
-    --z-notification: 110000;
-    --z-tooltip: 120000;
+    --z-modal-backdrop: 1000000;
+    --z-modal: 1000001;
+    --z-modal-content: 1000002;
+    --z-modal-controls: 1000003;
+    --z-notification: 1100000;
+    --z-tooltip: 1200000;
 }
 
 /* CRITICAL FIX: Soul Modal (Login/Signup) - Ensure it's above everything */
