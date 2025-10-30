@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Much Love, No Fear</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Plausible Analytics -->
+    <script defer data-domain="mlnf.net" src="https://plausible.io/js/script.js"></script>
+</head>
+<body data-page="dashboard">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.png" alt="MLNF Logo">
+                    <span>Much Love, No Fear</span>
+                </a>
+                
+                <ul class="nav-menu">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/pages/archive.html" class="nav-link">Video Vault</a></li>
+                    <li><a href="/pages/messageboard.html" class="nav-link">Message Board</a></li>
+                    <li><a href="/pages/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/pages/news.html" class="nav-link">News</a></li>
+                    <li><a href="/pages/donations.html" class="nav-link">Donate</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <button class="btn btn-icon theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="user-link">
+                        <div class="runegold-display">
+                            <svg class="runegold-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                            <span class="runegold-amount">0</span>
+                        </div>
+                        
+                        <div class="notification-bell">
+                            <button class="btn btn-icon" aria-label="Notifications">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                            <span class="notification-count" style="display: none;">0</span>
+                            
+                            <div class="notification-dropdown">
+                                <div class="notification-header">
+                                    <h4>Notifications</h4>
+                                    <button class="btn btn-sm">Mark all read</button>
+                                </div>
+                                <div class="notification-list"></div>
+                            </div>
+                        </div>
+                        
+                        <a href="/dashboard.html" class="user-avatar-link">
+                            <img class="user-avatar" src="/assets/images/default-avatar.png" alt="User avatar">
+                        </a>
+                    </div>
+                    
+                    <button class="btn btn-icon mobile-menu-toggle" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Welcome back, <span class="user-name">Viking</span>!</h1>
+                <p class="text-muted">Here's your journey overview</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="video-count">0</h3>
+                        <p class="stat-label">Videos Uploaded</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value runegold-amount">0</h3>
+                        <p class="stat-label">Runegold Balance</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="follower-count">0</h3>
+                        <p class="stat-label">Followers</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="streak-count">0</h3>
+                        <p class="stat-label">Day Streak</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-grid">
+                    <a href="/pages/archive.html#upload" class="action-card">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Video</span>
+                    </a>
+                    <a href="/pages/profiles.html" class="action-card">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="#runegold-shop" class="action-card">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Buy Runegold</span>
+                    </a>
+                    <a href="/pages/messaging.html" class="action-card">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Rune Journey Timeline -->
+            <section class="rune-journey">
+                <h2>Your Rune Journey</h2>
+                <div class="timeline" id="rune-timeline">
+                    <div class="text-center p-lg">
+                        <div class="spinner"></div>
+                        <p>Loading your journey...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-tabs">
+                    <button class="tab-btn active" data-tab="videos">My Videos</button>
+                    <button class="tab-btn" data-tab="watched">Watch History</button>
+                    <button class="tab-btn" data-tab="interactions">Interactions</button>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="tab-pane active" id="videos-tab">
+                        <div class="video-grid" id="user-videos">
+                            <p class="text-center text-muted">No videos uploaded yet</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="watched-tab">
+                        <div class="watched-list" id="watch-history">
+                            <p class="text-center text-muted">No watch history</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="interactions-tab">
+                        <div class="interactions-list" id="interactions">
+                            <p class="text-center text-muted">No recent interactions</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Runegold Shop -->
+            <section class="runegold-shop" id="runegold-shop">
+                <h2>Get More Runegold</h2>
+                <p class="text-center mb-xl">Choose your package and payment method</p>
+                
+                <div class="packages-grid">
+                    <div class="package-card">
+                        <div class="package-header">
+                            <h3>Starter Pack</h3>
+                            <div class="package-price">$10</div>
+                        </div>
+                        <div class="package-body">
+                            <div class="package-amount">
+                                <i class="fas fa-coins"></i>
+                                <span>1,000 Runegold</span>
+                            </div>
+                            <button class="btn btn-primary btn-block" onclick="selectPackage('1000')">
+                                Select Package
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="package-card featured">
+                        <div class="package-badge">Best Value</div>
+                        <div class="package-header">
+                            <h3>Viking Pack</h3>
+                            <div class="package-price">$45</div>
+                        </div>
+                        <div class="package-body">
+                            <div class="package-amount">
+                                <i class="fas fa-coins"></i>
+                                <span>5,000 Runegold</span>
+                            </div>
+                            <div class="package-bonus">+500 Bonus!</div>
+                            <button class="btn btn-primary btn-block" onclick="selectPackage('5000')">
+                                Select Package
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="package-card">
+                        <div class="package-header">
+                            <h3>Legend Pack</h3>
+                            <div class="package-price">$85</div>
+                        </div>
+                        <div class="package-body">
+                            <div class="package-amount">
+                                <i class="fas fa-coins"></i>
+                                <span>10,000 Runegold</span>
+                            </div>
+                            <div class="package-bonus">+1,500 Bonus!</div>
+                            <button class="btn btn-primary btn-block" onclick="selectPackage('10000')">
+                                Select Package
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Methods -->
+                <div class="payment-methods" id="payment-methods" style="display: none;">
+                    <h3 class="text-center mb-lg">Select Payment Method</h3>
+                    <div class="payment-grid">
+                        <button class="payment-option" onclick="purchaseWithStripe()">
+                            <i class="fab fa-stripe"></i>
+                            <span>Credit Card</span>
+                        </button>
+                        <button class="payment-option" onclick="purchaseWithPayPal()">
+                            <i class="fab fa-paypal"></i>
+                            <span>PayPal</span>
+                        </button>
+                        <button class="payment-option" onclick="purchaseWithBitcoin()">
+                            <i class="fab fa-bitcoin"></i>
+                            <span>Bitcoin</span>
+                        </button>
+                        <button class="payment-option" onclick="purchaseWithEthereum()">
+                            <i class="fab fa-ethereum"></i>
+                            <span>Ethereum</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Badges Section -->
+            <section class="badges-section">
+                <h2>Your Badges</h2>
+                <div class="badges-grid" id="user-badges">
+                    <div class="badge-placeholder">
+                        <i class="fas fa-plus"></i>
+                        <p>Earn badges through achievements</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Dashboard Menu</h3>
+            <button class="sidebar-close">&times;</button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#overview" class="sidebar-link active">
+                <i class="fas fa-chart-line"></i>
+                <span>Overview</span>
+            </a>
+            <a href="#runegold-shop" class="sidebar-link">
+                <i class="fas fa-coins"></i>
+                <span>Runegold Shop</span>
+            </a>
+            <a href="/pages/profiles.html" class="sidebar-link">
+                <i class="fas fa-user"></i>
+                <span>My Profile</span>
+            </a>
+            <a href="/pages/archive.html?user=me" class="sidebar-link">
+                <i class="fas fa-video"></i>
+                <span>My Videos</span>
+            </a>
+            <a href="#settings" class="sidebar-link">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="sidebar-link" onclick="MLNF.logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="daily-bonus" id="daily-bonus">
+                <button class="btn btn-gold btn-block" onclick="claimDailyBonus()">
+                    <i class="fas fa-gift"></i>
+                    Claim Daily Bonus
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="/scripts.js"></script>
+    
+    <!-- Dashboard Styles -->
+    <style>
+        .dashboard-main {
+            min-height: calc(100vh - 80px);
+            padding: var(--spacing-xl) 0;
+            background-color: var(--gray-100);
+        }
+        
+        .welcome-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .stat-card {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--primary-indigo);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark-navy);
+        }
+        
+        .stat-label {
+            color: var(--gray-600);
+            margin: 0;
+        }
+        
+        .quick-actions {
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .action-card {
+            background-color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark-navy);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-indigo);
+        }
+        
+        .action-card i {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+        
+        .rune-journey {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .timeline {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-left: 2px solid var(--gray-300);
+            margin-left: var(--spacing-md);
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-indigo);
+            border-radius: var(--radius-full);
+        }
+        
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--primary-indigo);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .timeline-description {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        .timeline-runegold {
+            font-weight: 600;
+            color: var(--gold);
+        }
+        
+        .timeline-time {
+            color: var(--gray-500);
+            font-size: 0.75rem;
+        }
+        
+        .recent-activity {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .activity-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            border-bottom: 2px solid var(--gray-200);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-weight: 500;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary-indigo);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-indigo);
+            border-bottom-color: var(--primary-indigo);
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .runegold-shop {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .package-card {
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+            transition: all var(--transition-fast);
+        }
+        
+        .package-card:hover {
+            border-color: var(--primary-indigo);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .package-card.featured {
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+        
+        .package-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--gold);
+            color: var(--dark-navy);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-indigo);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .package-amount {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .package-bonus {
+            color: var(--success);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .payment-option {
+            background-color: var(--gray-100);
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .payment-option:hover {
+            border-color: var(--primary-indigo);
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .payment-option i {
+            font-size: 2rem;
+        }
+        
+        .badges-section {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .badge-item,
+        .badge-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-sm);
+        }
+        
+        .badge-item {
+            background-color: var(--gold);
+            color: var(--dark-navy);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+        
+        .badge-item:hover {
+            transform: scale(1.1);
+        }
+        
+        .badge-placeholder {
+            background-color: var(--gray-100);
+            border: 2px dashed var(--gray-300);
+            color: var(--gray-500);
+            font-size: 0.75rem;
+        }
+        
+        .sidebar-nav {
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            color: var(--dark-navy);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary-indigo);
+        }
+        
+        .sidebar-link.active {
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--primary-indigo);
+            border-left: 3px solid var(--primary-indigo);
+        }
+        
+        .sidebar-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .package-card.featured {
+                transform: none;
+            }
+        }
+    </style>
+    
+    <script>
+        // Selected package for purchase
+        let selectedPackage = null;
+        
+        // Initialize dashboard
+        async function initializeDashboard() {
+            if (!currentUser) {
+                window.location.href = '/pages/auth.html';
+                return;
+            }
+            
+            // Load user data
+            await loadUserProfile();
+            await loadRuneJourney();
+            await loadUserVideos();
+            await loadUserBadges();
+            
+            // Setup tab switching
+            setupTabs();
+            
+            // Check for payment return
+            checkPaymentReturn();
+        }
+        
+        // Load user profile data
+        async function loadUserProfile() {
+            try {
+                const profile = await authFetch('/auth/profile');
+                
+                // Update stats
+                document.getElementById('video-count').textContent = profile.videos?.length || 0;
+                document.getElementById('follower-count').textContent = profile.followerCount || 0;
+                document.getElementById('streak-count').textContent = profile.dailyLoginStreak || 0;
+                
+                // Update user name
+                document.querySelectorAll('.user-name').forEach(el => {
+                    el.textContent = profile.username;
+                });
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+            }
+        }
+        
+        // Load Rune Journey
+        async function loadRuneJourney() {
+            try {
+                const { history } = await authFetch('/runegold/history?limit=10');
+                
+                const timeline = document.getElementById('rune-timeline');
+                
+                if (history.length === 0) {
+                    timeline.innerHTML = '<p class="text-center text-muted">Your journey begins now!</p>';
+                    return;
+                }
+                
+                timeline.innerHTML = history.map(item => `
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            ${getJourneyIcon(item.event)}
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">${item.event.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                            <div class="timeline-description">${item.description}</div>
+                            <div class="d-flex justify-between align-center mt-sm">
+                                <span class="timeline-runegold">${item.runegoldChange > 0 ? '+' : ''}${item.runegoldChange} Runegold</span>
+                                <span class="timeline-time">${formatTimeAgo(item.timestamp)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load journey:', error);
+            }
+        }
+        
+        // Get journey icon
+        function getJourneyIcon(event) {
+            const icons = {
+                daily_login: '<i class="fas fa-calendar-check"></i>',
+                video_upload: '<i class="fas fa-upload"></i>',
+                comment: '<i class="fas fa-comment"></i>',
+                referral: '<i class="fas fa-user-friends"></i>',
+                purchase: '<i class="fas fa-shopping-cart"></i>',
+                boost: '<i class="fas fa-fire"></i>',
+                highlight: '<i class="fas fa-star"></i>',
+                badge_purchase: '<i class="fas fa-award"></i>',
+                transfer_sent: '<i class="fas fa-paper-plane"></i>',
+                transfer_received: '<i class="fas fa-gift"></i>'
+            };
+            return icons[event] || '<i class="fas fa-coins"></i>';
+        }
+        
+        // Load user videos
+        async function loadUserVideos() {
+            try {
+                const { videos } = await authFetch(`/videos/user/${currentUser.id}?limit=6`);
+                
+                const container = document.getElementById('user-videos');
+                
+                if (videos.length === 0) {
+                    container.innerHTML = '<p class="text-center text-muted">No videos uploaded yet. <a href="/pages/archive.html#upload">Upload your first video!</a></p>';
+                    return;
+                }
+                
+                container.innerHTML = videos.map(video => createVideoCardHTML(video)).join('');
+            } catch (error) {
+                console.error('Failed to load videos:', error);
+            }
+        }
+        
+        // Load user badges
+        async function loadUserBadges() {
+            try {
+                const profile = await authFetch('/auth/profile');
+                
+                const container = document.getElementById('user-badges');
+                
+                if (!profile.badges || profile.badges.length === 0) {
+                    return; // Keep placeholder
+                }
+                
+                container.innerHTML = profile.badges.map(badge => `
+                    <div class="badge-item" title="${badge.description}">
+                        <i class="fas fa-award"></i>
+                        <span>${badge.name}</span>
+                    </div>
+                `).join('') + `
+                    <div class="badge-placeholder">
+                        <i class="fas fa-plus"></i>
+                        <p>More badges</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Failed to load badges:', error);
+            }
+        }
+        
+        // Setup tabs
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                    
+                    // Add active to clicked tab
+                    tab.classList.add('active');
+                    const tabId = tab.dataset.tab + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+        
+        // Select package
+        function selectPackage(packageId) {
+            selectedPackage = packageId;
+            document.getElementById('payment-methods').style.display = 'block';
+            document.getElementById('payment-methods').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Purchase methods
+        async function purchaseWithStripe() {
+            if (!selectedPackage) return;
+            await MLNF.purchaseRunegold('stripe', selectedPackage);
+        }
+        
+        async function purchaseWithPayPal() {
+            if (!selectedPackage) return;
+            await MLNF.purchaseRunegold('paypal', selectedPackage);
+        }
+        
+        async function purchaseWithBitcoin() {
+            if (!selectedPackage) return;
+            await MLNF.purchaseRunegold('bitcoin', selectedPackage);
+        }
+        
+        async function purchaseWithEthereum() {
+            if (!selectedPackage) return;
+            await MLNF.purchaseRunegold('ethereum', selectedPackage);
+        }
+        
+        // Check payment return
+        function checkPaymentReturn() {
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('payment') === 'success') {
+                const amount = params.get('amount');
+                if (amount) {
+                    showToast(`Payment successful! ${amount} Runegold added to your account.`, 'success');
+                } else {
+                    showToast('Payment successful!', 'success');
+                }
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                // Reload profile to update balance
+                loadUserProfile();
+            } else if (params.get('payment') === 'cancelled') {
+                showToast('Payment cancelled', 'warning');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
+        // Claim daily bonus
+        async function claimDailyBonus() {
+            try {
+                const response = await authFetch('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username: currentUser.username,
+                        claimBonus: true
+                    })
+                });
+                
+                if (response.loginBonus) {
+                    showToast(`Daily bonus claimed! +${response.loginBonus.bonus} Runegold (${response.loginBonus.streak} day streak)`, 'success');
+                    updateRunegoldDisplay(currentUser.runegoldBalance + response.loginBonus.bonus);
+                    document.getElementById('daily-bonus').style.display = 'none';
+                } else {
+                    showToast('Daily bonus already claimed. Come back tomorrow!', 'info');
+                }
+            } catch (error) {
+                showToast('Failed to claim bonus', 'error');
+            }
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>

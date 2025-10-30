@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Setup - Much Love, No Fear</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Plausible Analytics -->
+    <script defer data-domain="mlnf.net" src="https://plausible.io/js/script.js"></script>
+</head>
+<body data-page="profile-setup">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.png" alt="MLNF Logo">
+                    <span>Much Love, No Fear</span>
+                </a>
+                
+                <div class="nav-actions">
+                    <button class="btn btn-icon theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <button class="btn btn-outline" onclick="skipSetup()">
+                        Skip for now
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Profile Setup -->
+    <main class="profile-setup-main">
+        <div class="container">
+            <div class="setup-container">
+                <div class="setup-header">
+                    <h1>Welcome, <span class="user-name">Viking</span>!</h1>
+                    <p>Let's set up your profile to get started</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 33%"></div>
+                    </div>
+                    <p class="progress-text">Step <span id="current-step">1</span> of 3</p>
+                </div>
+                
+                <!-- Step 1: Avatar & Bio -->
+                <div class="setup-step active" id="step-1">
+                    <h2>Choose Your Avatar & Write Your Bio</h2>
+                    
+                    <div class="avatar-section">
+                        <div class="current-avatar">
+                            <img id="avatar-preview" src="/assets/images/default-avatar.png" alt="Your avatar">
+                            <button class="btn btn-sm" onclick="document.getElementById('avatar-upload').click()">
+                                <i class="fas fa-camera"></i> Upload Photo
+                            </button>
+                            <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                        </div>
+                        
+                        <p class="text-sm text-muted">Or choose a default Viking avatar:</p>
+                        
+                        <div class="default-avatars">
+                            <img src="/assets/images/viking-1.png" alt="Viking 1" onclick="selectAvatar(this.src)">
+                            <img src="/assets/images/viking-2.png" alt="Viking 2" onclick="selectAvatar(this.src)">
+                            <img src="/assets/images/viking-3.png" alt="Viking 3" onclick="selectAvatar(this.src)">
+                            <img src="/assets/images/viking-4.png" alt="Viking 4" onclick="selectAvatar(this.src)">
+                            <img src="/assets/images/viking-5.png" alt="Viking 5" onclick="selectAvatar(this.src)">
+                            <img src="/assets/images/viking-6.png" alt="Viking 6" onclick="selectAvatar(this.src)">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="bio">Tell us about yourself</label>
+                        <textarea 
+                            class="form-textarea" 
+                            id="bio" 
+                            rows="4" 
+                            maxlength="500"
+                            placeholder="What brings you to Much Love, No Fear? What truths do you seek?"
+                        ></textarea>
+                        <p class="form-hint"><span id="bio-count">0</span>/500 characters</p>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn btn-primary btn-lg" onclick="nextStep()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Interests & Preferences -->
+                <div class="setup-step" id="step-2">
+                    <h2>Select Your Interests</h2>
+                    <p>Help us personalize your experience</p>
+                    
+                    <div class="interests-grid">
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="conspiracy">
+                            <div class="interest-card">
+                                <i class="fas fa-user-secret"></i>
+                                <span>Conspiracies</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="spirituality">
+                            <div class="interest-card">
+                                <i class="fas fa-om"></i>
+                                <span>Spirituality</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="politics">
+                            <div class="interest-card">
+                                <i class="fas fa-landmark"></i>
+                                <span>Politics</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="health">
+                            <div class="interest-card">
+                                <i class="fas fa-heartbeat"></i>
+                                <span>Health</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="technology">
+                            <div class="interest-card">
+                                <i class="fas fa-microchip"></i>
+                                <span>Technology</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="history">
+                            <div class="interest-card">
+                                <i class="fas fa-book"></i>
+                                <span>History</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="nature">
+                            <div class="interest-card">
+                                <i class="fas fa-tree"></i>
+                                <span>Nature</span>
+                            </div>
+                        </label>
+                        
+                        <label class="interest-option">
+                            <input type="checkbox" name="interests" value="freedom">
+                            <div class="interest-card">
+                                <i class="fas fa-dove"></i>
+                                <span>Freedom</span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="preferences-section">
+                        <h3>Notification Preferences</h3>
+                        
+                        <label class="preference-option">
+                            <input type="checkbox" id="sound-notifications" checked>
+                            <span>Sound notifications</span>
+                        </label>
+                        
+                        <label class="preference-option">
+                            <input type="checkbox" id="email-notifications">
+                            <span>Email notifications (if email provided later)</span>
+                        </label>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn btn-outline" onclick="previousStep()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-primary btn-lg" onclick="nextStep()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Referral & Finish -->
+                <div class="setup-step" id="step-3">
+                    <h2>Almost Done!</h2>
+                    
+                    <div class="referral-section">
+                        <h3>Your Referral Code</h3>
+                        <p>Share this code with friends to earn 100 Runegold when they join!</p>
+                        
+                        <div class="referral-code-display">
+                            <code id="referral-code">LOADING...</code>
+                            <button class="btn btn-sm" onclick="copyReferralCode()">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="welcome-bonus">
+                        <i class="fas fa-gift"></i>
+                        <h3>Welcome Bonus!</h3>
+                        <p>You've earned <strong>100 Runegold</strong> for joining our community!</p>
+                    </div>
+                    
+                    <div class="quick-tips">
+                        <h3>Quick Tips to Get Started</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Upload your first video to earn 50 Runegold</li>
+                            <li><i class="fas fa-check"></i> Login daily to earn 10 Runegold bonus</li>
+                            <li><i class="fas fa-check"></i> Engage with comments to earn 5 Runegold each</li>
+                            <li><i class="fas fa-check"></i> Follow other Vikings to build your network</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn btn-primary btn-lg" onclick="completeSetup()">
+                            <i class="fas fa-rocket"></i> Enter the Sanctuary
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="/scripts.js"></script>
+    
+    <!-- Profile Setup Styles -->
+    <style>
+        .profile-setup-main {
+            min-height: calc(100vh - 80px);
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--gray-100) 100%);
+        }
+        
+        .setup-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+        
+        .setup-header {
+            background: linear-gradient(135deg, var(--primary-peach) 0%, var(--primary-indigo) 100%);
+            color: var(--white);
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+        
+        .setup-header h1 {
+            color: var(--white);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .progress-bar {
+            max-width: 400px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-full);
+            margin: var(--spacing-lg) auto var(--spacing-sm);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--gold);
+            transition: width var(--transition-slow);
+        }
+        
+        .progress-text {
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .setup-step {
+            padding: var(--spacing-xl);
+            display: none;
+        }
+        
+        .setup-step.active {
+            display: block;
+        }
+        
+        .setup-step h2 {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .avatar-section {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .current-avatar {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .current-avatar img {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-full);
+            object-fit: cover;
+            border: 4px solid var(--gray-200);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .default-avatars {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-md);
+        }
+        
+        .default-avatars img {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        
+        .default-avatars img:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-indigo);
+        }
+        
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .interest-option {
+            position: relative;
+        }
+        
+        .interest-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .interest-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+        
+        .interest-card i {
+            font-size: 2rem;
+            color: var(--gray-600);
+        }
+        
+        .interest-option:hover .interest-card {
+            border-color: var(--primary-indigo);
+        }
+        
+        .interest-option input[type="checkbox"]:checked + .interest-card {
+            background-color: var(--primary-indigo);
+            color: var(--white);
+            border-color: var(--primary-indigo);
+        }
+        
+        .interest-option input[type="checkbox"]:checked + .interest-card i {
+            color: var(--white);
+        }
+        
+        .preferences-section {
+            background-color: var(--gray-100);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .preference-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+        }
+        
+        .step-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+        }
+        
+        .referral-section {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .referral-code-display {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background-color: var(--gray-100);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-top: var(--spacing-md);
+        }
+        
+        .referral-code-display code {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-indigo);
+        }
+        
+        .welcome-bonus {
+            text-align: center;
+            background-color: rgba(255, 215, 0, 0.1);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .welcome-bonus i {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .quick-tips {
+            background-color: var(--gray-100);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .quick-tips ul {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .quick-tips li {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .quick-tips i {
+            color: var(--success);
+        }
+        
+        @media (max-width: 768px) {
+            .interests-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .default-avatars {
+                gap: var(--spacing-sm);
+            }
+            
+            .default-avatars img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+    
+    <script>
+        let currentStep = 1;
+        let selectedAvatar = '/assets/images/default-avatar.png';
+        let profileData = {
+            avatar: selectedAvatar,
+            bio: '',
+            interests: [],
+            preferences: {
+                soundNotifications: true,
+                emailNotifications: false
+            }
+        };
+        
+        // Initialize profile setup
+        function initProfileSetup() {
+            if (!currentUser) {
+                window.location.href = '/pages/auth.html';
+                return;
+            }
+            
+            // Set user name
+            document.querySelectorAll('.user-name').forEach(el => {
+                el.textContent = currentUser.username;
+            });
+            
+            // Load referral code
+            document.getElementById('referral-code').textContent = currentUser.referralCode || 'ERROR';
+            
+            // Setup bio character counter
+            const bioTextarea = document.getElementById('bio');
+            bioTextarea.addEventListener('input', () => {
+                document.getElementById('bio-count').textContent = bioTextarea.value.length;
+                profileData.bio = bioTextarea.value;
+            });
+        }
+        
+        // Handle avatar upload
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // TODO: Actually upload to server
+            // For now, just show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectAvatar(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Select avatar
+        function selectAvatar(src) {
+            selectedAvatar = src;
+            profileData.avatar = src;
+            document.getElementById('avatar-preview').src = src;
+        }
+        
+        // Navigate steps
+        function nextStep() {
+            if (currentStep === 1) {
+                // Validate step 1
+                if (!profileData.bio) {
+                    showToast('Please write a bio', 'error');
+                    return;
+                }
+            } else if (currentStep === 2) {
+                // Collect interests
+                const interests = Array.from(document.querySelectorAll('input[name="interests"]:checked'))
+                    .map(cb => cb.value);
+                
+                if (interests.length === 0) {
+                    showToast('Please select at least one interest', 'error');
+                    return;
+                }
+                
+                profileData.interests = interests;
+                profileData.preferences.soundNotifications = document.getElementById('sound-notifications').checked;
+                profileData.preferences.emailNotifications = document.getElementById('email-notifications').checked;
+            }
+            
+            currentStep++;
+            updateStep();
+        }
+        
+        function previousStep() {
+            currentStep--;
+            updateStep();
+        }
+        
+        function updateStep() {
+            // Hide all steps
+            document.querySelectorAll('.setup-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show current step
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            // Update progress
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('current-step').textContent = currentStep;
+        }
+        
+        // Complete setup
+        async function completeSetup() {
+            try {
+                showLoader('Saving your profile...');
+                
+                const response = await authFetch('/auth/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify(profileData)
+                });
+                
+                hideLoader();
+                showToast('Profile setup complete! Welcome to Much Love, No Fear!', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 2000);
+            } catch (error) {
+                hideLoader();
+                showToast('Failed to save profile: ' + error.message, 'error');
+            }
+        }
+        
+        // Skip setup
+        function skipSetup() {
+            if (confirm('You can always complete your profile later. Skip for now?')) {
+                window.location.href = '/dashboard.html';
+            }
+        }
+        
+        // Copy referral code
+        function copyReferralCode() {
+            const code = document.getElementById('referral-code').textContent;
+            navigator.clipboard.writeText(code);
+            showToast('Referral code copied!', 'success');
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initProfileSetup);
+    </script>
+</body>
+</html>

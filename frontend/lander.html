@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Much Love, No Fear - Viking Video Sanctuary</title>
+    <meta name="description" content="Join the revolution. Share truth. Earn Runegold. No censorship, no ads, just Vikings seeking knowledge.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Much Love, No Fear - Viking Video Sanctuary">
+    <meta property="og:description" content="Join the revolution. Share truth. Earn Runegold.">
+    <meta property="og:image" content="/assets/images/og-image.png">
+    <meta property="og:url" content="https://mlnf.net">
+    
+    <!-- Minimal CSS for fast loading -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1A2332;
+            overflow-x: hidden;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4A90E2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: #FFD700;
+            color: #1A2332;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: white;
+            color: #4A90E2;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+        
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .section p {
+            font-size: 1.25rem;
+            text-align: center;
+            color: #6C757D;
+            margin-bottom: 3rem;
+        }
+        
+        .video-preview {
+            background-color: #F8F4E3;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .preview-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .preview-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .preview-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(45deg, #FF6B6B, #4A90E2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .preview-info {
+            padding: 1rem;
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .preview-meta {
+            color: #6C757D;
+            font-size: 0.875rem;
+        }
+        
+        .final-cta {
+            background: linear-gradient(135deg, #1A2332 0%, #4A90E2 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        
+        .final-cta h2 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .final-cta p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 2rem;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.25rem;
+            }
+            
+            .features {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="/assets/images/logo.png" alt="MLNF Logo" class="logo">
+            <h1>Much Love, No Fear</h1>
+            <p class="tagline">The Viking Video Sanctuary for Truth Seekers</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <span>⚔️</span>
+                    <span>No Censorship</span>
+                </div>
+                <div class="feature">
+                    <span>🛡️</span>
+                    <span>No Ads</span>
+                </div>
+                <div class="feature">
+                    <span>💰</span>
+                    <span>Earn Runegold</span>
+                </div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="/pages/auth.html" class="btn btn-primary">
+                    <span>Join the Revolution</span>
+                    <span>→</span>
+                </a>
+                <a href="/index.html" class="btn btn-secondary">
+                    <span>Explore Platform</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator" onclick="document.getElementById('preview').scrollIntoView({behavior: 'smooth'})">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
+    </section>
+    
+    <!-- Preview Section -->
+    <section id="preview" class="section">
+        <h2>What Awaits Inside</h2>
+        <p>A sanctuary where Vikings share truth without fear</p>
+        
+        <div class="video-preview">
+            <div class="preview-grid">
+                <div class="preview-card">
+                    <div class="preview-thumbnail">📹</div>
+                    <div class="preview-info">
+                        <div class="preview-title">Upload & Share Videos</div>
+                        <div class="preview-meta">Earn 50 Runegold per upload</div>
+                    </div>
+                </div>
+                
+                <div class="preview-card">
+                    <div class="preview-thumbnail">💬</div>
+                    <div class="preview-info">
+                        <div class="preview-title">Engage & Discuss</div>
+                        <div class="preview-meta">Vote, comment, connect</div>
+                    </div>
+                </div>
+                
+                <div class="preview-card">
+                    <div class="preview-thumbnail">🏆</div>
+                    <div class="preview-info">
+                        <div class="preview-title">Rise as a Viking</div>
+                        <div class="preview-meta">Earn badges, gain followers</div>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="/pages/archive.html" class="btn btn-primary">
+                Enter Video Vault
+            </a>
+        </div>
+    </section>
+    
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Ready to Join the Movement?</h2>
+        <p>No email required. Just a username, password, and the courage to seek truth.</p>
+        <a href="/pages/auth.html" class="btn btn-primary">
+            Create Your Viking Profile
+        </a>
+    </section>
+    
+    <!-- Minimal JS for smooth scrolling -->
+    <script>
+        // Smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Redirect to main site after 3 seconds if coming from specific sources
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('autoredirect') === 'true') {
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

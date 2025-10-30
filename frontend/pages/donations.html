@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support the Cause - Much Love, No Fear</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- PayPal -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+    
+    <!-- Plausible Analytics -->
+    <script defer data-domain="mlnf.net" src="https://plausible.io/js/script.js"></script>
+</head>
+<body data-page="donations">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.png" alt="MLNF Logo">
+                    <span>Much Love, No Fear</span>
+                </a>
+                
+                <ul class="nav-menu">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/pages/archive.html" class="nav-link">Video Vault</a></li>
+                    <li><a href="/pages/messageboard.html" class="nav-link">Message Board</a></li>
+                    <li><a href="/pages/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/pages/news.html" class="nav-link">News</a></li>
+                    <li><a href="/pages/donations.html" class="nav-link active">Donate</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <button class="btn btn-icon theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="auth-link">
+                        <a href="/pages/auth.html" class="btn btn-primary">Login / Register</a>
+                    </div>
+                    
+                    <div class="user-link" style="display: none;">
+                        <div class="runegold-display">
+                            <svg class="runegold-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                            <span class="runegold-amount">0</span>
+                        </div>
+                        
+                        <a href="/dashboard.html" class="user-avatar-link">
+                            <img class="user-avatar" src="/assets/images/default-avatar.png" alt="User avatar">
+                        </a>
+                    </div>
+                    
+                    <button class="btn btn-icon mobile-menu-toggle" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Donation Hero -->
+    <section class="donation-hero">
+        <div class="container">
+            <h1>Support the Viking Revolution</h1>
+            <p>Help us maintain a free, uncensored platform for truth seekers</p>
+            
+            <!-- Monthly Goal Progress -->
+            <div class="donation-goal">
+                <div class="goal-header">
+                    <span>Monthly Goal</span>
+                    <span>$<span id="goal-raised">0</span> / $<span id="goal-target">1,000</span></span>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-bar" id="goal-bar" style="width: 0%"></div>
+                </div>
+                <p class="goal-percentage"><span id="goal-percentage">0</span>% funded</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Options -->
+    <main class="donation-main">
+        <div class="container">
+            <!-- Why Donate Section -->
+            <section class="why-donate">
+                <h2>Why Your Support Matters</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <i class="fas fa-server"></i>
+                        <h3>Server Costs</h3>
+                        <p>Keep our videos streaming and platform running smoothly</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>No Ads, Ever</h3>
+                        <p>Your donations ensure we never need to show advertisements</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-code"></i>
+                        <h3>Development</h3>
+                        <p>Fund new features and improvements to the platform</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Community</h3>
+                        <p>Support a growing community of truth seekers</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Donation Form -->
+            <section class="donation-form-section">
+                <h2>Choose Your Donation Amount</h2>
+                
+                <form id="donation-form" onsubmit="handleDonation(event)">
+                    <!-- Amount Selection -->
+                    <div class="amount-selection">
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="5">
+                            <span class="amount-label">$5</span>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="10">
+                            <span class="amount-label">$10</span>
+                        </label>
+                        <label class="amount-option popular">
+                            <input type="radio" name="amount" value="25" checked>
+                            <span class="amount-label">$25</span>
+                            <span class="popular-badge">Most Popular</span>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="50">
+                            <span class="amount-label">$50</span>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="100">
+                            <span class="amount-label">$100</span>
+                        </label>
+                        <label class="amount-option custom">
+                            <input type="radio" name="amount" value="custom">
+                            <span class="amount-label">Custom</span>
+                        </label>
+                    </div>
+                    
+                    <div class="custom-amount-input" id="custom-amount-input" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Enter custom amount ($)</label>
+                            <input type="number" class="form-input" id="custom-amount" min="1" step="1">
+                        </div>
+                    </div>
+                    
+                    <!-- Donor Information -->
+                    <div class="donor-info">
+                        <h3>Your Information (Optional)</h3>
+                        <div class="form-group">
+                            <label class="form-label" for="donor-name">Name</label>
+                            <input type="text" class="form-input" id="donor-name" name="name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="donor-email">Email</label>
+                            <input type="email" class="form-input" id="donor-email" name="email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="donor-message">Message</label>
+                            <textarea class="form-textarea" id="donor-message" name="message" rows="3" placeholder="Leave a message of support (optional)"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <h3>Select Payment Method</h3>
+                        <div class="payment-options">
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="stripe" checked>
+                                <div class="payment-label">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Credit/Debit Card</span>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="paypal">
+                                <div class="payment-label">
+                                    <i class="fab fa-paypal"></i>
+                                    <span>PayPal</span>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="bitcoin">
+                                <div class="payment-label">
+                                    <i class="fab fa-bitcoin"></i>
+                                    <span>Bitcoin</span>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="ethereum">
+                                <div class="payment-label">
+                                    <i class="fab fa-ethereum"></i>
+                                    <span>Ethereum</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                        <i class="fas fa-heart"></i>
+                        Donate Now
+                    </button>
+                </form>
+            </section>
+
+            <!-- Recent Donors -->
+            <section class="recent-donors">
+                <h2>Recent Supporters</h2>
+                <div class="donors-list" id="donors-list">
+                    <div class="text-center p-lg">
+                        <div class="spinner"></div>
+                        <p>Loading donors...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Donation Stats -->
+            <section class="donation-stats">
+                <h2>Our Impact</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3 id="total-raised">$0</h3>
+                        <p>Total Raised</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="total-donors">0</h3>
+                        <p>Total Donors</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar"></i>
+                        <h3 id="avg-donation">$0</h3>
+                        <p>Average Donation</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3 id="monthly-raised">$0</h3>
+                        <p>This Month</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Crypto Payment Modal -->
+    <div class="modal" id="crypto-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="crypto-title">Bitcoin Payment</h3>
+                <button class="modal-close" onclick="closeCryptoModal()">×</button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="crypto-qr" src="" alt="QR Code" class="crypto-qr">
+                <p class="mb-md">Send <strong id="crypto-amount">0</strong> to:</p>
+                <div class="crypto-address">
+                    <code id="crypto-address"></code>
+                    <button class="btn btn-sm" onclick="copyAddress()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+                <p class="text-sm text-muted mt-lg">After sending, your donation will be recorded once the transaction is confirmed.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content text-center">
+                <p>Thank you for supporting Much Love, No Fear</p>
+                <p>Every donation helps us maintain a free platform for all Vikings</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="/scripts.js"></script>
+    
+    <!-- Donation Styles -->
+    <style>
+        .donation-hero {
+            background: linear-gradient(135deg, var(--primary-peach) 0%, var(--primary-indigo) 100%);
+            color: var(--white);
+            padding: var(--spacing-xxl) 0;
+            text-align: center;
+        }
+        
+        .donation-hero h1 {
+            color: var(--white);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .donation-goal {
+            max-width: 600px;
+            margin: var(--spacing-xl) auto 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(10px);
+        }
+        
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            font-size: 1.125rem;
+        }
+        
+        .goal-progress {
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .goal-bar {
+            height: 100%;
+            background-color: var(--gold);
+            transition: width var(--transition-slow);
+        }
+        
+        .goal-percentage {
+            text-align: center;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .donation-main {
+            padding: var(--spacing-xxl) 0;
+        }
+        
+        .why-donate {
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .benefit-card {
+            text-align: center;
+            padding: var(--spacing-xl);
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .benefit-card i {
+            font-size: 3rem;
+            color: var(--primary-indigo);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .donation-form-section {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .amount-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .amount-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .amount-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .amount-label {
+            display: block;
+            padding: var(--spacing-lg);
+            text-align: center;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 1.25rem;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+        
+        .amount-option:hover .amount-label {
+            border-color: var(--primary-indigo);
+        }
+        
+        .amount-option input[type="radio"]:checked + .amount-label {
+            background-color: var(--primary-indigo);
+            color: var(--white);
+            border-color: var(--primary-indigo);
+        }
+        
+        .amount-option.popular {
+            position: relative;
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--gold);
+            color: var(--dark-navy);
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .donor-info {
+            background-color: var(--gray-100);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .payment-methods {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .payment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .payment-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .payment-label i {
+            font-size: 2rem;
+        }
+        
+        .payment-option:hover .payment-label {
+            border-color: var(--primary-indigo);
+        }
+        
+        .payment-option input[type="radio"]:checked + .payment-label {
+            border-color: var(--primary-indigo);
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .recent-donors {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .donors-list {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+        
+        .donor-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: var(--gray-100);
+            border-radius: var(--radius-md);
+        }
+        
+        .donor-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            background-color: var(--primary-indigo);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .donor-info {
+            flex: 1;
+        }
+        
+        .donor-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .donor-message {
+            font-style: italic;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        .donor-amount {
+            font-weight: 600;
+            color: var(--primary-peach);
+            font-size: 1.125rem;
+        }
+        
+        .donation-stats {
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .crypto-qr {
+            width: 250px;
+            height: 250px;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .crypto-address {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background-color: var(--gray-100);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+        }
+        
+        .crypto-address code {
+            flex: 1;
+            font-family: monospace;
+            font-size: 0.875rem;
+            word-break: break-all;
+        }
+        
+        @media (max-width: 768px) {
+            .amount-selection {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .payment-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    
+    <script>
+        let selectedAmount = 25;
+        let btcPrice = 50000; // Default, will be updated
+        
+        // Initialize donations page
+        async function initDonations() {
+            await loadDonationGoal();
+            await loadRecentDonors();
+            await loadDonationStats();
+            
+            // Check for payment return
+            checkPaymentReturn();
+            
+            // Setup amount selection
+            setupAmountSelection();
+        }
+        
+        // Load donation goal
+        async function loadDonationGoal() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/donations/goal`);
+                const data = await response.json();
+                
+                document.getElementById('goal-raised').textContent = Math.floor(data.raised);
+                document.getElementById('goal-target').textContent = data.goal;
+                document.getElementById('goal-percentage').textContent = data.percentage;
+                document.getElementById('goal-bar').style.width = data.percentage + '%';
+            } catch (error) {
+                console.error('Failed to load goal:', error);
+            }
+        }
+        
+        // Load recent donors
+        async function loadRecentDonors() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/donations?limit=10`);
+                const data = await response.json();
+                
+                const donorsList = document.getElementById('donors-list');
+                
+                if (data.donations.length === 0) {
+                    donorsList.innerHTML = '<p class="text-center text-muted">Be the first to donate!</p>';
+                    return;
+                }
+                
+                donorsList.innerHTML = data.donations.map(donation => `
+                    <div class="donor-item">
+                        <div class="donor-avatar">
+                            ${donation.donor.name ? donation.donor.name[0].toUpperCase() : '?'}
+                        </div>
+                        <div class="donor-info">
+                            <div class="donor-name">${donation.donor.name || 'Anonymous'}</div>
+                            ${donation.donor.message ? `<div class="donor-message">"${donation.donor.message}"</div>` : ''}
+                        </div>
+                        <div class="donor-amount">$${donation.amount}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load donors:', error);
+            }
+        }
+        
+        // Load donation stats
+        async function loadDonationStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/donations/stats`);
+                const data = await response.json();
+                
+                document.getElementById('total-raised').textContent = `$${Math.floor(data.overall.totalAmount)}`;
+                document.getElementById('total-donors').textContent = data.overall.totalDonations;
+                document.getElementById('avg-donation').textContent = `$${Math.floor(data.overall.avgDonation)}`;
+                
+                // Calculate monthly total
+                const monthlyTotal = data.byMethod.reduce((sum, method) => sum + method.total, 0);
+                document.getElementById('monthly-raised').textContent = `$${Math.floor(monthlyTotal)}`;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        // Setup amount selection
+        function setupAmountSelection() {
+            const amountRadios = document.querySelectorAll('input[name="amount"]');
+            
+            amountRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    const customInput = document.getElementById('custom-amount-input');
+                    
+                    if (e.target.value === 'custom') {
+                        customInput.style.display = 'block';
+                        document.getElementById('custom-amount').focus();
+                    } else {
+                        customInput.style.display = 'none';
+                        selectedAmount = parseInt(e.target.value);
+                    }
+                });
+            });
+            
+            document.getElementById('custom-amount').addEventListener('input', (e) => {
+                selectedAmount = parseInt(e.target.value) || 0;
+            });
+        }
+        
+        // Handle donation form submission
+        async function handleDonation(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const paymentMethod = formData.get('payment-method');
+            
+            const donationData = {
+                amount: selectedAmount,
+                name: formData.get('name'),
+                email: formData.get('email'),
+                message: formData.get('message'),
+                userId: currentUser?.id
+            };
+            
+            try {
+                switch (paymentMethod) {
+                    case 'stripe':
+                        await donateWithStripe(donationData);
+                        break;
+                    case 'paypal':
+                        await donateWithPayPal(donationData);
+                        break;
+                    case 'bitcoin':
+                        await donateWithBitcoin(donationData);
+                        break;
+                    case 'ethereum':
+                        await donateWithEthereum(donationData);
+                        break;
+                }
+            } catch (error) {
+                showToast('Donation failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Donate with Stripe
+        async function donateWithStripe(donationData) {
+            showLoader('Processing payment...');
+            
+            const response = await fetch(`${API_BASE_URL}/donations/stripe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ...donationData, amount: donationData.amount * 100 })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+            
+            // Redirect to Stripe checkout
+            window.location.href = data.checkoutUrl;
+        }
+        
+        // Donate with PayPal
+        async function donateWithPayPal(donationData) {
+            showLoader('Processing payment...');
+            
+            const response = await fetch(`${API_BASE_URL}/donations/paypal`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(donationData)
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+            
+            // Redirect to PayPal
+            window.location.href = data.approveUrl;
+        }
+        
+        // Donate with Bitcoin
+        async function donateWithBitcoin(donationData) {
+            showLoader('Generating Bitcoin address...');
+            
+            // Get current BTC price
+            const priceResponse = await fetch(`${API_BASE_URL}/blockonomics/exchange-rate`);
+            const priceData = await priceResponse.json();
+            btcPrice = priceData.btcToUsd;
+            
+            // Get Bitcoin address
+            const response = await fetch(`${API_BASE_URL}/donations/bitcoin/address`);
+            const data = await response.json();
+            
+            hideLoader();
+            
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+            
+            // Calculate BTC amount
+            const btcAmount = (donationData.amount / btcPrice).toFixed(8);
+            
+            // Show Bitcoin modal
+            document.getElementById('crypto-title').textContent = 'Bitcoin Donation';
+            document.getElementById('crypto-qr').src = data.qrCode;
+            document.getElementById('crypto-amount').textContent = `${btcAmount} BTC ($${donationData.amount})`;
+            document.getElementById('crypto-address').textContent = data.address;
+            document.getElementById('crypto-modal').classList.add('active');
+            
+            // Record donation as pending
+            await recordCryptoDonation({
+                ...donationData,
+                currency: 'bitcoin',
+                transactionHash: 'pending-' + Date.now()
+            });
+        }
+        
+        // Donate with Ethereum
+        async function donateWithEthereum(donationData) {
+            if (typeof window.ethereum === 'undefined') {
+                showToast('Please install MetaMask to donate with Ethereum', 'error');
+                return;
+            }
+            
+            showLoader('Getting Ethereum address...');
+            
+            // Get ETH address
+            const response = await fetch(`${API_BASE_URL}/donations/ethereum/address`);
+            const data = await response.json();
+            
+            hideLoader();
+            
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+            
+            try {
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const account = accounts[0];
+                
+                // Calculate ETH amount (assuming ETH price of $3000)
+                const ethAmount = (donationData.amount / 3000).toFixed(6);
+                
+                // Send transaction
+                const transactionHash = await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [{
+                        from: account,
+                        to: data.address,
+                        value: '0x' + (ethAmount * 1e18).toString(16),
+                        gas: '0x5208', // 21000 Gwei
+                    }],
+                });
+                
+                // Record donation
+                await recordCryptoDonation({
+                    ...donationData,
+                    currency: 'ethereum',
+                    transactionHash
+                });
+                
+                showToast('Transaction sent! Thank you for your donation.', 'success');
+            } catch (error) {
+                showToast('Transaction failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Record crypto donation
+        async function recordCryptoDonation(donationData) {
+            try {
+                await fetch(`${API_BASE_URL}/donations/crypto`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(donationData)
+                });
+            } catch (error) {
+                console.error('Failed to record donation:', error);
+            }
+        }
+        
+        // Copy crypto address
+        function copyAddress() {
+            const address = document.getElementById('crypto-address').textContent;
+            navigator.clipboard.writeText(address);
+            showToast('Address copied to clipboard!', 'success');
+        }
+        
+        // Close crypto modal
+        function closeCryptoModal() {
+            document.getElementById('crypto-modal').classList.remove('active');
+        }
+        
+        // Check payment return
+        function checkPaymentReturn() {
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('payment') === 'success') {
+                showToast('Thank you for your donation! Your support means everything to us.', 'success');
+                
+                // Reload stats
+                loadDonationGoal();
+                loadRecentDonors();
+                loadDonationStats();
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (params.get('payment') === 'cancelled') {
+                showToast('Payment cancelled', 'warning');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initDonations);
+    </script>
+</body>
+</html>

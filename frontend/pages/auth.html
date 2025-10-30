@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register - Much Love, No Fear</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Plausible Analytics -->
+    <script defer data-domain="mlnf.net" src="https://plausible.io/js/script.js"></script>
+</head>
+<body data-page="auth">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.png" alt="MLNF Logo">
+                    <span>Much Love, No Fear</span>
+                </a>
+                
+                <button class="btn btn-icon theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Auth Container -->
+    <main class="auth-main">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>Welcome, Viking</h1>
+                    <p>Join our fearless community of truth seekers</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="register">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form class="auth-form active" id="login-form" onsubmit="MLNF.login(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="login-username">Username</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="login-username" 
+                            name="username" 
+                            required 
+                            autocomplete="username"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="login-password">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="login-password" 
+                            name="password" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                    
+                    <div class="auth-links">
+                        <a href="#" onclick="showRecoveryModal()">Forgot password?</a>
+                    </div>
+                </form>
+                
+                <!-- Register Form -->
+                <form class="auth-form" id="register-form" onsubmit="MLNF.register(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="reg-username">Username</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="reg-username" 
+                            name="username" 
+                            required 
+                            pattern="[a-zA-Z0-9_]{3,30}"
+                            title="3-30 characters, letters, numbers, and underscores only"
+                            autocomplete="username"
+                        >
+                        <p class="form-hint">3-30 characters, letters, numbers, and underscores only</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reg-password">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="reg-password" 
+                            name="password" 
+                            required 
+                            minlength="6"
+                            autocomplete="new-password"
+                        >
+                        <p class="form-hint">Minimum 6 characters</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reg-confirm-password">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="reg-confirm-password" 
+                            name="confirmPassword" 
+                            required 
+                            autocomplete="new-password"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reg-secret-question">Secret Question</label>
+                        <select class="form-select" id="reg-secret-question" name="secretQuestion" required>
+                            <option value="">Select a secret question</option>
+                            <option value="What was your first pet's name?">What was your first pet's name?</option>
+                            <option value="What city were you born in?">What city were you born in?</option>
+                            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                            <option value="What was the name of your first school?">What was the name of your first school?</option>
+                            <option value="What is your favorite book?">What is your favorite book?</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reg-secret-answer">Secret Answer</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="reg-secret-answer" 
+                            name="secretAnswer" 
+                            required
+                        >
+                        <p class="form-hint">This will be used to recover your account. Remember it!</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reg-referral">Referral Code (Optional)</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="reg-referral" 
+                            name="referralCode" 
+                            placeholder="Enter referral code"
+                        >
+                        <p class="form-hint">Both you and your referrer get bonus Runegold!</p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+                
+                <div class="auth-benefits">
+                    <h3>Join and Get:</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 100 Runegold starting bonus</li>
+                        <li><i class="fas fa-check"></i> Upload and share videos</li>
+                        <li><i class="fas fa-check"></i> Connect with fellow Vikings</li>
+                        <li><i class="fas fa-check"></i> No email required - true privacy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Recovery Modal -->
+    <div class="modal" id="recovery-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Recover Account</h3>
+                <button class="modal-close" onclick="closeRecoveryModal()">×</button>
+            </div>
+            <form class="modal-body" onsubmit="handleRecovery(event)">
+                <div class="form-group">
+                    <label class="form-label" for="recovery-username">Username</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="recovery-username" 
+                        name="username" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="recovery-question">Secret Question</label>
+                    <select class="form-select" id="recovery-question" name="secretQuestion" required>
+                        <option value="">Select your secret question</option>
+                        <option value="What was your first pet's name?">What was your first pet's name?</option>
+                        <option value="What city were you born in?">What city were you born in?</option>
+                        <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                        <option value="What was the name of your first school?">What was the name of your first school?</option>
+                        <option value="What is your favorite book?">What is your favorite book?</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="recovery-answer">Secret Answer</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="recovery-answer" 
+                        name="secretAnswer" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="recovery-new-password">New Password</label>
+                    <input 
+                        type="password" 
+                        class="form-input" 
+                        id="recovery-new-password" 
+                        name="newPassword" 
+                        required 
+                        minlength="6"
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    Reset Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="/scripts.js"></script>
+    
+    <!-- Auth Styles -->
+    <style>
+        .auth-main {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl);
+            background: linear-gradient(135deg, var(--primary-peach) 0%, var(--primary-indigo) 100%);
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .auth-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+        
+        .auth-header {
+            padding: var(--spacing-xl);
+            text-align: center;
+            background-color: var(--gray-100);
+        }
+        
+        .auth-header h1 {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .auth-header p {
+            color: var(--gray-600);
+            margin: 0;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .auth-tab:hover {
+            color: var(--primary-indigo);
+        }
+        
+        .auth-tab.active {
+            color: var(--primary-indigo);
+            border-bottom-color: var(--primary-indigo);
+        }
+        
+        .auth-form {
+            padding: var(--spacing-xl);
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-hint {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+        }
+        
+        .auth-links a {
+            font-size: 0.875rem;
+        }
+        
+        .auth-benefits {
+            padding: var(--spacing-xl);
+            background-color: var(--gray-100);
+        }
+        
+        .auth-benefits h3 {
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .auth-benefits ul {
+            list-style: none;
+        }
+        
+        .auth-benefits li {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            color: var(--gray-700);
+        }
+        
+        .auth-benefits i {
+            color: var(--success);
+        }
+        
+        @media (max-width: 480px) {
+            .auth-main {
+                padding: var(--spacing-md);
+            }
+            
+            .auth-form {
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+    
+    <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.auth-tab');
+        const forms = document.querySelectorAll('.auth-form');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                
+                // Update tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update forms
+                forms.forEach(form => {
+                    form.classList.remove('active');
+                    if (form.id === `${targetTab}-form`) {
+                        form.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // Show recovery modal
+        function showRecoveryModal() {
+            document.getElementById('recovery-modal').classList.add('active');
+        }
+        
+        // Close recovery modal
+        function closeRecoveryModal() {
+            document.getElementById('recovery-modal').classList.remove('active');
+        }
+        
+        // Handle recovery
+        async function handleRecovery(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                username: formData.get('username'),
+                secretQuestion: formData.get('secretQuestion'),
+                secretAnswer: formData.get('secretAnswer'),
+                newPassword: formData.get('newPassword')
+            };
+            
+            try {
+                showLoader('Recovering account...');
+                
+                const response = await fetch(`${API_BASE_URL}/auth/recover`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error);
+                }
+                
+                hideLoader();
+                showToast('Password reset successful! Please login with your new password.', 'success');
+                closeRecoveryModal();
+                
+                // Switch to login tab
+                tabs[0].click();
+                
+                // Pre-fill username
+                document.getElementById('login-username').value = data.username;
+            } catch (error) {
+                hideLoader();
+                showToast(error.message, 'error');
+            }
+        }
+        
+        // Check if already logged in
+        if (currentUser) {
+            window.location.href = '/dashboard.html';
+        }
+    </script>
+</body>
+</html>
