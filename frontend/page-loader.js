@@ -96,6 +96,8 @@ const PageLoader = {
         if (!blogContainer) return;
         
         try {
+            blogContainer.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> Loading blog posts...</div>';
+            
             const response = await APIClient.blog.getAll({ limit: 10 });
             const posts = response.posts || [];
             
@@ -106,7 +108,20 @@ const PageLoader = {
             }
         } catch (error) {
             console.error('Error loading blog:', error);
-            // Keep static content if API fails
+            blogContainer.innerHTML = `
+                <div class="card" style="background: var(--warning-light); border-left: 4px solid var(--warning);">
+                    <div class="card-body">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Backend Not Connected</h3>
+                        <p>The API server is not responding. This could mean:</p>
+                        <ul>
+                            <li>The backend needs to be deployed to Render</li>
+                            <li>The database needs to be seeded with content</li>
+                            <li>There's a network connectivity issue</li>
+                        </ul>
+                        <p><strong>For developers:</strong> Run <code>npm run seed</code> in the backend directory to populate sample data.</p>
+                    </div>
+                </div>
+            `;
         }
     },
     
@@ -116,6 +131,8 @@ const PageLoader = {
         if (!newsContainer) return;
         
         try {
+            newsContainer.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> Loading news articles...</div>';
+            
             const response = await APIClient.news.getAll({ limit: 20 });
             const articles = response.articles || [];
             
@@ -126,7 +143,20 @@ const PageLoader = {
             }
         } catch (error) {
             console.error('Error loading news:', error);
-            // Keep static content if API fails
+            newsContainer.innerHTML = `
+                <div class="card" style="background: var(--warning-light); border-left: 4px solid var(--warning);">
+                    <div class="card-body">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Backend Not Connected</h3>
+                        <p>The API server is not responding. This could mean:</p>
+                        <ul>
+                            <li>The backend needs to be deployed to Render</li>
+                            <li>The database needs to be seeded with content</li>
+                            <li>There's a network connectivity issue</li>
+                        </ul>
+                        <p><strong>For developers:</strong> Run <code>npm run seed</code> in the backend directory to populate sample data.</p>
+                    </div>
+                </div>
+            `;
         }
     },
     
@@ -136,6 +166,8 @@ const PageLoader = {
         if (!forumContainer) return;
         
         try {
+            forumContainer.innerHTML = '<tr><td colspan="4" class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> Loading forum topics...</td></tr>';
+            
             const response = await APIClient.forum.getAll({ limit: 20 });
             const topics = response.topics || [];
             
@@ -154,7 +186,24 @@ const PageLoader = {
             }
         } catch (error) {
             console.error('Error loading forum:', error);
-            // Keep static content if API fails
+            forumContainer.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        <div class="card" style="background: var(--warning-light); border-left: 4px solid var(--warning);">
+                            <div class="card-body">
+                                <h3><i class="fas fa-exclamation-triangle"></i> Backend Not Connected</h3>
+                                <p>The API server is not responding. This could mean:</p>
+                                <ul>
+                                    <li>The backend needs to be deployed to Render</li>
+                                    <li>The database needs to be seeded with content</li>
+                                    <li>There's a network connectivity issue</li>
+                                </ul>
+                                <p><strong>For developers:</strong> Run <code>npm run seed</code> in the backend directory to populate sample data.</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
         }
     },
     
