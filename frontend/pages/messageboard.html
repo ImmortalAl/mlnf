@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Message Board - Community discussions on Much Love, No Fear">
+    <title>Message Board - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link active">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="background: linear-gradient(135deg, var(--gold) 0%, var(--navy) 100%); padding: 3rem 0; color: var(--cream);">
+        <div class="container">
+            <h1 style="color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <i class="fas fa-comments"></i> Viking Assembly
+            </h1>
+            <p style="font-size: 1.25rem; margin-top: 1rem;">
+                Where warriors of truth gather to discuss and share wisdom
+            </p>
+        </div>
+    </section>
+
+    <!-- Board Stats -->
+    <section style="padding: 2rem 0; background: var(--gray-50);">
+        <div class="container">
+            <div class="grid grid-4 text-center">
+                <div>
+                    <h3 style="color: var(--indigo);">12,543</h3>
+                    <p class="text-muted">Active Members</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--peach);">3,892</h3>
+                    <p class="text-muted">Total Topics</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--gold);">48,291</h3>
+                    <p class="text-muted">Total Posts</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--success);">892</h3>
+                    <p class="text-muted">Online Now</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <div class="flex flex-between mb-3">
+                <h2>Discussion Forums</h2>
+                <button class="btn btn-viking">
+                    <i class="fas fa-plus"></i> New Topic
+                </button>
+            </div>
+
+            <!-- Forum Categories -->
+            <div class="forum-categories">
+                <!-- General Discussion -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="flex flex-between">
+                            <div style="flex: 1;">
+                                <h3><i class="fas fa-comments text-indigo"></i> General Discussion</h3>
+                                <p class="text-muted">Open forum for all topics related to truth and freedom</p>
+                                <div class="flex gap-lg mt-2 text-sm">
+                                    <span><i class="fas fa-folder"></i> 892 Topics</span>
+                                    <span><i class="fas fa-comment"></i> 12,384 Posts</span>
+                                </div>
+                            </div>
+                            <div style="width: 300px; text-right;">
+                                <p class="text-sm text-muted">Latest post:</p>
+                                <p class="text-sm"><strong>The Great Awakening is Here</strong></p>
+                                <p class="text-sm text-muted">by TruthWarrior • 5 minutes ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health & Wellness -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="flex flex-between">
+                            <div style="flex: 1;">
+                                <h3><i class="fas fa-heartbeat text-peach"></i> Health & Wellness</h3>
+                                <p class="text-muted">Natural health, alternative medicine, and wellness discussions</p>
+                                <div class="flex gap-lg mt-2 text-sm">
+                                    <span><i class="fas fa-folder"></i> 567 Topics</span>
+                                    <span><i class="fas fa-comment"></i> 8,923 Posts</span>
+                                </div>
+                            </div>
+                            <div style="width: 300px; text-right;">
+                                <p class="text-sm text-muted">Latest post:</p>
+                                <p class="text-sm"><strong>Natural Immunity Success Stories</strong></p>
+                                <p class="text-sm text-muted">by HealthFreedom • 12 minutes ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Freedom -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="flex flex-between">
+                            <div style="flex: 1;">
+                                <h3><i class="fas fa-coins text-gold"></i> Financial Freedom</h3>
+                                <p class="text-muted">Cryptocurrency, precious metals, and alternative economics</p>
+                                <div class="flex gap-lg mt-2 text-sm">
+                                    <span><i class="fas fa-folder"></i> 423 Topics</span>
+                                    <span><i class="fas fa-comment"></i> 7,234 Posts</span>
+                                </div>
+                            </div>
+                            <div style="width: 300px; text-right;">
+                                <p class="text-sm text-muted">Latest post:</p>
+                                <p class="text-sm"><strong>Gold & Silver Update</strong></p>
+                                <p class="text-sm text-muted">by StackerViking • 28 minutes ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spirituality & Consciousness -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="flex flex-between">
+                            <div style="flex: 1;">
+                                <h3><i class="fas fa-om text-indigo"></i> Spirituality & Consciousness</h3>
+                                <p class="text-muted">Spiritual awakening, meditation, and consciousness expansion</p>
+                                <div class="flex gap-lg mt-2 text-sm">
+                                    <span><i class="fas fa-folder"></i> 345 Topics</span>
+                                    <span><i class="fas fa-comment"></i> 5,678 Posts</span>
+                                </div>
+                            </div>
+                            <div style="width: 300px; text-right;">
+                                <p class="text-sm text-muted">Latest post:</p>
+                                <p class="text-sm"><strong>Raising Vibration Techniques</strong></p>
+                                <p class="text-sm text-muted">by LightWorker • 1 hour ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology & Privacy -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="flex flex-between">
+                            <div style="flex: 1;">
+                                <h3><i class="fas fa-shield-alt text-success"></i> Technology & Privacy</h3>
+                                <p class="text-muted">Digital privacy, security, and decentralized technologies</p>
+                                <div class="flex gap-lg mt-2 text-sm">
+                                    <span><i class="fas fa-folder"></i> 289 Topics</span>
+                                    <span><i class="fas fa-comment"></i> 4,567 Posts</span>
+                                </div>
+                            </div>
+                            <div style="width: 300px; text-right;">
+                                <p class="text-sm text-muted">Latest post:</p>
+                                <p class="text-sm"><strong>Best VPN Services 2024</strong></p>
+                                <p class="text-sm text-muted">by CyberViking • 2 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Research & Investigation -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="flex flex-between">
+                            <div style="flex: 1;">
+                                <h3><i class="fas fa-search text-warning"></i> Research & Investigation</h3>
+                                <p class="text-muted">Deep dives, document analysis, and investigative research</p>
+                                <div class="flex gap-lg mt-2 text-sm">
+                                    <span><i class="fas fa-folder"></i> 456 Topics</span>
+                                    <span><i class="fas fa-comment"></i> 9,012 Posts</span>
+                                </div>
+                            </div>
+                            <div style="width: 300px; text-right;">
+                                <p class="text-sm text-muted">Latest post:</p>
+                                <p class="text-sm"><strong>Connecting the Dots: Part 3</strong></p>
+                                <p class="text-sm text-muted">by DeepDigger • 3 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Topics -->
+            <div class="mt-4">
+                <h3 class="mb-3"><i class="fas fa-fire text-peach"></i> Hot Topics</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--gray-200);">
+                                    <th style="text-align: left; padding: 1rem;">Topic</th>
+                                    <th style="text-align: center; padding: 1rem;">Replies</th>
+                                    <th style="text-align: center; padding: 1rem;">Views</th>
+                                    <th style="text-align: right; padding: 1rem;">Last Post</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                    <td style="padding: 1rem;">
+                                        <div class="flex gap-sm">
+                                            <span class="badge badge-error">HOT</span>
+                                            <div>
+                                                <a href="#" style="font-weight: 600;">BREAKING: Major disclosure coming tomorrow</a>
+                                                <div class="text-sm text-muted">Started by Insider22</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; padding: 1rem;">234</td>
+                                    <td style="text-align: center; padding: 1rem;">12.5k</td>
+                                    <td style="text-align: right; padding: 1rem;">
+                                        <div class="text-sm">
+                                            <div>TruthSeeker99</div>
+                                            <div class="text-muted">2 min ago</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                    <td style="padding: 1rem;">
+                                        <div class="flex gap-sm">
+                                            <span class="badge badge-gold">PINNED</span>
+                                            <div>
+                                                <a href="#" style="font-weight: 600;">Community Guidelines - Please Read</a>
+                                                <div class="text-sm text-muted">Started by Admin</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; padding: 1rem;">45</td>
+                                    <td style="text-align: center; padding: 1rem;">8.9k</td>
+                                    <td style="text-align: right; padding: 1rem;">
+                                        <div class="text-sm">
+                                            <div>Moderator</div>
+                                            <div class="text-muted">1 hour ago</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                    <td style="padding: 1rem;">
+                                        <div>
+                                            <a href="#" style="font-weight: 600;">Natural remedies that actually work</a>
+                                            <div class="text-sm text-muted">Started by HealerViking</div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; padding: 1rem;">156</td>
+                                    <td style="text-align: center; padding: 1rem;">6.7k</td>
+                                    <td style="text-align: right; padding: 1rem;">
+                                        <div class="text-sm">
+                                            <div>NaturalPath</div>
+                                            <div class="text-muted">15 min ago</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                    <td style="padding: 1rem;">
+                                        <div>
+                                            <a href="#" style="font-weight: 600;">Preparing for economic collapse - practical tips</a>
+                                            <div class="text-sm text-muted">Started by PrepperKing</div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; padding: 1rem;">89</td>
+                                    <td style="text-align: center; padding: 1rem;">4.3k</td>
+                                    <td style="text-align: right; padding: 1rem;">
+                                        <div class="text-sm">
+                                            <div>SilverStacker</div>
+                                            <div class="text-muted">30 min ago</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem;">
+                                        <div>
+                                            <a href="#" style="font-weight: 600;">Mass meditation event this weekend</a>
+                                            <div class="text-sm text-muted">Started by LightWorker</div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; padding: 1rem;">67</td>
+                                    <td style="text-align: center; padding: 1rem;">2.1k</td>
+                                    <td style="text-align: right; padding: 1rem;">
+                                        <div class="text-sm">
+                                            <div>PeaceWarrior</div>
+                                            <div class="text-muted">45 min ago</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Users Section -->
+    <section style="padding: 3rem 0; background: var(--gray-50);">
+        <div class="container">
+            <h3 class="mb-3"><i class="fas fa-users"></i> Currently Active Members</h3>
+            <div class="flex gap-sm flex-wrap">
+                <span class="badge badge-secondary">TruthSeeker99</span>
+                <span class="badge badge-secondary">FreedomFighter</span>
+                <span class="badge badge-secondary">HealthWarrior</span>
+                <span class="badge badge-secondary">CryptoViking</span>
+                <span class="badge badge-secondary">NaturalHealer</span>
+                <span class="badge badge-secondary">AwakeAndAware</span>
+                <span class="badge badge-secondary">ResearchAnon</span>
+                <span class="badge badge-secondary">LibertyBell</span>
+                <span class="text-muted">... and 884 more</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../scripts.js"></script>
+</body>
+</html>

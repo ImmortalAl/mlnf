@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Viking Merchandise - Much Love, No Fear Store">
+    <title>Merch Store - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link active">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="background: linear-gradient(135deg, var(--peach) 0%, var(--gold) 100%); padding: 3rem 0; color: white;">
+        <div class="container">
+            <h1 style="color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <i class="fas fa-tshirt"></i> Viking Merchandise
+            </h1>
+            <p style="font-size: 1.25rem; margin-top: 1rem;">
+                Wear your truth • Show your support • Join the resistance
+            </p>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section style="padding: 2rem 0; background: var(--gray-50);">
+        <div class="container">
+            <div class="flex gap-md flex-wrap">
+                <button class="btn btn-outline active">All Items</button>
+                <button class="btn btn-outline">Clothing</button>
+                <button class="btn btn-outline">Accessories</button>
+                <button class="btn btn-outline">Books</button>
+                <button class="btn btn-outline">Stickers</button>
+                <button class="btn btn-outline">Limited Edition</button>
+                <div style="margin-left: auto;">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-shopping-cart"></i> Cart (0)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Items -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <h2 class="mb-4">Featured Items</h2>
+            
+            <div class="grid grid-4">
+                <!-- Product 1 -->
+                <div class="card product-card">
+                    <div class="ribbon">BEST SELLER</div>
+                    <img src="../assets/images/merch-tshirt.jpg" alt="Viking Shield T-Shirt" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Viking Shield T-Shirt</h4>
+                        <p class="text-muted text-sm mb-2">Premium organic cotton</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$29.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="card product-card">
+                    <div class="ribbon" style="background: var(--error);">NEW</div>
+                    <img src="../assets/images/merch-hoodie.jpg" alt="No Fear Hoodie" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>No Fear Hoodie</h4>
+                        <p class="text-muted text-sm mb-2">Heavy weight, ultra soft</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$49.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-mug.jpg" alt="Truth Warrior Mug" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Truth Warrior Mug</h4>
+                        <p class="text-muted text-sm mb-2">Ceramic, 15oz</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$14.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-cap.jpg" alt="Viking Cap" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Viking Cap</h4>
+                        <p class="text-muted text-sm mb-2">Embroidered, adjustable</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$24.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Products -->
+    <section style="padding: 3rem 0; background: var(--gray-50);">
+        <div class="container">
+            <h2 class="mb-4">All Products</h2>
+            
+            <div class="grid grid-4">
+                <!-- Product 5 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-book.jpg" alt="Uncensored Truth Book" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Uncensored Truth</h4>
+                        <p class="text-muted text-sm mb-2">Hardcover book</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$34.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-sticker.jpg" alt="Sticker Pack" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Viking Sticker Pack</h4>
+                        <p class="text-muted text-sm mb-2">Set of 10 stickers</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$9.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 7 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-flag.jpg" alt="Freedom Flag" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Freedom Flag</h4>
+                        <p class="text-muted text-sm mb-2">3x5 feet, weather resistant</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$39.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 8 -->
+                <div class="card product-card">
+                    <div class="ribbon" style="background: var(--gold);">LIMITED</div>
+                    <img src="../assets/images/merch-medallion.jpg" alt="Viking Medallion" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Viking Medallion</h4>
+                        <p class="text-muted text-sm mb-2">Collector's item, brass</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$89.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 9 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-poster.jpg" alt="Truth Poster" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Truth Poster Set</h4>
+                        <p class="text-muted text-sm mb-2">18x24", set of 3</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$19.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 10 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-bracelet.jpg" alt="Freedom Bracelet" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Freedom Bracelet</h4>
+                        <p class="text-muted text-sm mb-2">Adjustable leather</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$12.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 11 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-phone.jpg" alt="Phone Case" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Viking Phone Case</h4>
+                        <p class="text-muted text-sm mb-2">Multiple phone models</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$16.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 12 -->
+                <div class="card product-card">
+                    <img src="../assets/images/merch-bag.jpg" alt="Canvas Bag" style="width: 100%; height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4>Truth Seeker Bag</h4>
+                        <p class="text-muted text-sm mb-2">Organic canvas tote</p>
+                        <div class="flex flex-between">
+                            <span class="price" style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">$18.99</span>
+                            <button class="btn btn-sm btn-viking">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-4">
+                <button class="btn btn-viking btn-lg">
+                    <i class="fas fa-plus-circle"></i> Load More Products
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Design Section -->
+    <section style="padding: 3rem 0; background: linear-gradient(135deg, var(--navy), var(--indigo)); color: white;">
+        <div class="container text-center">
+            <h2 style="color: white; margin-bottom: 1rem;">Want a Custom Design?</h2>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem;">
+                Create your own Viking merchandise with custom text and graphics
+            </p>
+            <button class="btn btn-viking btn-lg">
+                <i class="fas fa-paint-brush"></i> Design Your Own
+            </button>
+        </div>
+    </section>
+
+    <!-- Bulk Orders -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <div class="card card-viking">
+                <div class="card-body text-center">
+                    <h3 class="mb-3">
+                        <i class="fas fa-boxes"></i> Bulk Orders for Groups
+                    </h3>
+                    <p class="mb-3">Organizing a rally or group event? Get special pricing on bulk orders.</p>
+                    <div class="flex flex-center gap-md">
+                        <button class="btn btn-outline">Get Quote</button>
+                        <button class="btn btn-viking">Contact Sales</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../scripts.js"></script>
+</body>
+</html>

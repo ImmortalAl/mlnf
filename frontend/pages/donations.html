@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Support Much Love, No Fear - Help keep truth alive">
+    <title>Support Us - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link active">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="background: linear-gradient(135deg, var(--gold) 0%, var(--indigo) 100%); padding: 4rem 0; color: white;">
+        <div class="container text-center">
+            <h1 style="color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <i class="fas fa-heart"></i> Support the Movement
+            </h1>
+            <p style="font-size: 1.5rem; margin-top: 1rem;">
+                Help us maintain a censorship-free platform for truth
+            </p>
+            <p style="font-size: 1.1rem; margin-top: 1rem; opacity: 0.9;">
+                100% community funded • No corporate sponsors • No hidden agenda
+            </p>
+        </div>
+    </section>
+
+    <!-- Donation Progress -->
+    <section style="padding: 3rem 0; background: var(--gray-50);">
+        <div class="container">
+            <div class="card card-viking">
+                <div class="card-body">
+                    <h2 class="text-center mb-3">Monthly Goal Progress</h2>
+                    <div style="background: var(--gray-200); border-radius: var(--radius-full); height: 40px; overflow: hidden; position: relative;">
+                        <div style="background: linear-gradient(90deg, var(--gold), var(--peach)); height: 100%; width: 68%; border-radius: var(--radius-full); position: relative;">
+                            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: white; font-weight: bold;">68%</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-between mt-3">
+                        <span><strong>$34,250</strong> raised</span>
+                        <span>Goal: <strong>$50,000</strong></span>
+                    </div>
+                    <p class="text-center text-muted mt-2">892 supporters this month</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Options -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <h2 class="text-center mb-4">Choose Your Support Level</h2>
+            
+            <div class="grid grid-3 mb-4">
+                <!-- Warrior Tier -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--indigo); margin-bottom: 1rem;"></i>
+                        <h3>Truth Warrior</h3>
+                        <div class="price" style="font-size: 2rem; color: var(--gold); margin: 1rem 0;">$10</div>
+                        <p class="text-muted mb-3">Monthly Support</p>
+                        <ul style="list-style: none; text-align: left; margin-bottom: 2rem;">
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Ad-free browsing</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Warrior badge</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Priority support</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> 100 Runegold monthly</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;">Select Plan</button>
+                    </div>
+                </div>
+
+                <!-- Viking Tier -->
+                <div class="card card-viking">
+                    <div class="ribbon">POPULAR</div>
+                    <div class="card-body text-center">
+                        <i class="fas fa-hammer" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                        <h3>Viking Champion</h3>
+                        <div class="price" style="font-size: 2rem; color: var(--gold); margin: 1rem 0;">$25</div>
+                        <p class="text-muted mb-3">Monthly Support</p>
+                        <ul style="list-style: none; text-align: left; margin-bottom: 2rem;">
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Everything in Warrior</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Viking badge</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Early access content</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> 300 Runegold monthly</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Monthly merch discount</li>
+                        </ul>
+                        <button class="btn btn-viking" style="width: 100%;">Select Plan</button>
+                    </div>
+                </div>
+
+                <!-- Jarl Tier -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                        <h3>Freedom Jarl</h3>
+                        <div class="price" style="font-size: 2rem; color: var(--gold); margin: 1rem 0;">$50</div>
+                        <p class="text-muted mb-3">Monthly Support</p>
+                        <ul style="list-style: none; text-align: left; margin-bottom: 2rem;">
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Everything in Viking</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Jarl badge</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Direct creator line</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> 750 Runegold monthly</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Exclusive content</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Name in credits</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;">Select Plan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- One-Time Donation -->
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-center mb-3">One-Time Contribution</h3>
+                    <div class="grid grid-6 gap-md mb-3">
+                        <button class="btn btn-outline">$5</button>
+                        <button class="btn btn-outline">$10</button>
+                        <button class="btn btn-outline active">$25</button>
+                        <button class="btn btn-outline">$50</button>
+                        <button class="btn btn-outline">$100</button>
+                        <button class="btn btn-outline">$500</button>
+                    </div>
+                    <div class="flex gap-md">
+                        <input type="number" placeholder="Custom amount" class="form-control" style="flex: 1;">
+                        <button class="btn btn-viking btn-lg">
+                            <i class="fas fa-heart"></i> Donate Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cryptocurrency Donations -->
+    <section style="padding: 3rem 0; background: var(--gray-50);">
+        <div class="container">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-coins"></i> Cryptocurrency Donations
+            </h2>
+            <p class="text-center text-muted mb-4">Support us with decentralized currency for maximum privacy</p>
+            
+            <div class="grid grid-3">
+                <!-- Bitcoin -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fab fa-bitcoin" style="font-size: 3rem; color: #f7931a; margin-bottom: 1rem;"></i>
+                        <h4>Bitcoin</h4>
+                        <div class="crypto-address">
+                            <code style="word-break: break-all; font-size: 0.875rem;">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>
+                        </div>
+                        <button class="btn btn-sm btn-outline mt-2">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ethereum -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fab fa-ethereum" style="font-size: 3rem; color: #627eea; margin-bottom: 1rem;"></i>
+                        <h4>Ethereum</h4>
+                        <div class="crypto-address">
+                            <code style="word-break: break-all; font-size: 0.875rem;">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</code>
+                        </div>
+                        <button class="btn btn-sm btn-outline mt-2">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Monero -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-secret" style="font-size: 3rem; color: #ff6600; margin-bottom: 1rem;"></i>
+                        <h4>Monero</h4>
+                        <div class="crypto-address">
+                            <code style="word-break: break-all; font-size: 0.875rem;">888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H</code>
+                        </div>
+                        <button class="btn btn-sm btn-outline mt-2">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Where Your Support Goes -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <h2 class="text-center mb-4">Where Your Support Goes</h2>
+            <div class="grid grid-2 gap-lg">
+                <div>
+                    <canvas id="donationChart" style="max-width: 100%;"></canvas>
+                </div>
+                <div>
+                    <ul style="list-style: none;">
+                        <li class="mb-3">
+                            <div class="flex flex-between">
+                                <span><i class="fas fa-server text-indigo"></i> Server & Infrastructure</span>
+                                <strong>35%</strong>
+                            </div>
+                            <p class="text-muted text-sm">Keeping our platform fast, secure, and always available</p>
+                        </li>
+                        <li class="mb-3">
+                            <div class="flex flex-between">
+                                <span><i class="fas fa-code text-peach"></i> Development</span>
+                                <strong>30%</strong>
+                            </div>
+                            <p class="text-muted text-sm">New features, bug fixes, and platform improvements</p>
+                        </li>
+                        <li class="mb-3">
+                            <div class="flex flex-between">
+                                <span><i class="fas fa-shield-alt text-gold"></i> Security & Privacy</span>
+                                <strong>20%</strong>
+                            </div>
+                            <p class="text-muted text-sm">Protecting user data and maintaining anonymity</p>
+                        </li>
+                        <li class="mb-3">
+                            <div class="flex flex-between">
+                                <span><i class="fas fa-users text-success"></i> Community Support</span>
+                                <strong>10%</strong>
+                            </div>
+                            <p class="text-muted text-sm">Moderators, community events, and creator support</p>
+                        </li>
+                        <li>
+                            <div class="flex flex-between">
+                                <span><i class="fas fa-gavel text-warning"></i> Legal Defense</span>
+                                <strong>5%</strong>
+                            </div>
+                            <p class="text-muted text-sm">Fighting censorship and protecting free speech</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Supporters -->
+    <section style="padding: 3rem 0; background: var(--gray-50);">
+        <div class="container">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-trophy"></i> Hall of Vikings
+            </h2>
+            <p class="text-center text-muted mb-4">Our top supporters this month</p>
+            
+            <div class="grid grid-5 text-center">
+                <div>
+                    <div class="avatar-lg" style="background: linear-gradient(135deg, var(--gold), var(--peach));">
+                        <i class="fas fa-crown" style="color: white;"></i>
+                    </div>
+                    <h5 class="mt-2">FreedomJarl</h5>
+                    <p class="text-muted text-sm">$500</p>
+                </div>
+                <div>
+                    <div class="avatar-lg" style="background: var(--indigo);">
+                        <span style="color: white;">TW</span>
+                    </div>
+                    <h5 class="mt-2">TruthWarrior</h5>
+                    <p class="text-muted text-sm">$250</p>
+                </div>
+                <div>
+                    <div class="avatar-lg" style="background: var(--peach);">
+                        <span style="color: white;">VK</span>
+                    </div>
+                    <h5 class="mt-2">VikingKing</h5>
+                    <p class="text-muted text-sm">$200</p>
+                </div>
+                <div>
+                    <div class="avatar-lg" style="background: var(--success);">
+                        <span style="color: white;">LB</span>
+                    </div>
+                    <h5 class="mt-2">LibertyBell</h5>
+                    <p class="text-muted text-sm">$150</p>
+                </div>
+                <div>
+                    <div class="avatar-lg" style="background: var(--warning);">
+                        <span style="color: white;">PS</span>
+                    </div>
+                    <h5 class="mt-2">PatriotSoul</h5>
+                    <p class="text-muted text-sm">$100</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../scripts.js"></script>
+    
+    <!-- Chart Initialization -->
+    <script>
+        // Initialize donation chart
+        const ctx = document.getElementById('donationChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Server & Infrastructure', 'Development', 'Security', 'Community', 'Legal'],
+                    datasets: [{
+                        data: [35, 30, 20, 10, 5],
+                        backgroundColor: [
+                            '#4A90E2',
+                            '#FF6B6B',
+                            '#D4AF37',
+                            '#10B981',
+                            '#F59E0B'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+        }
+    </script>
+</body>
+</html>

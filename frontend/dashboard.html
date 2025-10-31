@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User Dashboard - Much Love, No Fear">
+    <title>Dashboard - Much Love, No Fear</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="pages/archive.html" class="nav-link">Love Vault</a>
+                    <a href="pages/blog.html" class="nav-link">Blog</a>
+                    <a href="pages/news.html" class="nav-link">News</a>
+                    <a href="pages/messageboard.html" class="nav-link">Board</a>
+                    <a href="pages/donations.html" class="nav-link">Support</a>
+                    <a href="pages/merch.html" class="nav-link">Merch</a>
+                    <a href="dashboard.html" class="nav-link active" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge">3</span>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="user-menu">
+                        <button class="user-menu-toggle" id="userMenuToggle">
+                            <img src="assets/images/avatar-placeholder.jpg" alt="User" class="avatar-sm">
+                            <span>TruthWarrior</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-menu-dropdown hidden" id="userMenuDropdown">
+                            <a href="#profile"><i class="fas fa-user"></i> Profile</a>
+                            <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <section style="padding: 2rem 0;">
+        <div class="container">
+            <div class="grid" style="grid-template-columns: 250px 1fr; gap: 2rem;">
+                <!-- Sidebar Navigation -->
+                <aside class="dashboard-sidebar">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <img src="assets/images/avatar-placeholder.jpg" alt="User" class="avatar-lg mb-2">
+                                <h4>TruthWarrior</h4>
+                                <div class="badge badge-gold">Viking Champion</div>
+                            </div>
+                            
+                            <div class="runegold-display mb-3" style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-md);">
+                                <div class="flex flex-between">
+                                    <span>Runegold Balance</span>
+                                    <strong style="color: var(--gold);">1,250</strong>
+                                </div>
+                            </div>
+                            
+                            <nav class="dashboard-nav">
+                                <a href="#overview" class="active"><i class="fas fa-home"></i> Overview</a>
+                                <a href="#videos"><i class="fas fa-video"></i> My Videos</a>
+                                <a href="#blog-posts"><i class="fas fa-pen"></i> Blog Posts</a>
+                                <a href="#runegold"><i class="fas fa-coins"></i> Runegold Shop</a>
+                                <a href="#messages"><i class="fas fa-envelope"></i> Messages</a>
+                                <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+                                <a href="#badges"><i class="fas fa-medal"></i> Badges</a>
+                                <a href="#subscription"><i class="fas fa-crown"></i> Subscription</a>
+                            </nav>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Dashboard Area -->
+                <main>
+                    <!-- Stats Overview -->
+                    <div class="grid grid-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="flex flex-between">
+                                    <div>
+                                        <p class="text-muted text-sm">Total Views</p>
+                                        <h3>45,892</h3>
+                                    </div>
+                                    <i class="fas fa-eye text-indigo" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="flex flex-between">
+                                    <div>
+                                        <p class="text-muted text-sm">Followers</p>
+                                        <h3>1,234</h3>
+                                    </div>
+                                    <i class="fas fa-users text-peach" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="flex flex-between">
+                                    <div>
+                                        <p class="text-muted text-sm">Videos</p>
+                                        <h3>28</h3>
+                                    </div>
+                                    <i class="fas fa-video text-gold" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="flex flex-between">
+                                    <div>
+                                        <p class="text-muted text-sm">Comments</p>
+                                        <h3>892</h3>
+                                    </div>
+                                    <i class="fas fa-comments text-success" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="mb-3">Recent Activity</h3>
+                            <div class="activity-timeline">
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--success);">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>Your video "Truth About Health Freedom"</strong> reached 10k views!</p>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--indigo);">
+                                        <i class="fas fa-comment"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>FreedomFighter</strong> commented on your video</p>
+                                        <small class="text-muted">5 hours ago</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--gold);">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p>You earned <strong>50 Runegold</strong> from video boosts</p>
+                                        <small class="text-muted">1 day ago</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--peach);">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>12 new followers</strong> this week</p>
+                                        <small class="text-muted">2 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Your Videos Section -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="flex flex-between mb-3">
+                                <h3>Your Videos</h3>
+                                <button class="btn btn-viking btn-sm">
+                                    <i class="fas fa-upload"></i> Upload New
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-3">
+                                <div class="video-card">
+                                    <div class="video-thumbnail" style="position: relative;">
+                                        <img src="assets/images/placeholder-video.jpg" alt="Video" style="width: 100%; border-radius: var(--radius-md);">
+                                        <span class="badge badge-error" style="position: absolute; top: 10px; right: 10px;">LIVE</span>
+                                    </div>
+                                    <h5 class="mt-2">Truth About Health Freedom</h5>
+                                    <div class="flex gap-md text-sm text-muted">
+                                        <span><i class="fas fa-eye"></i> 10.2k</span>
+                                        <span><i class="fas fa-thumbs-up"></i> 892</span>
+                                        <span><i class="fas fa-comment"></i> 145</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="video-card">
+                                    <div class="video-thumbnail">
+                                        <img src="assets/images/placeholder-video.jpg" alt="Video" style="width: 100%; border-radius: var(--radius-md);">
+                                    </div>
+                                    <h5 class="mt-2">Exposing the Financial System</h5>
+                                    <div class="flex gap-md text-sm text-muted">
+                                        <span><i class="fas fa-eye"></i> 8.5k</span>
+                                        <span><i class="fas fa-thumbs-up"></i> 723</span>
+                                        <span><i class="fas fa-comment"></i> 89</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="video-card">
+                                    <div class="video-thumbnail">
+                                        <img src="assets/images/placeholder-video.jpg" alt="Video" style="width: 100%; border-radius: var(--radius-md);">
+                                    </div>
+                                    <h5 class="mt-2">Natural Immunity Evidence</h5>
+                                    <div class="flex gap-md text-sm text-muted">
+                                        <span><i class="fas fa-eye"></i> 6.3k</span>
+                                        <span><i class="fas fa-thumbs-up"></i> 567</span>
+                                        <span><i class="fas fa-comment"></i> 67</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <a href="#" class="btn btn-outline">View All Videos</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Runegold Shop -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="mb-3">
+                                <i class="fas fa-coins text-gold"></i> Runegold Shop
+                            </h3>
+                            <p class="text-muted mb-3">Use your Runegold to boost videos, highlight comments, and get exclusive perks!</p>
+                            
+                            <div class="grid grid-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-rocket text-peach" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                        <h5>Video Boost</h5>
+                                        <p class="text-muted text-sm">Promote your video</p>
+                                        <div class="price text-gold">100 RG</div>
+                                        <button class="btn btn-sm btn-outline mt-2">Purchase</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-star text-gold" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                        <h5>Pin Comment</h5>
+                                        <p class="text-muted text-sm">Highlight your message</p>
+                                        <div class="price text-gold">50 RG</div>
+                                        <button class="btn btn-sm btn-outline mt-2">Purchase</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-badge text-indigo" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                        <h5>Custom Badge</h5>
+                                        <p class="text-muted text-sm">Stand out in comments</p>
+                                        <div class="price text-gold">200 RG</div>
+                                        <button class="btn btn-sm btn-outline mt-2">Purchase</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <button class="btn btn-viking">
+                                    <i class="fas fa-plus-circle"></i> Get More Runegold
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-3">Your Achievements</h3>
+                            <div class="grid grid-6">
+                                <div class="text-center">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gold);">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <p class="text-sm">Truth Warrior</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--indigo);">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <p class="text-sm">Content Creator</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--peach);">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <p class="text-sm">Community Leader</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--success);">
+                                        <i class="fas fa-comments"></i>
+                                    </div>
+                                    <p class="text-sm">Active Commenter</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gray-300);">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <p class="text-sm">Locked</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gray-300);">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <p class="text-sm">Locked</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="pages/archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="pages/blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="pages/messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="pages/donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="scripts.js"></script>
+    
+    <!-- Dashboard specific styles -->
+    <style>
+        .dashboard-sidebar .dashboard-nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.25rem;
+            transition: all var(--transition-base);
+        }
+        
+        .dashboard-sidebar .dashboard-nav a:hover {
+            background: var(--gray-50);
+            color: var(--indigo);
+        }
+        
+        .dashboard-sidebar .dashboard-nav a.active {
+            background: var(--indigo);
+            color: white;
+        }
+        
+        .dashboard-sidebar .dashboard-nav a i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .activity-timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-200);
+        }
+        
+        .activity-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .activity-icon {
+            position: absolute;
+            left: -35px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .avatar-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+        
+        .user-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            min-width: 200px;
+            margin-top: 0.5rem;
+            z-index: 100;
+        }
+        
+        .user-menu-dropdown a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: background var(--transition-base);
+        }
+        
+        .user-menu-dropdown a:hover {
+            background: var(--gray-50);
+        }
+        
+        .user-menu-dropdown a i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+</body>
+</html>
