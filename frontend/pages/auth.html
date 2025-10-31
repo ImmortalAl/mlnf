@@ -275,6 +275,8 @@
 
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../api-client.js"></script>
+    <script src="../auth-handler.js"></script>
     <script src="../scripts.js"></script>
     
     <!-- Authentication Script -->
@@ -355,23 +357,19 @@
                     submitBtn.disabled = true;
                     
                     try {
-                        // Try API first, fall back to local auth
+                        // Try API login
+                        const data = await APIClient.auth.login({ username, password });
+                        handleLoginSuccess(data);
+                        
+                    } catch (apiError) {
+                        console.error('Login error:', apiError);
+                        // Fall back to local authentication
                         let success = false;
+                        
                         try {
-                            const response = await fetch('http://localhost:5000/api/auth/login', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ username, password })
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                handleLoginSuccess(data);
-                                success = true;
-                            }
-                        } catch (apiError) {
-                            // Backend not available, use local authentication
                             console.log('Backend not available, using local authentication');
+                        } catch (fallbackError) {
+                            console.error('Fallback error:', fallbackError);
                         }
                         
                         if (!success) {
@@ -447,28 +445,26 @@
                     submitBtn.disabled = true;
                     
                     try {
-                        // Try API first, fall back to local storage
+                        // Try API registration
+                        const data = await APIClient.auth.register({
+                            firstName,
+                            lastName,
+                            username,
+                            email: email || undefined,
+                            password
+                        });
+                        
+                        handleLoginSuccess(data);
+                        
+                    } catch (apiError) {
+                        console.error('Registration error:', apiError);
+                        // Fall back to local storage
                         let success = false;
+                        
                         try {
-                            const response = await fetch('http://localhost:5000/api/auth/register', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    firstName,
-                                    lastName,
-                                    username,
-                                    email: email || undefined, // Email is optional
-                                    password
-                                })
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                handleLoginSuccess(data);
-                                success = true;
-                            }
-                        } catch (apiError) {
                             console.log('Backend not available, using local storage');
+                        } catch (fallbackError) {
+                            console.error('Fallback error:', fallbackError);
                         }
                         
                         if (!success) {
