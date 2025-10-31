@@ -1,5 +1,7 @@
 # MLNF Functionality Status
 
+**Last Updated**: October 31, 2025 - Path Navigation Fix
+
 ## ✅ Currently Functional Features
 
 ### Authentication System
@@ -12,6 +14,7 @@
 - **✅ Error Handling** - Toast notifications for all auth actions
 - **✅ Protected Routes** - Dashboard requires authentication
 - **✅ User State Persistence** - Login persists across page refreshes
+- **✅ Smart Path Navigation** - Dynamic URLs work from any page level (FIXED: Oct 31, 2025)
 
 **How to Test:**
 1. Go to `/pages/auth.html`
@@ -287,3 +290,26 @@ These features will activate when backend is connected:
 10. **Use Mobile** - Fully responsive
 
 The site is **production-ready** for visual showcase and user testing. Backend integration will make all interactions persistent and enable advanced features.
+
+---
+
+## 🔧 Recent Bug Fixes
+
+### Path Navigation Fix (October 31, 2025)
+**Issue**: Double directory paths (`pages/pages/auth.html`) when navigating from subdirectory pages
+
+**Fixed**:
+- ✅ Auth links now detect current page location dynamically
+- ✅ Dashboard links work correctly from subdirectories
+- ✅ Logout redirects properly from any page
+- ✅ Comment system redirects work without double paths
+
+**Files Modified**:
+- `frontend/auth-handler.js` - Added dynamic path detection
+- `frontend/scripts.js` - Added smart directory detection
+
+**Documentation**:
+- See `PATH_FIX_SUMMARY.md` for complete technical details
+- See `test-paths.html` for manual testing guide
+
+**Impact**: Critical navigation bug resolved - authentication flow now works perfectly across all pages
