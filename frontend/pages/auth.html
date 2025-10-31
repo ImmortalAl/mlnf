@@ -136,9 +136,9 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="signupEmail">Email</label>
-                                <input type="email" id="signupEmail" class="form-control" placeholder="your@email.com" required>
-                                <small class="text-muted">We'll never share your email</small>
+                                <label for="signupEmail">Email (Optional)</label>
+                                <input type="email" id="signupEmail" class="form-control" placeholder="your@email.com">
+                                <small class="text-muted">Optional - We'll never share your email</small>
                             </div>
                             
                             <div class="form-group">
@@ -277,8 +277,9 @@
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script src="../scripts.js"></script>
     
-    <!-- Tab Switching Script -->
+    <!-- Authentication Script -->
     <script>
+        // Tab Switching
         function switchTab(tab) {
             const loginForm = document.getElementById('loginForm');
             const signupForm = document.getElementById('signupForm');
@@ -323,6 +324,260 @@
             strengthBar.style.background = colors[strength];
             strengthText.textContent = texts[strength];
         });
+
+        // Initialize authentication handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already logged in
+            const token = localStorage.getItem('mlnf_token');
+            if (token) {
+                window.location.href = '../dashboard.html';
+                return;
+            }
+
+            // Login Form Handler
+            const loginFormElement = document.querySelector('#loginForm form');
+            if (loginFormElement) {
+                loginFormElement.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (!username || !password) {
+                        showNotification('Please fill in all fields', 'error');
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const submitBtn = e.target.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+                    submitBtn.disabled = true;
+                    
+                    try {
+                        // Try API first, fall back to local auth
+                        let success = false;
+                        try {
+                            const response = await fetch('http://localhost:5000/api/auth/login', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ username, password })
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                handleLoginSuccess(data);
+                                success = true;
+                            }
+                        } catch (apiError) {
+                            // Backend not available, use local authentication
+                            console.log('Backend not available, using local authentication');
+                        }
+                        
+                        if (!success) {
+                            // Local authentication
+                            const users = JSON.parse(localStorage.getItem('mlnf_users') || '{}');
+                            const user = users[username.toLowerCase()];
+                            
+                            if (user && user.password === password) {
+                                const loginData = {
+                                    token: 'local_' + Date.now(),
+                                    user: {
+                                        _id: user.id,
+                                        username: user.username,
+                                        email: user.email,
+                                        runegoldBalance: user.runegoldBalance || 100,
+                                        createdAt: user.createdAt
+                                    }
+                                };
+                                handleLoginSuccess(loginData);
+                            } else {
+                                showNotification('Invalid username or password', 'error');
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        showNotification('Login failed. Please try again.', 'error');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+            
+            // Signup Form Handler
+            const signupFormElement = document.querySelector('#signupForm form');
+            if (signupFormElement) {
+                signupFormElement.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const firstName = document.getElementById('firstName').value.trim();
+                    const lastName = document.getElementById('lastName').value.trim();
+                    const username = document.getElementById('signupUsername').value.trim();
+                    const email = document.getElementById('signupEmail').value.trim();
+                    const password = document.getElementById('signupPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    // Validation
+                    if (!firstName || !username || !password || !confirmPassword) {
+                        showNotification('Please fill in all required fields', 'error');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showNotification('Passwords do not match', 'error');
+                        return;
+                    }
+                    
+                    if (password.length < 8) {
+                        showNotification('Password must be at least 8 characters', 'error');
+                        return;
+                    }
+                    
+                    if (username.length < 3) {
+                        showNotification('Username must be at least 3 characters', 'error');
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const submitBtn = e.target.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                    submitBtn.disabled = true;
+                    
+                    try {
+                        // Try API first, fall back to local storage
+                        let success = false;
+                        try {
+                            const response = await fetch('http://localhost:5000/api/auth/register', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    firstName,
+                                    lastName,
+                                    username,
+                                    email: email || undefined, // Email is optional
+                                    password
+                                })
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                handleLoginSuccess(data);
+                                success = true;
+                            }
+                        } catch (apiError) {
+                            console.log('Backend not available, using local storage');
+                        }
+                        
+                        if (!success) {
+                            // Local storage registration
+                            const users = JSON.parse(localStorage.getItem('mlnf_users') || '{}');
+                            
+                            // Check if username already exists
+                            if (users[username.toLowerCase()]) {
+                                showNotification('Username already taken', 'error');
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                                return;
+                            }
+                            
+                            // Create new user
+                            const newUser = {
+                                id: 'user_' + Date.now(),
+                                username: username,
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email || '', // Email is optional
+                                password: password, // In production, this would be hashed
+                                runegoldBalance: 100, // Welcome bonus
+                                createdAt: new Date().toISOString()
+                            };
+                            
+                            users[username.toLowerCase()] = newUser;
+                            localStorage.setItem('mlnf_users', JSON.stringify(users));
+                            
+                            // Auto-login after registration
+                            const loginData = {
+                                token: 'local_' + Date.now(),
+                                user: {
+                                    _id: newUser.id,
+                                    username: newUser.username,
+                                    firstName: newUser.firstName,
+                                    lastName: newUser.lastName,
+                                    email: newUser.email,
+                                    runegoldBalance: newUser.runegoldBalance,
+                                    createdAt: newUser.createdAt
+                                }
+                            };
+                            handleLoginSuccess(loginData);
+                        }
+                    } catch (error) {
+                        console.error('Registration error:', error);
+                        showNotification('Registration failed. Please try again.', 'error');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+        
+        // Handle successful login/registration
+        function handleLoginSuccess(data) {
+            localStorage.setItem('mlnf_token', data.token);
+            localStorage.setItem('mlnf_user', JSON.stringify(data.user));
+            
+            showNotification('Welcome, ' + data.user.username + '!', 'success');
+            
+            setTimeout(() => {
+                window.location.href = '../dashboard.html';
+            }, 1000);
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                z-index: 9999;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+            `;
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

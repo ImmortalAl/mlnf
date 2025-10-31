@@ -38,13 +38,13 @@
                     <div class="user-menu">
                         <button class="user-menu-toggle" id="userMenuToggle">
                             <img src="assets/images/avatar-placeholder.jpg" alt="User" class="avatar-sm">
-                            <span>TruthWarrior</span>
+                            <span class="username-display">User</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="user-menu-dropdown hidden" id="userMenuDropdown">
                             <a href="#profile"><i class="fas fa-user"></i> Profile</a>
                             <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
-                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            <a href="#" onclick="MLNFAuth.logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
                         </div>
                     </div>
                     
@@ -71,8 +71,8 @@
                         <div class="card-body">
                             <div class="text-center mb-3">
                                 <img src="assets/images/avatar-placeholder.jpg" alt="User" class="avatar-lg mb-2">
-                                <h4>TruthWarrior</h4>
-                                <div class="badge badge-gold">Viking Champion</div>
+                                <h4 class="username-display">User</h4>
+                                <div class="badge badge-gold user-badge">New Viking</div>
                             </div>
                             
                             <div class="runegold-display mb-3" style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-md);">
@@ -397,6 +397,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="auth-handler.js"></script>
     <script src="scripts.js"></script>
     
     <!-- Dashboard specific styles -->
@@ -520,5 +521,23 @@
             text-align: center;
         }
     </style>
+    
+    <!-- Dashboard JavaScript -->
+    <script>
+        // User menu toggle
+        document.getElementById('userMenuToggle')?.addEventListener('click', function() {
+            const dropdown = document.getElementById('userMenuDropdown');
+            dropdown?.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.getElementById('userMenuDropdown');
+            if (userMenu && !userMenu.contains(e.target)) {
+                dropdown?.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
