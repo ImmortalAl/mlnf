@@ -32,14 +32,26 @@
     
     // Helper function to handle API responses
     async function handleResponse(response) {
-        const data = await response.json();
+        console.log('🔍 handleResponse - Status:', response.status, response.statusText);
+        
+        let data;
+        try {
+            data = await response.json();
+            console.log('🔍 handleResponse - Parsed data:', data);
+        } catch (err) {
+            console.error('❌ Failed to parse JSON response:', err);
+            throw new Error('Invalid JSON response from server');
+        }
         
         if (!response.ok) {
             // Backend can send either 'error' or 'message' field
             const errorMessage = data.error || data.message || 'API request failed';
+            console.error('❌ handleResponse - API error:', errorMessage);
+            console.error('❌ handleResponse - Full error data:', data);
             throw new Error(errorMessage);
         }
         
+        console.log('✅ handleResponse - Success');
         return data;
     }
     
@@ -267,10 +279,26 @@
              * @returns {Promise<Object>} Created post
              */
             async create(postData) {
-                const token = getAuthToken();
-                if (!token) throw new Error('Must be logged in to create post');
+                console.log('🔧 APIClient.blog.create called');
+                console.log('🔧 API_BASE_URL:', API_BASE_URL);
                 
-                const response = await fetch(`${API_BASE_URL}/blog`, {
+                const token = getAuthToken();
+                console.log('🔧 Token retrieved:', !!token);
+                
+                if (!token) {
+                    console.error('❌ No auth token found');
+                    throw new Error('Must be logged in to create post');
+                }
+                
+                const url = `${API_BASE_URL}/blog`;
+                console.log('🔧 Request URL:', url);
+                console.log('🔧 Request data:', {
+                    ...postData,
+                    content: postData.content.substring(0, 50) + '...',
+                    excerpt: postData.excerpt ? postData.excerpt.substring(0, 50) + '...' : ''
+                });
+                
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -278,6 +306,9 @@
                     },
                     body: JSON.stringify(postData)
                 });
+                
+                console.log('🔧 Response status:', response.status);
+                console.log('🔧 Response ok:', response.ok);
                 
                 return handleResponse(response);
             }

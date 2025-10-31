@@ -425,6 +425,7 @@
         // Create Blog Form Submission
         document.getElementById('createBlogForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            console.log('🚀 Blog form submitted');
             
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
@@ -432,6 +433,7 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
             
             try {
+                // Collect form data
                 const title = document.getElementById('blogTitle').value.trim();
                 const excerpt = document.getElementById('blogExcerpt').value.trim();
                 const content = document.getElementById('blogContent').value.trim();
@@ -440,6 +442,16 @@
                 const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
                 const featured = document.getElementById('blogFeatured').checked;
                 const published = document.getElementById('blogPublished').checked;
+                
+                console.log('📝 Form data collected:', {
+                    title,
+                    excerpt: excerpt.substring(0, 50) + '...',
+                    content: content.substring(0, 50) + '...',
+                    category,
+                    tagsCount: tags.length,
+                    featured,
+                    published
+                });
                 
                 // Create slug from title
                 const slug = title.toLowerCase()
@@ -457,7 +469,23 @@
                     published
                 };
                 
+                console.log('📦 Post data prepared:', {
+                    ...postData,
+                    content: postData.content.substring(0, 50) + '...',
+                    excerpt: postData.excerpt.substring(0, 50) + '...'
+                });
+                
+                // Check authentication
+                const token = localStorage.getItem('mlnf_token');
+                console.log('🔐 Auth token present:', !!token);
+                if (token) {
+                    console.log('🔐 Token preview:', token.substring(0, 20) + '...');
+                }
+                
+                // Make API call
+                console.log('📡 Calling APIClient.blog.create...');
                 const response = await APIClient.blog.create(postData);
+                console.log('✅ API Response:', response);
                 
                 // Show success message
                 alert('✅ Article published successfully!');
@@ -468,11 +496,18 @@
                 
                 // Reload blog posts
                 if (typeof PageLoader !== 'undefined') {
+                    console.log('🔄 Reloading blog posts...');
                     PageLoader.loadBlog();
                 }
                 
             } catch (error) {
-                console.error('Error creating blog post:', error);
+                console.error('❌ Error creating blog post:', error);
+                console.error('❌ Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+                
                 let errorMsg = error.message || 'Please try again';
                 
                 // Add helpful hints based on error type
@@ -486,6 +521,7 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
+                console.log('🏁 Form submission complete');
             }
         });
     </script>
