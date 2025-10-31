@@ -148,22 +148,20 @@
             },
             
             /**
-             * Boost video with Runegold
+             * Boost video with Runegold (50 RG for 1 hour featured)
              * @param {string} videoId - Video ID
-             * @param {number} amount - Runegold amount
-             * @returns {Promise<Object>} Updated video
+             * @returns {Promise<Object>} Updated balance and boost expiry
              */
-            async boost(videoId, amount) {
+            async boost(videoId) {
                 const token = getAuthToken();
                 if (!token) throw new Error('Must be logged in to boost');
                 
-                const response = await fetch(`${API_BASE_URL}/videos/${videoId}/boost`, {
+                const response = await fetch(`${API_BASE_URL}/runegold/spend/boost/${videoId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ amount })
+                    }
                 });
                 
                 return handleResponse(response);

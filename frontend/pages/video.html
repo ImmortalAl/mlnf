@@ -52,12 +52,47 @@
     <section style="padding: 2rem 0; background: var(--gray-900);">
         <div class="container">
             <!-- Video Player -->
-            <div class="video-player-container" style="position: relative; padding-bottom: 56.25%; background: #000; border-radius: var(--radius-lg); overflow: hidden;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
-                    <div style="text-align: center;">
-                        <i class="fas fa-play-circle" style="font-size: 5rem; opacity: 0.7; margin-bottom: 1rem;"></i>
-                        <p style="font-size: 1.25rem;">Video Player</p>
-                        <p style="opacity: 0.7;">Backend connection required for streaming</p>
+            <div class="video-player-wrapper" style="position: relative; width: 100%; max-width: 1280px; margin: 0 auto;">
+                <video 
+                    id="videoPlayer" 
+                    class="video-player" 
+                    controls 
+                    controlsList="nodownload"
+                    style="width: 100%; border-radius: var(--radius-lg); background: #000; box-shadow: var(--shadow-xl);"
+                    poster="../assets/images/placeholder-video.jpg">
+                    <source id="videoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                
+                <!-- Loading Overlay -->
+                <div id="videoLoading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); display: none;">
+                    <div style="text-align: center; color: white;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p style="font-size: 1.25rem;">Loading video...</p>
+                    </div>
+                </div>
+                
+                <!-- Error Overlay -->
+                <div id="videoError" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); display: none;">
+                    <div style="text-align: center; color: white; padding: 2rem;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--error);"></i>
+                        <p style="font-size: 1.25rem; margin-bottom: 1rem;">Unable to load video</p>
+                        <p style="opacity: 0.7; margin-bottom: 1.5rem;">The video may be processing or unavailable</p>
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Custom Controls Overlay -->
+                <div id="customControls" style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.8)); display: none;">
+                    <div class="flex gap-md" style="align-items: center;">
+                        <button id="playbackSpeed" class="btn btn-sm btn-outline" style="color: white; border-color: white;">
+                            <i class="fas fa-tachometer-alt"></i> 1x
+                        </button>
+                        <button id="qualityToggle" class="btn btn-sm btn-outline" style="color: white; border-color: white;">
+                            <i class="fas fa-cog"></i> Auto
+                        </button>
                     </div>
                 </div>
             </div>
@@ -93,7 +128,7 @@
                             </button>
                             
                             <!-- Boost Button -->
-                            <button class="btn btn-viking btn-sm">
+                            <button class="btn btn-viking btn-sm" id="boostBtn">
                                 <i class="fas fa-rocket"></i> Boost (50 RG)
                             </button>
                         </div>
@@ -389,9 +424,73 @@
                             document.getElementById('downvoteBtn').classList.add('btn-error');
                         }
                     }
+                    
+                    // Load video stream
+                    loadVideoStream();
                 } catch (error) {
                     console.error('Error loading video:', error);
                     // Keep placeholder data if API fails
+                    document.getElementById('videoError').style.display = 'flex';
+                }
+            }
+            
+            // Load video stream
+            function loadVideoStream() {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const videoSource = document.getElementById('videoSource');
+                const videoLoading = document.getElementById('videoLoading');
+                const videoError = document.getElementById('videoError');
+                
+                // Show loading overlay
+                videoLoading.style.display = 'flex';
+                
+                // Determine API base URL
+                const hostname = window.location.hostname;
+                let apiBaseUrl;
+                
+                if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                    apiBaseUrl = 'https://much-love-no-fear.onrender.com/api';
+                } else if (hostname.includes('sandbox.novita.ai') || hostname === 'localhost' || hostname === '127.0.0.1') {
+                    apiBaseUrl = 'http://localhost:5000/api';
+                } else {
+                    apiBaseUrl = 'https://much-love-no-fear.onrender.com/api';
+                }
+                
+                // Set video source
+                const streamUrl = `${apiBaseUrl}/videos/stream/${videoId}`;
+                videoSource.src = streamUrl;
+                
+                // Load video
+                videoPlayer.load();
+                
+                // Handle video events
+                videoPlayer.addEventListener('loadeddata', () => {
+                    videoLoading.style.display = 'none';
+                    videoError.style.display = 'none';
+                });
+                
+                videoPlayer.addEventListener('error', () => {
+                    videoLoading.style.display = 'none';
+                    videoError.style.display = 'flex';
+                    console.error('Video playback error');
+                });
+                
+                videoPlayer.addEventListener('canplay', () => {
+                    videoLoading.style.display = 'none';
+                });
+                
+                // Playback speed control
+                const playbackSpeedBtn = document.getElementById('playbackSpeed');
+                const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+                let currentSpeedIndex = 2; // Default 1x
+                
+                if (playbackSpeedBtn) {
+                    playbackSpeedBtn.addEventListener('click', () => {
+                        currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+                        const speed = speeds[currentSpeedIndex];
+                        videoPlayer.playbackRate = speed;
+                        playbackSpeedBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${speed}x`;
+                    });
                 }
             }
             
@@ -561,6 +660,46 @@
                 } catch (error) {
                     console.error('Error voting:', error);
                     showNotification(error.message || 'Failed to vote', 'error');
+                }
+            });
+            
+            // Boost button handler
+            document.getElementById('boostBtn').addEventListener('click', async function() {
+                if (!MLNFAuth.isLoggedIn()) {
+                    showNotification('Please login to boost videos', 'error');
+                    return;
+                }
+                
+                // Confirm boost
+                if (!confirm('Boost this video for 50 Runegold? It will be featured for 1 hour.')) {
+                    return;
+                }
+                
+                try {
+                    // Disable button during request
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Boosting...';
+                    
+                    const response = await APIClient.videos.boost(videoId);
+                    
+                    showNotification(`Video boosted! New balance: ${response.balance} RG`, 'success');
+                    
+                    // Update button to show boosted state
+                    this.innerHTML = '<i class="fas fa-check"></i> Boosted!';
+                    this.classList.add('btn-success');
+                    
+                    // Update Runegold balance in sidebar if exists
+                    const runegoldAmountEl = document.getElementById('runegoldAmount');
+                    if (runegoldAmountEl) {
+                        runegoldAmountEl.textContent = response.balance;
+                    }
+                } catch (error) {
+                    console.error('Error boosting video:', error);
+                    showNotification(error.message || 'Failed to boost video', 'error');
+                    
+                    // Re-enable button
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-rocket"></i> Boost (50 RG)';
                 }
             });
             

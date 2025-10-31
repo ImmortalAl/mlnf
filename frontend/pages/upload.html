@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Upload Video - Much Love, No Fear">
+    <title>Upload Video - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .upload-zone {
+            border: 3px dashed var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--gray-50);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .upload-zone.has-file {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .video-preview {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--cream);
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
+        
+        .file-info i {
+            font-size: 2rem;
+            color: var(--success);
+        }
+        
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+        }
+        
+        .tag-item button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1rem;
+        }
+        
+        .thumbnail-preview {
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem auto;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="background: linear-gradient(135deg, var(--navy) 0%, var(--gray-800) 100%); padding: 3rem 0; color: var(--cream);">
+        <div class="container">
+            <h1 style="color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Your Video
+            </h1>
+            <p style="font-size: 1.25rem; margin-top: 1rem;">
+                Share your truth with the world. No censorship. No fear.
+            </p>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section style="padding: 3rem 0;">
+        <div class="container" style="max-width: 900px;">
+            <form id="uploadForm">
+                <!-- Upload Zone -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="mb-3"><i class="fas fa-video"></i> Select Video File</h3>
+                        
+                        <div class="upload-zone" id="uploadZone">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h4>Drag & Drop your video here</h4>
+                            <p class="text-muted">or click to browse</p>
+                            <p class="text-sm text-muted mt-2">Supported formats: MP4, WebM, OGG, MOV (Max 100MB)</p>
+                            <input type="file" id="videoFile" accept="video/*" style="display: none;" required>
+                        </div>
+                        
+                        <!-- File Info (shown after selection) -->
+                        <div id="fileInfo" style="display: none;" class="file-info">
+                            <i class="fas fa-file-video"></i>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;" id="fileName">video.mp4</div>
+                                <div class="text-sm text-muted" id="fileSize">0 MB</div>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm" id="removeFile">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </div>
+                        
+                        <!-- Video Preview -->
+                        <video id="videoPreview" class="video-preview" controls style="display: none;"></video>
+                        
+                        <!-- Upload Progress -->
+                        <div id="uploadProgress" style="display: none;">
+                            <div class="flex flex-between mb-2">
+                                <span>Uploading...</span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Details -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="mb-3"><i class="fas fa-info-circle"></i> Video Details</h3>
+                        
+                        <div class="form-group">
+                            <label for="videoTitle">Title *</label>
+                            <input 
+                                type="text" 
+                                id="videoTitle" 
+                                class="form-control" 
+                                placeholder="Enter video title" 
+                                maxlength="200" 
+                                required>
+                            <small class="text-muted">Maximum 200 characters</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="videoDescription">Description</label>
+                            <textarea 
+                                id="videoDescription" 
+                                class="form-control" 
+                                rows="5" 
+                                placeholder="Describe your video..."
+                                maxlength="5000"></textarea>
+                            <small class="text-muted">Maximum 5000 characters</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="videoCategory">Category *</label>
+                            <select id="videoCategory" class="form-control" required>
+                                <option value="">Select a category</option>
+                                <option value="truth">Truth Uncensored</option>
+                                <option value="health">Health Freedom</option>
+                                <option value="finance">Financial Freedom</option>
+                                <option value="politics">Politics Unfiltered</option>
+                                <option value="spirituality">Spirituality</option>
+                                <option value="science">Alternative Science</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tags * (Select 1-3)</label>
+                            <div class="flex gap-md" style="flex-wrap: wrap;">
+                                <label class="flex gap-sm" style="align-items: center;">
+                                    <input type="checkbox" name="tags" value="Truths" class="tag-checkbox">
+                                    <span class="badge badge-primary">Truths</span>
+                                </label>
+                                <label class="flex gap-sm" style="align-items: center;">
+                                    <input type="checkbox" name="tags" value="Rebels" class="tag-checkbox">
+                                    <span class="badge badge-primary">Rebels</span>
+                                </label>
+                                <label class="flex gap-sm" style="align-items: center;">
+                                    <input type="checkbox" name="tags" value="General" class="tag-checkbox">
+                                    <span class="badge badge-primary">General</span>
+                                </label>
+                            </div>
+                            <small class="text-muted" id="tagError" style="color: var(--error); display: none;">Please select 1 to 3 tags</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Options -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="mb-3"><i class="fas fa-cog"></i> Advanced Options</h3>
+                        
+                        <div class="form-group">
+                            <label class="flex gap-md" style="align-items: center; cursor: pointer;">
+                                <input type="checkbox" id="isExclusive">
+                                <div>
+                                    <strong>Make this exclusive content</strong>
+                                    <p class="text-sm text-muted" style="margin: 0;">Viewers must pay Runegold to access</p>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div id="exclusivePriceContainer" style="display: none;">
+                            <div class="form-group">
+                                <label for="exclusivePrice">Price (Runegold)</label>
+                                <input 
+                                    type="number" 
+                                    id="exclusivePrice" 
+                                    class="form-control" 
+                                    value="200" 
+                                    min="10" 
+                                    max="1000">
+                                <small class="text-muted">Minimum: 10 RG, Maximum: 1000 RG</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms and Submit -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="flex gap-md" style="align-items: flex-start; cursor: pointer;">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <div>
+                                    <strong>I agree to the Terms of Service and Community Guidelines</strong>
+                                    <p class="text-sm text-muted" style="margin: 0.5rem 0 0 0;">
+                                        By uploading, you confirm that you have the rights to this content and it complies with our 
+                                        <a href="#" style="color: var(--primary);">community guidelines</a>.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex gap-md" style="margin-top: 2rem;">
+                            <button type="submit" class="btn btn-viking btn-lg" id="submitBtn">
+                                <i class="fas fa-upload"></i> Upload Video
+                            </button>
+                            <a href="archive.html" class="btn btn-outline btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Success Message (hidden by default) -->
+            <div id="successMessage" class="card" style="display: none; border: 2px solid var(--success); background: var(--success-light);">
+                <div class="card-body text-center" style="padding: 3rem;">
+                    <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success);"></i>
+                    <h2 style="margin-top: 1rem; color: var(--success);">Upload Successful!</h2>
+                    <p style="font-size: 1.25rem; margin-top: 1rem;">
+                        Your video has been uploaded and is now live.
+                    </p>
+                    <div class="flex gap-md flex-center" style="margin-top: 2rem;">
+                        <a href="archive.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-video"></i> View in Love Vault
+                        </a>
+                        <button type="button" class="btn btn-outline btn-lg" id="uploadAnother">
+                            <i class="fas fa-plus"></i> Upload Another
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../api-client.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+    
+    <!-- Upload Page Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!MLNFAuth || !MLNFAuth.isLoggedIn()) {
+                window.location.href = 'auth.html?redirect=upload.html';
+                return;
+            }
+            
+            // Elements
+            const uploadZone = document.getElementById('uploadZone');
+            const videoFileInput = document.getElementById('videoFile');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const removeFileBtn = document.getElementById('removeFile');
+            const videoPreview = document.getElementById('videoPreview');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const uploadForm = document.getElementById('uploadForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const uploadAnother = document.getElementById('uploadAnother');
+            const isExclusiveCheckbox = document.getElementById('isExclusive');
+            const exclusivePriceContainer = document.getElementById('exclusivePriceContainer');
+            const tagCheckboxes = document.querySelectorAll('.tag-checkbox');
+            const tagError = document.getElementById('tagError');
+            
+            let selectedFile = null;
+            
+            // Upload zone click handler
+            uploadZone.addEventListener('click', () => {
+                videoFileInput.click();
+            });
+            
+            // Drag and drop handlers
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('drag-over');
+            });
+            
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('drag-over');
+            });
+            
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelection(files[0]);
+                }
+            });
+            
+            // File input change handler
+            videoFileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelection(e.target.files[0]);
+                }
+            });
+            
+            // Handle file selection
+            function handleFileSelection(file) {
+                // Validate file type
+                const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska'];
+                if (!validTypes.includes(file.type)) {
+                    showNotification('Invalid file type. Please select a video file.', 'error');
+                    return;
+                }
+                
+                // Validate file size (100MB)
+                const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+                if (file.size > maxSize) {
+                    showNotification('File too large. Maximum size is 100MB.', 'error');
+                    return;
+                }
+                
+                selectedFile = file;
+                
+                // Update UI
+                uploadZone.classList.add('has-file');
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'flex';
+                
+                // Show video preview
+                const videoURL = URL.createObjectURL(file);
+                videoPreview.src = videoURL;
+                videoPreview.style.display = 'block';
+                
+                // Hide upload icon
+                uploadZone.querySelector('.upload-icon').style.display = 'none';
+                uploadZone.querySelector('h4').style.display = 'none';
+                uploadZone.querySelector('p').style.display = 'none';
+            }
+            
+            // Remove file handler
+            removeFileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                selectedFile = null;
+                videoFileInput.value = '';
+                fileInfo.style.display = 'none';
+                videoPreview.style.display = 'none';
+                uploadZone.classList.remove('has-file');
+                
+                // Show upload icon again
+                uploadZone.querySelector('.upload-icon').style.display = 'block';
+                uploadZone.querySelector('h4').style.display = 'block';
+                uploadZone.querySelector('p').style.display = 'block';
+            });
+            
+            // Exclusive checkbox handler
+            isExclusiveCheckbox.addEventListener('change', (e) => {
+                exclusivePriceContainer.style.display = e.target.checked ? 'block' : 'none';
+            });
+            
+            // Tag validation
+            tagCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const checkedCount = document.querySelectorAll('.tag-checkbox:checked').length;
+                    
+                    if (checkedCount > 3) {
+                        checkbox.checked = false;
+                        tagError.style.display = 'block';
+                    } else {
+                        tagError.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Form submission
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (!selectedFile) {
+                    showNotification('Please select a video file', 'error');
+                    return;
+                }
+                
+                // Validate tags
+                const checkedTags = document.querySelectorAll('.tag-checkbox:checked');
+                if (checkedTags.length < 1 || checkedTags.length > 3) {
+                    showNotification('Please select 1 to 3 tags', 'error');
+                    tagError.style.display = 'block';
+                    return;
+                }
+                
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('video', selectedFile);
+                formData.append('title', document.getElementById('videoTitle').value.trim());
+                formData.append('description', document.getElementById('videoDescription').value.trim());
+                formData.append('category', document.getElementById('videoCategory').value);
+                
+                // Add tags as JSON array
+                const tags = Array.from(checkedTags).map(cb => cb.value);
+                formData.append('tags', JSON.stringify(tags));
+                
+                // Add exclusive options
+                const isExclusive = isExclusiveCheckbox.checked;
+                formData.append('isExclusive', isExclusive);
+                if (isExclusive) {
+                    formData.append('exclusivePrice', document.getElementById('exclusivePrice').value);
+                }
+                
+                try {
+                    // Show progress
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+                    uploadProgress.style.display = 'block';
+                    
+                    // Simulate progress (since FormData doesn't support progress events easily)
+                    let progress = 0;
+                    const progressInterval = setInterval(() => {
+                        progress += 5;
+                        if (progress >= 90) {
+                            clearInterval(progressInterval);
+                        }
+                        updateProgress(progress);
+                    }, 500);
+                    
+                    // Upload video
+                    const response = await APIClient.videos.upload(formData);
+                    
+                    clearInterval(progressInterval);
+                    updateProgress(100);
+                    
+                    // Show success message
+                    setTimeout(() => {
+                        uploadForm.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 500);
+                    
+                    showNotification('Video uploaded successfully!', 'success');
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    showNotification(error.message || 'Failed to upload video', 'error');
+                    
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
+                    uploadProgress.style.display = 'none';
+                }
+            });
+            
+            // Upload another button
+            uploadAnother.addEventListener('click', () => {
+                window.location.reload();
+            });
+            
+            // Helper: Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+            }
+            
+            // Helper: Update progress
+            function updateProgress(percent) {
+                progressFill.style.width = percent + '%';
+                progressPercent.textContent = percent + '%';
+            }
+            
+            // Helper: Show notification
+            function showNotification(message, type = 'success') {
+                const notif = document.createElement('div');
+                notif.className = `notification notification-${type}`;
+                notif.textContent = message;
+                notif.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem; background: var(--navy); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 10000;';
+                
+                if (type === 'success') notif.style.background = 'var(--success)';
+                if (type === 'error') notif.style.background = 'var(--error)';
+                
+                document.body.appendChild(notif);
+                setTimeout(() => notif.remove(), 5000);
+            }
+        });
+    </script>
+</body>
+</html>
