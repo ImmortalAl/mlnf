@@ -444,63 +444,50 @@
                         handleLoginSuccess(data);
                         
                     } catch (apiError) {
-                        console.error('Registration error:', apiError);
+                        console.error('API registration error:', apiError);
                         // Fall back to local storage
-                        let success = false;
+                        console.log('Backend not available, using local storage');
                         
-                        try {
-                            console.log('Backend not available, using local storage');
-                        } catch (fallbackError) {
-                            console.error('Fallback error:', fallbackError);
+                        // Local storage registration
+                        const users = JSON.parse(localStorage.getItem('mlnf_users') || '{}');
+                        
+                        // Check if username already exists
+                        if (users[username.toLowerCase()]) {
+                            showNotification('Username already taken', 'error');
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            return;
                         }
                         
-                        if (!success) {
-                            // Local storage registration
-                            const users = JSON.parse(localStorage.getItem('mlnf_users') || '{}');
-                            
-                            // Check if username already exists
-                            if (users[username.toLowerCase()]) {
-                                showNotification('Username already taken', 'error');
-                                submitBtn.innerHTML = originalText;
-                                submitBtn.disabled = false;
-                                return;
+                        // Create new user
+                        const newUser = {
+                            id: 'user_' + Date.now(),
+                            username: username,
+                            firstName: firstName,
+                            lastName: lastName,
+                            email: email || '', // Email is optional
+                            password: password, // In production, this would be hashed
+                            runegoldBalance: 100, // Welcome bonus
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        users[username.toLowerCase()] = newUser;
+                        localStorage.setItem('mlnf_users', JSON.stringify(users));
+                        
+                        // Auto-login after registration
+                        const loginData = {
+                            token: 'local_' + Date.now(),
+                            user: {
+                                _id: newUser.id,
+                                username: newUser.username,
+                                firstName: newUser.firstName,
+                                lastName: newUser.lastName,
+                                email: newUser.email,
+                                runegoldBalance: newUser.runegoldBalance,
+                                createdAt: newUser.createdAt
                             }
-                            
-                            // Create new user
-                            const newUser = {
-                                id: 'user_' + Date.now(),
-                                username: username,
-                                firstName: firstName,
-                                lastName: lastName,
-                                email: email || '', // Email is optional
-                                password: password, // In production, this would be hashed
-                                runegoldBalance: 100, // Welcome bonus
-                                createdAt: new Date().toISOString()
-                            };
-                            
-                            users[username.toLowerCase()] = newUser;
-                            localStorage.setItem('mlnf_users', JSON.stringify(users));
-                            
-                            // Auto-login after registration
-                            const loginData = {
-                                token: 'local_' + Date.now(),
-                                user: {
-                                    _id: newUser.id,
-                                    username: newUser.username,
-                                    firstName: newUser.firstName,
-                                    lastName: newUser.lastName,
-                                    email: newUser.email,
-                                    runegoldBalance: newUser.runegoldBalance,
-                                    createdAt: newUser.createdAt
-                                }
-                            };
-                            handleLoginSuccess(loginData);
-                        }
-                    } catch (error) {
-                        console.error('Registration error:', error);
-                        showNotification('Registration failed. Please try again.', 'error');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
+                        };
+                        handleLoginSuccess(loginData);
                     }
                 });
             }
