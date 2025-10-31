@@ -308,6 +308,27 @@
                 });
                 
                 return handleResponse(response);
+            },
+            
+            /**
+             * Create news article
+             * @param {Object} articleData - Article data
+             * @returns {Promise<Object>} Created article
+             */
+            async create(articleData) {
+                const token = getAuthToken();
+                if (!token) throw new Error('Must be logged in to submit news');
+                
+                const response = await fetch(`${API_BASE_URL}/news`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(articleData)
+                });
+                
+                return handleResponse(response);
             }
         },
         

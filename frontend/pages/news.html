@@ -388,11 +388,153 @@
         }
     </style>
 
+    <!-- Submit News Modal -->
+    <div class="modal" id="submitNewsModal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Submit News Article</h2>
+                <button class="btn-close" onclick="document.getElementById('submitNewsModal').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="submitNewsForm">
+                    <div class="form-group">
+                        <label for="newsTitle">Article Title *</label>
+                        <input type="text" id="newsTitle" class="form-control" required maxlength="200" 
+                               placeholder="Enter breaking news headline...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newsExcerpt">Excerpt (Short Summary) *</label>
+                        <textarea id="newsExcerpt" class="form-control" rows="2" required maxlength="300"
+                                  placeholder="Write a brief summary that will appear in the news listing..."></textarea>
+                        <small class="text-muted">Maximum 300 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newsCategory">Category *</label>
+                        <select id="newsCategory" class="form-control" required>
+                            <option value="">Select a category...</option>
+                            <option value="Breaking">Breaking News</option>
+                            <option value="Politics">Politics</option>
+                            <option value="Health">Health</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Technology">Technology</option>
+                            <option value="World">World Events</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newsSource">Source (Optional)</label>
+                        <input type="text" id="newsSource" class="form-control" 
+                               placeholder="e.g., Independent Reporters Network, Citizen Journalist">
+                        <small class="text-muted">Credit the original source if applicable</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newsContent">Full Article *</label>
+                        <textarea id="newsContent" class="form-control" rows="12" required
+                                  placeholder="Write the full article here... (HTML supported: &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;)"></textarea>
+                        <small class="text-muted">You can use basic HTML formatting</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="newsBreaking">
+                            <span>Mark as Breaking News</span>
+                        </label>
+                    </div>
+                    
+                    <div class="flex gap-md">
+                        <button type="submit" class="btn btn-viking btn-lg">
+                            <i class="fas fa-paper-plane"></i> Submit News
+                        </button>
+                        <button type="button" class="btn btn-outline btn-lg" 
+                                onclick="document.getElementById('submitNewsModal').style.display='none'">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script src="../auth-handler.js"></script>
+    <script src="../api-client.js"></script>
     <script src="../mock-data.js"></script>
     <script src="../page-loader.js"></script>
     <script src="../scripts.js"></script>
+    
+    <!-- News Page Specific Script -->
+    <script>
+        // Submit News Button
+        document.getElementById('submitNewsBtn').addEventListener('click', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                alert('Please log in to submit news.');
+                window.location.href = 'auth.html';
+                return;
+            }
+            document.getElementById('submitNewsModal').style.display = 'flex';
+        });
+        
+        // Submit News Form
+        document.getElementById('submitNewsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            
+            try {
+                const title = document.getElementById('newsTitle').value.trim();
+                const excerpt = document.getElementById('newsExcerpt').value.trim();
+                const content = document.getElementById('newsContent').value.trim();
+                const category = document.getElementById('newsCategory').value;
+                const source = document.getElementById('newsSource').value.trim() || 'Community Submission';
+                const breaking = document.getElementById('newsBreaking').checked;
+                
+                // Create slug from title
+                const slug = title.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                
+                const articleData = {
+                    title,
+                    slug,
+                    excerpt,
+                    content,
+                    category,
+                    source,
+                    breaking,
+                    trending: false
+                };
+                
+                const response = await APIClient.news.create(articleData);
+                
+                // Show success message
+                alert('✅ News article submitted successfully!');
+                
+                // Close modal and reset form
+                document.getElementById('submitNewsModal').style.display = 'none';
+                document.getElementById('submitNewsForm').reset();
+                
+                // Reload news articles
+                if (typeof PageLoader !== 'undefined') {
+                    PageLoader.loadNews();
+                }
+                
+            } catch (error) {
+                console.error('Error submitting news:', error);
+                alert('❌ Failed to submit news: ' + (error.message || 'Please try again'));
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    </script>
 </body>
 </html>

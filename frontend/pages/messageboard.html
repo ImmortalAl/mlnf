@@ -89,7 +89,7 @@
         <div class="container">
             <div class="flex flex-between mb-3">
                 <h2>Discussion Forums</h2>
-                <button class="btn btn-viking">
+                <button class="btn btn-viking" id="newTopicBtn">
                     <i class="fas fa-plus"></i> New Topic
                 </button>
             </div>
@@ -418,11 +418,120 @@
         </ul>
     </aside>
 
+    <!-- Create Forum Topic Modal -->
+    <div class="modal" id="newTopicModal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus"></i> Create New Topic</h2>
+                <button class="btn-close" onclick="document.getElementById('newTopicModal').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newTopicForm">
+                    <div class="form-group">
+                        <label for="topicTitle">Topic Title *</label>
+                        <input type="text" id="topicTitle" class="form-control" required maxlength="200" 
+                               placeholder="Enter a descriptive topic title...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="topicCategory">Category *</label>
+                        <select id="topicCategory" class="form-control" required>
+                            <option value="">Select a category...</option>
+                            <option value="General">General Discussion</option>
+                            <option value="Politics">Politics & Government</option>
+                            <option value="Health">Health & Wellness</option>
+                            <option value="Finance">Finance & Economy</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Spirituality">Spirituality</option>
+                            <option value="News">News & Current Events</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="topicContent">Your Post *</label>
+                        <textarea id="topicContent" class="form-control" rows="8" required
+                                  placeholder="Share your thoughts, questions, or information..."></textarea>
+                        <small class="text-muted">Be respectful and constructive in your discussion</small>
+                    </div>
+                    
+                    <div class="flex gap-md">
+                        <button type="submit" class="btn btn-viking btn-lg">
+                            <i class="fas fa-paper-plane"></i> Create Topic
+                        </button>
+                        <button type="button" class="btn btn-outline btn-lg" 
+                                onclick="document.getElementById('newTopicModal').style.display='none'">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script src="../auth-handler.js"></script>
+    <script src="../api-client.js"></script>
     <script src="../mock-data.js"></script>
     <script src="../page-loader.js"></script>
     <script src="../scripts.js"></script>
+    
+    <!-- Message Board Specific Script -->
+    <script>
+        // New Topic Button
+        document.getElementById('newTopicBtn').addEventListener('click', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                alert('Please log in to create a topic.');
+                window.location.href = 'auth.html';
+                return;
+            }
+            document.getElementById('newTopicModal').style.display = 'flex';
+        });
+        
+        // Create Topic Form
+        document.getElementById('newTopicForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            
+            try {
+                const title = document.getElementById('topicTitle').value.trim();
+                const content = document.getElementById('topicContent').value.trim();
+                const category = document.getElementById('topicCategory').value;
+                
+                const topicData = {
+                    title,
+                    content,
+                    category
+                };
+                
+                const response = await APIClient.forum.create(topicData);
+                
+                // Show success message
+                alert('✅ Topic created successfully!');
+                
+                // Close modal and reset form
+                document.getElementById('newTopicModal').style.display = 'none';
+                document.getElementById('newTopicForm').reset();
+                
+                // Reload forum topics
+                if (typeof PageLoader !== 'undefined') {
+                    PageLoader.loadForum();
+                }
+                
+            } catch (error) {
+                console.error('Error creating topic:', error);
+                alert('❌ Failed to create topic: ' + (error.message || 'Please try again'));
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    </script>
 </body>
 </html>
