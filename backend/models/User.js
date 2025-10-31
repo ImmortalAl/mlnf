@@ -25,11 +25,11 @@ const userSchema = new mongoose.Schema({
   },
   secretQuestion: {
     type: String,
-    required: [true, 'Secret question is required']
+    default: ''
   },
   secretAnswer: {
     type: String,
-    required: [true, 'Secret answer is required']
+    default: ''
   },
   bio: {
     type: String,

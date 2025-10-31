@@ -45,11 +45,11 @@ router.post('/register', [
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters'),
   body('secretQuestion')
-    .notEmpty()
-    .withMessage('Secret question is required'),
+    .optional()
+    .trim(),
   body('secretAnswer')
-    .notEmpty()
-    .withMessage('Secret answer is required'),
+    .optional()
+    .trim(),
   body('email')
     .optional()
     .isEmail()
