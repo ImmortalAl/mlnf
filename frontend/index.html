@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Much Love, No Fear - A censorship-resistant video sanctuary for independent creators">
+    <title>Much Love, No Fear - Video Sanctuary</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="pages/archive.html" class="nav-link">Love Vault</a>
+                    <a href="pages/blog.html" class="nav-link">Blog</a>
+                    <a href="pages/news.html" class="nav-link">News</a>
+                    <a href="pages/messageboard.html" class="nav-link">Board</a>
+                    <a href="pages/donations.html" class="nav-link">Support</a>
+                    <a href="pages/merch.html" class="nav-link">Merch</a>
+                    <a href="pages/auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" style="background: linear-gradient(135deg, var(--navy) 0%, var(--gray-800) 100%); padding: 4rem 0; color: var(--cream);">
+        <div class="container text-center">
+            <h1 style="color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <i class="fas fa-shield-alt"></i> Much Love, No Fear
+            </h1>
+            <p style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--cream);">
+                Your sanctuary for uncensored truth. Share videos without fear of demonetization or censorship.
+            </p>
+            <div class="flex flex-center gap-lg" style="flex-wrap: wrap;">
+                <a href="pages/archive.html" class="btn btn-viking btn-lg">
+                    <i class="fas fa-video"></i> Explore Love Vault
+                </a>
+                <a href="pages/auth.html" class="btn btn-outline btn-lg" style="color: var(--cream); border-color: var(--cream);">
+                    <i class="fas fa-user-plus"></i> Join the Movement
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" style="padding: 4rem 0;">
+        <div class="container">
+            <h2 class="text-center mb-4">Viking Values, Modern Platform</h2>
+            <div class="grid grid-3">
+                <div class="card card-viking">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                        <h3>No Censorship</h3>
+                        <p>Share your truth without fear. We protect your right to speak freely.</p>
+                    </div>
+                </div>
+                
+                <div class="card card-viking">
+                    <div class="card-body text-center">
+                        <i class="fas fa-coins" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                        <h3>Runegold Economy</h3>
+                        <p>Boost videos, highlight comments, earn badges. Your contribution matters.</p>
+                    </div>
+                </div>
+                
+                <div class="card card-viking">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                        <h3>Community Driven</h3>
+                        <p>Real-time messaging, voting, and a community that stands together.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Videos -->
+    <section class="trending" style="padding: 4rem 0; background: var(--gray-50);">
+        <div class="container">
+            <div class="flex flex-between mb-3">
+                <h2><i class="fas fa-fire text-peach"></i> Trending Now</h2>
+                <a href="pages/archive.html" class="btn btn-secondary">View All</a>
+            </div>
+            <div class="grid grid-4" id="trendingVideos">
+                <div class="skeleton" style="height: 300px;"></div>
+                <div class="skeleton" style="height: 300px;"></div>
+                <div class="skeleton" style="height: 300px;"></div>
+                <div class="skeleton" style="height: 300px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Boosted Videos Carousel -->
+    <section class="boosted" style="padding: 4rem 0;">
+        <div class="container">
+            <h2 class="text-center mb-3">
+                <i class="fas fa-rocket text-gold"></i> No Fear Boosted
+            </h2>
+            <div class="grid grid-3" id="boostedVideos">
+                <div class="skeleton" style="height: 350px;"></div>
+                <div class="skeleton" style="height: 350px;"></div>
+                <div class="skeleton" style="height: 350px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta" style="background: linear-gradient(135deg, var(--indigo), var(--peach)); padding: 4rem 0; color: white;">
+        <div class="container text-center">
+            <h2 style="color: white; margin-bottom: 1rem;">Ready to Share Your Truth?</h2>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9;">
+                Join thousands of creators who refuse to be silenced.
+            </p>
+            <a href="pages/auth.html" class="btn btn-viking btn-lg">
+                <i class="fas fa-user-shield"></i> Create Free Account
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="pages/archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="pages/blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="pages/messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="pages/donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
