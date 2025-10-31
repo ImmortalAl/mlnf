@@ -28,8 +28,6 @@
     "dotenv": "^16.3.1",
     "socket.io": "^4.6.2",
     "multer": "^1.4.5-lts.1",
-    "multer-gridfs-storage": "^5.0.2",
-    "gridfs-stream": "^1.1.1",
     "stripe": "^14.5.0",
     "paypal-rest-sdk": "^1.8.1",
     "axios": "^1.6.2",
