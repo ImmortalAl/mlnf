@@ -397,10 +397,45 @@
 
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="api-client.js"></script>
     <script src="auth-handler.js"></script>
     <script src="mock-data.js"></script>
     <script src="page-loader.js"></script>
     <script src="scripts.js"></script>
+    
+    <!-- Dashboard Real Data Loader -->
+    <script>
+        // Load real user data from API
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Fetch current user data from API
+                const response = await APIClient.auth.getProfile();
+                const user = response.user;
+                
+                // Update Runegold balance
+                const runegoldElements = document.querySelectorAll('.runegold-balance, .runegold-amount, #runegoldAmount');
+                runegoldElements.forEach(el => {
+                    el.textContent = user.runegoldBalance || 0;
+                });
+                
+                // Update user stats (videos, followers, etc.)
+                // These would come from additional API calls in production
+                
+                console.log('Dashboard loaded with real user data:', user);
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                // Fallback to localStorage data
+                const userData = localStorage.getItem('mlnf_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    const runegoldElements = document.querySelectorAll('.runegold-balance, .runegold-amount, #runegoldAmount');
+                    runegoldElements.forEach(el => {
+                        el.textContent = user.runegoldBalance || 0;
+                    });
+                }
+            }
+        });
+    </script>
     
     <!-- Dashboard specific styles -->
     <style>
