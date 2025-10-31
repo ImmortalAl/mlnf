@@ -6,8 +6,24 @@
 (function() {
     'use strict';
     
-    // API Configuration
-    const API_BASE_URL = 'http://localhost:5000/api';
+    // API Configuration - Auto-detect environment
+    const API_BASE_URL = (function() {
+        // Check if we're running on production (Netlify/Vercel)
+        const hostname = window.location.hostname;
+        
+        // If on Netlify or custom domain, use production backend
+        if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+            return 'https://mlnf-backend.onrender.com/api';
+        }
+        
+        // If on sandbox or localhost, use localhost backend
+        if (hostname.includes('sandbox.novita.ai') || hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:5000/api';
+        }
+        
+        // Default to production
+        return 'https://mlnf-backend.onrender.com/api';
+    })();
     
     // Helper function to get auth token
     function getAuthToken() {

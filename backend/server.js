@@ -19,12 +19,30 @@ const httpServer = createServer(app);
 // Socket.io setup with CORS
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      'https://mlnf.net',
-      'https://www.mlnf.net',
-      'https://mlnf.netlify.app',
-      'http://localhost:8080'
-    ],
+    origin: function(origin, callback) {
+      // Allow all origins for Socket.io in development
+      if (!origin || process.env.NODE_ENV === 'development') {
+        callback(null, true);
+        return;
+      }
+      
+      const allowedOrigins = [
+        'https://mlnf.net',
+        'https://www.mlnf.net',
+        'https://mlnf.netlify.app',
+        /https:\/\/.*\.sandbox\.novita\.ai$/,
+        /https:\/\/.*\.netlify\.app$/,
+        /https:\/\/.*\.vercel\.app$/
+      ];
+      
+      const isAllowed = allowedOrigins.some(allowed => {
+        if (typeof allowed === 'string') return origin === allowed;
+        if (allowed instanceof RegExp) return allowed.test(origin);
+        return false;
+      });
+      
+      callback(null, isAllowed);
+    },
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -66,11 +84,37 @@ const corsOptions = {
       'https://mlnf.net',
       'https://www.mlnf.net', 
       'https://mlnf.netlify.app',
-      'http://localhost:8080'
+      'http://localhost:8080',
+      'http://localhost:3000',
+      'http://localhost:5000',
+      // Allow sandbox URLs during development
+      /https:\/\/.*\.sandbox\.novita\.ai$/,
+      // Allow Netlify preview URLs
+      /https:\/\/.*\.netlify\.app$/,
+      // Allow Vercel preview URLs
+      /https:\/\/.*\.vercel\.app$/
     ];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    
+    // Check if origin matches any allowed pattern
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (typeof allowedOrigin === 'string') {
+        return origin === allowedOrigin;
+      } else if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+      return false;
+    });
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },

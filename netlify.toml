@@ -1,0 +1,27 @@
+[build]
+  base = "/"
+  publish = "frontend"
+  command = "echo 'No build needed - static site'"
+
+# Redirect API calls (not needed since we use absolute URLs, but good to have)
+[[redirects]]
+  from = "/api/*"
+  to = "https://mlnf-backend.onrender.com/api/:splat"
+  status = 200
+  force = false
+
+# SPA fallback (not needed for our multi-page app, but doesn't hurt)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["spa"]}
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
