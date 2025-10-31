@@ -179,14 +179,18 @@
             /**
              * Get comments for video
              * @param {string} videoId - Video ID
-             * @returns {Promise<Array>} Array of comments
+             * @returns {Promise<Object>} { comments: Array }
              */
             async getByVideoId(videoId) {
-                const response = await fetch(`${API_BASE_URL}/comments/${videoId}`, {
+                // Comments are embedded in video, fetch video to get comments
+                const response = await fetch(`${API_BASE_URL}/videos/${videoId}`, {
                     method: 'GET'
                 });
                 
-                return handleResponse(response);
+                const data = await handleResponse(response);
+                return { 
+                    comments: data.video?.comments || [] 
+                };
             },
             
             /**
@@ -199,13 +203,13 @@
                 const token = getAuthToken();
                 if (!token) throw new Error('Must be logged in to comment');
                 
-                const response = await fetch(`${API_BASE_URL}/comments`, {
+                const response = await fetch(`${API_BASE_URL}/videos/${videoId}/comment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ videoId, content })
+                    body: JSON.stringify({ content })
                 });
                 
                 return handleResponse(response);

@@ -343,117 +343,268 @@
     
     <!-- Video Page Scripts -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Voting functionality
-            let upvoted = false;
-            let downvoted = false;
-            let upvotes = 892;
-            let downvotes = 45;
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get video ID from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = urlParams.get('id') || 'demo-video-1';
             
-            document.getElementById('upvoteBtn').addEventListener('click', function() {
+            // State variables
+            let currentVideo = null;
+            let userVote = null; // 'upvote', 'downvote', or null
+            
+            // Load video data
+            async function loadVideoData() {
+                try {
+                    const response = await APIClient.videos.getById(videoId);
+                    currentVideo = response.video;
+                    
+                    // Update page with video data
+                    document.getElementById('videoTitle').textContent = currentVideo.title;
+                    document.getElementById('videoDescription').textContent = currentVideo.description;
+                    document.getElementById('videoViews').textContent = currentVideo.views.toLocaleString();
+                    
+                    // Upvotes and downvotes are arrays of ObjectIds - show length
+                    const upvoteCount = currentVideo.upvotes?.length || 0;
+                    const downvoteCount = currentVideo.downvotes?.length || 0;
+                    document.getElementById('upvoteCount').textContent = upvoteCount;
+                    document.getElementById('downvoteCount').textContent = downvoteCount;
+                    
+                    document.getElementById('uploaderName').textContent = currentVideo.uploader?.username || 'Unknown';
+                    
+                    // Check if user has voted
+                    if (MLNFAuth.isLoggedIn()) {
+                        const user = MLNFAuth.getUser();
+                        const userId = user._id || user.id;
+                        
+                        // Check if user's ID is in upvotes array
+                        if (currentVideo.upvotes?.some(id => id.toString() === userId.toString())) {
+                            userVote = 'upvote';
+                            document.getElementById('upvoteBtn').classList.remove('btn-outline');
+                            document.getElementById('upvoteBtn').classList.add('btn-primary');
+                        } 
+                        // Check if user's ID is in downvotes array
+                        else if (currentVideo.downvotes?.some(id => id.toString() === userId.toString())) {
+                            userVote = 'downvote';
+                            document.getElementById('downvoteBtn').classList.remove('btn-outline');
+                            document.getElementById('downvoteBtn').classList.add('btn-error');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading video:', error);
+                    // Keep placeholder data if API fails
+                }
+            }
+            
+            // Load comments
+            async function loadComments() {
+                try {
+                    const response = await APIClient.comments.getByVideoId(videoId);
+                    const comments = response.comments || [];
+                    
+                    const commentsList = document.getElementById('commentsList');
+                    
+                    if (comments.length === 0) {
+                        commentsList.innerHTML = `
+                            <div class="text-center py-5" style="color: var(--gray-500);">
+                                <i class="fas fa-comment-slash" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <p style="margin-top: 1rem;">No comments yet</p>
+                                <p style="font-size: 0.875rem;">Be the first to share your thoughts!</p>
+                            </div>
+                        `;
+                        document.getElementById('commentCount').textContent = '0';
+                        return;
+                    }
+                    
+                    commentsList.innerHTML = comments.map(comment => {
+                        // Comment.user is populated with user object
+                        const username = comment.user?.username || 'Unknown User';
+                        const initials = username.substring(0, 2).toUpperCase();
+                        const timeAgo = getTimeAgo(new Date(comment.createdAt));
+                        const likesCount = comment.likes?.length || 0;
+                        
+                        return `
+                            <div class="comment-item" style="padding: 1rem 0; border-bottom: 1px solid var(--gray-100);">
+                                <div class="flex gap-md">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+                                        ${initials}
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div class="flex gap-sm mb-1">
+                                            <strong>${username}</strong>
+                                            <span class="text-muted text-sm">${timeAgo}</span>
+                                        </div>
+                                        <p class="mb-2">${escapeHtml(comment.content)}</p>
+                                        <div class="flex gap-md text-sm">
+                                            <button class="btn-text"><i class="fas fa-thumbs-up"></i> ${likesCount}</button>
+                                            <button class="btn-text"><i class="fas fa-thumbs-down"></i></button>
+                                            <button class="btn-text"><i class="fas fa-reply"></i> Reply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    document.getElementById('commentCount').textContent = comments.length;
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                    // Keep placeholder comments if API fails
+                }
+            }
+            
+            // Helper function: Time ago
+            function getTimeAgo(date) {
+                const seconds = Math.floor((new Date() - date) / 1000);
+                
+                if (seconds < 60) return 'Just now';
+                if (seconds < 3600) return Math.floor(seconds / 60) + ' minutes ago';
+                if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+                if (seconds < 604800) return Math.floor(seconds / 86400) + ' days ago';
+                return Math.floor(seconds / 604800) + ' weeks ago';
+            }
+            
+            // Helper function: Escape HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Helper function: Show notification
+            function showNotification(message, type = 'success') {
+                const notif = document.createElement('div');
+                notif.className = `notification notification-${type}`;
+                notif.textContent = message;
+                notif.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem; background: var(--navy); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 10000;';
+                
+                if (type === 'success') notif.style.background = 'var(--success)';
+                if (type === 'error') notif.style.background = 'var(--error)';
+                
+                document.body.appendChild(notif);
+                setTimeout(() => notif.remove(), 3000);
+            }
+            
+            // Upvote button handler
+            document.getElementById('upvoteBtn').addEventListener('click', async function() {
                 if (!MLNFAuth.isLoggedIn()) {
-                    alert('Please login to vote');
+                    showNotification('Please login to vote', 'error');
                     return;
                 }
                 
-                if (upvoted) {
-                    upvotes--;
-                    upvoted = false;
-                    this.classList.remove('btn-primary');
-                    this.classList.add('btn-outline');
-                } else {
-                    if (downvoted) {
-                        downvotes--;
-                        downvoted = false;
-                        document.getElementById('downvoteBtn').classList.remove('btn-error');
-                        document.getElementById('downvoteBtn').classList.add('btn-outline');
+                try {
+                    // Backend toggles automatically - just send 'upvote'
+                    const response = await APIClient.videos.vote(videoId, 'upvote');
+                    
+                    // Update UI based on backend response
+                    document.getElementById('upvoteCount').textContent = response.upvotes;
+                    document.getElementById('downvoteCount').textContent = response.downvotes;
+                    
+                    // Update button states based on action
+                    if (response.action === 'upvoted') {
+                        userVote = 'upvote';
+                        this.classList.remove('btn-outline');
+                        this.classList.add('btn-primary');
+                        
+                        // Remove downvote styling
+                        const downvoteBtn = document.getElementById('downvoteBtn');
+                        downvoteBtn.classList.remove('btn-error');
+                        downvoteBtn.classList.add('btn-outline');
+                        
+                        showNotification('Upvoted!', 'success');
+                    } else if (response.action === 'removed_upvote') {
+                        userVote = null;
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-outline');
+                        
+                        showNotification('Vote removed', 'success');
                     }
-                    upvotes++;
-                    upvoted = true;
-                    this.classList.remove('btn-outline');
-                    this.classList.add('btn-primary');
+                } catch (error) {
+                    console.error('Error voting:', error);
+                    showNotification(error.message || 'Failed to vote', 'error');
                 }
-                document.getElementById('upvoteCount').textContent = upvotes;
-                document.getElementById('downvoteCount').textContent = downvotes;
             });
             
-            document.getElementById('downvoteBtn').addEventListener('click', function() {
+            // Downvote button handler
+            document.getElementById('downvoteBtn').addEventListener('click', async function() {
                 if (!MLNFAuth.isLoggedIn()) {
-                    alert('Please login to vote');
+                    showNotification('Please login to vote', 'error');
                     return;
                 }
                 
-                if (downvoted) {
-                    downvotes--;
-                    downvoted = false;
-                    this.classList.remove('btn-error');
-                    this.classList.add('btn-outline');
-                } else {
-                    if (upvoted) {
-                        upvotes--;
-                        upvoted = false;
-                        document.getElementById('upvoteBtn').classList.remove('btn-primary');
-                        document.getElementById('upvoteBtn').classList.add('btn-outline');
+                try {
+                    // Backend toggles automatically - just send 'downvote'
+                    const response = await APIClient.videos.vote(videoId, 'downvote');
+                    
+                    // Update UI based on backend response
+                    document.getElementById('upvoteCount').textContent = response.upvotes;
+                    document.getElementById('downvoteCount').textContent = response.downvotes;
+                    
+                    // Update button states based on action
+                    if (response.action === 'downvoted') {
+                        userVote = 'downvote';
+                        this.classList.remove('btn-outline');
+                        this.classList.add('btn-error');
+                        
+                        // Remove upvote styling
+                        const upvoteBtn = document.getElementById('upvoteBtn');
+                        upvoteBtn.classList.remove('btn-primary');
+                        upvoteBtn.classList.add('btn-outline');
+                        
+                        showNotification('Downvoted', 'success');
+                    } else if (response.action === 'removed_downvote') {
+                        userVote = null;
+                        this.classList.remove('btn-error');
+                        this.classList.add('btn-outline');
+                        
+                        showNotification('Vote removed', 'success');
                     }
-                    downvotes++;
-                    downvoted = true;
-                    this.classList.remove('btn-outline');
-                    this.classList.add('btn-error');
+                } catch (error) {
+                    console.error('Error voting:', error);
+                    showNotification(error.message || 'Failed to vote', 'error');
                 }
-                document.getElementById('upvoteCount').textContent = upvotes;
-                document.getElementById('downvoteCount').textContent = downvotes;
             });
             
             // Comment submission
-            document.getElementById('submitCommentBtn').addEventListener('click', function() {
+            document.getElementById('submitCommentBtn').addEventListener('click', async function() {
                 if (!MLNFAuth.isLoggedIn()) {
-                    alert('Please login to comment');
+                    showNotification('Please login to comment', 'error');
                     window.location.href = 'auth.html';
                     return;
                 }
                 
                 const commentText = document.getElementById('commentText').value.trim();
                 if (!commentText) {
-                    alert('Please enter a comment');
+                    showNotification('Please enter a comment', 'error');
                     return;
                 }
                 
-                // Add comment to list (in production this would save to backend)
-                const user = MLNFAuth.getUser();
-                const commentsList = document.getElementById('commentsList');
-                
-                const newComment = document.createElement('div');
-                newComment.className = 'comment-item';
-                newComment.style.cssText = 'padding: 1rem 0; border-bottom: 1px solid var(--gray-100);';
-                newComment.innerHTML = `
-                    <div class="flex gap-md">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
-                            ${user.username.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div style="flex: 1;">
-                            <div class="flex gap-sm mb-1">
-                                <strong>${user.username}</strong>
-                                <span class="text-muted text-sm">Just now</span>
-                            </div>
-                            <p class="mb-2">${commentText}</p>
-                            <div class="flex gap-md text-sm">
-                                <button class="btn-text"><i class="fas fa-thumbs-up"></i> 0</button>
-                                <button class="btn-text"><i class="fas fa-thumbs-down"></i></button>
-                                <button class="btn-text"><i class="fas fa-reply"></i> Reply</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                commentsList.insertBefore(newComment, commentsList.firstChild);
-                document.getElementById('commentText').value = '';
-                
-                // Update comment count
-                const commentCount = document.getElementById('commentCount');
-                commentCount.textContent = parseInt(commentCount.textContent) + 1;
-                
-                alert('Comment posted successfully!');
+                try {
+                    // Disable button during submission
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+                    
+                    const response = await APIClient.comments.create(videoId, commentText);
+                    
+                    // Clear textarea
+                    document.getElementById('commentText').value = '';
+                    
+                    // Reload comments to show new one
+                    await loadComments();
+                    
+                    showNotification('Comment posted successfully!', 'success');
+                } catch (error) {
+                    console.error('Error posting comment:', error);
+                    showNotification(error.message || 'Failed to post comment', 'error');
+                } finally {
+                    // Re-enable button
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-comment"></i> Post Comment';
+                }
             });
+            
+            // Initial load
+            await loadVideoData();
+            await loadComments();
         });
     </script>
 </body>
