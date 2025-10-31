@@ -92,7 +92,7 @@ const PageLoader = {
     
     // Load blog page
     async loadBlog() {
-        const blogContainer = document.getElementById('blogPosts');
+        const blogContainer = document.getElementById('blogGrid');
         if (!blogContainer) return;
         
         try {
