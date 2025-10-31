@@ -119,8 +119,8 @@
                         <form>
                             <div class="grid grid-2 gap-md">
                                 <div class="form-group">
-                                    <label for="firstName">First Name</label>
-                                    <input type="text" id="firstName" class="form-control" placeholder="Your first name" required>
+                                    <label for="firstName">First Name (Optional)</label>
+                                    <input type="text" id="firstName" class="form-control" placeholder="Your first name">
                                 </div>
                                 
                                 <div class="form-group">
@@ -420,8 +420,8 @@
                     const confirmPassword = document.getElementById('confirmPassword').value;
                     
                     // Validation
-                    if (!firstName || !username || !password || !confirmPassword) {
-                        showNotification('Please fill in all required fields', 'error');
+                    if (!username || !password || !confirmPassword) {
+                        showNotification('Please fill in username and password', 'error');
                         return;
                     }
                     
