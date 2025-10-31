@@ -202,6 +202,11 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
 }
 
+/* News Layout Grid - Desktop: 2/3 content + 1/3 sidebar, Mobile: full width */
+.news-layout-grid {
+  grid-template-columns: 2fr 1fr;
+}
+
 /* Flexbox Utilities */
 .flex {
   display: flex;
@@ -1186,6 +1191,15 @@ a:hover {
     grid-template-columns: repeat(2, 1fr);
   }
   
+  /* News layout: single column on tablet */
+  .news-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .news-layout-grid > aside {
+    display: none;
+  }
+  
   /* Optimize cards for tablet */
   .card {
     margin-bottom: var(--space-md);
@@ -1231,6 +1245,16 @@ a:hover {
   .grid-4 {
     grid-template-columns: 1fr;
     gap: var(--space-md);
+  }
+  
+  /* News layout: single column on mobile */
+  .news-layout-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Hide sidebar on mobile news page */
+  .news-layout-grid > aside {
+    display: none;
   }
   
   /* Stack flex items */
