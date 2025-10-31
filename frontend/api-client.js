@@ -230,6 +230,160 @@
             }
         },
         
+        // Blog Endpoints
+        blog: {
+            /**
+             * Get all blog posts
+             * @param {Object} params - Query parameters (category, featured, page, limit)
+             * @returns {Promise<Object>} { posts: Array, pagination: Object }
+             */
+            async getAll(params = {}) {
+                const queryString = new URLSearchParams(params).toString();
+                const response = await fetch(`${API_BASE_URL}/blog?${queryString}`, {
+                    method: 'GET'
+                });
+                
+                return handleResponse(response);
+            },
+            
+            /**
+             * Get single blog post
+             * @param {string} id - Blog post ID
+             * @returns {Promise<Object>} { post: Object }
+             */
+            async getById(id) {
+                const response = await fetch(`${API_BASE_URL}/blog/${id}`, {
+                    method: 'GET'
+                });
+                
+                return handleResponse(response);
+            },
+            
+            /**
+             * Create blog post
+             * @param {Object} postData - Post data
+             * @returns {Promise<Object>} Created post
+             */
+            async create(postData) {
+                const token = getAuthToken();
+                if (!token) throw new Error('Must be logged in to create post');
+                
+                const response = await fetch(`${API_BASE_URL}/blog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(postData)
+                });
+                
+                return handleResponse(response);
+            }
+        },
+        
+        // News Endpoints
+        news: {
+            /**
+             * Get all news articles
+             * @param {Object} params - Query parameters (category, breaking, trending, page, limit)
+             * @returns {Promise<Object>} { articles: Array, pagination: Object }
+             */
+            async getAll(params = {}) {
+                const queryString = new URLSearchParams(params).toString();
+                const response = await fetch(`${API_BASE_URL}/news?${queryString}`, {
+                    method: 'GET'
+                });
+                
+                return handleResponse(response);
+            },
+            
+            /**
+             * Get single news article
+             * @param {string} id - Article ID
+             * @returns {Promise<Object>} { article: Object }
+             */
+            async getById(id) {
+                const response = await fetch(`${API_BASE_URL}/news/${id}`, {
+                    method: 'GET'
+                });
+                
+                return handleResponse(response);
+            }
+        },
+        
+        // Forum Endpoints
+        forum: {
+            /**
+             * Get all forum topics
+             * @param {Object} params - Query parameters (category, pinned, page, limit)
+             * @returns {Promise<Object>} { topics: Array, pagination: Object }
+             */
+            async getAll(params = {}) {
+                const queryString = new URLSearchParams(params).toString();
+                const response = await fetch(`${API_BASE_URL}/forum?${queryString}`, {
+                    method: 'GET'
+                });
+                
+                return handleResponse(response);
+            },
+            
+            /**
+             * Get single forum topic
+             * @param {string} id - Topic ID
+             * @returns {Promise<Object>} { topic: Object }
+             */
+            async getById(id) {
+                const response = await fetch(`${API_BASE_URL}/forum/${id}`, {
+                    method: 'GET'
+                });
+                
+                return handleResponse(response);
+            },
+            
+            /**
+             * Create forum topic
+             * @param {Object} topicData - Topic data
+             * @returns {Promise<Object>} Created topic
+             */
+            async create(topicData) {
+                const token = getAuthToken();
+                if (!token) throw new Error('Must be logged in to create topic');
+                
+                const response = await fetch(`${API_BASE_URL}/forum`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(topicData)
+                });
+                
+                return handleResponse(response);
+            },
+            
+            /**
+             * Add reply to forum topic
+             * @param {string} topicId - Topic ID
+             * @param {string} content - Reply content
+             * @returns {Promise<Object>} Success message
+             */
+            async reply(topicId, content) {
+                const token = getAuthToken();
+                if (!token) throw new Error('Must be logged in to reply');
+                
+                const response = await fetch(`${API_BASE_URL}/forum/${topicId}/reply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+                
+                return handleResponse(response);
+            }
+        },
+        
         // Health check
         async checkHealth() {
             const response = await fetch(`${API_BASE_URL}/health`, {

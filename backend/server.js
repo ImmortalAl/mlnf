@@ -152,12 +152,18 @@ const videoRoutes = require('./routes/videos');
 const runegoldRoutes = require('./routes/runegold');
 const donationRoutes = require('./routes/donations');
 const blockonomicsRoutes = require('./routes/blockonomics');
+const blogRoutes = require('./routes/blog');
+const newsRoutes = require('./routes/news');
+const forumRoutes = require('./routes/forum');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/runegold', runegoldRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/blockonomics', blockonomicsRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/forum', forumRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

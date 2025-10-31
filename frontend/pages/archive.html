@@ -259,9 +259,138 @@
 
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../api-client.js"></script>
     <script src="../auth-handler.js"></script>
     <script src="../mock-data.js"></script>
     <script src="../page-loader.js"></script>
     <script src="../scripts.js"></script>
+    
+    <!-- Archive Page Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentPage = 1;
+            let totalPages = 1;
+            
+            // Load videos with filters
+            async function loadVideos() {
+                const videoGrid = document.getElementById('videoGrid');
+                const searchQuery = document.getElementById('searchInput').value.trim();
+                const category = document.getElementById('categoryFilter').value;
+                const sortBy = document.getElementById('sortFilter').value;
+                
+                try {
+                    videoGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                            <p style="margin-top: 1rem;">Loading videos...</p>
+                        </div>
+                    `;
+                    
+                    // Build query parameters
+                    const params = new URLSearchParams({
+                        page: currentPage,
+                        limit: 12
+                    });
+                    
+                    if (searchQuery) params.append('search', searchQuery);
+                    if (category) params.append('category', category);
+                    
+                    // Map sort options to backend fields
+                    const sortMap = {
+                        'latest': { sortBy: 'createdAt', order: 'desc' },
+                        'popular': { sortBy: 'views', order: 'desc' },
+                        'boosted': { boosted: 'true' },
+                        'discussed': { sortBy: 'comments', order: 'desc' }
+                    };
+                    
+                    const sortConfig = sortMap[sortBy] || sortMap['latest'];
+                    if (sortConfig.sortBy) params.append('sortBy', sortConfig.sortBy);
+                    if (sortConfig.order) params.append('order', sortConfig.order);
+                    if (sortConfig.boosted) params.append('boosted', sortConfig.boosted);
+                    
+                    // Fetch videos
+                    const apiUrl = `${window.location.protocol}//${window.location.hostname}`.includes('netlify') || window.location.hostname.includes('mlnf.net') || window.location.hostname.includes('vercel')
+                        ? 'https://much-love-no-fear.onrender.com/api'
+                        : 'http://localhost:5000/api';
+                    
+                    const response = await fetch(`${apiUrl}/videos?${params.toString()}`);
+                    const data = await response.json();
+                    
+                    const videos = data.videos || [];
+                    totalPages = data.pagination?.pages || 1;
+                    
+                    // Update pagination
+                    document.getElementById('currentPage').textContent = currentPage;
+                    document.getElementById('totalPages').textContent = totalPages;
+                    document.getElementById('prevPage').disabled = currentPage <= 1;
+                    document.getElementById('nextPage').disabled = currentPage >= totalPages;
+                    
+                    // Render videos
+                    if (videos.length > 0) {
+                        videoGrid.innerHTML = videos.map(video => PageLoader.renderVideoCard(video)).join('');
+                    } else {
+                        videoGrid.innerHTML = PageLoader.renderEmptyState(
+                            'No videos found',
+                            'Try adjusting your filters or be the first to upload!',
+                            '<a href="upload.html" class="btn btn-viking mt-3"><i class="fas fa-upload"></i> Upload Video</a>'
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error loading videos:', error);
+                    videoGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-center; padding: 3rem;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--error);"></i>
+                            <h3 style="margin-top: 1rem;">Failed to load videos</h3>
+                            <p style="color: var(--gray-600);">Please check your connection and try again.</p>
+                            <button class="btn btn-primary mt-3" onclick="location.reload()">
+                                <i class="fas fa-redo"></i> Retry
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Search input handler (debounced)
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    loadVideos();
+                }, 500);
+            });
+            
+            // Filter change handlers
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                currentPage = 1;
+                loadVideos();
+            });
+            
+            document.getElementById('sortFilter').addEventListener('change', function() {
+                currentPage = 1;
+                loadVideos();
+            });
+            
+            // Pagination handlers
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadVideos();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+            
+            document.getElementById('nextPage').addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadVideos();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+            
+            // Initial load
+            loadVideos();
+        });
+    </script>
 </body>
 </html>
