@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Much Love, No Fear - Video Sanctuary</title>
+    <meta name="description" content="A Viking-themed video sanctuary with Runegold economy">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <img src="assets/logo.svg" alt="MLNF" class="logo-image">
+                    <div class="logo-text">
+                        <h1 class="logo-title">Much Love, No Fear</h1>
+                        <p class="logo-tagline">Viking Video Sanctuary</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="nav-link active">Home</a></li>
+                        <li><a href="archive.html" class="nav-link">Love Vault</a></li>
+                        <li><a href="#news" class="nav-link">News</a></li>
+                        <li><a href="#blog" class="nav-link">Blog</a></li>
+                        <li><a href="#shop" class="nav-link">Merch</a></li>
+                    </ul>
+                </nav>
+
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search videos, users...">
+                        <button class="search-btn">🔍</button>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="notifications-container">
+                        <button class="notifications-btn">
+                            🔔
+                            <span class="notification-badge" style="display: none;">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Auth Buttons -->
+                    <div class="auth-buttons" id="authButtons">
+                        <button class="btn btn-secondary" onclick="showLoginModal()">Login</button>
+                        <button class="btn btn-primary" onclick="showRegisterModal()">Sign Up</button>
+                    </div>
+
+                    <!-- User Menu (Hidden by default) -->
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <div class="runegold-balance">
+                            <span class="runegold-icon">⚡</span>
+                            <span class="runegold-amount">0</span>
+                        </div>
+                        <div class="user-avatar">
+                            <img src="assets/default-avatar.png" alt="User" class="avatar-img">
+                        </div>
+                        <button class="btn btn-logout" onclick="logout()">Logout</button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Welcome to the Viking Sanctuary</h2>
+                <p class="hero-subtitle">Share videos, earn Runegold, build community</p>
+                <div class="hero-actions">
+                    <button class="btn btn-large btn-primary" onclick="showUploadModal()">Upload Video</button>
+                    <a href="archive.html" class="btn btn-large btn-secondary">Explore Vault</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <!-- Online Users -->
+                    <div class="sidebar-section online-users">
+                        <h3 class="sidebar-title">Online Vikings</h3>
+                        <div class="online-users-list" id="onlineUsersList">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Runegold Info -->
+                    <div class="sidebar-section runegold-info">
+                        <h3 class="sidebar-title">Runegold Economy</h3>
+                        <div class="runegold-prices">
+                            <div class="price-item">
+                                <span class="price-label">Boost Video:</span>
+                                <span class="price-value">50 ⚡</span>
+                            </div>
+                            <div class="price-item">
+                                <span class="price-label">Highlight Comment:</span>
+                                <span class="price-value">20 ⚡</span>
+                            </div>
+                            <div class="price-item">
+                                <span class="price-label">Custom Badge:</span>
+                                <span class="price-value">100 ⚡</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-full btn-primary" onclick="showRunegoldModal()">Buy Runegold</button>
+                    </div>
+
+                    <!-- Breadcrumbs -->
+                    <div class="sidebar-section breadcrumbs">
+                        <h3 class="sidebar-title">Rune-Path Tracker</h3>
+                        <div class="breadcrumb-chain" id="breadcrumbChain">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        <button class="btn btn-small btn-secondary" onclick="clearBreadcrumbs()">Clear Path</button>
+                    </div>
+                </aside>
+
+                <!-- Main Feed -->
+                <div class="main-feed">
+                    <!-- Boosted Carousel -->
+                    <section class="boosted-carousel">
+                        <h3 class="section-title">No Fear Boost</h3>
+                        <div class="carousel-container" id="boostedCarousel">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- News Carousel -->
+                    <section class="news-carousel">
+                        <h3 class="section-title">Latest News</h3>
+                        <div class="carousel-container" id="newsCarousel">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- Video Grid -->
+                    <section class="video-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Recent Videos</h3>
+                            <div class="filter-controls">
+                                <select class="filter-select" id="sortSelect">
+                                    <option value="recent">Most Recent</option>
+                                    <option value="popular">Most Popular</option>
+                                    <option value="trending">Trending</option>
+                                </select>
+                                <select class="filter-select" id="categorySelect">
+                                    <option value="">All Categories</option>
+                                    <option value="general">General</option>
+                                    <option value="tutorial">Tutorial</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="music">Music</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="video-grid" id="videoGrid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        <button class="btn btn-full btn-secondary" onclick="loadMoreVideos()">Load More</button>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Much Love, No Fear</h4>
+                    <p>A sanctuary for authentic connection</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#donate">Donate</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Donate</h4>
+                    <div class="donation-methods">
+                        <button class="donation-btn" data-method="stripe">💳 Card</button>
+                        <button class="donation-btn" data-method="paypal">💰 PayPal</button>
+                        <button class="donation-btn" data-method="bitcoin">₿ Bitcoin</button>
+                        <button class="donation-btn" data-method="ethereum">Ξ Ethereum</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+            <h2 class="modal-title">Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username or Email</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-full btn-primary">Login</button>
+                <p class="form-footer">
+                    <a href="#" onclick="showRecoveryModal()">Forgot password?</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
+            <h2 class="modal-title">Sign Up</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" pattern="[a-zA-Z0-9_-]{3,30}" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label>Secret Question (Optional)</label>
+                    <input type="text" name="secretQuestion" placeholder="e.g., What's your pet's name?">
+                </div>
+                <div class="form-group">
+                    <label>Secret Answer (Optional)</label>
+                    <input type="text" name="secretAnswer">
+                </div>
+                <button type="submit" class="btn btn-full btn-primary">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- P2P Message Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content message-modal">
+            <span class="modal-close" onclick="closeModal('messageModal')">&times;</span>
+            <h3 class="modal-title">Message <span id="messageRecipient"></span></h3>
+            <div class="message-history" id="messageHistory">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="message-input-container">
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button class="emoji-btn" onclick="showEmojiPicker()">😊</button>
+                <button class="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Vault - Much Love, No Fear</title>
+    <meta name="description" content="Upload and explore videos in the Viking video sanctuary">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+    <!-- Header (Same as index.html) -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="assets/logo.svg" alt="MLNF" class="logo-image">
+                    <div class="logo-text">
+                        <h1 class="logo-title">Much Love, No Fear</h1>
+                        <p class="logo-tagline">Viking Video Sanctuary</p>
+                    </div>
+                </div>
+
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li><a href="archive.html" class="nav-link active">Love Vault</a></li>
+                        <li><a href="#news" class="nav-link">News</a></li>
+                        <li><a href="#blog" class="nav-link">Blog</a></li>
+                        <li><a href="#shop" class="nav-link">Merch</a></li>
+                    </ul>
+                </nav>
+
+                <div class="user-actions">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search videos...">
+                        <button class="search-btn">🔍</button>
+                    </div>
+
+                    <div class="notifications-container">
+                        <button class="notifications-btn">
+                            🔔
+                            <span class="notification-badge" style="display: none;">0</span>
+                        </button>
+                    </div>
+
+                    <div class="auth-buttons" id="authButtons">
+                        <button class="btn btn-secondary" onclick="showLoginModal()">Login</button>
+                        <button class="btn btn-primary" onclick="showRegisterModal()">Sign Up</button>
+                    </div>
+
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <div class="runegold-balance">
+                            <span class="runegold-icon">⚡</span>
+                            <span class="runegold-amount">0</span>
+                        </div>
+                        <div class="user-avatar">
+                            <img src="assets/default-avatar.png" alt="User" class="avatar-img">
+                        </div>
+                        <button class="btn btn-logout" onclick="logout()">Logout</button>
+                    </div>
+
+                    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                </div>
+
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="archive-main">
+        <div class="container">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <h2 class="section-title">Upload to the Vault</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-dropzone" id="dropzone">
+                        <div class="dropzone-content">
+                            <span class="dropzone-icon">📹</span>
+                            <h3>Drag & Drop Video Here</h3>
+                            <p>or</p>
+                            <button class="btn btn-primary" onclick="triggerFileInput()">Choose File</button>
+                            <input type="file" id="fileInput" accept="video/*" hidden>
+                        </div>
+                    </div>
+
+                    <!-- Upload Form (Hidden until file selected) -->
+                    <div class="upload-form" id="uploadForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="videoTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="videoDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Tags (comma-separated)</label>
+                            <input type="text" id="videoTags" placeholder="viking, tutorial, gaming">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="videoCategory">
+                                <option value="general">General</option>
+                                <option value="tutorial">Tutorial</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="music">Music</option>
+                                <option value="gaming">Gaming</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="isExclusive">
+                                Make this exclusive content (200 ⚡ to access)
+                            </label>
+                        </div>
+                        <div class="upload-actions">
+                            <button class="btn btn-secondary" onclick="cancelUpload()">Cancel</button>
+                            <button class="btn btn-primary" onclick="uploadVideo()">Upload</button>
+                        </div>
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <span class="progress-text" id="progressText">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Player Section -->
+            <section class="player-section" id="playerSection" style="display: none;">
+                <div class="video-player-container">
+                    <video id="videoPlayer" class="video-player" controls>
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <!-- Player Controls -->
+                    <div class="player-controls">
+                        <div class="playback-speed">
+                            <label>Speed:</label>
+                            <select id="playbackSpeed" onchange="changePlaybackSpeed()">
+                                <option value="0.5">0.5x</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-small" onclick="toggleSubtitles()">CC</button>
+                    </div>
+
+                    <!-- Video Info -->
+                    <div class="video-info">
+                        <h2 class="video-title" id="currentVideoTitle"></h2>
+                        <div class="video-meta">
+                            <span class="video-author" id="videoAuthor"></span>
+                            <span class="video-views" id="videoViews"></span>
+                            <span class="video-date" id="videoDate"></span>
+                        </div>
+                        <div class="video-description" id="videoDescription"></div>
+
+                        <!-- Video Actions -->
+                        <div class="video-actions">
+                            <div class="vote-buttons">
+                                <button class="vote-btn upvote" onclick="voteVideo('upvote')">
+                                    👍 <span id="upvoteCount">0</span>
+                                </button>
+                                <button class="vote-btn downvote" onclick="voteVideo('downvote')">
+                                    👎 <span id="downvoteCount">0</span>
+                                </button>
+                            </div>
+                            <button class="btn btn-primary boost-btn" onclick="boostVideo()">
+                                ⚡ Boost (50)
+                            </button>
+                            <button class="btn btn-secondary" onclick="reportVideo()">
+                                🚩 Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section">
+                        <h3>Comments</h3>
+
+                        <!-- Comment Form -->
+                        <div class="comment-form">
+                            <textarea id="commentInput" placeholder="Add a comment..."></textarea>
+                            <div class="comment-actions">
+                                <button class="btn btn-small" onclick="addTimestamp()">Add Timestamp</button>
+                                <button class="btn btn-primary" onclick="postComment()">Post</button>
+                            </div>
+                        </div>
+
+                        <!-- Comments List -->
+                        <div class="comments-list" id="commentsList">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Grid -->
+            <section class="video-grid-section">
+                <div class="section-header">
+                    <h2 class="section-title">All Videos</h2>
+                    <div class="filter-controls">
+                        <input type="text" id="tagFilter" placeholder="Filter by tag">
+                        <select id="sortSelect">
+                            <option value="recent">Most Recent</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="trending">Trending</option>
+                            <option value="boosted">Boosted</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="video-grid" id="videoGrid">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <button class="btn btn-full btn-secondary" onclick="loadMoreVideos()">Load More</button>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer (Same as index.html) -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Much Love, No Fear</h4>
+                    <p>A sanctuary for authentic connection</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#donate">Donate</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Donate</h4>
+                    <div class="donation-methods">
+                        <button class="donation-btn" data-method="stripe">💳 Card</button>
+                        <button class="donation-btn" data-method="paypal">💰 PayPal</button>
+                        <button class="donation-btn" data-method="bitcoin">₿ Bitcoin</button>
+                        <button class="donation-btn" data-method="ethereum">Ξ Ethereum</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals (Reuse from index.html) -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+            <h2 class="modal-title">Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username or Email</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-full btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
