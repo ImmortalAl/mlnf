@@ -35,7 +35,9 @@
         const data = await response.json();
         
         if (!response.ok) {
-            throw new Error(data.message || 'API request failed');
+            // Backend can send either 'error' or 'message' field
+            const errorMessage = data.error || data.message || 'API request failed';
+            throw new Error(errorMessage);
         }
         
         return data;

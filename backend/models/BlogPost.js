@@ -28,7 +28,7 @@ const blogPostSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['Freedom', 'Health', 'Finance', 'Spirituality', 'Technology', 'General'],
+    enum: ['Freedom', 'Health', 'Finance', 'Spirituality', 'Technology', 'Education', 'General'],
     default: 'General'
   },
   tags: [{

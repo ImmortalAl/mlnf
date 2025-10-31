@@ -526,7 +526,16 @@
                 
             } catch (error) {
                 console.error('Error creating topic:', error);
-                alert('❌ Failed to create topic: ' + (error.message || 'Please try again'));
+                let errorMsg = error.message || 'Please try again';
+                
+                // Add helpful hints based on error type
+                if (errorMsg.includes('authenticate')) {
+                    errorMsg += '\n\nPlease log out and log back in, your session may have expired.';
+                } else if (errorMsg.includes('validation') || errorMsg.includes('invalid')) {
+                    errorMsg += '\n\nPlease check all required fields are filled correctly.';
+                }
+                
+                alert('❌ Failed to create topic:\n\n' + errorMsg);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;

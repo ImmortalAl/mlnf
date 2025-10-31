@@ -69,7 +69,7 @@ router.post('/', authMiddleware, [
   body('title').notEmpty().isLength({ max: 200 }),
   body('content').notEmpty(),
   body('excerpt').optional().isLength({ max: 500 }),
-  body('category').optional().isIn(['Freedom', 'Health', 'Finance', 'Spirituality', 'Technology', 'General'])
+  body('category').optional().isIn(['Freedom', 'Health', 'Finance', 'Spirituality', 'Technology', 'Education', 'General'])
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
