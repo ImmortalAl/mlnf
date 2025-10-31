@@ -362,44 +362,31 @@
                         handleLoginSuccess(data);
                         
                     } catch (apiError) {
-                        console.error('Login error:', apiError);
+                        console.error('API login error:', apiError);
                         // Fall back to local authentication
-                        let success = false;
+                        console.log('Backend not available, using local authentication');
                         
-                        try {
-                            console.log('Backend not available, using local authentication');
-                        } catch (fallbackError) {
-                            console.error('Fallback error:', fallbackError);
-                        }
+                        // Local authentication
+                        const users = JSON.parse(localStorage.getItem('mlnf_users') || '{}');
+                        const user = users[username.toLowerCase()];
                         
-                        if (!success) {
-                            // Local authentication
-                            const users = JSON.parse(localStorage.getItem('mlnf_users') || '{}');
-                            const user = users[username.toLowerCase()];
-                            
-                            if (user && user.password === password) {
-                                const loginData = {
-                                    token: 'local_' + Date.now(),
-                                    user: {
-                                        _id: user.id,
-                                        username: user.username,
-                                        email: user.email,
-                                        runegoldBalance: user.runegoldBalance || 100,
-                                        createdAt: user.createdAt
-                                    }
-                                };
-                                handleLoginSuccess(loginData);
-                            } else {
-                                showNotification('Invalid username or password', 'error');
-                                submitBtn.innerHTML = originalText;
-                                submitBtn.disabled = false;
-                            }
+                        if (user && user.password === password) {
+                            const loginData = {
+                                token: 'local_' + Date.now(),
+                                user: {
+                                    _id: user.id,
+                                    username: user.username,
+                                    email: user.email,
+                                    runegoldBalance: user.runegoldBalance || 100,
+                                    createdAt: user.createdAt
+                                }
+                            };
+                            handleLoginSuccess(loginData);
+                        } else {
+                            showNotification('Invalid username or password', 'error');
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
                         }
-                    } catch (error) {
-                        console.error('Login error:', error);
-                        showNotification('Login failed. Please try again.', 'error');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
                     }
                 });
             }

@@ -13,7 +13,7 @@
         
         // If on Netlify or custom domain, use production backend
         if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
-            return 'https://mlnf-backend.onrender.com/api';
+            return 'https://much-love-no-fear.onrender.com/api';
         }
         
         // If on sandbox or localhost, use localhost backend
@@ -22,7 +22,7 @@
         }
         
         // Default to production
-        return 'https://mlnf-backend.onrender.com/api';
+        return 'https://much-love-no-fear.onrender.com/api';
     })();
     
     // Helper function to get auth token

@@ -6,7 +6,7 @@
 # Redirect API calls to backend (proxy for CORS)
 [[redirects]]
   from = "/api/*"
-  to = "https://mlnf-backend.onrender.com/api/:splat"
+  to = "https://much-love-no-fear.onrender.com/api/:splat"
   status = 200
   force = false
 
