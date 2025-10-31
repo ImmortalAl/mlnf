@@ -40,6 +40,11 @@
         
         if (dashboardLink) {
             dashboardLink.classList.remove('hidden');
+            // Make sure dashboard link points to correct location
+            const isInSubdir = window.location.pathname.includes('/pages/');
+            if (isInSubdir && !dashboardLink.href.includes('..')) {
+                dashboardLink.href = '../dashboard.html';
+            }
         }
         
         if (notificationBell) {
@@ -67,7 +72,9 @@
         
         if (authLink) {
             authLink.textContent = 'Login';
-            authLink.href = 'pages/auth.html';
+            // Detect if we're in a subdirectory
+            const isInSubdir = window.location.pathname.includes('/pages/');
+            authLink.href = isInSubdir ? 'auth.html' : 'pages/auth.html';
             authLink.onclick = null;
         }
         
@@ -122,7 +129,8 @@
         
         // Redirect to home
         setTimeout(() => {
-            window.location.href = '/index.html';
+            const isInSubdir = window.location.pathname.includes('/pages/');
+            window.location.href = isInSubdir ? '../index.html' : 'index.html';
         }, 500);
     }
     
@@ -169,6 +177,7 @@
         if (protectedPages.includes(currentPage) && !token) {
             showNotification('Please login to access this page', 'error');
             setTimeout(() => {
+                // Dashboard is in root, so always use pages/auth.html
                 window.location.href = 'pages/auth.html';
             }, 1000);
         }

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Watch Video - Much Love, No Fear">
+    <title>Video Player - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link active">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Video Player Section -->
+    <section style="padding: 2rem 0; background: var(--gray-900);">
+        <div class="container">
+            <!-- Video Player -->
+            <div class="video-player-container" style="position: relative; padding-bottom: 56.25%; background: #000; border-radius: var(--radius-lg); overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-play-circle" style="font-size: 5rem; opacity: 0.7; margin-bottom: 1rem;"></i>
+                        <p style="font-size: 1.25rem;">Video Player</p>
+                        <p style="opacity: 0.7;">Backend connection required for streaming</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Info -->
+    <section style="padding: 2rem 0;">
+        <div class="container">
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <!-- Main Content -->
+                <div>
+                    <h1 id="videoTitle">The Great Awakening: Truth Revealed</h1>
+                    
+                    <div class="flex flex-between mb-3" style="padding: 1rem 0; border-bottom: 1px solid var(--gray-200);">
+                        <div class="flex gap-md">
+                            <span><i class="fas fa-eye"></i> <span id="videoViews">15,234</span> views</span>
+                            <span><i class="fas fa-calendar"></i> 2 days ago</span>
+                        </div>
+                        
+                        <div class="flex gap-md">
+                            <!-- Vote Buttons -->
+                            <button class="btn btn-outline btn-sm" id="upvoteBtn">
+                                <i class="fas fa-thumbs-up"></i> <span id="upvoteCount">892</span>
+                            </button>
+                            <button class="btn btn-outline btn-sm" id="downvoteBtn">
+                                <i class="fas fa-thumbs-down"></i> <span id="downvoteCount">45</span>
+                            </button>
+                            
+                            <!-- Share Button -->
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                            
+                            <!-- Boost Button -->
+                            <button class="btn btn-viking btn-sm">
+                                <i class="fas fa-rocket"></i> Boost (50 RG)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Uploader Info -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="flex flex-between">
+                                <div class="flex gap-md">
+                                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                        TS
+                                    </div>
+                                    <div>
+                                        <h4 id="uploaderName">TruthSeeker99</h4>
+                                        <p class="text-muted text-sm">1.2K followers</p>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Description -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="mb-2">Description</h3>
+                            <p id="videoDescription">Deep dive into the systematic suppression of truth and how we can fight back. This video explores the mechanisms of censorship and provides actionable strategies for spreading awareness.</p>
+                            
+                            <div class="flex gap-sm mt-3">
+                                <span class="badge badge-primary">truth</span>
+                                <span class="badge badge-primary">awakening</span>
+                                <span class="badge badge-primary">freedom</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-3"><span id="commentCount">234</span> Comments</h3>
+                            
+                            <!-- Add Comment Form -->
+                            <div class="mb-4" id="commentFormContainer">
+                                <textarea id="commentText" class="form-control" rows="3" placeholder="Add a comment... (Login required)"></textarea>
+                                <div class="flex gap-md mt-2">
+                                    <button class="btn btn-viking" id="submitCommentBtn">
+                                        <i class="fas fa-comment"></i> Post Comment
+                                    </button>
+                                    <button class="btn btn-outline" id="cancelCommentBtn" style="display: none;">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Comments List -->
+                            <div id="commentsList">
+                                <!-- Comments will be loaded here -->
+                                <div class="comment-item" style="padding: 1rem 0; border-bottom: 1px solid var(--gray-100);">
+                                    <div class="flex gap-md">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+                                            FF
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="flex gap-sm mb-1">
+                                                <strong>FreedomFighter</strong>
+                                                <span class="text-muted text-sm">2 hours ago</span>
+                                            </div>
+                                            <p class="mb-2">This is exactly what we need! Thank you for speaking the truth without fear. The awakening is happening!</p>
+                                            <div class="flex gap-md text-sm">
+                                                <button class="btn-text"><i class="fas fa-thumbs-up"></i> 45</button>
+                                                <button class="btn-text"><i class="fas fa-thumbs-down"></i></button>
+                                                <button class="btn-text"><i class="fas fa-reply"></i> Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="comment-item" style="padding: 1rem 0; border-bottom: 1px solid var(--gray-100);">
+                                    <div class="flex gap-md">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+                                            AW
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="flex gap-sm mb-1">
+                                                <strong>AwakeAndAware</strong>
+                                                <span class="text-muted text-sm">5 hours ago</span>
+                                            </div>
+                                            <p class="mb-2">Shared this with my entire community. Everyone needs to see this. Much love, no fear! 🛡️</p>
+                                            <div class="flex gap-md text-sm">
+                                                <button class="btn-text"><i class="fas fa-thumbs-up"></i> 32</button>
+                                                <button class="btn-text"><i class="fas fa-thumbs-down"></i></button>
+                                                <button class="btn-text"><i class="fas fa-reply"></i> Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="comment-item" style="padding: 1rem 0;">
+                                    <div class="flex gap-md">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+                                            HW
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="flex gap-sm mb-1">
+                                                <strong>HealthWarrior</strong>
+                                                <span class="text-muted text-sm">1 day ago</span>
+                                            </div>
+                                            <p class="mb-2">The information at 12:45 is crucial. Everyone should timestamp that section!</p>
+                                            <div class="flex gap-md text-sm">
+                                                <button class="btn-text"><i class="fas fa-thumbs-up"></i> 28</button>
+                                                <button class="btn-text"><i class="fas fa-thumbs-down"></i></button>
+                                                <button class="btn-text"><i class="fas fa-reply"></i> Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Load More -->
+                            <div class="text-center mt-3">
+                                <button class="btn btn-outline">
+                                    <i class="fas fa-chevron-down"></i> Show More Comments
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside>
+                    <!-- Related Videos -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-3">Related Videos</h3>
+                            
+                            <div class="related-video" style="display: flex; gap: 0.75rem; margin-bottom: 1rem; cursor: pointer;">
+                                <img src="../assets/images/placeholder-video.jpg" alt="Video" style="width: 160px; height: 90px; object-fit: cover; border-radius: var(--radius-sm);">
+                                <div>
+                                    <h5 style="font-size: 0.875rem; margin-bottom: 0.25rem; line-height: 1.4;">Natural Immunity: The Science They Hide</h5>
+                                    <p class="text-muted text-sm">HealthWarrior</p>
+                                    <p class="text-muted text-sm">12.5k views</p>
+                                </div>
+                            </div>
+
+                            <div class="related-video" style="display: flex; gap: 0.75rem; margin-bottom: 1rem; cursor: pointer;">
+                                <img src="../assets/images/placeholder-video.jpg" alt="Video" style="width: 160px; height: 90px; object-fit: cover; border-radius: var(--radius-sm);">
+                                <div>
+                                    <h5 style="font-size: 0.875rem; margin-bottom: 0.25rem; line-height: 1.4;">Financial System Collapse: Prepare Now</h5>
+                                    <p class="text-muted text-sm">EconViking</p>
+                                    <p class="text-muted text-sm">18.9k views</p>
+                                </div>
+                            </div>
+
+                            <div class="related-video" style="display: flex; gap: 0.75rem; cursor: pointer;">
+                                <img src="../assets/images/placeholder-video.jpg" alt="Video" style="width: 160px; height: 90px; object-fit: cover; border-radius: var(--radius-sm);">
+                                <div>
+                                    <h5 style="font-size: 0.875rem; margin-bottom: 0.25rem; line-height: 1.4;">Mass Meditation for Global Peace</h5>
+                                    <p class="text-muted text-sm">LightWorker</p>
+                                    <p class="text-muted text-sm">8.7k views</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../mock-data.js"></script>
+    <script src="../page-loader.js"></script>
+    <script src="../scripts.js"></script>
+    
+    <!-- Video Page Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Voting functionality
+            let upvoted = false;
+            let downvoted = false;
+            let upvotes = 892;
+            let downvotes = 45;
+            
+            document.getElementById('upvoteBtn').addEventListener('click', function() {
+                if (!MLNFAuth.isLoggedIn()) {
+                    alert('Please login to vote');
+                    return;
+                }
+                
+                if (upvoted) {
+                    upvotes--;
+                    upvoted = false;
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-outline');
+                } else {
+                    if (downvoted) {
+                        downvotes--;
+                        downvoted = false;
+                        document.getElementById('downvoteBtn').classList.remove('btn-error');
+                        document.getElementById('downvoteBtn').classList.add('btn-outline');
+                    }
+                    upvotes++;
+                    upvoted = true;
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-primary');
+                }
+                document.getElementById('upvoteCount').textContent = upvotes;
+                document.getElementById('downvoteCount').textContent = downvotes;
+            });
+            
+            document.getElementById('downvoteBtn').addEventListener('click', function() {
+                if (!MLNFAuth.isLoggedIn()) {
+                    alert('Please login to vote');
+                    return;
+                }
+                
+                if (downvoted) {
+                    downvotes--;
+                    downvoted = false;
+                    this.classList.remove('btn-error');
+                    this.classList.add('btn-outline');
+                } else {
+                    if (upvoted) {
+                        upvotes--;
+                        upvoted = false;
+                        document.getElementById('upvoteBtn').classList.remove('btn-primary');
+                        document.getElementById('upvoteBtn').classList.add('btn-outline');
+                    }
+                    downvotes++;
+                    downvoted = true;
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-error');
+                }
+                document.getElementById('upvoteCount').textContent = upvotes;
+                document.getElementById('downvoteCount').textContent = downvotes;
+            });
+            
+            // Comment submission
+            document.getElementById('submitCommentBtn').addEventListener('click', function() {
+                if (!MLNFAuth.isLoggedIn()) {
+                    alert('Please login to comment');
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                const commentText = document.getElementById('commentText').value.trim();
+                if (!commentText) {
+                    alert('Please enter a comment');
+                    return;
+                }
+                
+                // Add comment to list (in production this would save to backend)
+                const user = MLNFAuth.getUser();
+                const commentsList = document.getElementById('commentsList');
+                
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item';
+                newComment.style.cssText = 'padding: 1rem 0; border-bottom: 1px solid var(--gray-100);';
+                newComment.innerHTML = `
+                    <div class="flex gap-md">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+                            ${user.username.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="flex gap-sm mb-1">
+                                <strong>${user.username}</strong>
+                                <span class="text-muted text-sm">Just now</span>
+                            </div>
+                            <p class="mb-2">${commentText}</p>
+                            <div class="flex gap-md text-sm">
+                                <button class="btn-text"><i class="fas fa-thumbs-up"></i> 0</button>
+                                <button class="btn-text"><i class="fas fa-thumbs-down"></i></button>
+                                <button class="btn-text"><i class="fas fa-reply"></i> Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                commentsList.insertBefore(newComment, commentsList.firstChild);
+                document.getElementById('commentText').value = '';
+                
+                // Update comment count
+                const commentCount = document.getElementById('commentCount');
+                commentCount.textContent = parseInt(commentCount.textContent) + 1;
+                
+                alert('Comment posted successfully!');
+            });
+        });
+    </script>
+</body>
+</html>

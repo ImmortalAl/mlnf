@@ -480,7 +480,9 @@ const Auth = {
         } else {
             if (authLink) {
                 authLink.textContent = 'Login';
-                authLink.href = 'pages/auth.html';
+                // Detect if we're in a subdirectory
+                const isInSubdir = window.location.pathname.includes('/pages/');
+                authLink.href = isInSubdir ? 'auth.html' : 'pages/auth.html';
                 authLink.onclick = null;
             }
             
