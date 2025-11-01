@@ -533,6 +533,74 @@ router.post('/debug-token', async (req, res) => {
   }
 });
 
+// Get all users (for warriors list)
+router.get('/users', async (req, res) => {
+  try {
+    const { search, sort = 'newest', limit = 50, page = 1 } = req.query;
+    
+    // Build query
+    const query = {};
+    if (search) {
+      query.$or = [
+        { username: { $regex: search, $options: 'i' } },
+        { bio: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Build sort
+    let sortQuery = {};
+    switch (sort) {
+      case 'newest':
+        sortQuery = { createdAt: -1 };
+        break;
+      case 'mostFollowers':
+        sortQuery = { followerCount: -1 };
+        break;
+      case 'mostVideos':
+        sortQuery = { videoCount: -1 };
+        break;
+      case 'mostActive':
+        sortQuery = { lastActive: -1 };
+        break;
+      default:
+        sortQuery = { createdAt: -1 };
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Fetch users
+    const users = await User.find(query)
+      .select('username email bio profilePicture avatar badges followers following createdAt')
+      .sort(sortQuery)
+      .limit(parseInt(limit))
+      .skip(skip)
+      .lean();
+    
+    // Add computed fields
+    const usersWithCounts = users.map(user => ({
+      ...user,
+      followerCount: user.followers?.length || 0,
+      followingCount: user.following?.length || 0,
+      videoCount: 0 // TODO: Add actual video count from Video model
+    }));
+    
+    const total = await User.countDocuments(query);
+    
+    res.json({
+      users: usersWithCounts,
+      pagination: {
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / parseInt(limit)),
+        limit: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({ error: 'Failed to get users' });
+  }
+});
+
 // Update user profile
 router.put('/update-profile', authMiddleware, [
   body('firstName').optional().trim().isLength({ min: 1, max: 50 }).withMessage('First name must be 1-50 characters'),
