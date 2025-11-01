@@ -1240,6 +1240,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileToggle.setAttribute('aria-expanded', 'false');
 
         // Fix for mobile viewport height issue (iOS Safari, Chrome mobile, etc.)
+        let fixAppliedCount = 0;
         const setMobileViewportHeight = () => {
             // Use visualViewport if available (more accurate on mobile), otherwise innerHeight
             const vh = (window.visualViewport?.height || window.innerHeight) * 0.01;
@@ -1253,13 +1254,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const maxNavHeight = (window.visualViewport?.height || window.innerHeight) - headerHeight;
             mainNav.style.maxHeight = `${maxNavHeight}px`;
             
-            console.log('📱 Mobile viewport fix applied:', {
+            // CRITICAL: Also set the top position explicitly
+            mainNav.style.top = `${headerHeight}px`;
+            
+            fixAppliedCount++;
+            
+            console.log('📱 Mobile viewport fix applied (#' + fixAppliedCount + '):', {
                 vh: vh,
                 headerHeight: headerHeight,
                 maxNavHeight: maxNavHeight,
                 visualViewportHeight: window.visualViewport?.height,
-                innerHeight: window.innerHeight
+                innerHeight: window.innerHeight,
+                navMaxHeight: mainNav.style.maxHeight,
+                navTop: mainNav.style.top
             });
+            
+            // Show alert only on first application on mobile
+            if (fixAppliedCount === 1 && window.innerWidth <= 768) {
+                setTimeout(() => {
+                    alert('🔧 Mobile Fix Applied!\nHeader: ' + headerHeight + 'px\nNav Max: ' + maxNavHeight + 'px\nViewport: ' + window.innerHeight + 'px');
+                }, 500);
+            }
         };
         
         // Apply on load and when viewport changes (address bar hide/show)
@@ -1355,22 +1370,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Visual debugging overlay (only on mobile)
         if (window.innerWidth <= 768) {
+            // Enable debug mode by default on mobile
+            document.body.classList.add('debug-mobile');
+            
             const debugOverlay = document.createElement('div');
             debugOverlay.id = 'mobile-debug-overlay';
             debugOverlay.style.cssText = `
                 position: fixed;
-                bottom: 0;
+                top: 0;
                 left: 0;
                 right: 0;
-                background: rgba(255, 0, 0, 0.9);
-                color: white;
-                padding: 10px;
-                font-size: 11px;
+                background: rgba(0, 0, 0, 0.95);
+                color: lime;
+                padding: 12px;
+                font-size: 13px;
                 font-family: monospace;
-                z-index: 10000;
-                max-height: 150px;
+                z-index: 10001;
+                max-height: 250px;
                 overflow-y: auto;
-                border-top: 3px solid yellow;
+                border-bottom: 4px solid red;
+                box-shadow: 0 4px 20px rgba(255, 0, 0, 0.5);
             `;
             
             const updateDebugInfo = () => {
@@ -1383,23 +1402,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 const screenH = window.screen.height;
                 
                 debugOverlay.innerHTML = `
-                    <strong>🐛 MOBILE DEBUG</strong>
-                    <button onclick="document.body.classList.toggle('debug-mobile'); this.textContent = document.body.classList.contains('debug-mobile') ? '🎨 ON' : '🎨 OFF';" 
-                            style="float:right;background:${isDebugMode ? 'lime' : 'gray'};color:black;border:none;padding:2px 8px;cursor:pointer;margin-left:4px;">
-                        ${isDebugMode ? '🎨 ON' : '🎨 OFF'}
-                    </button>
-                    <button onclick="this.parentElement.remove()" style="float:right;background:yellow;color:black;border:none;padding:2px 8px;cursor:pointer;">✕</button>
-                    <br>
-                    <strong>Viewport:</strong> ${window.innerWidth}x${innerH}px | Visual: ${visualVH} | Screen: ${screenH}<br>
-                    <strong>VH Diff:</strong> ${typeof visualVH === 'number' ? (innerH - visualVH).toFixed(0) : 'N/A'}px (address bar)<br>
-                    <strong>Header:</strong> h=${headerRect?.height.toFixed(0)}px top=${headerRect?.top.toFixed(0)}px<br>
-                    <strong>Nav Display:</strong> ${navStyles.display}<br>
-                    <strong>Nav Position:</strong> ${navStyles.position} top=${navStyles.top}<br>
-                    <strong>Nav Height:</strong> ${navStyles.height} max=${navStyles.maxHeight}<br>
-                    <strong>Nav Inline Max:</strong> ${mainNav.style.maxHeight || 'none'}<br>
-                    <strong>Nav Actual:</strong> ${navRect.height.toFixed(0)}px (top:${navRect.top.toFixed(0)} btm:${navRect.bottom.toFixed(0)})<br>
-                    <strong>Overflow:</strong> ${navStyles.overflowY} | Z: ${navStyles.zIndex}<br>
-                    <strong>Classes:</strong> ${mainNav.classList.contains('active') ? '✅ active' : '❌ inactive'}
+                    <div style="font-size:16px;font-weight:bold;color:yellow;margin-bottom:8px;">
+                        🐛 MOBILE DEBUG PANEL
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="float:right;background:red;color:white;border:none;padding:4px 12px;cursor:pointer;font-size:14px;border-radius:4px;">
+                            CLOSE ✕
+                        </button>
+                        <button onclick="document.body.classList.toggle('debug-mobile');" 
+                                style="float:right;background:${isDebugMode ? 'lime' : 'gray'};color:black;border:none;padding:4px 12px;cursor:pointer;margin-right:8px;font-size:14px;border-radius:4px;">
+                            Highlights: ${isDebugMode ? 'ON' : 'OFF'}
+                        </button>
+                    </div>
+                    <div style="color:cyan;">Viewport: <span style="color:white;">${window.innerWidth}x${innerH}px</span> | Screen: <span style="color:white;">${screenH}px</span></div>
+                    <div style="color:orange;">Visual VH: <span style="color:white;">${visualVH}</span> | Diff: <span style="color:${typeof visualVH === 'number' && (innerH - visualVH) > 50 ? 'red' : 'white'}">${typeof visualVH === 'number' ? (innerH - visualVH).toFixed(0) : 'N/A'}px</span></div>
+                    <div style="color:cyan;">Header Height: <span style="color:white;">${headerRect?.height.toFixed(0)}px</span></div>
+                    <div style="color:yellow;">Nav Display: <span style="color:white;">${navStyles.display}</span></div>
+                    <div style="color:yellow;">Nav Top (CSS): <span style="color:white;">${navStyles.top}</span> | Top (Inline): <span style="color:${mainNav.style.top ? 'lime' : 'red'}">${mainNav.style.top || 'NOT SET!'}</span></div>
+                    <div style="color:yellow;">Nav MaxH (CSS): <span style="color:white;">${navStyles.maxHeight}</span> | MaxH (Inline): <span style="color:${mainNav.style.maxHeight ? 'lime' : 'red'}">${mainNav.style.maxHeight || 'NOT SET!'}</span></div>
+                    <div style="color:cyan;">Nav Actual Size: <span style="color:white;">${navRect.height.toFixed(0)}px</span> (top: ${navRect.top.toFixed(0)}, bottom: ${navRect.bottom.toFixed(0)})</div>
+                    <div style="color:${navRect.bottom > window.innerHeight ? 'red' : 'lime'};font-weight:bold;">
+                        ${navRect.bottom > window.innerHeight ? '❌ NAV OVERFLOWS SCREEN!' : '✅ Nav fits on screen'}
+                    </div>
+                    <div style="color:white;margin-top:4px;">Menu Status: <span style="color:${mainNav.classList.contains('active') ? 'lime' : 'orange'};font-weight:bold;">${mainNav.classList.contains('active') ? '✅ OPEN' : '❌ CLOSED'}</span></div>
                 `;
             };
             
