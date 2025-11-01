@@ -8,28 +8,50 @@ const User = require('../models/User');
 // Middleware to verify JWT token
 const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const authHeader = req.header('Authorization');
+    const token = authHeader?.replace('Bearer ', '');
     
     if (!token) {
-      throw new Error();
+      console.log('❌ Auth failed: No token provided');
+      return res.status(401).json({ error: 'Please authenticate', reason: 'No token provided' });
     }
     
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (jwtError) {
+      console.log('❌ Auth failed: Invalid token -', jwtError.message);
+      return res.status(401).json({ 
+        error: 'Please authenticate', 
+        reason: 'Invalid or expired token',
+        detail: jwtError.message 
+      });
+    }
+    
     const user = await User.findById(decoded.userId).select('-password -secretAnswer');
     
-    if (!user || !user.isActive) {
-      throw new Error();
+    if (!user) {
+      console.log('❌ Auth failed: User not found for ID:', decoded.userId);
+      return res.status(401).json({ error: 'Please authenticate', reason: 'User not found' });
+    }
+    
+    if (!user.isActive) {
+      console.log('❌ Auth failed: User account inactive:', user.username);
+      return res.status(401).json({ error: 'Please authenticate', reason: 'Account inactive' });
     }
     
     if (user.lockUntil && user.lockUntil > Date.now()) {
+      console.log('❌ Auth failed: Account locked:', user.username);
       return res.status(423).json({ error: 'Account is temporarily locked' });
     }
     
+    console.log('✅ Auth successful:', user.username);
     req.user = user;
     req.token = token;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Please authenticate' });
+    console.error('❌ Auth middleware error:', error);
+    res.status(401).json({ error: 'Please authenticate', reason: 'Authentication error' });
   }
 };
 
@@ -461,6 +483,51 @@ router.post('/logout', authMiddleware, async (req, res) => {
   } catch (error) {
     console.error('Logout error:', error);
     res.status(500).json({ error: 'Logout failed' });
+  }
+});
+
+// Debug endpoint to test token
+router.post('/debug-token', async (req, res) => {
+  try {
+    const authHeader = req.header('Authorization');
+    const token = authHeader?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.json({ 
+        status: 'no_token',
+        message: 'No token provided in Authorization header',
+        headers: req.headers
+      });
+    }
+    
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.userId).select('username email isActive');
+      
+      return res.json({
+        status: 'valid',
+        message: 'Token is valid',
+        decoded: {
+          userId: decoded.userId,
+          username: decoded.username,
+          exp: new Date(decoded.exp * 1000).toISOString()
+        },
+        user: user ? {
+          username: user.username,
+          email: user.email,
+          isActive: user.isActive
+        } : null
+      });
+    } catch (jwtError) {
+      return res.json({
+        status: 'invalid',
+        message: 'Token is invalid',
+        error: jwtError.message,
+        tokenPreview: token.substring(0, 20) + '...'
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

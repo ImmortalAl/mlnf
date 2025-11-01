@@ -431,6 +431,44 @@ const API = {
         async convertUSDtoBTC(amount) {
             return await API.request(`/blockonomics/convert?amount=${amount}`);
         }
+    },
+    
+    // Messages API
+    messages: {
+        async getConversation(userId, limit = 50, skip = 0) {
+            return await API.request(`/messages/conversation/${userId}?limit=${limit}&skip=${skip}`);
+        },
+        
+        async getConversations(limit = 20) {
+            return await API.request(`/messages/conversations?limit=${limit}`);
+        },
+        
+        async sendMessage(recipientId, message) {
+            return await API.request('/messages/send', {
+                method: 'POST',
+                body: JSON.stringify({ recipientId, message })
+            });
+        },
+        
+        async markAsRead(userId) {
+            return await API.request(`/messages/mark-read/${userId}`, {
+                method: 'POST'
+            });
+        },
+        
+        async getUnreadCount() {
+            return await API.request('/messages/unread-count');
+        },
+        
+        async deleteMessage(messageId) {
+            return await API.request(`/messages/${messageId}`, {
+                method: 'DELETE'
+            });
+        },
+        
+        async searchMessages(query, limit = 50) {
+            return await API.request(`/messages/search?query=${encodeURIComponent(query)}&limit=${limit}`);
+        }
     }
 };
 
@@ -448,8 +486,13 @@ const Auth = {
             State.user = JSON.parse(user);
             this.updateUI();
             
-            // Load user profile in background
+            // Load user profile in background (will auto-logout if token invalid)
             this.refreshProfile();
+        } else if (token || user) {
+            // Partial credentials - clear everything
+            console.warn('⚠️ Incomplete credentials found, clearing...');
+            localStorage.removeItem('mlnf_token');
+            localStorage.removeItem('mlnf_user');
         }
     },
 
@@ -501,6 +544,21 @@ const Auth = {
             this.updateRunegoldDisplay();
         } catch (error) {
             console.error('Failed to refresh profile:', error);
+            
+            // If authentication fails, force immediate logout
+            console.warn('⚠️ Authentication failed - forcing logout');
+            
+            // Clear everything immediately
+            localStorage.removeItem('mlnf_token');
+            localStorage.removeItem('mlnf_user');
+            State.token = null;
+            State.user = null;
+            
+            // Show alert to user
+            alert('⚠️ Your session has expired or is invalid.\n\nYou will be redirected to the login page.\n\nPlease log in again to continue.');
+            
+            // Redirect to auth page
+            window.location.href = window.location.pathname.includes('/pages/') ? 'auth.html' : 'pages/auth.html';
         }
     },
 
@@ -697,11 +755,13 @@ const Socket = {
     // Handle private message
     handlePrivateMessage(data) {
         // Show notification or update active chat
-        Utils.showToast(`New message from ${data.from}`, 'info');
+        const fromUsername = data.fromUsername || data.from;
+        Utils.showToast(`New message from ${fromUsername}`, 'info');
         
-        // If messaging modal is open, update it
+        // If messaging modal is open and from current chat user, update it
         const modal = document.getElementById('messagingModal');
-        if (modal && modal.classList.contains('active')) {
+        if (modal && modal.classList.contains('active') && 
+            Messaging.currentChat && Messaging.currentChat.userId === data.from) {
             Messaging.addMessageToChat(data, 'received');
         }
     },
@@ -900,8 +960,41 @@ const Messaging = {
 
     // Load chat history
     async loadChatHistory(userId) {
-        // Would load from backend API
-        // For now, show empty state
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            const response = await fetch(`${CONFIG.API_URL}/messages/conversation/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to load chat history');
+            }
+            
+            const data = await response.json();
+            
+            if (data.success && data.messages) {
+                const container = document.getElementById('messagesContainer');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                // Display all messages
+                data.messages.forEach(msg => {
+                    const isSent = msg.sender === (State.user.id || State.user._id);
+                    this.addMessageToChat({
+                        message: msg.message,
+                        timestamp: msg.createdAt
+                    }, isSent ? 'sent' : 'received');
+                });
+            }
+        } catch (error) {
+            console.error('Error loading chat history:', error);
+            Utils.showToast('Failed to load chat history', 'error');
+        }
     }
 };
 
@@ -916,7 +1009,7 @@ const UI = {
         return `
             <div class="video-card" onclick="window.location.href='pages/archive.html?video=${video._id}'">
                 <div style="position: relative;">
-                    <img src="${video.thumbnail || '/assets/images/placeholder.jpg'}" 
+                    <img src="${video.thumbnail || 'https://via.placeholder.com/320x180/333333/FFFFFF?text=Video'}" 
                          alt="${video.title}" 
                          class="video-thumbnail">
                     ${isBoosted ? '<span class="boosted-badge"><i class="fas fa-rocket"></i> BOOSTED</span>' : ''}
@@ -1059,7 +1152,7 @@ const Breadcrumbs = {
             <ul class="breadcrumb-list">
                 ${State.breadcrumbs.map((crumb, index) => `
                     <li class="breadcrumb-item">
-                        <img src="${crumb.thumbnail || '/assets/images/placeholder.jpg'}" 
+                        <img src="${crumb.thumbnail || 'https://via.placeholder.com/40x40/4A90E2/FFFFFF?text=BC'}" 
                              alt="${crumb.title}" 
                              class="breadcrumb-thumbnail"
                              onclick="window.location.href='${crumb.url}'"
@@ -1159,4 +1252,5 @@ window.MLNF = {
     UI,
     Theme,
     Breadcrumbs
+};
 };

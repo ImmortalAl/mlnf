@@ -97,7 +97,7 @@
                         <a href="#" class="btn btn-viking">Read Full Article <i class="fas fa-arrow-right"></i></a>
                     </div>
                     <div style="width: 300px;">
-                        <img src="../assets/images/placeholder-blog.jpg" alt="Featured Article" style="width: 100%; border-radius: var(--radius-lg);">
+                        <img src="https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=Featured+Article" alt="Featured Article" style="width: 100%; border-radius: var(--radius-lg);" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -393,13 +393,16 @@
                 let errorMsg = error.message || 'Please try again';
                 
                 // Add helpful hints based on error type
-                if (errorMsg.includes('authenticate')) {
-                    errorMsg += '\n\nPlease log out and log back in, your session may have expired.';
+                if (errorMsg.includes('authenticate') || errorMsg.includes('logged in')) {
+                    alert('❌ Authentication Error\n\nYou need to log in first to publish articles.\n\nClick OK to go to the login page.');
+                    window.location.href = 'auth.html';
+                    return;
                 } else if (errorMsg.includes('validation') || errorMsg.includes('invalid')) {
                     errorMsg += '\n\nPlease check all required fields are filled correctly.';
+                    alert('❌ Failed to publish article:\n\n' + errorMsg);
+                } else {
+                    alert('❌ Failed to publish article:\n\n' + errorMsg);
                 }
-                
-                alert('❌ Failed to publish article:\n\n' + errorMsg);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
