@@ -312,15 +312,21 @@ a:hover {
     top: 80px;
     left: -100%;
     width: 100%;
+    height: calc(100vh - 80px);
     flex-direction: column;
     background: var(--navy);
     padding: var(--space-lg);
     transition: left var(--transition-base);
     box-shadow: var(--shadow-xl);
+    z-index: 999;
+    overflow-y: auto;
+    /* Prevent blocking content when closed */
+    pointer-events: none;
   }
   
   .site-nav.active {
     left: 0;
+    pointer-events: auto;
   }
 }
 
