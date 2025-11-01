@@ -263,6 +263,8 @@ a:hover {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .site-logo-icon {
@@ -304,11 +306,27 @@ a:hover {
   padding: var(--space-sm);
   border-radius: var(--radius-md);
   cursor: pointer;
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: auto;
 }
 
 @media (max-width: 768px) {
+  .site-header .container > .flex-between {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .site-logo {
+    flex-shrink: 0;
+  }
+
   .mobile-menu-toggle {
     display: block;
+    flex-shrink: 0;
   }
   
   .site-nav {
@@ -1264,8 +1282,8 @@ a:hover {
     display: none;
   }
   
-  /* Stack flex items */
-  .flex-between {
+  /* Stack flex items (except header) */
+  .flex-between:not(.site-header .flex-between) {
     flex-direction: column;
     gap: var(--space-md);
     align-items: stretch !important;
