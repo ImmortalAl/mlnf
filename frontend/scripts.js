@@ -1220,9 +1220,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileToggle = document.getElementById('mobileMenuToggle');
     const mainNav = document.getElementById('mainNav');
     if (mobileToggle && mainNav) {
+        mobileToggle.type = 'button';
+        mobileToggle.setAttribute('aria-label', 'Toggle navigation menu');
+        mobileToggle.setAttribute('aria-controls', 'mainNav');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+
+        const closeMenu = () => {
+            mainNav.classList.remove('active');
+            document.body.classList.remove('mobile-nav-open');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+        };
+
+        const toggleMenu = () => {
+            const isOpen = mainNav.classList.toggle('active');
+            document.body.classList.toggle('mobile-nav-open', isOpen);
+            mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+
         mobileToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('active');
+            toggleMenu();
         });
+
+        mainNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (mainNav.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+        });
+
+        window.addEventListener('resize', Utils.debounce(() => {
+            if (window.innerWidth > 768 && mainNav.classList.contains('active')) {
+                closeMenu();
+            }
+        }, 150));
     }
 
     // Sidebar toggle

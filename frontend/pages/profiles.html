@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Warrior Profiles - Much Love, No Fear">
+    <title>Warrior Hall of Fame - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .warrior-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .warrior-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--gold);
+        }
+
+        .warrior-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            object-fit: cover;
+        }
+
+        .viking-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, var(--gold), var(--peach));
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .follow-btn {
+            transition: all 0.2s ease;
+        }
+
+        .follow-btn.following {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--indigo);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="background: linear-gradient(135deg, var(--navy) 0%, var(--indigo) 100%); padding: 3rem 0; color: var(--cream);">
+        <div class="container">
+            <h1 style="color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                <i class="fas fa-users-crown"></i> Warrior Hall of Fame
+            </h1>
+            <p style="font-size: 1.25rem; margin-top: 1rem;">
+                Meet the brave warriors of the MLNF realm! Rally your clan and follow fellow truth-seekers! ⚔️
+            </p>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section style="padding: 2rem 0; background: var(--gray-50);">
+        <div class="container">
+            <div class="flex flex-between flex-wrap gap-md">
+                <div class="search-box flex-grow">
+                    <input type="text" id="searchWarriors" class="form-control" placeholder="🔍 Search warriors by name..." style="width: 100%;">
+                </div>
+                
+                <div class="filter-buttons flex gap-md">
+                    <select id="sortFilter" class="form-control">
+                        <option value="newest">Newest Warriors</option>
+                        <option value="mostFollowers">Most Followers</option>
+                        <option value="mostVideos">Most Videos</option>
+                        <option value="mostActive">Most Active</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Warriors Grid -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3" id="warriorsGrid">
+                <!-- Loading State -->
+                <div class="col-span-3 text-center" style="padding: 3rem;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--gold);"></i>
+                    <p style="margin-top: 1rem; color: var(--gray-600);">Loading warriors from the realm...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seeking warriors and free thinkers.</p>
+                    <div class="flex gap-md" style="margin-top: 1rem;">
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
+                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit. ⚔️</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../api-client.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+    <script src="../notifications.js"></script>
+    
+    <!-- Profiles Page Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadWarriors();
+
+            // Search functionality
+            document.getElementById('searchWarriors').addEventListener('input', debounce(function(e) {
+                loadWarriors(e.target.value.trim());
+            }, 500));
+
+            // Sort functionality
+            document.getElementById('sortFilter').addEventListener('change', function() {
+                loadWarriors();
+            });
+        });
+
+        async function loadWarriors(searchQuery = '') {
+            const grid = document.getElementById('warriorsGrid');
+            const sortBy = document.getElementById('sortFilter').value;
+
+            try {
+                // Build API URL
+                const params = new URLSearchParams();
+                if (searchQuery) params.append('search', searchQuery);
+                params.append('sort', sortBy);
+                params.append('limit', '50');
+
+                // Fetch users from backend
+                const response = await fetch(`http://localhost:5000/api/auth/users?${params.toString()}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load warriors');
+                }
+
+                const data = await response.json();
+                const warriors = data.users || [];
+
+                // Get current user to check following status
+                const currentUserId = MLNFAuth.getUser()?._id || MLNFAuth.getUser()?.id;
+
+                // Render warriors
+                if (warriors.length > 0) {
+                    grid.innerHTML = warriors.map(warrior => renderWarriorCard(warrior, currentUserId)).join('');
+                } else {
+                    grid.innerHTML = `
+                        <div class="col-span-3 text-center" style="padding: 3rem;">
+                            <i class="fas fa-users-slash" style="font-size: 4rem; color: var(--gray-300);"></i>
+                            <h3 style="margin-top: 1rem;">No Warriors Found</h3>
+                            <p class="text-muted">Try adjusting your search or filters</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading warriors:', error);
+                grid.innerHTML = `
+                    <div class="col-span-3 text-center" style="padding: 3rem;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--error);"></i>
+                        <h3 style="margin-top: 1rem;">Failed to Load Warriors</h3>
+                        <p class="text-muted">Please try again later</p>
+                        <button class="btn btn-viking mt-3" onclick="location.reload()">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderWarriorCard(warrior, currentUserId) {
+            const isCurrentUser = currentUserId && (warrior._id === currentUserId || warrior.id === currentUserId);
+            const avatarUrl = warrior.avatar || warrior.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(warrior.username)}&background=4A90E2&color=fff&size=150`;
+            
+            const followerCount = warrior.followers?.length || warrior.followerCount || 0;
+            const followingCount = warrior.following?.length || warrior.followingCount || 0;
+            const videoCount = warrior.videoCount || 0;
+            
+            // Check if current user is following this warrior
+            const isFollowing = warrior.followers?.includes(currentUserId) || false;
+
+            return `
+                <div class="card warrior-card">
+                    <div class="card-body text-center">
+                        <img src="${avatarUrl}" alt="${warrior.username}" class="warrior-avatar mb-3">
+                        
+                        <h4 class="mb-2">${warrior.username}</h4>
+                        
+                        ${warrior.badges && warrior.badges.length > 0 ? `
+                            <div class="mb-2">
+                                <span class="viking-badge">
+                                    <i class="fas fa-shield-alt"></i> ${warrior.badges[0].name}
+                                </span>
+                            </div>
+                        ` : ''}
+                        
+                        ${warrior.bio ? `
+                            <p class="text-sm text-muted mb-3" style="min-height: 40px;">${warrior.bio.substring(0, 100)}${warrior.bio.length > 100 ? '...' : ''}</p>
+                        ` : `
+                            <p class="text-sm text-muted mb-3" style="min-height: 40px; opacity: 0.5;">This warrior hasn't written their saga yet...</p>
+                        `}
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">${followerCount}</div>
+                                <div class="stat-label">Followers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${followingCount}</div>
+                                <div class="stat-label">Following</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${videoCount}</div>
+                                <div class="stat-label">Videos</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-md mt-3">
+                            ${!isCurrentUser ? `
+                                <button class="btn ${isFollowing ? 'btn-success' : 'btn-viking'} btn-sm flex-1 follow-btn ${isFollowing ? 'following' : ''}" 
+                                        onclick="toggleFollow('${warrior._id || warrior.id}', this)"
+                                        data-following="${isFollowing}">
+                                    <i class="fas fa-${isFollowing ? 'check' : 'user-plus'}"></i>
+                                    ${isFollowing ? 'Following' : 'Follow'}
+                                </button>
+                            ` : `
+                                <button class="btn btn-outline btn-sm flex-1" disabled>
+                                    <i class="fas fa-user"></i> That's You!
+                                </button>
+                            `}
+                            <a href="warrior-profile.html?id=${warrior._id || warrior.id}" class="btn btn-outline btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function toggleFollow(userId, button) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('⚔️ Please login to rally with other warriors!', 'error');
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const isFollowing = button.dataset.following === 'true';
+            
+            // Optimistic UI update
+            button.disabled = true;
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/auth/follow/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const newFollowingState = !isFollowing;
+                    button.dataset.following = newFollowingState;
+                    
+                    if (newFollowingState) {
+                        button.classList.remove('btn-viking');
+                        button.classList.add('btn-success', 'following');
+                        button.innerHTML = '<i class="fas fa-check"></i> Following';
+                        showNotification('⚔️ Warrior added to your clan!', 'success');
+                    } else {
+                        button.classList.remove('btn-success', 'following');
+                        button.classList.add('btn-viking');
+                        button.innerHTML = '<i class="fas fa-user-plus"></i> Follow';
+                        showNotification('Warrior removed from your clan', 'info');
+                    }
+                } else {
+                    showNotification(data.error || 'Failed to update follow status', 'error');
+                    button.innerHTML = originalContent;
+                }
+            } catch (error) {
+                console.error('Follow error:', error);
+                showNotification('Failed to update follow status', 'error');
+                button.innerHTML = originalContent;
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification notification-${type}`;
+            notif.textContent = message;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: var(--navy);
+                color: white;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            if (type === 'success') notif.style.background = 'var(--success)';
+            if (type === 'error') notif.style.background = 'var(--error)';
+            if (type === 'info') notif.style.background = 'var(--indigo)';
+            
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

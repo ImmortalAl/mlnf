@@ -533,5 +533,147 @@ router.post('/debug-token', async (req, res) => {
   }
 });
 
+// Get all users (for warriors list)
+router.get('/users', async (req, res) => {
+  try {
+    const { search, sort = 'newest', limit = 50, page = 1 } = req.query;
+    
+    // Build query
+    const query = {};
+    if (search) {
+      query.$or = [
+        { username: { $regex: search, $options: 'i' } },
+        { bio: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Build sort
+    let sortQuery = {};
+    switch (sort) {
+      case 'newest':
+        sortQuery = { createdAt: -1 };
+        break;
+      case 'mostFollowers':
+        sortQuery = { followerCount: -1 };
+        break;
+      case 'mostVideos':
+        sortQuery = { videoCount: -1 };
+        break;
+      case 'mostActive':
+        sortQuery = { lastActive: -1 };
+        break;
+      default:
+        sortQuery = { createdAt: -1 };
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Fetch users
+    const users = await User.find(query)
+      .select('username email bio profilePicture avatar badges followers following createdAt')
+      .sort(sortQuery)
+      .limit(parseInt(limit))
+      .skip(skip)
+      .lean();
+    
+    // Add computed fields
+    const usersWithCounts = users.map(user => ({
+      ...user,
+      followerCount: user.followers?.length || 0,
+      followingCount: user.following?.length || 0,
+      videoCount: 0 // TODO: Add actual video count from Video model
+    }));
+    
+    const total = await User.countDocuments(query);
+    
+    res.json({
+      users: usersWithCounts,
+      pagination: {
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / parseInt(limit)),
+        limit: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({ error: 'Failed to get users' });
+  }
+});
+
+// Update user profile
+router.put('/update-profile', authMiddleware, [
+  body('firstName').optional().trim().isLength({ min: 1, max: 50 }).withMessage('First name must be 1-50 characters'),
+  body('lastName').optional().trim().isLength({ min: 1, max: 50 }).withMessage('Last name must be 1-50 characters'),
+  body('email').optional().trim().isEmail().withMessage('Invalid email'),
+  body('bio').optional().trim().isLength({ max: 500 }).withMessage('Bio must be less than 500 characters'),
+  body('location').optional().trim().isLength({ max: 100 }).withMessage('Location must be less than 100 characters'),
+  body('socialLinks.twitter').optional().trim().isURL().withMessage('Invalid Twitter URL'),
+  body('socialLinks.youtube').optional().trim().isURL().withMessage('Invalid YouTube URL'),
+  body('socialLinks.telegram').optional().trim().isURL().withMessage('Invalid Telegram URL'),
+  body('socialLinks.website').optional().trim().isURL().withMessage('Invalid website URL'),
+  body('privateProfile').optional().isBoolean().withMessage('Private profile must be boolean'),
+  body('hideEmail').optional().isBoolean().withMessage('Hide email must be boolean')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {
+      firstName,
+      lastName,
+      email,
+      bio,
+      socialLinks,
+      location,
+      avatar,
+      privateProfile,
+      hideEmail
+    } = req.body;
+
+    // Find user
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update fields if provided
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (email !== undefined) user.email = email;
+    if (bio !== undefined) user.bio = bio;
+    if (location !== undefined) user.location = location;
+    if (avatar !== undefined) user.avatar = avatar;
+    if (privateProfile !== undefined) user.privateProfile = privateProfile;
+    if (hideEmail !== undefined) user.hideEmail = hideEmail;
+
+    // Update social links if provided
+    if (socialLinks) {
+      if (!user.socialLinks) user.socialLinks = {};
+      if (socialLinks.twitter !== undefined) user.socialLinks.twitter = socialLinks.twitter;
+      if (socialLinks.youtube !== undefined) user.socialLinks.youtube = socialLinks.youtube;
+      if (socialLinks.telegram !== undefined) user.socialLinks.telegram = socialLinks.telegram;
+      if (socialLinks.website !== undefined) user.socialLinks.website = socialLinks.website;
+    }
+
+    await user.save();
+
+    // Return updated user (exclude password)
+    const userResponse = user.toObject();
+    delete userResponse.password;
+    delete userResponse.secretAnswer;
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: userResponse
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
 module.exports = router;
 module.exports.authMiddleware = authMiddleware;

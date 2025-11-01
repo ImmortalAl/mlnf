@@ -354,6 +354,299 @@
         </div>
     </section>
 
+    <!-- Profile Edit Modal -->
+    <div class="modal" id="profileEditModal" style="display: none;">
+        <div class="modal-overlay" onclick="closeProfileEdit()"></div>
+        <div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+                <button class="modal-close" onclick="closeProfileEdit()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="profileEditForm">
+                    <!-- Avatar Upload -->
+                    <div class="form-group text-center mb-4">
+                        <div class="avatar-upload-container" style="position: relative; display: inline-block;">
+                            <img id="profileAvatarPreview" src="https://via.placeholder.com/150/4A90E2/FFFFFF?text=User" alt="Avatar" class="avatar-xl" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
+                            <label for="avatarUpload" class="avatar-upload-btn" style="position: absolute; bottom: 0; right: 0; background: var(--indigo); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+                        </div>
+                        <p class="text-sm text-muted mt-2">Click camera icon to change avatar</p>
+                    </div>
+
+                    <!-- Basic Info -->
+                    <div class="form-group">
+                        <label for="editUsername">Username</label>
+                        <input type="text" id="editUsername" class="form-control" placeholder="Your username" readonly style="background: var(--gray-50);">
+                        <small class="text-muted">Username cannot be changed</small>
+                    </div>
+
+                    <div class="grid grid-2 gap-md">
+                        <div class="form-group">
+                            <label for="editFirstName">First Name</label>
+                            <input type="text" id="editFirstName" class="form-control" placeholder="First name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editLastName">Last Name</label>
+                            <input type="text" id="editLastName" class="form-control" placeholder="Last name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editEmail">Email (Optional)</label>
+                        <input type="email" id="editEmail" class="form-control" placeholder="your@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBio">Bio</label>
+                        <textarea id="editBio" class="form-control" rows="4" placeholder="Tell us about yourself..." maxlength="500"></textarea>
+                        <small class="text-muted"><span id="bioCharCount">0</span>/500 characters</small>
+                    </div>
+
+                    <!-- Social Links -->
+                    <h4 class="mt-4 mb-3"><i class="fas fa-share-alt"></i> Social Links</h4>
+                    
+                    <div class="form-group">
+                        <label for="editTwitter">
+                            <i class="fab fa-twitter text-indigo"></i> Twitter/X
+                        </label>
+                        <input type="url" id="editTwitter" class="form-control" placeholder="https://twitter.com/yourhandle">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editYoutube">
+                            <i class="fab fa-youtube text-error"></i> YouTube
+                        </label>
+                        <input type="url" id="editYoutube" class="form-control" placeholder="https://youtube.com/@yourchannel">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editTelegram">
+                            <i class="fab fa-telegram text-info"></i> Telegram
+                        </label>
+                        <input type="url" id="editTelegram" class="form-control" placeholder="https://t.me/yourhandle">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editWebsite">
+                            <i class="fas fa-globe text-success"></i> Website
+                        </label>
+                        <input type="url" id="editWebsite" class="form-control" placeholder="https://yourwebsite.com">
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="editLocation">
+                            <i class="fas fa-map-marker-alt text-error"></i> Location
+                        </label>
+                        <input type="text" id="editLocation" class="form-control" placeholder="City, Country">
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <h4 class="mt-4 mb-3"><i class="fas fa-shield-alt"></i> Privacy</h4>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="editPrivateProfile"> Make profile private
+                        </label>
+                        <p class="text-sm text-muted" style="margin: 0.5rem 0 0 1.5rem;">Only followers can see your profile</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="editHideEmail"> Hide email from public
+                        </label>
+                        <p class="text-sm text-muted" style="margin: 0.5rem 0 0 1.5rem;">Email won't be visible to other users</p>
+                        </div>
+
+                    <!-- Save Button -->
+                    <div class="flex gap-md mt-4">
+                        <button type="submit" class="btn btn-viking btn-lg">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-outline btn-lg" onclick="closeProfileEdit()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Runegold Shop Modal -->
+    <div class="modal" id="runegoldShopModal" style="display: none;">
+        <div class="modal-overlay" onclick="closeRunegoldShop()"></div>
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2><i class="fas fa-coins text-gold"></i> Runegold Shop</h2>
+                <button class="modal-close" onclick="closeRunegoldShop()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Balance Display -->
+                <div class="card mb-3" style="background: linear-gradient(135deg, var(--gold), var(--peach)); color: white;">
+                    <div class="card-body text-center">
+                        <h4 style="color: white;">Your Balance</h4>
+                        <div style="font-size: 3rem; font-weight: bold;" id="shopRunegoldBalance">0</div>
+                        <p style="opacity: 0.9;">Runegold</p>
+                    </div>
+                </div>
+
+                <!-- Shop Categories -->
+                <div class="shop-categories mb-3">
+                    <button class="btn btn-outline shop-category-btn active" data-category="all">
+                        <i class="fas fa-th"></i> All Items
+                    </button>
+                    <button class="btn btn-outline shop-category-btn" data-category="badges">
+                        <i class="fas fa-medal"></i> Badges
+                    </button>
+                    <button class="btn btn-outline shop-category-btn" data-category="features">
+                        <i class="fas fa-star"></i> Features
+                    </button>
+                    <button class="btn btn-outline shop-category-btn" data-category="cosmetics">
+                        <i class="fas fa-palette"></i> Cosmetics
+                    </button>
+                </div>
+
+                <!-- Shop Items Grid -->
+                <div class="grid grid-3 gap-md" id="shopItemsGrid">
+                    <!-- Badge Items -->
+                    <div class="card shop-item" data-category="badges">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-gold" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Viking Warrior</h4>
+                            <p class="text-muted text-sm">Show your dedication</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">100 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseBadge('viking_warrior', 100)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="badges">
+                        <div class="card-body text-center">
+                            <i class="fas fa-crown text-gold" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Truth Seeker</h4>
+                            <p class="text-muted text-sm">Elite truth warrior</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">200 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseBadge('truth_seeker', 200)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="badges">
+                        <div class="card-body text-center">
+                            <i class="fas fa-fire text-peach" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Content Creator</h4>
+                            <p class="text-muted text-sm">Premium creator badge</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">150 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseBadge('content_creator', 150)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feature Items -->
+                    <div class="card shop-item" data-category="features">
+                        <div class="card-body text-center">
+                            <i class="fas fa-ad text-indigo" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Ad-Free Experience</h4>
+                            <p class="text-muted text-sm">30 days no ads</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">500 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseFeature('ad_free', 500)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="features">
+                        <div class="card-body text-center">
+                            <i class="fas fa-rocket text-peach" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Video Boost</h4>
+                            <p class="text-muted text-sm">Featured for 1 hour</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">50 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="showBoostVideoSelector()">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="features">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star text-gold" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Highlight Comment</h4>
+                            <p class="text-muted text-sm">Make it stand out</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">20 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="showHighlightCommentSelector()">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cosmetic Items -->
+                    <div class="card shop-item" data-category="cosmetics">
+                        <div class="card-body text-center">
+                            <i class="fas fa-palette text-indigo" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Custom Profile Color</h4>
+                            <p class="text-muted text-sm">Stand out everywhere</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">100 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseCosmetic('profile_color', 100)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="cosmetics">
+                        <div class="card-body text-center">
+                            <i class="fas fa-comment-dots text-success" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Custom Username Color</h4>
+                            <p class="text-muted text-sm">Unique display</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">75 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseCosmetic('username_color', 75)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="cosmetics">
+                        <div class="card-body text-center">
+                            <i class="fas fa-image text-peach" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Profile Banner</h4>
+                            <p class="text-muted text-sm">Custom header image</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">150 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseCosmetic('profile_banner', 150)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
         <div class="container">
@@ -402,6 +695,7 @@
     <script src="mock-data.js"></script>
     <!-- Load scripts.js BEFORE page-loader.js so APIClient is defined -->
     <script src="scripts.js"></script>
+    <script src="notifications.js"></script>
     <script src="page-loader.js"></script>
     
     <!-- Dashboard Real Data Loader -->
@@ -558,6 +852,116 @@
             width: 20px;
             text-align: center;
         }
+
+        /* Runegold Shop Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 1001;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray-500);
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+
+        .modal-close:hover {
+            color: var(--error);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .shop-categories {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .shop-category-btn {
+            min-width: 120px;
+        }
+
+        .shop-category-btn.active {
+            background: var(--indigo);
+            color: white;
+            border-color: var(--indigo);
+        }
+
+        .shop-item {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .price-tag {
+            margin: 1rem 0;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
     
     <!-- Dashboard JavaScript -->
@@ -574,6 +978,406 @@
             const dropdown = document.getElementById('userMenuDropdown');
             if (userMenu && !userMenu.contains(e.target)) {
                 dropdown?.classList.add('hidden');
+            }
+        });
+
+        // Runegold Shop Functions
+        function openRunegoldShop() {
+            const modal = document.getElementById('runegoldShopModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                loadShopBalance();
+            }
+        }
+
+        function closeRunegoldShop() {
+            const modal = document.getElementById('runegoldShopModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        async function loadShopBalance() {
+            try {
+                const response = await APIClient.auth.getProfile();
+                const balance = response.user.runegoldBalance || 0;
+                const balanceEl = document.getElementById('shopRunegoldBalance');
+                if (balanceEl) {
+                    balanceEl.textContent = balance;
+                }
+            } catch (error) {
+                console.error('Error loading balance:', error);
+                // Fallback to localStorage
+                const userData = localStorage.getItem('mlnf_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    const balanceEl = document.getElementById('shopRunegoldBalance');
+                    if (balanceEl) {
+                        balanceEl.textContent = user.runegoldBalance || 0;
+                    }
+                }
+            }
+        }
+
+        // Shop Category Filtering
+        document.querySelectorAll('.shop-category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('.shop-category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter items
+                const category = this.dataset.category;
+                const items = document.querySelectorAll('.shop-item');
+                
+                items.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Purchase Badge
+        async function purchaseBadge(badgeName, cost) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to make purchases', 'error');
+                return;
+            }
+
+            if (!confirm(`Purchase ${badgeName.replace('_', ' ')} badge for ${cost} Runegold?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ badgeName })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`Badge purchased! New balance: ${data.balance} RG`, 'success');
+                    loadShopBalance();
+                    // Update main dashboard balance too
+                    const dashboardBalance = document.querySelectorAll('.runegold-balance, .runegold-amount');
+                    dashboardBalance.forEach(el => el.textContent = data.balance);
+                } else {
+                    showNotification(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Failed to complete purchase', 'error');
+            }
+        }
+
+        // Purchase Feature
+        async function purchaseFeature(featureName, cost) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to make purchases', 'error');
+                return;
+            }
+
+            if (!confirm(`Purchase ${featureName.replace('_', ' ')} for ${cost} Runegold?`)) {
+                return;
+            }
+
+            try {
+                // For now, use badge endpoint (will create dedicated feature endpoint later)
+                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ badgeName: featureName })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`Feature purchased! New balance: ${data.balance} RG`, 'success');
+                    loadShopBalance();
+                    const dashboardBalance = document.querySelectorAll('.runegold-balance, .runegold-amount');
+                    dashboardBalance.forEach(el => el.textContent = data.balance);
+                } else {
+                    showNotification(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Failed to complete purchase', 'error');
+            }
+        }
+
+        // Purchase Cosmetic
+        async function purchaseCosmetic(cosmeticName, cost) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to make purchases', 'error');
+                return;
+            }
+
+            if (!confirm(`Purchase ${cosmeticName.replace('_', ' ')} for ${cost} Runegold?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ badgeName: cosmeticName })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`Cosmetic purchased! New balance: ${data.balance} RG`, 'success');
+                    loadShopBalance();
+                    const dashboardBalance = document.querySelectorAll('.runegold-balance, .runegold-amount');
+                    dashboardBalance.forEach(el => el.textContent = data.balance);
+                } else {
+                    showNotification(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Failed to complete purchase', 'error');
+            }
+        }
+
+        // Boost Video Selector (will implement later)
+        function showBoostVideoSelector() {
+            showNotification('Select a video from your videos to boost', 'info');
+            // TODO: Show video selection modal
+        }
+
+        // Highlight Comment Selector (will implement later)
+        function showHighlightCommentSelector() {
+            showNotification('Go to a video and select a comment to highlight', 'info');
+            // TODO: Show comment selection interface
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification notification-${type}`;
+            notif.textContent = message;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: var(--navy);
+                color: white;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            if (type === 'success') notif.style.background = 'var(--success)';
+            if (type === 'error') notif.style.background = 'var(--error)';
+            if (type === 'info') notif.style.background = 'var(--indigo)';
+            
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
+
+        // Add click handlers to shop buttons in main dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Open shop when clicking "Get More Runegold" or shop links
+            document.querySelectorAll('[href="#runegold"], .btn-viking').forEach(btn => {
+                if (btn.textContent.includes('Get More Runegold') || btn.textContent.includes('Shop')) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        openRunegoldShop();
+                    });
+                }
+            });
+
+            // Open profile edit when clicking profile or settings links
+            document.querySelectorAll('[href="#profile"], [href="#settings"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openProfileEdit();
+                });
+            });
+
+            // Bio character counter
+            const bioTextarea = document.getElementById('editBio');
+            const bioCharCount = document.getElementById('bioCharCount');
+            if (bioTextarea && bioCharCount) {
+                bioTextarea.addEventListener('input', function() {
+                    bioCharCount.textContent = this.value.length;
+                });
+            }
+        });
+
+        // Profile Edit Functions
+        async function openProfileEdit() {
+            const modal = document.getElementById('profileEditModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                await loadProfileData();
+            }
+        }
+
+        function closeProfileEdit() {
+            const modal = document.getElementById('profileEditModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        async function loadProfileData() {
+            try {
+                const response = await APIClient.auth.getProfile();
+                const user = response.user;
+                
+                // Populate form fields
+                document.getElementById('editUsername').value = user.username || '';
+                document.getElementById('editFirstName').value = user.firstName || '';
+                document.getElementById('editLastName').value = user.lastName || '';
+                document.getElementById('editEmail').value = user.email || '';
+                document.getElementById('editBio').value = user.bio || '';
+                document.getElementById('editTwitter').value = user.socialLinks?.twitter || '';
+                document.getElementById('editYoutube').value = user.socialLinks?.youtube || '';
+                document.getElementById('editTelegram').value = user.socialLinks?.telegram || '';
+                document.getElementById('editWebsite').value = user.socialLinks?.website || '';
+                document.getElementById('editLocation').value = user.location || '';
+                document.getElementById('editPrivateProfile').checked = user.privateProfile || false;
+                document.getElementById('editHideEmail').checked = user.hideEmail || false;
+                
+                // Update character count
+                document.getElementById('bioCharCount').textContent = (user.bio || '').length;
+                
+                // Update avatar preview if exists
+                if (user.avatar) {
+                    document.getElementById('profileAvatarPreview').src = user.avatar;
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                // Try localStorage fallback
+                const userData = localStorage.getItem('mlnf_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    document.getElementById('editUsername').value = user.username || '';
+                    document.getElementById('editEmail').value = user.email || '';
+                }
+            }
+        }
+
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validate file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Avatar image must be less than 2MB', 'error');
+                    return;
+                }
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Please select an image file', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileAvatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Handle profile edit form submission
+        document.getElementById('profileEditForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login first', 'error');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            submitBtn.disabled = true;
+
+            try {
+                // Prepare profile data
+                const profileData = {
+                    firstName: document.getElementById('editFirstName').value.trim(),
+                    lastName: document.getElementById('editLastName').value.trim(),
+                    email: document.getElementById('editEmail').value.trim(),
+                    bio: document.getElementById('editBio').value.trim(),
+                    socialLinks: {
+                        twitter: document.getElementById('editTwitter').value.trim(),
+                        youtube: document.getElementById('editYoutube').value.trim(),
+                        telegram: document.getElementById('editTelegram').value.trim(),
+                        website: document.getElementById('editWebsite').value.trim()
+                    },
+                    location: document.getElementById('editLocation').value.trim(),
+                    privateProfile: document.getElementById('editPrivateProfile').checked,
+                    hideEmail: document.getElementById('editHideEmail').checked
+                };
+
+                // Handle avatar upload if file selected
+                const avatarFile = document.getElementById('avatarUpload').files[0];
+                if (avatarFile) {
+                    // TODO: Upload avatar to backend
+                    // For now, we'll use the base64 preview
+                    const avatarPreview = document.getElementById('profileAvatarPreview').src;
+                    if (avatarPreview && !avatarPreview.includes('placeholder')) {
+                        profileData.avatar = avatarPreview;
+                    }
+                }
+
+                // Send update to backend
+                const response = await fetch('http://localhost:5000/api/auth/update-profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification('Profile updated successfully!', 'success');
+                    
+                    // Update localStorage
+                    const currentUser = JSON.parse(localStorage.getItem('mlnf_user') || '{}');
+                    const updatedUser = { ...currentUser, ...data.user };
+                    localStorage.setItem('mlnf_user', JSON.stringify(updatedUser));
+                    
+                    // Update UI
+                    document.querySelectorAll('.username-display').forEach(el => {
+                        el.textContent = data.user.username;
+                    });
+                    
+                    closeProfileEdit();
+                } else {
+                    showNotification(data.error || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                console.error('Profile update error:', error);
+                showNotification('Failed to update profile. Please try again.', 'error');
+            } finally {
+                // Restore button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         });
     </script>

@@ -105,6 +105,10 @@ body {
   min-height: 100vh;
 }
 
+body.mobile-nav-open {
+  overflow-y: hidden;
+}
+
 /* ============================================
    TYPOGRAPHY
    ============================================ */
@@ -259,6 +263,8 @@ a:hover {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .site-logo-icon {
@@ -300,30 +306,47 @@ a:hover {
   padding: var(--space-sm);
   border-radius: var(--radius-md);
   cursor: pointer;
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: auto;
 }
 
 @media (max-width: 768px) {
+  .site-header .container > .flex-between {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .site-logo {
+    flex-shrink: 0;
+  }
+
   .mobile-menu-toggle {
     display: block;
+    flex-shrink: 0;
   }
   
   .site-nav {
+    display: none;
     position: fixed;
     top: 80px;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: auto;
     max-height: calc(100vh - 80px);
     flex-direction: column;
     background: var(--navy);
     padding: var(--space-lg);
-    transition: left var(--transition-base);
     box-shadow: var(--shadow-xl);
+    z-index: 999;
     overflow-y: auto;
   }
   
   .site-nav.active {
-    left: 0;
+    display: flex;
   }
 }
 
@@ -1261,8 +1284,37 @@ a:hover {
     display: none;
   }
   
-  /* Stack flex items */
-  .flex-between {
+  /* Optimize header FIRST - before general flex rules */
+  .site-header {
+    padding: var(--space-md) 0;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  .site-header .container {
+    min-height: auto !important;
+    height: auto !important;
+  }
+  
+  .site-header .container > .flex.flex-between {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: var(--space-md) !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+  
+  .site-logo span {
+    font-size: 1.25rem;
+  }
+
+  /* Stack flex items (general rule for other elements NOT in header) */
+  section .flex-between,
+  main .flex-between,
+  footer .flex-between,
+  .card .flex-between {
     flex-direction: column;
     gap: var(--space-md);
     align-items: stretch !important;
@@ -1273,14 +1325,17 @@ a:hover {
     width: 100%;
     justify-content: center;
   }
-  
-  /* Optimize header */
-  .site-header {
-    padding: var(--space-md) 0;
+
+  .site-header .mobile-menu-toggle {
+    width: auto;
+    margin-left: auto;
+    padding: var(--space-sm) var(--space-md);
+    border-width: 1px;
   }
-  
-  .site-logo span {
-    font-size: 1.25rem;
+
+  .site-nav {
+    top: 80px;
+    height: calc(100vh - 80px);
   }
   
   /* Hero sections */
@@ -1383,8 +1438,8 @@ a:hover {
   
   /* Navigation */
   .site-nav {
-    top: 60px;
-    max-height: calc(100vh - 60px);
+    top: var(--mobile-header-height, 64px);
+    max-height: calc(100vh - var(--mobile-header-height, 64px));
   }
   
   .nav-link {
