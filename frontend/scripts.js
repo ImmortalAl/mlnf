@@ -486,8 +486,13 @@ const Auth = {
             State.user = JSON.parse(user);
             this.updateUI();
             
-            // Load user profile in background
+            // Load user profile in background (will auto-logout if token invalid)
             this.refreshProfile();
+        } else if (token || user) {
+            // Partial credentials - clear everything
+            console.warn('⚠️ Incomplete credentials found, clearing...');
+            localStorage.removeItem('mlnf_token');
+            localStorage.removeItem('mlnf_user');
         }
     },
 
@@ -540,11 +545,20 @@ const Auth = {
         } catch (error) {
             console.error('Failed to refresh profile:', error);
             
-            // If authentication fails, clear stored credentials
-            if (error.message && error.message.includes('authenticate')) {
-                console.log('Token expired or invalid, clearing session');
-                this.logout();
-            }
+            // If authentication fails, force immediate logout
+            console.warn('⚠️ Authentication failed - forcing logout');
+            
+            // Clear everything immediately
+            localStorage.removeItem('mlnf_token');
+            localStorage.removeItem('mlnf_user');
+            State.token = null;
+            State.user = null;
+            
+            // Show alert to user
+            alert('⚠️ Your session has expired or is invalid.\n\nYou will be redirected to the login page.\n\nPlease log in again to continue.');
+            
+            // Redirect to auth page
+            window.location.href = window.location.pathname.includes('/pages/') ? 'auth.html' : 'pages/auth.html';
         }
     },
 
