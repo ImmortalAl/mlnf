@@ -544,21 +544,28 @@ const Auth = {
             this.updateRunegoldDisplay();
         } catch (error) {
             console.error('Failed to refresh profile:', error);
-            
-            // If authentication fails, force immediate logout
-            console.warn('⚠️ Authentication failed - forcing logout');
-            
-            // Clear everything immediately
-            localStorage.removeItem('mlnf_token');
-            localStorage.removeItem('mlnf_user');
-            State.token = null;
-            State.user = null;
-            
-            // Show alert to user
-            alert('⚠️ Your session has expired or is invalid.\n\nYou will be redirected to the login page.\n\nPlease log in again to continue.');
-            
-            // Redirect to auth page
-            window.location.href = window.location.pathname.includes('/pages/') ? 'auth.html' : 'pages/auth.html';
+
+            // Only force logout if this is a 401 Unauthorized error
+            // For network errors, backend down, etc., continue with offline mode
+            if (error.message && error.message.includes('authenticate')) {
+                console.warn('⚠️ Token is invalid (401) - forcing logout');
+
+                // Clear everything immediately
+                localStorage.removeItem('mlnf_token');
+                localStorage.removeItem('mlnf_user');
+                State.token = null;
+                State.user = null;
+
+                // Show alert to user
+                alert('⚠️ Your session has expired or is invalid.\n\nYou will be redirected to the login page.\n\nPlease log in again to continue.');
+
+                // Redirect to auth page
+                window.location.href = window.location.pathname.includes('/pages/') ? 'auth.html' : 'pages/auth.html';
+            } else {
+                // For other errors (network, backend down), allow offline access
+                console.warn('⚠️ Could not reach backend, continuing in offline mode');
+                // Keep using cached user data from localStorage
+            }
         }
     },
 
