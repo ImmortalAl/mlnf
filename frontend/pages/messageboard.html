@@ -197,6 +197,29 @@
             font-size: 0.75rem;
             font-weight: bold;
         }
+        
+        /* Force content visibility on mobile */
+        @media (max-width: 768px) {
+            /* Ensure header doesn't cover content */
+            .site-header {
+                position: relative !important;
+            }
+            
+            /* Force all main sections to be visible */
+            body > section {
+                position: relative !important;
+                z-index: 1 !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .mead-hall-hero,
+            section {
+                display: block !important;
+                visibility: visible !important;
+            }
+        }
     </style>
 </head>
 <body>
