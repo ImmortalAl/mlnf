@@ -1253,4 +1253,3 @@ window.MLNF = {
     Theme,
     Breadcrumbs
 };
-};
