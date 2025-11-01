@@ -56,7 +56,17 @@ const io = new Server(httpServer, {
 let gfs;
 let bucket;
 
-mongoose.connect(process.env.MONGODB_URI, {
+// Sanitize MongoDB URI - remove port number if using mongodb+srv protocol
+let mongoUri = process.env.MONGODB_URI;
+if (mongoUri && mongoUri.startsWith('mongodb+srv://')) {
+  // Remove any port number from mongodb+srv URI (not allowed)
+  mongoUri = mongoUri.replace(/:(\d+)\//, '/');
+  if (mongoUri !== process.env.MONGODB_URI) {
+    console.log('⚠️  Removed port number from mongodb+srv URI');
+  }
+}
+
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
