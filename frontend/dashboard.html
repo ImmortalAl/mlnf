@@ -354,6 +354,176 @@
         </div>
     </section>
 
+    <!-- Runegold Shop Modal -->
+    <div class="modal" id="runegoldShopModal" style="display: none;">
+        <div class="modal-overlay" onclick="closeRunegoldShop()"></div>
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2><i class="fas fa-coins text-gold"></i> Runegold Shop</h2>
+                <button class="modal-close" onclick="closeRunegoldShop()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Balance Display -->
+                <div class="card mb-3" style="background: linear-gradient(135deg, var(--gold), var(--peach)); color: white;">
+                    <div class="card-body text-center">
+                        <h4 style="color: white;">Your Balance</h4>
+                        <div style="font-size: 3rem; font-weight: bold;" id="shopRunegoldBalance">0</div>
+                        <p style="opacity: 0.9;">Runegold</p>
+                    </div>
+                </div>
+
+                <!-- Shop Categories -->
+                <div class="shop-categories mb-3">
+                    <button class="btn btn-outline shop-category-btn active" data-category="all">
+                        <i class="fas fa-th"></i> All Items
+                    </button>
+                    <button class="btn btn-outline shop-category-btn" data-category="badges">
+                        <i class="fas fa-medal"></i> Badges
+                    </button>
+                    <button class="btn btn-outline shop-category-btn" data-category="features">
+                        <i class="fas fa-star"></i> Features
+                    </button>
+                    <button class="btn btn-outline shop-category-btn" data-category="cosmetics">
+                        <i class="fas fa-palette"></i> Cosmetics
+                    </button>
+                </div>
+
+                <!-- Shop Items Grid -->
+                <div class="grid grid-3 gap-md" id="shopItemsGrid">
+                    <!-- Badge Items -->
+                    <div class="card shop-item" data-category="badges">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-gold" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Viking Warrior</h4>
+                            <p class="text-muted text-sm">Show your dedication</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">100 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseBadge('viking_warrior', 100)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="badges">
+                        <div class="card-body text-center">
+                            <i class="fas fa-crown text-gold" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Truth Seeker</h4>
+                            <p class="text-muted text-sm">Elite truth warrior</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">200 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseBadge('truth_seeker', 200)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="badges">
+                        <div class="card-body text-center">
+                            <i class="fas fa-fire text-peach" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Content Creator</h4>
+                            <p class="text-muted text-sm">Premium creator badge</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">150 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseBadge('content_creator', 150)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feature Items -->
+                    <div class="card shop-item" data-category="features">
+                        <div class="card-body text-center">
+                            <i class="fas fa-ad text-indigo" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Ad-Free Experience</h4>
+                            <p class="text-muted text-sm">30 days no ads</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">500 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseFeature('ad_free', 500)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="features">
+                        <div class="card-body text-center">
+                            <i class="fas fa-rocket text-peach" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Video Boost</h4>
+                            <p class="text-muted text-sm">Featured for 1 hour</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">50 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="showBoostVideoSelector()">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="features">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star text-gold" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Highlight Comment</h4>
+                            <p class="text-muted text-sm">Make it stand out</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">20 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="showHighlightCommentSelector()">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cosmetic Items -->
+                    <div class="card shop-item" data-category="cosmetics">
+                        <div class="card-body text-center">
+                            <i class="fas fa-palette text-indigo" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Custom Profile Color</h4>
+                            <p class="text-muted text-sm">Stand out everywhere</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">100 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseCosmetic('profile_color', 100)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="cosmetics">
+                        <div class="card-body text-center">
+                            <i class="fas fa-comment-dots text-success" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Custom Username Color</h4>
+                            <p class="text-muted text-sm">Unique display</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">75 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseCosmetic('username_color', 75)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card shop-item" data-category="cosmetics">
+                        <div class="card-body text-center">
+                            <i class="fas fa-image text-peach" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Profile Banner</h4>
+                            <p class="text-muted text-sm">Custom header image</p>
+                            <div class="price-tag">
+                                <span class="price text-gold">150 RG</span>
+                            </div>
+                            <button class="btn btn-viking btn-sm mt-2" onclick="purchaseCosmetic('profile_banner', 150)">
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
         <div class="container">
@@ -558,6 +728,116 @@
             width: 20px;
             text-align: center;
         }
+
+        /* Runegold Shop Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 1001;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray-500);
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+
+        .modal-close:hover {
+            color: var(--error);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .shop-categories {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .shop-category-btn {
+            min-width: 120px;
+        }
+
+        .shop-category-btn.active {
+            background: var(--indigo);
+            color: white;
+            border-color: var(--indigo);
+        }
+
+        .shop-item {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .price-tag {
+            margin: 1rem 0;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
     
     <!-- Dashboard JavaScript -->
@@ -575,6 +855,229 @@
             if (userMenu && !userMenu.contains(e.target)) {
                 dropdown?.classList.add('hidden');
             }
+        });
+
+        // Runegold Shop Functions
+        function openRunegoldShop() {
+            const modal = document.getElementById('runegoldShopModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                loadShopBalance();
+            }
+        }
+
+        function closeRunegoldShop() {
+            const modal = document.getElementById('runegoldShopModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        async function loadShopBalance() {
+            try {
+                const response = await APIClient.auth.getProfile();
+                const balance = response.user.runegoldBalance || 0;
+                const balanceEl = document.getElementById('shopRunegoldBalance');
+                if (balanceEl) {
+                    balanceEl.textContent = balance;
+                }
+            } catch (error) {
+                console.error('Error loading balance:', error);
+                // Fallback to localStorage
+                const userData = localStorage.getItem('mlnf_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    const balanceEl = document.getElementById('shopRunegoldBalance');
+                    if (balanceEl) {
+                        balanceEl.textContent = user.runegoldBalance || 0;
+                    }
+                }
+            }
+        }
+
+        // Shop Category Filtering
+        document.querySelectorAll('.shop-category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('.shop-category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter items
+                const category = this.dataset.category;
+                const items = document.querySelectorAll('.shop-item');
+                
+                items.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Purchase Badge
+        async function purchaseBadge(badgeName, cost) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to make purchases', 'error');
+                return;
+            }
+
+            if (!confirm(`Purchase ${badgeName.replace('_', ' ')} badge for ${cost} Runegold?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ badgeName })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`Badge purchased! New balance: ${data.balance} RG`, 'success');
+                    loadShopBalance();
+                    // Update main dashboard balance too
+                    const dashboardBalance = document.querySelectorAll('.runegold-balance, .runegold-amount');
+                    dashboardBalance.forEach(el => el.textContent = data.balance);
+                } else {
+                    showNotification(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Failed to complete purchase', 'error');
+            }
+        }
+
+        // Purchase Feature
+        async function purchaseFeature(featureName, cost) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to make purchases', 'error');
+                return;
+            }
+
+            if (!confirm(`Purchase ${featureName.replace('_', ' ')} for ${cost} Runegold?`)) {
+                return;
+            }
+
+            try {
+                // For now, use badge endpoint (will create dedicated feature endpoint later)
+                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ badgeName: featureName })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`Feature purchased! New balance: ${data.balance} RG`, 'success');
+                    loadShopBalance();
+                    const dashboardBalance = document.querySelectorAll('.runegold-balance, .runegold-amount');
+                    dashboardBalance.forEach(el => el.textContent = data.balance);
+                } else {
+                    showNotification(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Failed to complete purchase', 'error');
+            }
+        }
+
+        // Purchase Cosmetic
+        async function purchaseCosmetic(cosmeticName, cost) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to make purchases', 'error');
+                return;
+            }
+
+            if (!confirm(`Purchase ${cosmeticName.replace('_', ' ')} for ${cost} Runegold?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ badgeName: cosmeticName })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`Cosmetic purchased! New balance: ${data.balance} RG`, 'success');
+                    loadShopBalance();
+                    const dashboardBalance = document.querySelectorAll('.runegold-balance, .runegold-amount');
+                    dashboardBalance.forEach(el => el.textContent = data.balance);
+                } else {
+                    showNotification(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Failed to complete purchase', 'error');
+            }
+        }
+
+        // Boost Video Selector (will implement later)
+        function showBoostVideoSelector() {
+            showNotification('Select a video from your videos to boost', 'info');
+            // TODO: Show video selection modal
+        }
+
+        // Highlight Comment Selector (will implement later)
+        function showHighlightCommentSelector() {
+            showNotification('Go to a video and select a comment to highlight', 'info');
+            // TODO: Show comment selection interface
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification notification-${type}`;
+            notif.textContent = message;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: var(--navy);
+                color: white;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            if (type === 'success') notif.style.background = 'var(--success)';
+            if (type === 'error') notif.style.background = 'var(--error)';
+            if (type === 'info') notif.style.background = 'var(--indigo)';
+            
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
+
+        // Add click handlers to shop buttons in main dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Open shop when clicking "Get More Runegold" or shop links
+            document.querySelectorAll('[href="#runegold"], .btn-viking').forEach(btn => {
+                if (btn.textContent.includes('Get More Runegold') || btn.textContent.includes('Shop')) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        openRunegoldShop();
+                    });
+                }
+            });
         });
     </script>
 </body>
