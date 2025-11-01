@@ -295,9 +295,16 @@ body.debug-mobile .mobile-menu-toggle {
 }
 
 .site-nav {
-  display: flex;
+  display: none; /* Hidden by default on mobile */
   gap: var(--space-xl);
   align-items: center;
+}
+
+/* Show nav on desktop */
+@media (min-width: 769px) {
+  .site-nav {
+    display: flex !important;
+  }
 }
 
 .nav-link {
