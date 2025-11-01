@@ -298,12 +298,32 @@ body.debug-mobile .mobile-menu-toggle {
   display: none; /* Hidden by default on mobile */
   gap: var(--space-xl);
   align-items: center;
+
+  /* Mobile styles (applied on all screens, overridden on desktop) */
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  flex-direction: column;
+  background: var(--navy);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-xl);
+  z-index: 999;
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
 }
 
-/* Show nav on desktop */
+/* Show nav on desktop with desktop layout */
 @media (min-width: 769px) {
   .site-nav {
     display: flex !important;
+    position: static;
+    flex-direction: row;
+    width: auto;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    max-height: none;
   }
 }
 
