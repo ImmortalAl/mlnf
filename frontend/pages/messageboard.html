@@ -459,6 +459,16 @@
         let currentPage = 1;
         let totalPages = 1;
 
+        // API URL helper
+        function getApiUrl() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            } else {
+                return 'http://localhost:5000/api';
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             loadCategories();
@@ -519,7 +529,7 @@
         async function loadActiveWarriorsCount() {
             try {
                 // This would typically come from a real-time user count API
-                const response = await fetch('http://localhost:5000/api/forum');
+                const response = await fetch(`${getApiUrl()}/forum`);
                 const data = await response.json();
                 const count = data.threads?.length || 0;
                 document.getElementById('activeWarriorsCount').textContent = `${count} active discussions`;
@@ -559,7 +569,7 @@
 
         async function loadCategoryCount(categoryKey) {
             try {
-                const response = await fetch(`http://localhost:5000/api/forum?category=${categoryKey}&limit=1`);
+                const response = await fetch(`${getApiUrl()}/forum?category=${categoryKey}&limit=1`);
                 const data = await response.json();
                 const count = data.pagination?.total || 0;
                 const el = document.getElementById(`category-${categoryKey}-threads`);
@@ -609,7 +619,7 @@
                     params.append('search', searchQuery);
                 }
 
-                const response = await fetch(`http://localhost:5000/api/forum?${params}`);
+                const response = await fetch(`${getApiUrl()}/forum?${params}`);
                 const data = await response.json();
 
                 const threads = data.threads || [];
@@ -745,7 +755,7 @@
                 const tagsInput = document.getElementById('threadTags').value.trim();
                 const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
 
-                const response = await fetch('http://localhost:5000/api/forum', {
+                const response = await fetch(`${getApiUrl()}/forum`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
