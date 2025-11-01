@@ -386,7 +386,7 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
   httpServer.close(() => {
     console.log('HTTP server closed');
-    mongoose.connection.close(false, () => {
+    mongoose.connection.close().then(() => {
       console.log('MongoDB connection closed');
       process.exit(0);
     });

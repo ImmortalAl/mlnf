@@ -3,10 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Message Board - Community discussions on Much Love, No Fear">
-    <title>Message Board - Much Love, No Fear</title>
+    <meta name="description" content="The Great Mead Hall - Viking Forum">
+    <title>The Great Mead Hall - Much Love, No Fear</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .mead-hall-hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 3rem 0;
+            color: var(--cream);
+            border-bottom: 3px solid var(--gold);
+        }
+
+        .category-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--gray-200);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 8px 16px rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .thread-item {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .thread-item:hover {
+            border-color: var(--gold);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .thread-item.pinned {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 215, 0, 0.1));
+        }
+
+        .thread-meta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .thread-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .thread-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .thread-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--gray-600);
+        }
+
+        .create-thread-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .create-thread-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray-500);
+            line-height: 1;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .viking-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--gold);
+            color: var(--navy);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -48,333 +239,131 @@
         </div>
     </header>
 
-    <!-- Page Hero -->
-    <section class="page-hero" style="background: linear-gradient(135deg, var(--gold) 0%, var(--navy) 100%); padding: 3rem 0; color: var(--cream);">
-        <div class="container">
-            <h1 style="color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
-                <i class="fas fa-comments"></i> Viking Assembly
+    <!-- Hero Section -->
+    <section class="mead-hall-hero">
+        <div class="container text-center">
+            <h1 style="color: var(--gold); font-size: 2.5rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-beer"></i> The Great Mead Hall
             </h1>
-            <p style="font-size: 1.25rem; margin-top: 1rem;">
-                Where warriors of truth gather to discuss and share wisdom
+            <p style="font-size: 1.25rem; color: var(--cream); margin-bottom: 1rem;">
+                Where warriors gather to share wisdom, battle plans, and tales of glory
+            </p>
+            <p style="font-size: 0.875rem; opacity: 0.8;">
+                <i class="fas fa-users"></i> <span id="activeWarriorsCount">Loading...</span> warriors currently gathered
             </p>
         </div>
     </section>
 
-    <!-- Board Stats -->
-    <section style="padding: 2rem 0; background: var(--gray-50);">
-        <div class="container">
-            <div class="grid grid-4 text-center">
-                <div>
-                    <h3 style="color: var(--indigo);">12,543</h3>
-                    <p class="text-muted">Active Members</p>
-                </div>
-                <div>
-                    <h3 style="color: var(--peach);">3,892</h3>
-                    <p class="text-muted">Total Topics</p>
-                </div>
-                <div>
-                    <h3 style="color: var(--gold);">48,291</h3>
-                    <p class="text-muted">Total Posts</p>
-                </div>
-                <div>
-                    <h3 style="color: var(--success);">892</h3>
-                    <p class="text-muted">Online Now</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Main Content -->
-    <section style="padding: 3rem 0;">
+    <section style="padding: 2rem 0;">
         <div class="container">
-            <div class="flex flex-between mb-3">
-                <h2>Discussion Forums</h2>
-                <button class="btn btn-viking" id="newTopicBtn">
-                    <i class="fas fa-plus"></i> New Topic
+            <!-- Categories View -->
+            <div id="categoriesView">
+                <h2 class="mb-3">
+                    <i class="fas fa-compass"></i> Choose Your Hall
+                </h2>
+                
+                <div class="grid grid-2 gap-md" id="categoriesGrid">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Threads View -->
+            <div id="threadsView" style="display: none;">
+                <!-- Back Button -->
+                <button class="btn btn-outline mb-3" onclick="showCategories()">
+                    <i class="fas fa-arrow-left"></i> Back to Halls
                 </button>
-            </div>
 
-            <!-- Forum Categories -->
-            <div class="forum-categories">
-                <!-- General Discussion -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="flex flex-between">
-                            <div style="flex: 1;">
-                                <h3><i class="fas fa-comments text-indigo"></i> General Discussion</h3>
-                                <p class="text-muted">Open forum for all topics related to truth and freedom</p>
-                                <div class="flex gap-lg mt-2 text-sm">
-                                    <span><i class="fas fa-folder"></i> 892 Topics</span>
-                                    <span><i class="fas fa-comment"></i> 12,384 Posts</span>
-                                </div>
-                            </div>
-                            <div style="width: 300px; text-right;">
-                                <p class="text-sm text-muted">Latest post:</p>
-                                <p class="text-sm"><strong>The Great Awakening is Here</strong></p>
-                                <p class="text-sm text-muted">by TruthWarrior • 5 minutes ago</p>
-                            </div>
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="flex flex-between flex-wrap gap-md">
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="text" id="searchThreads" class="form-control" placeholder="Search discussions...">
                         </div>
-                    </div>
-                </div>
-
-                <!-- Health & Wellness -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="flex flex-between">
-                            <div style="flex: 1;">
-                                <h3><i class="fas fa-heartbeat text-peach"></i> Health & Wellness</h3>
-                                <p class="text-muted">Natural health, alternative medicine, and wellness discussions</p>
-                                <div class="flex gap-lg mt-2 text-sm">
-                                    <span><i class="fas fa-folder"></i> 567 Topics</span>
-                                    <span><i class="fas fa-comment"></i> 8,923 Posts</span>
-                                </div>
-                            </div>
-                            <div style="width: 300px; text-right;">
-                                <p class="text-sm text-muted">Latest post:</p>
-                                <p class="text-sm"><strong>Natural Immunity Success Stories</strong></p>
-                                <p class="text-sm text-muted">by HealthFreedom • 12 minutes ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Financial Freedom -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="flex flex-between">
-                            <div style="flex: 1;">
-                                <h3><i class="fas fa-coins text-gold"></i> Financial Freedom</h3>
-                                <p class="text-muted">Cryptocurrency, precious metals, and alternative economics</p>
-                                <div class="flex gap-lg mt-2 text-sm">
-                                    <span><i class="fas fa-folder"></i> 423 Topics</span>
-                                    <span><i class="fas fa-comment"></i> 7,234 Posts</span>
-                                </div>
-                            </div>
-                            <div style="width: 300px; text-right;">
-                                <p class="text-sm text-muted">Latest post:</p>
-                                <p class="text-sm"><strong>Gold & Silver Update</strong></p>
-                                <p class="text-sm text-muted">by StackerViking • 28 minutes ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Spirituality & Consciousness -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="flex flex-between">
-                            <div style="flex: 1;">
-                                <h3><i class="fas fa-om text-indigo"></i> Spirituality & Consciousness</h3>
-                                <p class="text-muted">Spiritual awakening, meditation, and consciousness expansion</p>
-                                <div class="flex gap-lg mt-2 text-sm">
-                                    <span><i class="fas fa-folder"></i> 345 Topics</span>
-                                    <span><i class="fas fa-comment"></i> 5,678 Posts</span>
-                                </div>
-                            </div>
-                            <div style="width: 300px; text-right;">
-                                <p class="text-sm text-muted">Latest post:</p>
-                                <p class="text-sm"><strong>Raising Vibration Techniques</strong></p>
-                                <p class="text-sm text-muted">by LightWorker • 1 hour ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Technology & Privacy -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="flex flex-between">
-                            <div style="flex: 1;">
-                                <h3><i class="fas fa-shield-alt text-success"></i> Technology & Privacy</h3>
-                                <p class="text-muted">Digital privacy, security, and decentralized technologies</p>
-                                <div class="flex gap-lg mt-2 text-sm">
-                                    <span><i class="fas fa-folder"></i> 289 Topics</span>
-                                    <span><i class="fas fa-comment"></i> 4,567 Posts</span>
-                                </div>
-                            </div>
-                            <div style="width: 300px; text-right;">
-                                <p class="text-sm text-muted">Latest post:</p>
-                                <p class="text-sm"><strong>Best VPN Services 2024</strong></p>
-                                <p class="text-sm text-muted">by CyberViking • 2 hours ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Research & Investigation -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="flex flex-between">
-                            <div style="flex: 1;">
-                                <h3><i class="fas fa-search text-warning"></i> Research & Investigation</h3>
-                                <p class="text-muted">Deep dives, document analysis, and investigative research</p>
-                                <div class="flex gap-lg mt-2 text-sm">
-                                    <span><i class="fas fa-folder"></i> 456 Topics</span>
-                                    <span><i class="fas fa-comment"></i> 9,012 Posts</span>
-                                </div>
-                            </div>
-                            <div style="width: 300px; text-right;">
-                                <p class="text-sm text-muted">Latest post:</p>
-                                <p class="text-sm"><strong>Connecting the Dots: Part 3</strong></p>
-                                <p class="text-sm text-muted">by DeepDigger • 3 hours ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Topics -->
-            <div class="mt-4">
-                <h3 class="mb-3"><i class="fas fa-fire text-peach"></i> Hot Topics</h3>
-                <div class="card">
-                    <div class="card-body">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr style="border-bottom: 2px solid var(--gray-200);">
-                                    <th style="text-align: left; padding: 1rem;">Topic</th>
-                                    <th style="text-align: center; padding: 1rem;">Replies</th>
-                                    <th style="text-align: center; padding: 1rem;">Views</th>
-                                    <th style="text-align: right; padding: 1rem;">Last Post</th>
-                                </tr>
-                            </thead>
-                            <tbody id="forumTopics">
-                                <!-- Forum topics will load here dynamically from API -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Active Users Section -->
-    <section style="padding: 3rem 0; background: var(--gray-50);">
-        <div class="container">
-            <h3 class="mb-3"><i class="fas fa-users"></i> Currently Active Members</h3>
-            <div class="flex gap-sm flex-wrap">
-                <span class="badge badge-secondary">TruthSeeker99</span>
-                <span class="badge badge-secondary">FreedomFighter</span>
-                <span class="badge badge-secondary">HealthWarrior</span>
-                <span class="badge badge-secondary">CryptoViking</span>
-                <span class="badge badge-secondary">NaturalHealer</span>
-                <span class="badge badge-secondary">AwakeAndAware</span>
-                <span class="badge badge-secondary">ResearchAnon</span>
-                <span class="badge badge-secondary">LibertyBell</span>
-                <span class="text-muted">... and 884 more</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
-        <div class="container">
-            <div class="grid grid-3">
-                <div>
-                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
-                    <p>A sanctuary for truth-seekers and free thinkers.</p>
-                    <div class="flex gap-md" style="margin-top: 1rem;">
-                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
-                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-discord"></i></a>
-                        <a href="#" style="color: var(--cream); font-size: 1.5rem;"><i class="fab fa-telegram"></i></a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h5 style="color: var(--gold);">Quick Links</h5>
-                    <ul style="list-style: none;">
-                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
-                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
-                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
-                        <li><a href="donations.html" style="color: var(--cream);">Support Us</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h5 style="color: var(--gold);">Community</h5>
-                    <ul style="list-style: none;">
-                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
-                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
-                        <li><a href="#" style="color: var(--cream);">Terms of Service</a></li>
-                        <li><a href="#" style="color: var(--cream);">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Sidebar - Online Users -->
-    <aside class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        
-        <div class="runegold-display" id="runegoldDisplay">
-            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
-            <div class="runegold-amount" id="runegoldAmount">0</div>
-            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
-                <i class="fas fa-shopping-cart"></i> Shop
-            </a>
-        </div>
-        
-        <h6 style="margin-bottom: 1rem;">
-            <i class="fas fa-users"></i> Online Users
-            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
-        </h6>
-        
-        <ul class="online-users-list" id="onlineUsersList">
-            <li class="text-center text-muted" style="padding: 2rem 0;">
-                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
-                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
-            </li>
-        </ul>
-    </aside>
-
-    <!-- Create Forum Topic Modal -->
-    <div class="modal" id="newTopicModal" style="display: none;">
-        <div class="modal-content" style="max-width: 700px;">
-            <div class="modal-header">
-                <h2><i class="fas fa-plus"></i> Create New Topic</h2>
-                <button class="btn-close" onclick="document.getElementById('newTopicModal').style.display='none'">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="newTopicForm">
-                    <div class="form-group">
-                        <label for="topicTitle">Topic Title *</label>
-                        <input type="text" id="topicTitle" class="form-control" required maxlength="200" 
-                               placeholder="Enter a descriptive topic title...">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="topicCategory">Category *</label>
-                        <select id="topicCategory" class="form-control" required>
-                            <option value="">Select a category...</option>
-                            <option value="General">General Discussion</option>
-                            <option value="Politics">Politics & Government</option>
-                            <option value="Health">Health & Wellness</option>
-                            <option value="Finance">Finance & Economy</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Spirituality">Spirituality</option>
-                            <option value="News">News & Current Events</option>
+                        <select id="sortThreads" class="form-control" style="width: auto;">
+                            <option value="latest">Latest Activity</option>
+                            <option value="popular">Most Views</option>
+                            <option value="replies">Most Replies</option>
+                            <option value="votes">Most Upvoted</option>
                         </select>
                     </div>
-                    
+                </div>
+
+                <!-- Current Category Title -->
+                <h2 class="mb-3" id="currentCategoryTitle">
+                    <i class="fas fa-comments"></i> Discussions
+                </h2>
+
+                <!-- Threads List -->
+                <div id="threadsList">
+                    <!-- Threads will be loaded here -->
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex flex-center gap-md mt-3">
+                    <button class="btn btn-outline" id="prevPage" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                    <button class="btn btn-outline" id="nextPage">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Thread Button -->
+    <button class="create-thread-btn" id="createThreadBtn" title="Start New Discussion">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Create Thread Modal -->
+    <div class="modal" id="createThreadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-scroll"></i> Start a New Saga</h2>
+                <button class="modal-close" onclick="closeCreateThreadModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createThreadForm">
                     <div class="form-group">
-                        <label for="topicContent">Your Post *</label>
-                        <textarea id="topicContent" class="form-control" rows="8" required
-                                  placeholder="Share your thoughts, questions, or information..."></textarea>
-                        <small class="text-muted">Be respectful and constructive in your discussion</small>
+                        <label for="threadCategory">Choose Your Hall *</label>
+                        <select id="threadCategory" class="form-control" required>
+                            <option value="">Select a category...</option>
+                            <option value="war_council">🗡️ War Council</option>
+                            <option value="healing_hall">🏥 Healing Hall</option>
+                            <option value="trading_post">💰 Trading Post</option>
+                            <option value="rune_chamber">🌟 Rune Chamber</option>
+                            <option value="shield_wall">🛡️ Shield Wall</option>
+                            <option value="saga_hall">📜 Saga Hall</option>
+                        </select>
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label for="threadTitle">Title of Your Saga *</label>
+                        <input type="text" id="threadTitle" class="form-control" placeholder="A compelling title for your discussion..." required maxlength="200">
+                        <small class="text-muted"><span id="titleCharCount">0</span>/200 characters</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="threadContent">Your Message *</label>
+                        <textarea id="threadContent" class="form-control" rows="8" placeholder="Share your wisdom, ask questions, or start a discussion..." required maxlength="10000"></textarea>
+                        <small class="text-muted"><span id="contentCharCount">0</span>/10000 characters</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="threadTags">Tags (Optional)</label>
+                        <input type="text" id="threadTags" class="form-control" placeholder="tag1, tag2, tag3">
+                        <small class="text-muted">Separate tags with commas</small>
+                    </div>
+
                     <div class="flex gap-md">
                         <button type="submit" class="btn btn-viking btn-lg">
-                            <i class="fas fa-paper-plane"></i> Create Topic
+                            <i class="fas fa-paper-plane"></i> Publish Saga
                         </button>
-                        <button type="button" class="btn btn-outline btn-lg" 
-                                onclick="document.getElementById('newTopicModal').style.display='none'">
+                        <button type="button" class="btn btn-outline btn-lg" onclick="closeCreateThreadModal()">
                             Cancel
                         </button>
                     </div>
@@ -383,83 +372,445 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div>
+                    <h4 style="color: var(--gold);">Much Love, No Fear</h4>
+                    <p>A sanctuary for truth-seekers and free thinkers.</p>
+                </div>
+                <div>
+                    <h5 style="color: var(--gold);">Quick Links</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="archive.html" style="color: var(--cream);">Love Vault</a></li>
+                        <li><a href="blog.html" style="color: var(--cream);">Blog</a></li>
+                        <li><a href="messageboard.html" style="color: var(--cream);">Message Board</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color: var(--gold);">Community</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="#" style="color: var(--cream);">Guidelines</a></li>
+                        <li><a href="#" style="color: var(--cream);">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit. ⚔️</p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
-    <script src="../auth-handler.js"></script>
     <script src="../api-client.js"></script>
-    <script src="../mock-data.js"></script>
-    <!-- Load scripts.js BEFORE page-loader.js so APIClient is defined -->
+    <script src="../auth-handler.js"></script>
     <script src="../scripts.js"></script>
-    <script src="../page-loader.js"></script>
+    <script src="../notifications.js"></script>
     
-    <!-- Message Board Specific Script -->
+    <!-- Message Board Script -->
     <script>
-        // New Topic Button
-        document.getElementById('newTopicBtn').addEventListener('click', function() {
-            // Check if user is logged in
-            const token = localStorage.getItem('mlnf_token');
-            if (!token) {
-                alert('Please log in to create a topic.');
+        // Category definitions
+        const CATEGORIES = {
+            war_council: {
+                name: 'War Council',
+                icon: '🗡️',
+                color: '#DC143C',
+                description: 'Platform strategy and battle plans'
+            },
+            healing_hall: {
+                name: 'Healing Hall',
+                icon: '🏥',
+                color: '#32CD32',
+                description: 'Health freedom and natural healing'
+            },
+            trading_post: {
+                name: 'Trading Post',
+                icon: '💰',
+                color: '#FFD700',
+                description: 'Financial discussions and trading wisdom'
+            },
+            rune_chamber: {
+                name: 'Rune Chamber',
+                icon: '🌟',
+                color: '#9370DB',
+                description: 'Spirituality, wisdom, and mysticism'
+            },
+            shield_wall: {
+                name: 'Shield Wall',
+                icon: '🛡️',
+                color: '#4169E1',
+                description: 'Community support and assistance'
+            },
+            saga_hall: {
+                name: 'Saga Hall',
+                icon: '📜',
+                color: '#FF8C00',
+                description: 'General discussions and stories'
+            }
+        };
+
+        let currentCategory = null;
+        let currentPage = 1;
+        let totalPages = 1;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            setupEventListeners();
+            loadActiveWarriorsCount();
+        });
+
+        function setupEventListeners() {
+            // Create thread button
+            document.getElementById('createThreadBtn').addEventListener('click', openCreateThreadModal);
+
+            // Create thread form
+            document.getElementById('createThreadForm').addEventListener('submit', handleCreateThread);
+
+            // Character counters
+            document.getElementById('threadTitle').addEventListener('input', function() {
+                document.getElementById('titleCharCount').textContent = this.value.length;
+            });
+
+            document.getElementById('threadContent').addEventListener('input', function() {
+                document.getElementById('contentCharCount').textContent = this.value.length;
+            });
+
+            // Search threads
+            let searchTimeout;
+            document.getElementById('searchThreads').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    loadThreads(currentCategory);
+                }, 500);
+            });
+
+            // Sort threads
+            document.getElementById('sortThreads').addEventListener('change', function() {
+                currentPage = 1;
+                loadThreads(currentCategory);
+            });
+
+            // Pagination
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadThreads(currentCategory);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadThreads(currentCategory);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        async function loadActiveWarriorsCount() {
+            try {
+                // This would typically come from a real-time user count API
+                const response = await fetch('http://localhost:5000/api/forum');
+                const data = await response.json();
+                const count = data.threads?.length || 0;
+                document.getElementById('activeWarriorsCount').textContent = `${count} active discussions`;
+            } catch (error) {
+                document.getElementById('activeWarriorsCount').textContent = 'Many';
+            }
+        }
+
+        function loadCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            
+            grid.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
+                <div class="category-card" onclick="showThreads('${key}')">
+                    <div class="flex gap-md">
+                        <div class="category-icon" style="background: ${cat.color};">
+                            ${cat.icon}
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0 0 0.5rem 0;">${cat.name}</h3>
+                            <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">
+                                ${cat.description}
+                            </p>
+                            <div class="thread-meta" style="margin-top: 0.75rem;">
+                                <span id="category-${key}-threads">
+                                    <i class="fas fa-comments"></i> Loading...
+                                </span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: var(--gray-400); font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            // Load thread counts for each category
+            Object.keys(CATEGORIES).forEach(loadCategoryCount);
+        }
+
+        async function loadCategoryCount(categoryKey) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/forum?category=${categoryKey}&limit=1`);
+                const data = await response.json();
+                const count = data.pagination?.total || 0;
+                const el = document.getElementById(`category-${categoryKey}-threads`);
+                if (el) {
+                    el.innerHTML = `<i class="fas fa-comments"></i> ${count} discussion${count !== 1 ? 's' : ''}`;
+                }
+            } catch (error) {
+                console.error('Error loading category count:', error);
+            }
+        }
+
+        function showCategories() {
+            document.getElementById('categoriesView').style.display = 'block';
+            document.getElementById('threadsView').style.display = 'none';
+            currentCategory = null;
+        }
+
+        function showThreads(categoryKey) {
+            currentCategory = categoryKey;
+            const cat = CATEGORIES[categoryKey];
+            
+            document.getElementById('categoriesView').style.display = 'none';
+            document.getElementById('threadsView').style.display = 'block';
+            document.getElementById('currentCategoryTitle').innerHTML = 
+                `${cat.icon} ${cat.name} <span style="font-size: 0.875rem; color: var(--gray-600); font-weight: normal;">${cat.description}</span>`;
+            
+            currentPage = 1;
+            loadThreads(categoryKey);
+        }
+
+        async function loadThreads(categoryKey) {
+            const threadsList = document.getElementById('threadsList');
+            const searchQuery = document.getElementById('searchThreads').value.trim();
+            const sortBy = document.getElementById('sortThreads').value;
+
+            try {
+                threadsList.innerHTML = '<div style="text-align: center; padding: 3rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--gold);"></i></div>';
+
+                const params = new URLSearchParams({
+                    category: categoryKey,
+                    sortBy,
+                    page: currentPage,
+                    limit: 20
+                });
+
+                if (searchQuery) {
+                    params.append('search', searchQuery);
+                }
+
+                const response = await fetch(`http://localhost:5000/api/forum?${params}`);
+                const data = await response.json();
+
+                const threads = data.threads || [];
+                totalPages = data.pagination?.pages || 1;
+
+                // Update pagination
+                document.getElementById('currentPage').textContent = currentPage;
+                document.getElementById('totalPages').textContent = totalPages;
+                document.getElementById('prevPage').disabled = currentPage <= 1;
+                document.getElementById('nextPage').disabled = currentPage >= totalPages;
+
+                if (threads.length === 0) {
+                    threadsList.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--gray-500);">
+                            <i class="fas fa-scroll" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                            <h3>No discussions yet</h3>
+                            <p>Be the first warrior to start a saga in this hall!</p>
+                            <button class="btn btn-viking mt-2" onclick="openCreateThreadModal()">
+                                <i class="fas fa-plus"></i> Start Discussion
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                threadsList.innerHTML = threads.map(thread => renderThread(thread)).join('');
+            } catch (error) {
+                console.error('Error loading threads:', error);
+                threadsList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--error);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem;"></i>
+                        <p>Failed to load discussions. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderThread(thread) {
+            const author = thread.author || {};
+            const initials = (author.username || 'U').substring(0, 2).toUpperCase();
+            const timeAgo = getTimeAgo(new Date(thread.lastActivity || thread.createdAt));
+            const isPinned = thread.pinned ? 'pinned' : '';
+
+            return `
+                <div class="thread-item ${isPinned}" onclick="viewThread('${thread._id}')">
+                    ${thread.pinned ? '<div class="viking-badge" style="margin-bottom: 0.5rem;"><i class="fas fa-thumbtack"></i> Pinned by Jarl</div>' : ''}
+                    
+                    <h3 style="margin: 0 0 0.5rem 0; color: var(--navy);">
+                        ${escapeHtml(thread.title)}
+                        ${thread.locked ? '<i class="fas fa-lock" style="font-size: 0.875rem; color: var(--gray-500);"></i>' : ''}
+                    </h3>
+                    
+                    <div class="thread-author">
+                        <div class="thread-avatar">${initials}</div>
+                        <span style="font-weight: 500;">${escapeHtml(author.username || 'Unknown')}</span>
+                        <span style="color: var(--gray-400);">•</span>
+                        <span style="color: var(--gray-600);">${timeAgo}</span>
+                    </div>
+
+                    <p style="margin: 0.75rem 0; color: var(--gray-700); line-height: 1.6;">
+                        ${escapeHtml(thread.content).substring(0, 200)}${thread.content.length > 200 ? '...' : ''}
+                    </p>
+
+                    ${thread.tags && thread.tags.length > 0 ? `
+                        <div>
+                            ${thread.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="thread-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>${thread.views || 0}</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-comments"></i>
+                            <span>${thread.replyCount || 0}</span>
+                        </div>
+                        <div class="stat-item ${thread.voteScore > 0 ? 'text-success' : thread.voteScore < 0 ? 'text-error' : ''}">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>${thread.voteScore || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function viewThread(threadId) {
+            window.location.href = `thread.html?id=${threadId}`;
+        }
+
+        function openCreateThreadModal() {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('⚔️ Please login to start a discussion!', 'error');
                 window.location.href = 'auth.html';
                 return;
             }
-            document.getElementById('newTopicModal').style.display = 'flex';
-        });
-        
-        // Create Topic Form
-        document.getElementById('newTopicForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-            
-            try {
-                const title = document.getElementById('topicTitle').value.trim();
-                const content = document.getElementById('topicContent').value.trim();
-                const category = document.getElementById('topicCategory').value;
-                
-                const topicData = {
-                    title,
-                    content,
-                    category
-                };
-                
-                const response = await APIClient.forum.create(topicData);
-                
-                // Show success message
-                alert('✅ Topic created successfully!');
-                
-                // Close modal and reset form
-                document.getElementById('newTopicModal').style.display = 'none';
-                document.getElementById('newTopicForm').reset();
-                
-                // Reload forum topics
-                if (typeof PageLoader !== 'undefined') {
-                    PageLoader.loadForum();
-                }
-                
-            } catch (error) {
-                console.error('Error creating topic:', error);
-                let errorMsg = error.message || 'Please try again';
-                
-                // Add helpful hints based on error type
-                if (errorMsg.includes('authenticate') || errorMsg.includes('logged in')) {
-                    alert('❌ Authentication Error\n\nYou need to log in first to create topics.\n\nClick OK to go to the login page.');
-                    window.location.href = 'auth.html';
-                    return;
-                } else if (errorMsg.includes('validation') || errorMsg.includes('invalid')) {
-                    errorMsg += '\n\nPlease check all required fields are filled correctly.';
-                    alert('❌ Failed to create topic:\n\n' + errorMsg);
-                } else {
-                    alert('❌ Failed to create topic:\n\n' + errorMsg);
-                }
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+
+            const modal = document.getElementById('createThreadModal');
+            modal.style.display = 'flex';
+
+            // Pre-select category if viewing one
+            if (currentCategory) {
+                document.getElementById('threadCategory').value = currentCategory;
             }
-        });
+        }
+
+        function closeCreateThreadModal() {
+            const modal = document.getElementById('createThreadModal');
+            modal.style.display = 'none';
+            document.getElementById('createThreadForm').reset();
+            document.getElementById('titleCharCount').textContent = '0';
+            document.getElementById('contentCharCount').textContent = '0';
+        }
+
+        async function handleCreateThread(e) {
+            e.preventDefault();
+
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login first', 'error');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+            submitBtn.disabled = true;
+
+            try {
+                const title = document.getElementById('threadTitle').value.trim();
+                const content = document.getElementById('threadContent').value.trim();
+                const category = document.getElementById('threadCategory').value;
+                const tagsInput = document.getElementById('threadTags').value.trim();
+                const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+
+                const response = await fetch('http://localhost:5000/api/forum', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ title, content, category, tags })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification('🎉 Your saga has been published!', 'success');
+                    closeCreateThreadModal();
+                    
+                    // Redirect to the new thread
+                    setTimeout(() => {
+                        viewThread(data.thread._id);
+                    }, 1000);
+                } else {
+                    showNotification(data.error || 'Failed to create thread', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating thread:', error);
+                showNotification('Failed to publish saga. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            if (seconds < 604800) return Math.floor(seconds / 86400) + 'd ago';
+            return Math.floor(seconds / 604800) + 'w ago';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification notification-${type}`;
+            notif.textContent = message;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: var(--navy);
+                color: white;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            if (type === 'success') notif.style.background = 'var(--success)';
+            if (type === 'error') notif.style.background = 'var(--error)';
+            
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
     </script>
 </body>
 </html>
