@@ -1234,9 +1234,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Page-specific initialization
-    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-        PageHandlers.initHomepage();
-    }
+    // NOTE: Homepage loading is handled by page-loader.js instead to avoid duplication
+    // if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+    //     PageHandlers.initHomepage();
+    // }
 
     console.log('MLNF initialized successfully');
 });
@@ -1253,3 +1254,6 @@ window.MLNF = {
     Theme,
     Breadcrumbs
 };
+
+// Create global APIClient alias for compatibility with page-loader.js
+window.APIClient = API;

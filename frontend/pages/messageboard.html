@@ -388,8 +388,9 @@
     <script src="../auth-handler.js"></script>
     <script src="../api-client.js"></script>
     <script src="../mock-data.js"></script>
-    <script src="../page-loader.js"></script>
+    <!-- Load scripts.js BEFORE page-loader.js so APIClient is defined -->
     <script src="../scripts.js"></script>
+    <script src="../page-loader.js"></script>
     
     <!-- Message Board Specific Script -->
     <script>
