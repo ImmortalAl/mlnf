@@ -995,7 +995,7 @@ const UI = {
         return `
             <div class="video-card" onclick="window.location.href='pages/archive.html?video=${video._id}'">
                 <div style="position: relative;">
-                    <img src="${video.thumbnail || '/assets/images/placeholder.jpg'}" 
+                    <img src="${video.thumbnail || 'https://via.placeholder.com/320x180/333333/FFFFFF?text=Video'}" 
                          alt="${video.title}" 
                          class="video-thumbnail">
                     ${isBoosted ? '<span class="boosted-badge"><i class="fas fa-rocket"></i> BOOSTED</span>' : ''}
@@ -1138,7 +1138,7 @@ const Breadcrumbs = {
             <ul class="breadcrumb-list">
                 ${State.breadcrumbs.map((crumb, index) => `
                     <li class="breadcrumb-item">
-                        <img src="${crumb.thumbnail || '/assets/images/placeholder.jpg'}" 
+                        <img src="${crumb.thumbnail || 'https://via.placeholder.com/40x40/4A90E2/FFFFFF?text=BC'}" 
                              alt="${crumb.title}" 
                              class="breadcrumb-thumbnail"
                              onclick="window.location.href='${crumb.url}'"
@@ -1238,4 +1238,5 @@ window.MLNF = {
     UI,
     Theme,
     Breadcrumbs
+};
 };
