@@ -10,6 +10,13 @@
   status = 200
   force = false
 
+# Redirect favicon.ico to favicon.svg
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.svg"
+  status = 200
+  force = false
+
 # 404 page redirect (for actual 404s only, not a catch-all)
 [[redirects]]
   from = "/404.html"
