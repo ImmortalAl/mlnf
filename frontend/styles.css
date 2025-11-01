@@ -1358,7 +1358,7 @@ body.debug-mobile .mobile-menu-toggle {
 
   .site-nav {
     top: 80px;
-    height: calc(100vh - 80px);
+    max-height: calc(100vh - 80px);
   }
   
   /* Hero sections */
