@@ -12,6 +12,10 @@ const GridFSBucket = require('mongodb').GridFSBucket;
 const crypto = require('crypto');
 require('dotenv').config();
 
+// Import models
+const Message = require('./models/Message');
+const User = require('./models/User');
+
 // Initialize Express app
 const app = express();
 const httpServer = createServer(app);
@@ -155,6 +159,7 @@ const blockonomicsRoutes = require('./routes/blockonomics');
 const blogRoutes = require('./routes/blog');
 const newsRoutes = require('./routes/news');
 const forumRoutes = require('./routes/forum');
+const messageRoutes = require('./routes/messages');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/videos', videoRoutes);
@@ -164,6 +169,7 @@ app.use('/api/blockonomics', blockonomicsRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/forum', forumRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -196,20 +202,58 @@ io.on('connection', (socket) => {
   });
 
   // Handle private messages
-  socket.on('privateMessage', (data) => {
-    const { to, from, message, timestamp } = data;
-    const recipientSocketId = userSockets.get(to);
-    
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit('privateMessage', {
-        from,
-        message,
-        timestamp: timestamp || new Date()
+  socket.on('privateMessage', async (data) => {
+    try {
+      const { to, from, message, timestamp } = data;
+      
+      // Get user information
+      const sender = await User.findById(from);
+      const recipient = await User.findById(to);
+      
+      if (!sender || !recipient) {
+        console.error('Invalid sender or recipient');
+        socket.emit('messageError', { error: 'Invalid user' });
+        return;
+      }
+      
+      // Save message to database
+      const newMessage = new Message({
+        sender: from,
+        senderUsername: sender.username,
+        recipient: to,
+        recipientUsername: recipient.username,
+        message: message,
+        delivered: false
       });
+      
+      await newMessage.save();
+      
+      // Send to recipient via socket if online
+      const recipientSocketId = userSockets.get(to);
+      if (recipientSocketId) {
+        io.to(recipientSocketId).emit('privateMessage', {
+          messageId: newMessage._id,
+          from,
+          fromUsername: sender.username,
+          message,
+          timestamp: newMessage.createdAt
+        });
+        
+        // Mark as delivered
+        newMessage.delivered = true;
+        await newMessage.save();
+      }
+      
+      // Send confirmation back to sender
+      socket.emit('messageDelivered', { 
+        messageId: newMessage._id,
+        to, 
+        timestamp: newMessage.createdAt 
+      });
+    } catch (error) {
+      console.error('Error handling private message:', error);
+      socket.emit('messageError', { error: 'Failed to send message' });
     }
-    
-    // Send confirmation back to sender
-    socket.emit('messageDelivered', { to, timestamp });
   });
 
   // Handle video comments in real-time

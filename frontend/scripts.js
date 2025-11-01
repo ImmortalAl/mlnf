@@ -431,6 +431,44 @@ const API = {
         async convertUSDtoBTC(amount) {
             return await API.request(`/blockonomics/convert?amount=${amount}`);
         }
+    },
+    
+    // Messages API
+    messages: {
+        async getConversation(userId, limit = 50, skip = 0) {
+            return await API.request(`/messages/conversation/${userId}?limit=${limit}&skip=${skip}`);
+        },
+        
+        async getConversations(limit = 20) {
+            return await API.request(`/messages/conversations?limit=${limit}`);
+        },
+        
+        async sendMessage(recipientId, message) {
+            return await API.request('/messages/send', {
+                method: 'POST',
+                body: JSON.stringify({ recipientId, message })
+            });
+        },
+        
+        async markAsRead(userId) {
+            return await API.request(`/messages/mark-read/${userId}`, {
+                method: 'POST'
+            });
+        },
+        
+        async getUnreadCount() {
+            return await API.request('/messages/unread-count');
+        },
+        
+        async deleteMessage(messageId) {
+            return await API.request(`/messages/${messageId}`, {
+                method: 'DELETE'
+            });
+        },
+        
+        async searchMessages(query, limit = 50) {
+            return await API.request(`/messages/search?query=${encodeURIComponent(query)}&limit=${limit}`);
+        }
     }
 };
 
@@ -697,11 +735,13 @@ const Socket = {
     // Handle private message
     handlePrivateMessage(data) {
         // Show notification or update active chat
-        Utils.showToast(`New message from ${data.from}`, 'info');
+        const fromUsername = data.fromUsername || data.from;
+        Utils.showToast(`New message from ${fromUsername}`, 'info');
         
-        // If messaging modal is open, update it
+        // If messaging modal is open and from current chat user, update it
         const modal = document.getElementById('messagingModal');
-        if (modal && modal.classList.contains('active')) {
+        if (modal && modal.classList.contains('active') && 
+            Messaging.currentChat && Messaging.currentChat.userId === data.from) {
             Messaging.addMessageToChat(data, 'received');
         }
     },
@@ -900,8 +940,41 @@ const Messaging = {
 
     // Load chat history
     async loadChatHistory(userId) {
-        // Would load from backend API
-        // For now, show empty state
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            const response = await fetch(`${CONFIG.API_URL}/messages/conversation/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to load chat history');
+            }
+            
+            const data = await response.json();
+            
+            if (data.success && data.messages) {
+                const container = document.getElementById('messagesContainer');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                // Display all messages
+                data.messages.forEach(msg => {
+                    const isSent = msg.sender === (State.user.id || State.user._id);
+                    this.addMessageToChat({
+                        message: msg.message,
+                        timestamp: msg.createdAt
+                    }, isSent ? 'sent' : 'received');
+                });
+            }
+        } catch (error) {
+            console.error('Error loading chat history:', error);
+            Utils.showToast('Failed to load chat history', 'error');
+        }
     }
 };
 
