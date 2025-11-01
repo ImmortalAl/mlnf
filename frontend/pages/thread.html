@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Thread - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .thread-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid var(--gold);
+        }
+
+        .reply-item {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .reply-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .reply-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .vote-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .vote-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vote-btn:hover {
+            border-color: var(--gold);
+            background: var(--gray-50);
+        }
+
+        .vote-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+                
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link active">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="notificationBadge">0</span>
+                    </div>
+                    
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section style="padding: 2rem 0;">
+        <div class="container">
+            <a href="messageboard.html" class="btn btn-outline mb-3">
+                <i class="fas fa-arrow-left"></i> Back to Mead Hall
+            </a>
+
+            <!-- Thread Content -->
+            <div id="threadContent">
+                <div style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--gold);"></i>
+                    <p style="margin-top: 1rem;">Loading discussion...</p>
+                </div>
+            </div>
+
+            <!-- Reply Form -->
+            <div class="card mt-3" id="replyFormContainer" style="display: none;">
+                <div class="card-body">
+                    <h3 class="mb-3"><i class="fas fa-reply"></i> Join the Discussion</h3>
+                    <form id="replyForm">
+                        <div class="form-group">
+                            <textarea id="replyContent" class="form-control" rows="4" placeholder="Share your thoughts..." required maxlength="5000"></textarea>
+                            <small class="text-muted"><span id="replyCharCount">0</span>/5000 characters</small>
+                        </div>
+                        <button type="submit" class="btn btn-viking">
+                            <i class="fas fa-paper-plane"></i> Post Reply
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 3rem 0;">
+        <div class="container text-center">
+            <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with ❤️ and Viking spirit. ⚔️</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../api-client.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+    <script src="../notifications.js"></script>
+    
+    <script>
+        // Get thread ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const threadId = urlParams.get('id');
+
+        function getApiUrl() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            } else {
+                return 'http://localhost:5000/api';
+            }
+        }
+
+        if (!threadId) {
+            window.location.href = 'messageboard.html';
+        } else {
+            loadThread();
+        }
+
+        async function loadThread() {
+            try {
+                const response = await fetch(`${getApiUrl()}/forum/${threadId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    renderThread(data.thread);
+                    if (MLNFAuth && MLNFAuth.isLoggedIn()) {
+                        document.getElementById('replyFormContainer').style.display = 'block';
+                    }
+                } else {
+                    showError('Thread not found');
+                }
+            } catch (error) {
+                console.error('Error loading thread:', error);
+                showError('Failed to load thread');
+            }
+        }
+
+        function renderThread(thread) {
+            const author = thread.author || {};
+            const initials = (author.username || 'U').substring(0, 2).toUpperCase();
+            const timeAgo = getTimeAgo(new Date(thread.createdAt));
+
+            document.title = `${thread.title} - Much Love, No Fear`;
+
+            const html = `
+                <div class="thread-header">
+                    ${thread.pinned ? '<div class="badge badge-warning mb-2"><i class="fas fa-thumbtack"></i> Pinned</div>' : ''}
+                    <h1 style="margin-bottom: 1rem;">${escapeHtml(thread.title)}</h1>
+                    
+                    <div class="flex gap-md mb-3" style="align-items: center;">
+                        <div class="reply-avatar">${initials}</div>
+                        <div>
+                            <strong>${escapeHtml(author.username || 'Unknown')}</strong>
+                            <br>
+                            <small class="text-muted">${timeAgo} • ${thread.views} views</small>
+                        </div>
+                    </div>
+
+                    <div style="line-height: 1.8; white-space: pre-wrap;">${escapeHtml(thread.content)}</div>
+
+                    ${thread.tags && thread.tags.length > 0 ? `
+                        <div style="margin-top: 1rem;">
+                            ${thread.tags.map(tag => `<span class="badge badge-secondary">${escapeHtml(tag)}</span>`).join(' ')}
+                        </div>
+                    ` : ''}
+
+                    <div class="vote-buttons mt-3">
+                        <button class="vote-btn" onclick="voteThread('upvote')" id="upvoteBtn">
+                            <i class="fas fa-arrow-up"></i> <span id="upvoteCount">${thread.upvotes?.length || 0}</span>
+                        </button>
+                        <button class="vote-btn" onclick="voteThread('downvote')" id="downvoteBtn">
+                            <i class="fas fa-arrow-down"></i> <span id="downvoteCount">${thread.downvotes?.length || 0}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <h3 class="mb-3"><i class="fas fa-comments"></i> ${thread.replies?.length || 0} Replies</h3>
+                ${renderReplies(thread.replies || [])}
+            `;
+
+            document.getElementById('threadContent').innerHTML = html;
+        }
+
+        function renderReplies(replies) {
+            if (replies.length === 0) {
+                return '<div style="text-align: center; padding: 2rem; color: var(--gray-500);">No replies yet. Be the first!</div>';
+            }
+
+            return replies.map(reply => {
+                const author = reply.author || {};
+                const initials = (author.username || 'U').substring(0, 2).toUpperCase();
+                const timeAgo = getTimeAgo(new Date(reply.createdAt));
+
+                return `
+                    <div class="reply-item">
+                        <div class="reply-author">
+                            <div class="reply-avatar">${initials}</div>
+                            <div>
+                                <strong>${escapeHtml(author.username || 'Unknown')}</strong>
+                                <br>
+                                <small class="text-muted">${timeAgo}</small>
+                            </div>
+                        </div>
+                        <div style="line-height: 1.6; white-space: pre-wrap;">${escapeHtml(reply.content)}</div>
+                        <div class="vote-buttons mt-2">
+                            <button class="vote-btn" onclick="voteReply('${reply._id}', 'upvote')">
+                                <i class="fas fa-arrow-up"></i> ${reply.upvotes?.length || 0}
+                            </button>
+                            <button class="vote-btn" onclick="voteReply('${reply._id}', 'downvote')">
+                                <i class="fas fa-arrow-down"></i> ${reply.downvotes?.length || 0}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Reply form
+        document.getElementById('replyContent')?.addEventListener('input', function() {
+            document.getElementById('replyCharCount').textContent = this.value.length;
+        });
+
+        document.getElementById('replyForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('replyContent').value.trim();
+            if (!content) return;
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+            try {
+                const response = await fetch(`${getApiUrl()}/forum/${threadId}/reply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (response.ok) {
+                    document.getElementById('replyContent').value = '';
+                    document.getElementById('replyCharCount').textContent = '0';
+                    loadThread(); // Reload to show new reply
+                    showNotification('Reply posted!', 'success');
+                } else {
+                    showNotification('Failed to post reply', 'error');
+                }
+            } catch (error) {
+                console.error('Error posting reply:', error);
+                showNotification('Failed to post reply', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Reply';
+            }
+        });
+
+        async function voteThread(voteType) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to vote', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/forum/${threadId}/vote`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ voteType })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('upvoteCount').textContent = data.upvotes;
+                    document.getElementById('downvoteCount').textContent = data.downvotes;
+                }
+            } catch (error) {
+                console.error('Error voting:', error);
+            }
+        }
+
+        async function voteReply(replyId, voteType) {
+            if (!MLNFAuth.isLoggedIn()) {
+                showNotification('Please login to vote', 'error');
+                return;
+            }
+
+            try {
+                await fetch(`${getApiUrl()}/forum/${threadId}/reply/${replyId}/vote`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({ voteType })
+                });
+                
+                loadThread(); // Reload to update votes
+            } catch (error) {
+                console.error('Error voting on reply:', error);
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            if (seconds < 604800) return Math.floor(seconds / 86400) + 'd ago';
+            return Math.floor(seconds / 604800) + 'w ago';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showError(message) {
+            document.getElementById('threadContent').innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: var(--error);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>${message}</h3>
+                    <a href="messageboard.html" class="btn btn-primary mt-2">Back to Mead Hall</a>
+                </div>
+            `;
+        }
+
+        function showNotification(message, type) {
+            const notif = document.createElement('div');
+            notif.textContent = message;
+            notif.style.cssText = `
+                position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem;
+                background: var(--${type === 'success' ? 'success' : 'error'});
+                color: white; border-radius: var(--radius-md); z-index: 10000;
+            `;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
