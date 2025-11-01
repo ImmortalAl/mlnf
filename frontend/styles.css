@@ -261,12 +261,12 @@ a:hover {
 /* DEBUG MODE - Add class to body to enable */
 body.debug-mobile .site-header {
   outline: 5px solid red !important;
-  background: rgba(255, 0, 0, 0.3) !important;
+  /* Keep header opaque - don't override background */
 }
 
 body.debug-mobile .site-nav {
   outline: 5px solid lime !important;
-  background: rgba(0, 255, 0, 0.3) !important;
+  /* Keep nav background opaque */
 }
 
 body.debug-mobile .site-logo {
