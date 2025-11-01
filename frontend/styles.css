@@ -1285,19 +1285,22 @@ a:hover {
   /* Optimize header FIRST - before general flex rules */
   .site-header {
     padding: var(--space-md) 0;
+    min-height: auto !important;
+    height: auto !important;
   }
 
   .site-header .container {
-    display: block;
+    min-height: auto !important;
+    height: auto !important;
   }
   
-  .site-header .flex-between {
+  .site-header .container > .flex.flex-between {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
     gap: var(--space-md) !important;
-    min-height: 64px !important;
+    min-height: auto !important;
     height: auto !important;
   }
   
@@ -1305,8 +1308,11 @@ a:hover {
     font-size: 1.25rem;
   }
 
-  /* Stack flex items (general rule for other elements) */
-  .flex-between {
+  /* Stack flex items (general rule for other elements NOT in header) */
+  section .flex-between,
+  main .flex-between,
+  footer .flex-between,
+  .card .flex-between {
     flex-direction: column;
     gap: var(--space-md);
     align-items: stretch !important;
