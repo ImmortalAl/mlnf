@@ -547,8 +547,15 @@
         }
 
         function loadCategories() {
+            console.log('📂 Loading categories...');
             const grid = document.getElementById('categoriesGrid');
             
+            if (!grid) {
+                console.error('❌ categoriesGrid element not found!');
+                return;
+            }
+            
+            console.log('✅ Found categoriesGrid, rendering', Object.keys(CATEGORIES).length, 'categories');
             grid.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
                 <div class="category-card" onclick="showThreads('${key}')">
                     <div class="flex gap-md">
@@ -570,9 +577,12 @@
                     </div>
                 </div>
             `).join('');
+            
+            console.log('✅ Categories HTML rendered, length:', grid.innerHTML.length);
 
             // Load thread counts for each category
             Object.keys(CATEGORIES).forEach(loadCategoryCount);
+            console.log('✅ Started loading category counts');
         }
 
         async function loadCategoryCount(categoryKey) {
