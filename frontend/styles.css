@@ -353,7 +353,7 @@ body.debug-mobile .mobile-menu-toggle {
   }
   
   .site-nav {
-    display: none;
+    display: none !important;
     position: fixed;
     top: 80px;
     left: 0;
@@ -367,9 +367,9 @@ body.debug-mobile .mobile-menu-toggle {
     z-index: 999;
     overflow-y: auto;
   }
-  
+
   .site-nav.active {
-    display: flex;
+    display: flex !important;
   }
 }
 
