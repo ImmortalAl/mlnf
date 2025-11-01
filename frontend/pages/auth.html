@@ -520,6 +520,8 @@
             
             try {
                 const API_BASE_URL = getAPIBaseURL();
+                console.log('🔍 Checking token with:', API_BASE_URL);
+                
                 const response = await fetch(`${API_BASE_URL}/auth/me`, {
                     method: 'GET',
                     headers: {
@@ -527,16 +529,22 @@
                     }
                 });
                 
+                console.log('📡 Response status:', response.status);
+                
                 if (response.ok) {
                     // Token is valid, redirect to dashboard
                     console.log('✅ Token valid, redirecting to dashboard');
                     window.location.href = '../dashboard.html';
-                } else {
-                    // Token is invalid or expired, clear it
-                    console.log('⚠️ Token invalid, clearing localStorage');
+                } else if (response.status === 401) {
+                    // Only clear on 401 Unauthorized
+                    console.log('⚠️ Token unauthorized (401), clearing localStorage');
                     localStorage.removeItem('mlnf_token');
                     localStorage.removeItem('mlnf_user');
                     showNotification('Session expired. Please login again.', 'info');
+                } else {
+                    // For other errors, assume token is valid and redirect
+                    console.log('⚠️ Backend error', response.status, '- redirecting anyway');
+                    window.location.href = '../dashboard.html';
                 }
             } catch (error) {
                 console.error('Token validation error:', error);

@@ -45,12 +45,16 @@
             // Get API URL based on environment
             const API_BASE_URL = getAPIBaseURL();
             
+            console.log('🔍 Validating token with:', API_BASE_URL);
+            
             const response = await fetch(`${API_BASE_URL}/auth/me`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            
+            console.log('📡 Token validation response:', response.status);
             
             if (response.ok) {
                 const data = await response.json();
@@ -60,9 +64,14 @@
                 }
                 console.log('✅ Token validated successfully');
                 return true;
-            } else {
-                console.log('❌ Token validation failed:', response.status);
+            } else if (response.status === 401) {
+                // Only clear token on 401 Unauthorized (expired/invalid token)
+                console.log('❌ Token validation failed: 401 Unauthorized');
                 return false;
+            } else {
+                // For other errors (500, 503, etc), assume token is valid
+                console.log('⚠️ Backend returned', response.status, '- assuming token valid');
+                return true;
             }
         } catch (error) {
             console.error('❌ Token validation error:', error);
