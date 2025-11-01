@@ -511,6 +511,13 @@
         
         // Validate token and redirect to dashboard
         async function validateAndRedirect(token) {
+            // Check if this is a local token (offline mode)
+            if (token.startsWith('local_')) {
+                console.log('✅ Local token detected, redirecting to dashboard');
+                window.location.href = '../dashboard.html';
+                return;
+            }
+            
             try {
                 const API_BASE_URL = getAPIBaseURL();
                 const response = await fetch(`${API_BASE_URL}/auth/me`, {

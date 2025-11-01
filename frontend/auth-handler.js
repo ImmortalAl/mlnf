@@ -35,6 +35,12 @@
     
     // Validate token with backend
     async function validateToken(token) {
+        // Check if this is a local token (offline mode)
+        if (token.startsWith('local_')) {
+            console.log('✅ Local token detected, skipping backend validation');
+            return true;
+        }
+        
         try {
             // Get API URL based on environment
             const API_BASE_URL = getAPIBaseURL();
