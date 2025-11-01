@@ -1541,23 +1541,38 @@ body.debug-mobile .mobile-menu-toggle {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
+  /* CRITICAL: Prevent header elements from expanding due to touch targets */
+  .site-header,
+  .site-header .container,
+  .site-header .flex,
+  .site-header .flex-between {
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  .site-header .mobile-menu-toggle,
+  .site-header .site-logo {
+    min-height: auto !important;
+    height: auto !important;
+  }
+
   /* Remove hover effects */
   .btn:hover,
   .card:hover {
     transform: none;
   }
-  
+
   /* Add active states for touch feedback */
   .btn:active {
     transform: scale(0.98);
     opacity: 0.9;
   }
-  
+
   .card:active {
     transform: scale(0.99);
   }
-  
+
   /* Larger form controls */
   .form-control,
   select,
@@ -1565,7 +1580,7 @@ body.debug-mobile .mobile-menu-toggle {
     min-height: 44px;
     font-size: 16px; /* Prevents zoom on iOS */
   }
-  
+
   /* Easier to tap checkboxes and radios */
   input[type="checkbox"],
   input[type="radio"] {
