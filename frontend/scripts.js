@@ -1220,19 +1220,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileToggle = document.getElementById('mobileMenuToggle');
     const mainNav = document.getElementById('mainNav');
     const siteHeader = document.querySelector('.site-header');
-    
-    console.log('🔍 MOBILE MENU DEBUG - Initial Check');
-    console.log('Mobile Toggle Element:', mobileToggle);
-    console.log('Main Nav Element:', mainNav);
-    console.log('Site Header Element:', siteHeader);
-    console.log('Viewport Width:', window.innerWidth);
-    console.log('Viewport Height:', window.innerHeight);
-    console.log('Screen Size:', window.screen.width, 'x', window.screen.height);
-    console.log('User Agent:', navigator.userAgent);
-    console.log('Touch Support:', 'ontouchstart' in window);
-    console.log('Visual Viewport:', window.visualViewport?.height, 'vs window.innerHeight:', window.innerHeight);
-    console.log('Document Height:', document.documentElement.clientHeight);
-    
+
     if (mobileToggle && mainNav) {
         mobileToggle.type = 'button';
         mobileToggle.setAttribute('aria-label', 'Toggle navigation menu');
@@ -1258,23 +1246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mainNav.style.top = `${headerHeight}px`;
             
             fixAppliedCount++;
-            
-            console.log('📱 Mobile viewport fix applied (#' + fixAppliedCount + '):', {
-                vh: vh,
-                headerHeight: headerHeight,
-                maxNavHeight: maxNavHeight,
-                visualViewportHeight: window.visualViewport?.height,
-                innerHeight: window.innerHeight,
-                navMaxHeight: mainNav.style.maxHeight,
-                navTop: mainNav.style.top
-            });
-            
-            // Show alert only on first application on mobile
-            if (fixAppliedCount === 1 && window.innerWidth <= 768) {
-                setTimeout(() => {
-                    alert('🔧 Mobile Fix Applied!\nHeader: ' + headerHeight + 'px\nNav Max: ' + maxNavHeight + 'px\nViewport: ' + window.innerHeight + 'px');
-                }, 500);
-            }
         };
         
         // Apply on load and when viewport changes (address bar hide/show)
@@ -1289,165 +1260,35 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(setMobileViewportHeight, 100);
         });
 
-        // Debug header and nav dimensions
-        const logDimensions = (label) => {
-            const headerRect = siteHeader ? siteHeader.getBoundingClientRect() : null;
-            const navRect = mainNav.getBoundingClientRect();
-            
-            console.log(`📐 ${label} - Dimensions:`);
-            if (headerRect) {
-                console.log('  Header:', {
-                    height: headerRect.height,
-                    top: headerRect.top,
-                    bottom: headerRect.bottom
-                });
-            }
-            console.log('  Nav:', {
-                display: window.getComputedStyle(mainNav).display,
-                position: window.getComputedStyle(mainNav).position,
-                top: window.getComputedStyle(mainNav).top,
-                height: window.getComputedStyle(mainNav).height,
-                maxHeight: window.getComputedStyle(mainNav).maxHeight,
-                overflowY: window.getComputedStyle(mainNav).overflowY,
-                zIndex: window.getComputedStyle(mainNav).zIndex,
-                rect: {
-                    top: navRect.top,
-                    bottom: navRect.bottom,
-                    height: navRect.height
-                }
-            });
-            console.log('  Classes:', mainNav.className);
-            console.log('  Viewport Height:', window.innerHeight);
-            console.log('  Space Available:', window.innerHeight - (headerRect?.height || 0));
-        };
-
-        logDimensions('INITIAL');
-
         const closeMenu = () => {
-            console.log('🚪 CLOSING MENU');
             mainNav.classList.remove('active');
             document.body.classList.remove('mobile-nav-open');
             mobileToggle.setAttribute('aria-expanded', 'false');
-            logDimensions('AFTER CLOSE');
         };
 
         const toggleMenu = () => {
             const isOpen = mainNav.classList.toggle('active');
             document.body.classList.toggle('mobile-nav-open', isOpen);
             mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            
-            console.log(`🔄 MENU TOGGLED - Now ${isOpen ? 'OPEN' : 'CLOSED'}`);
-            logDimensions('AFTER TOGGLE');
         };
 
         mobileToggle.addEventListener('click', () => {
-            console.log('👆 MENU TOGGLE CLICKED');
             toggleMenu();
         });
 
         mainNav.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 if (mainNav.classList.contains('active')) {
-                    console.log('🔗 NAV LINK CLICKED - Closing menu');
                     closeMenu();
                 }
             });
         });
 
         window.addEventListener('resize', Utils.debounce(() => {
-            console.log('📱 WINDOW RESIZED:', window.innerWidth, 'x', window.innerHeight);
-            logDimensions('AFTER RESIZE');
             if (window.innerWidth > 768 && mainNav.classList.contains('active')) {
-                console.log('↔️ Desktop mode - auto closing menu');
                 closeMenu();
             }
         }, 150));
-        
-        // Log on page load
-        setTimeout(() => {
-            logDimensions('AFTER PAGE LOAD');
-        }, 1000);
-        
-        // Visual debugging overlay (only on mobile)
-        if (window.innerWidth <= 768) {
-            // Enable debug mode by default on mobile
-            document.body.classList.add('debug-mobile');
-            
-            const debugOverlay = document.createElement('div');
-            debugOverlay.id = 'mobile-debug-overlay';
-            debugOverlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                background: rgba(0, 0, 0, 0.95);
-                color: lime;
-                padding: 12px;
-                font-size: 13px;
-                font-family: monospace;
-                z-index: 10001;
-                max-height: 250px;
-                overflow-y: auto;
-                border-bottom: 4px solid red;
-                box-shadow: 0 4px 20px rgba(255, 0, 0, 0.5);
-            `;
-            
-            const updateDebugInfo = () => {
-                const headerRect = siteHeader?.getBoundingClientRect();
-                const navRect = mainNav.getBoundingClientRect();
-                const navStyles = window.getComputedStyle(mainNav);
-                const isDebugMode = document.body.classList.contains('debug-mobile');
-                const visualVH = window.visualViewport?.height || 'N/A';
-                const innerH = window.innerHeight;
-                const screenH = window.screen.height;
-                
-                debugOverlay.innerHTML = `
-                    <div style="font-size:16px;font-weight:bold;color:yellow;margin-bottom:8px;">
-                        🐛 MOBILE DEBUG PANEL
-                        <button onclick="this.parentElement.parentElement.remove()" 
-                                style="float:right;background:red;color:white;border:none;padding:4px 12px;cursor:pointer;font-size:14px;border-radius:4px;">
-                            CLOSE ✕
-                        </button>
-                        <button onclick="document.body.classList.toggle('debug-mobile');" 
-                                style="float:right;background:${isDebugMode ? 'lime' : 'gray'};color:black;border:none;padding:4px 12px;cursor:pointer;margin-right:8px;font-size:14px;border-radius:4px;">
-                            Highlights: ${isDebugMode ? 'ON' : 'OFF'}
-                        </button>
-                    </div>
-                    <div style="color:cyan;">Viewport: <span style="color:white;">${window.innerWidth}x${innerH}px</span> | Screen: <span style="color:white;">${screenH}px</span></div>
-                    <div style="color:orange;">Visual VH: <span style="color:white;">${visualVH}</span> | Diff: <span style="color:${typeof visualVH === 'number' && (innerH - visualVH) > 50 ? 'red' : 'white'}">${typeof visualVH === 'number' ? (innerH - visualVH).toFixed(0) : 'N/A'}px</span></div>
-                    <div style="color:cyan;">Header Height: <span style="color:white;">${headerRect?.height.toFixed(0)}px</span></div>
-                    <div style="color:yellow;">Nav Display: <span style="color:white;">${navStyles.display}</span></div>
-                    <div style="color:yellow;">Nav Top (CSS): <span style="color:white;">${navStyles.top}</span> | Top (Inline): <span style="color:${mainNav.style.top ? 'lime' : 'red'}">${mainNav.style.top || 'NOT SET!'}</span></div>
-                    <div style="color:yellow;">Nav MaxH (CSS): <span style="color:white;">${navStyles.maxHeight}</span> | MaxH (Inline): <span style="color:${mainNav.style.maxHeight ? 'lime' : 'red'}">${mainNav.style.maxHeight || 'NOT SET!'}</span></div>
-                    <div style="color:cyan;">Nav Actual Size: <span style="color:white;">${navRect.height.toFixed(0)}px</span> (top: ${navRect.top.toFixed(0)}, bottom: ${navRect.bottom.toFixed(0)})</div>
-                    <div style="color:${navRect.bottom > window.innerHeight ? 'red' : 'lime'};font-weight:bold;">
-                        ${navRect.bottom > window.innerHeight ? '❌ NAV OVERFLOWS SCREEN!' : '✅ Nav fits on screen'}
-                    </div>
-                    <div style="color:white;margin-top:4px;">Menu Status: <span style="color:${mainNav.classList.contains('active') ? 'lime' : 'orange'};font-weight:bold;">${mainNav.classList.contains('active') ? '✅ OPEN' : '❌ CLOSED'}</span></div>
-                `;
-            };
-            
-            updateDebugInfo();
-            document.body.appendChild(debugOverlay);
-            
-            // Update on menu toggle and viewport changes
-            const observer = new MutationObserver(() => {
-                updateDebugInfo();
-            });
-            observer.observe(mainNav, { attributes: true, attributeFilter: ['class'] });
-            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-            
-            // Update on viewport resize (mobile address bar show/hide)
-            window.addEventListener('resize', updateDebugInfo);
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', updateDebugInfo);
-            }
-            window.addEventListener('orientationchange', () => {
-                setTimeout(updateDebugInfo, 100);
-            });
-            
-            console.log('🎨 Visual debug overlay added at bottom of screen');
-        }
     } else {
         console.error('❌ Mobile menu elements not found!', {
             mobileToggle,

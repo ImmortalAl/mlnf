@@ -258,25 +258,6 @@ a:hover {
   border-bottom: 3px solid var(--gold);
 }
 
-/* DEBUG MODE - Add class to body to enable */
-body.debug-mobile .site-header {
-  outline: 5px solid red !important;
-  /* Keep header opaque - don't override background */
-}
-
-body.debug-mobile .site-nav {
-  outline: 5px solid lime !important;
-  /* Keep nav background opaque */
-}
-
-body.debug-mobile .site-logo {
-  outline: 3px solid yellow !important;
-}
-
-body.debug-mobile .mobile-menu-toggle {
-  outline: 3px solid cyan !important;
-}
-
 .site-logo {
   font-family: var(--font-display);
   font-size: 2rem;
