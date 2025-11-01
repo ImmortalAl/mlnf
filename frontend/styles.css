@@ -351,8 +351,9 @@ body.debug-mobile .mobile-menu-toggle {
     display: block;
     flex-shrink: 0;
   }
-  
-  .site-nav {
+
+  /* Use ID selector for higher specificity */
+  #mainNav {
     display: none !important;
     position: fixed;
     top: 80px;
@@ -368,7 +369,7 @@ body.debug-mobile .mobile-menu-toggle {
     overflow-y: auto;
   }
 
-  .site-nav.active {
+  #mainNav.active {
     display: flex !important;
   }
 }
