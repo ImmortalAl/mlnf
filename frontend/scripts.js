@@ -539,6 +539,12 @@ const Auth = {
             this.updateRunegoldDisplay();
         } catch (error) {
             console.error('Failed to refresh profile:', error);
+            
+            // If authentication fails, clear stored credentials
+            if (error.message && error.message.includes('authenticate')) {
+                console.log('Token expired or invalid, clearing session');
+                this.logout();
+            }
         }
     },
 
