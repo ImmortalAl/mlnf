@@ -485,9 +485,9 @@ const Auth = {
             State.token = token;
             State.user = JSON.parse(user);
             this.updateUI();
-            
-            // Load user profile in background (will auto-logout if token invalid)
-            this.refreshProfile();
+
+            // Don't call refreshProfile() here - auth-handler.js handles validation
+            // refreshProfile() can be called explicitly when needed by specific pages
         } else if (token || user) {
             // Partial credentials - clear everything
             console.warn('⚠️ Incomplete credentials found, clearing...');
@@ -544,21 +544,28 @@ const Auth = {
             this.updateRunegoldDisplay();
         } catch (error) {
             console.error('Failed to refresh profile:', error);
-            
-            // If authentication fails, force immediate logout
-            console.warn('⚠️ Authentication failed - forcing logout');
-            
-            // Clear everything immediately
-            localStorage.removeItem('mlnf_token');
-            localStorage.removeItem('mlnf_user');
-            State.token = null;
-            State.user = null;
-            
-            // Show alert to user
-            alert('⚠️ Your session has expired or is invalid.\n\nYou will be redirected to the login page.\n\nPlease log in again to continue.');
-            
-            // Redirect to auth page
-            window.location.href = window.location.pathname.includes('/pages/') ? 'auth.html' : 'pages/auth.html';
+
+            // Only force logout if this is specifically "Please authenticate" from backend 401
+            // Don't logout for "No authentication token" (client-side check) or network errors
+            if (error.message && error.message === 'Please authenticate') {
+                console.warn('⚠️ Token is invalid (401 from backend) - forcing logout');
+
+                // Clear everything immediately
+                localStorage.removeItem('mlnf_token');
+                localStorage.removeItem('mlnf_user');
+                State.token = null;
+                State.user = null;
+
+                // Show alert to user
+                alert('⚠️ Your session has expired or is invalid.\n\nYou will be redirected to the login page.\n\nPlease log in again to continue.');
+
+                // Redirect to auth page
+                window.location.href = window.location.pathname.includes('/pages/') ? 'auth.html' : 'pages/auth.html';
+            } else {
+                // For other errors (network, backend down, no token yet), allow offline access
+                console.warn('⚠️ Could not refresh profile:', error.message, '- continuing in offline mode');
+                // Keep using cached user data from localStorage
+            }
         }
     },
 
