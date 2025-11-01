@@ -475,9 +475,26 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🍺 DOMContentLoaded - Initializing Mead Hall...');
             try {
+                // Ensure mobile menu is closed on page load
+                const mainNav = document.getElementById('mainNav');
+                if (mainNav) {
+                    mainNav.classList.remove('active');
+                    console.log('✅ Mobile menu closed');
+                }
+                
                 loadCategories();
                 setupEventListeners();
                 loadActiveWarriorsCount();
+                
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    const mainNav = document.getElementById('mainNav');
+                    const mobileToggle = document.getElementById('mobileMenuToggle');
+                    if (mainNav && mobileToggle && !mainNav.contains(e.target) && !mobileToggle.contains(e.target)) {
+                        mainNav.classList.remove('active');
+                    }
+                });
+                
                 console.log('✅ Mead Hall initialized successfully!');
             } catch (error) {
                 console.error('❌ Error initializing Mead Hall:', error);
