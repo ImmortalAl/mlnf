@@ -7,16 +7,91 @@
     'use strict';
     
     // Initialize auth state on page load
-    function initAuth() {
+    async function initAuth() {
         const token = localStorage.getItem('mlnf_token');
         const user = localStorage.getItem('mlnf_user');
         
         if (token && user) {
             const userData = JSON.parse(user);
+            
+            // Validate token with backend if on protected pages
+            const protectedPages = ['dashboard.html'];
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            if (protectedPages.includes(currentPage)) {
+                const isValid = await validateToken(token);
+                if (!isValid) {
+                    console.log('⚠️ Token validation failed, redirecting to login');
+                    clearAuthAndRedirect();
+                    return;
+                }
+            }
+            
             updateUIForLoggedInUser(userData);
         } else {
             updateUIForLoggedOutUser();
         }
+    }
+    
+    // Validate token with backend
+    async function validateToken(token) {
+        try {
+            // Get API URL based on environment
+            const API_BASE_URL = getAPIBaseURL();
+            
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                // Update user data in localStorage with fresh data from backend
+                if (data.user) {
+                    localStorage.setItem('mlnf_user', JSON.stringify(data.user));
+                }
+                console.log('✅ Token validated successfully');
+                return true;
+            } else {
+                console.log('❌ Token validation failed:', response.status);
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Token validation error:', error);
+            // If backend is unreachable, allow access (offline mode)
+            // This prevents breaking the app when backend is down
+            console.log('⚠️ Backend unreachable, allowing offline access');
+            return true;
+        }
+    }
+    
+    // Get API Base URL based on environment
+    function getAPIBaseURL() {
+        const hostname = window.location.hostname;
+        
+        if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+            return 'https://much-love-no-fear.onrender.com/api';
+        }
+        
+        if (hostname.includes('sandbox.novita.ai') || hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:5000/api';
+        }
+        
+        return 'https://much-love-no-fear.onrender.com/api';
+    }
+    
+    // Clear authentication and redirect to login
+    function clearAuthAndRedirect() {
+        localStorage.removeItem('mlnf_token');
+        localStorage.removeItem('mlnf_user');
+        showNotification('Session expired. Please login again.', 'error');
+        
+        setTimeout(() => {
+            const isInSubdir = window.location.pathname.includes('/pages/');
+            window.location.href = isInSubdir ? 'auth.html' : 'pages/auth.html';
+        }, 1000);
     }
     
     // Update UI for logged-in users

@@ -329,10 +329,11 @@
 
         // Initialize authentication handlers
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if already logged in
+            // Check if already logged in and validate token
             const token = localStorage.getItem('mlnf_token');
             if (token) {
-                window.location.href = '../dashboard.html';
+                // Validate token before redirecting
+                validateAndRedirect(token);
                 return;
             }
 
@@ -493,14 +494,127 @@
             }
         });
         
+        // Get API Base URL
+        function getAPIBaseURL() {
+            const hostname = window.location.hostname;
+            
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            }
+            
+            if (hostname.includes('sandbox.novita.ai') || hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000/api';
+            }
+            
+            return 'https://much-love-no-fear.onrender.com/api';
+        }
+        
+        // Validate token and redirect to dashboard
+        async function validateAndRedirect(token) {
+            try {
+                const API_BASE_URL = getAPIBaseURL();
+                const response = await fetch(`${API_BASE_URL}/auth/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    // Token is valid, redirect to dashboard
+                    console.log('✅ Token valid, redirecting to dashboard');
+                    window.location.href = '../dashboard.html';
+                } else {
+                    // Token is invalid or expired, clear it
+                    console.log('⚠️ Token invalid, clearing localStorage');
+                    localStorage.removeItem('mlnf_token');
+                    localStorage.removeItem('mlnf_user');
+                    showNotification('Session expired. Please login again.', 'info');
+                }
+            } catch (error) {
+                console.error('Token validation error:', error);
+                // If backend is unreachable, allow redirect anyway (offline mode)
+                console.log('⚠️ Backend unreachable, allowing offline access');
+                window.location.href = '../dashboard.html';
+            }
+        }
+        
         // Handle successful login/registration
         function handleLoginSuccess(data) {
+            console.log('✅ Login successful, saving auth data');
+            console.log('Token:', data.token ? 'Present' : 'Missing');
+            console.log('User:', data.user);
+            
             localStorage.setItem('mlnf_token', data.token);
             localStorage.setItem('mlnf_user', JSON.stringify(data.user));
+            
+            // Verify data was saved
+            const savedToken = localStorage.getItem('mlnf_token');
+            const savedUser = localStorage.getItem('mlnf_user');
+            console.log('Verification - Token saved:', !!savedToken);
+            console.log('Verification - User saved:', !!savedUser);
             
             showNotification('Welcome, ' + data.user.username + '!', 'success');
             
             setTimeout(() => {
+                console.log('Redirecting to dashboard...');
+                window.location.href = '../dashboard.html';
+            }, 1000);
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                z-index: 9999;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+            `;
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> = localStorage.getItem('mlnf_user');
+            console.log('Verification - Token saved:', !!savedToken);
+            console.log('Verification - User saved:', !!savedUser);
+            
+            showNotification('Welcome, ' + data.user.username + '!', 'success');
+            
+            setTimeout(() => {
+                console.log('Redirecting to dashboard...');
                 window.location.href = '../dashboard.html';
             }, 1000);
         }

@@ -127,6 +127,7 @@ router.post('/register', [
     res.status(201).json({
       message: 'Registration successful',
       user: {
+        _id: user._id,
         id: user._id,
         username: user.username,
         email: user.email,
@@ -205,6 +206,7 @@ router.post('/login', [
     res.json({
       message: 'Login successful',
       user: {
+        _id: user._id,
         id: user._id,
         username: user.username,
         email: user.email,
