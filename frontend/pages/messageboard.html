@@ -415,6 +415,8 @@
     
     <!-- Message Board Script -->
     <script>
+        console.log('🍺 Mead Hall Script Starting...');
+        
         // Category definitions
         const CATEGORIES = {
             war_council: {
@@ -471,9 +473,15 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            loadCategories();
-            setupEventListeners();
-            loadActiveWarriorsCount();
+            console.log('🍺 DOMContentLoaded - Initializing Mead Hall...');
+            try {
+                loadCategories();
+                setupEventListeners();
+                loadActiveWarriorsCount();
+                console.log('✅ Mead Hall initialized successfully!');
+            } catch (error) {
+                console.error('❌ Error initializing Mead Hall:', error);
+            }
         });
 
         function setupEventListeners() {
