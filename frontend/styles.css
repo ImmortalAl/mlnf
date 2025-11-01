@@ -7,6 +7,10 @@
    CSS VARIABLES - Viking Color Palette
    ============================================ */
 :root {
+  /* Mobile viewport fix - will be set by JavaScript */
+  --vh: 1vh;
+  --header-height: 80px;
+  
   /* Primary Colors */
   --peach: #FF6B6B;
   --indigo: #4A90E2;
@@ -252,6 +256,25 @@ a:hover {
   top: 0;
   z-index: 1000;
   border-bottom: 3px solid var(--gold);
+}
+
+/* DEBUG MODE - Add class to body to enable */
+body.debug-mobile .site-header {
+  outline: 5px solid red !important;
+  background: rgba(255, 0, 0, 0.3) !important;
+}
+
+body.debug-mobile .site-nav {
+  outline: 5px solid lime !important;
+  background: rgba(0, 255, 0, 0.3) !important;
+}
+
+body.debug-mobile .site-logo {
+  outline: 3px solid yellow !important;
+}
+
+body.debug-mobile .mobile-menu-toggle {
+  outline: 3px solid cyan !important;
 }
 
 .site-logo {

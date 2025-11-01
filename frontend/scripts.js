@@ -1219,41 +1219,216 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile menu toggle
     const mobileToggle = document.getElementById('mobileMenuToggle');
     const mainNav = document.getElementById('mainNav');
+    const siteHeader = document.querySelector('.site-header');
+    
+    console.log('🔍 MOBILE MENU DEBUG - Initial Check');
+    console.log('Mobile Toggle Element:', mobileToggle);
+    console.log('Main Nav Element:', mainNav);
+    console.log('Site Header Element:', siteHeader);
+    console.log('Viewport Width:', window.innerWidth);
+    console.log('Viewport Height:', window.innerHeight);
+    console.log('Screen Size:', window.screen.width, 'x', window.screen.height);
+    console.log('User Agent:', navigator.userAgent);
+    console.log('Touch Support:', 'ontouchstart' in window);
+    console.log('Visual Viewport:', window.visualViewport?.height, 'vs window.innerHeight:', window.innerHeight);
+    console.log('Document Height:', document.documentElement.clientHeight);
+    
     if (mobileToggle && mainNav) {
         mobileToggle.type = 'button';
         mobileToggle.setAttribute('aria-label', 'Toggle navigation menu');
         mobileToggle.setAttribute('aria-controls', 'mainNav');
         mobileToggle.setAttribute('aria-expanded', 'false');
 
+        // Fix for mobile viewport height issue (iOS Safari, Chrome mobile, etc.)
+        const setMobileViewportHeight = () => {
+            // Use visualViewport if available (more accurate on mobile), otherwise innerHeight
+            const vh = (window.visualViewport?.height || window.innerHeight) * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            
+            // Calculate actual header height
+            const headerHeight = siteHeader?.offsetHeight || 80;
+            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+            
+            // Set max height for nav based on actual measurements
+            const maxNavHeight = (window.visualViewport?.height || window.innerHeight) - headerHeight;
+            mainNav.style.maxHeight = `${maxNavHeight}px`;
+            
+            console.log('📱 Mobile viewport fix applied:', {
+                vh: vh,
+                headerHeight: headerHeight,
+                maxNavHeight: maxNavHeight,
+                visualViewportHeight: window.visualViewport?.height,
+                innerHeight: window.innerHeight
+            });
+        };
+        
+        // Apply on load and when viewport changes (address bar hide/show)
+        setMobileViewportHeight();
+        
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', setMobileViewportHeight);
+        }
+        
+        window.addEventListener('resize', setMobileViewportHeight);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setMobileViewportHeight, 100);
+        });
+
+        // Debug header and nav dimensions
+        const logDimensions = (label) => {
+            const headerRect = siteHeader ? siteHeader.getBoundingClientRect() : null;
+            const navRect = mainNav.getBoundingClientRect();
+            
+            console.log(`📐 ${label} - Dimensions:`);
+            if (headerRect) {
+                console.log('  Header:', {
+                    height: headerRect.height,
+                    top: headerRect.top,
+                    bottom: headerRect.bottom
+                });
+            }
+            console.log('  Nav:', {
+                display: window.getComputedStyle(mainNav).display,
+                position: window.getComputedStyle(mainNav).position,
+                top: window.getComputedStyle(mainNav).top,
+                height: window.getComputedStyle(mainNav).height,
+                maxHeight: window.getComputedStyle(mainNav).maxHeight,
+                overflowY: window.getComputedStyle(mainNav).overflowY,
+                zIndex: window.getComputedStyle(mainNav).zIndex,
+                rect: {
+                    top: navRect.top,
+                    bottom: navRect.bottom,
+                    height: navRect.height
+                }
+            });
+            console.log('  Classes:', mainNav.className);
+            console.log('  Viewport Height:', window.innerHeight);
+            console.log('  Space Available:', window.innerHeight - (headerRect?.height || 0));
+        };
+
+        logDimensions('INITIAL');
+
         const closeMenu = () => {
+            console.log('🚪 CLOSING MENU');
             mainNav.classList.remove('active');
             document.body.classList.remove('mobile-nav-open');
             mobileToggle.setAttribute('aria-expanded', 'false');
+            logDimensions('AFTER CLOSE');
         };
 
         const toggleMenu = () => {
             const isOpen = mainNav.classList.toggle('active');
             document.body.classList.toggle('mobile-nav-open', isOpen);
             mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            
+            console.log(`🔄 MENU TOGGLED - Now ${isOpen ? 'OPEN' : 'CLOSED'}`);
+            logDimensions('AFTER TOGGLE');
         };
 
         mobileToggle.addEventListener('click', () => {
+            console.log('👆 MENU TOGGLE CLICKED');
             toggleMenu();
         });
 
         mainNav.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 if (mainNav.classList.contains('active')) {
+                    console.log('🔗 NAV LINK CLICKED - Closing menu');
                     closeMenu();
                 }
             });
         });
 
         window.addEventListener('resize', Utils.debounce(() => {
+            console.log('📱 WINDOW RESIZED:', window.innerWidth, 'x', window.innerHeight);
+            logDimensions('AFTER RESIZE');
             if (window.innerWidth > 768 && mainNav.classList.contains('active')) {
+                console.log('↔️ Desktop mode - auto closing menu');
                 closeMenu();
             }
         }, 150));
+        
+        // Log on page load
+        setTimeout(() => {
+            logDimensions('AFTER PAGE LOAD');
+        }, 1000);
+        
+        // Visual debugging overlay (only on mobile)
+        if (window.innerWidth <= 768) {
+            const debugOverlay = document.createElement('div');
+            debugOverlay.id = 'mobile-debug-overlay';
+            debugOverlay.style.cssText = `
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(255, 0, 0, 0.9);
+                color: white;
+                padding: 10px;
+                font-size: 11px;
+                font-family: monospace;
+                z-index: 10000;
+                max-height: 150px;
+                overflow-y: auto;
+                border-top: 3px solid yellow;
+            `;
+            
+            const updateDebugInfo = () => {
+                const headerRect = siteHeader?.getBoundingClientRect();
+                const navRect = mainNav.getBoundingClientRect();
+                const navStyles = window.getComputedStyle(mainNav);
+                const isDebugMode = document.body.classList.contains('debug-mobile');
+                const visualVH = window.visualViewport?.height || 'N/A';
+                const innerH = window.innerHeight;
+                const screenH = window.screen.height;
+                
+                debugOverlay.innerHTML = `
+                    <strong>🐛 MOBILE DEBUG</strong>
+                    <button onclick="document.body.classList.toggle('debug-mobile'); this.textContent = document.body.classList.contains('debug-mobile') ? '🎨 ON' : '🎨 OFF';" 
+                            style="float:right;background:${isDebugMode ? 'lime' : 'gray'};color:black;border:none;padding:2px 8px;cursor:pointer;margin-left:4px;">
+                        ${isDebugMode ? '🎨 ON' : '🎨 OFF'}
+                    </button>
+                    <button onclick="this.parentElement.remove()" style="float:right;background:yellow;color:black;border:none;padding:2px 8px;cursor:pointer;">✕</button>
+                    <br>
+                    <strong>Viewport:</strong> ${window.innerWidth}x${innerH}px | Visual: ${visualVH} | Screen: ${screenH}<br>
+                    <strong>VH Diff:</strong> ${typeof visualVH === 'number' ? (innerH - visualVH).toFixed(0) : 'N/A'}px (address bar)<br>
+                    <strong>Header:</strong> h=${headerRect?.height.toFixed(0)}px top=${headerRect?.top.toFixed(0)}px<br>
+                    <strong>Nav Display:</strong> ${navStyles.display}<br>
+                    <strong>Nav Position:</strong> ${navStyles.position} top=${navStyles.top}<br>
+                    <strong>Nav Height:</strong> ${navStyles.height} max=${navStyles.maxHeight}<br>
+                    <strong>Nav Inline Max:</strong> ${mainNav.style.maxHeight || 'none'}<br>
+                    <strong>Nav Actual:</strong> ${navRect.height.toFixed(0)}px (top:${navRect.top.toFixed(0)} btm:${navRect.bottom.toFixed(0)})<br>
+                    <strong>Overflow:</strong> ${navStyles.overflowY} | Z: ${navStyles.zIndex}<br>
+                    <strong>Classes:</strong> ${mainNav.classList.contains('active') ? '✅ active' : '❌ inactive'}
+                `;
+            };
+            
+            updateDebugInfo();
+            document.body.appendChild(debugOverlay);
+            
+            // Update on menu toggle and viewport changes
+            const observer = new MutationObserver(() => {
+                updateDebugInfo();
+            });
+            observer.observe(mainNav, { attributes: true, attributeFilter: ['class'] });
+            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+            
+            // Update on viewport resize (mobile address bar show/hide)
+            window.addEventListener('resize', updateDebugInfo);
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', updateDebugInfo);
+            }
+            window.addEventListener('orientationchange', () => {
+                setTimeout(updateDebugInfo, 100);
+            });
+            
+            console.log('🎨 Visual debug overlay added at bottom of screen');
+        }
+    } else {
+        console.error('❌ Mobile menu elements not found!', {
+            mobileToggle,
+            mainNav
+        });
     }
 
     // Sidebar toggle
