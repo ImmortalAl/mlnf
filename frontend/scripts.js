@@ -1407,5 +1407,8 @@ window.MLNF = {
 // Create global APIClient alias for compatibility with page-loader.js
 // Only set if not already defined by api-client.js (which has more complete implementation)
 if (!window.APIClient) {
+    console.log('⚠️ scripts.js: APIClient not found, setting from API object');
     window.APIClient = API;
+} else {
+    console.log('✅ scripts.js: APIClient already exists with news:', !!window.APIClient.news);
 }

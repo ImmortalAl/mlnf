@@ -451,4 +451,7 @@
     // Export to global scope
     window.APIClient = APIClient;
     
+    // Debug log to verify APIClient is set correctly
+    console.log('✅ api-client.js loaded - APIClient.news available:', !!APIClient.news);
+    
 })();
