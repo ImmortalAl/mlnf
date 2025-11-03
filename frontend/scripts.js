@@ -1405,4 +1405,7 @@ window.MLNF = {
 };
 
 // Create global APIClient alias for compatibility with page-loader.js
-window.APIClient = API;
+// Only set if not already defined by api-client.js (which has more complete implementation)
+if (!window.APIClient) {
+    window.APIClient = API;
+}
