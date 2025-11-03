@@ -108,7 +108,15 @@ body {
   background-color: var(--cream);
   overflow-x: hidden;
   min-height: 100vh;
-  padding-top: 90px; /* Account for fixed header */
+  margin: 0; /* Reset default margin */
+  padding: 0; /* Reset default padding */
+}
+
+/* Add space for fixed header - using ::before pseudo-element to prevent margin collapse */
+body::before {
+  content: '';
+  display: block;
+  height: 90px;
 }
 
 body.mobile-nav-open {
@@ -261,6 +269,13 @@ a:hover {
   width: 100%;
   z-index: 1000;
   border-bottom: 3px solid var(--gold);
+  height: auto;
+  min-height: 70px;
+}
+
+/* Ensure all main content starts below the fixed header */
+.site-header + * {
+  margin-top: 0 !important;
 }
 
 /* DEBUG MODE - Add class to body to enable */
