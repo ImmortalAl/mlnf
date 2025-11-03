@@ -1,6 +1,6 @@
 /* MLNF - Much Love, No Fear - Viking Theme Stylesheet */
 /* Typography: Playfair Display (headers), Inter (body) */
-/* Updated: 2024-11-03 - Fixed header positioning and sidebar toggle */
+/* Updated: 2024-11-03 v2 - Fixed header/content overlap with ::before */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
