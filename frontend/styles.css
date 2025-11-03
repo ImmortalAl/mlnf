@@ -112,11 +112,12 @@ body {
   padding: 0; /* Reset default padding */
 }
 
-/* Add space for fixed header - using ::before pseudo-element to prevent margin collapse */
-body::before {
-  content: '';
-  display: block;
+/* Physical spacer for fixed header - prevents content overlap */
+.header-spacer {
   height: 90px;
+  width: 100%;
+  display: block;
+  flex-shrink: 0;
 }
 
 body.mobile-nav-open {
