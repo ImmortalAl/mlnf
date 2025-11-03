@@ -62,7 +62,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create news article (authenticated, admin only)
+// Create news article (authenticated users - admin articles auto-published, others need approval)
 router.post('/', authMiddleware, [
   body('title').notEmpty().isLength({ max: 200 }),
   body('excerpt').notEmpty().isLength({ max: 500 }),
@@ -70,17 +70,15 @@ router.post('/', authMiddleware, [
   body('category').optional().isIn(['Breaking', 'Health', 'Politics', 'Economics', 'Technology', 'World', 'General'])
 ], async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Unauthorized - Admin access required' });
-    }
-    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     
     const { title, excerpt, content, category, source, sourceUrl, featuredImage, breaking, trending } = req.body;
+    
+    // Only admins can set breaking/trending status
+    const isAdmin = req.user.role === 'admin';
     
     const article = new NewsArticle({
       title,
@@ -90,15 +88,21 @@ router.post('/', authMiddleware, [
       source,
       sourceUrl,
       featuredImage,
-      breaking,
-      trending
+      breaking: isAdmin ? breaking : false,
+      trending: isAdmin ? trending : false,
+      published: isAdmin // Admins' posts are auto-published, others need approval
     });
     
     await article.save();
     
+    const message = isAdmin 
+      ? 'News article published successfully'
+      : 'News article submitted successfully - pending admin approval';
+    
     res.status(201).json({
-      message: 'News article created successfully',
-      article
+      message,
+      article,
+      requiresApproval: !isAdmin
     });
   } catch (error) {
     console.error('Create news article error:', error);

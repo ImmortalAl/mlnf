@@ -423,14 +423,18 @@
                 
                 const response = await APIClient.news.create(articleData);
                 
-                // Show success message
-                alert('✅ News article submitted successfully!');
+                // Show success message based on approval status
+                const successMessage = response.requiresApproval
+                    ? '✅ News article submitted successfully!\n\n📋 Your submission is pending admin approval and will be published once reviewed.'
+                    : '✅ News article published successfully!';
+                
+                alert(successMessage);
                 
                 // Close modal and reset form
                 document.getElementById('submitNewsModal').style.display = 'none';
                 document.getElementById('submitNewsForm').reset();
                 
-                // Reload news articles
+                // Reload news articles (only admins will see their article immediately)
                 if (typeof PageLoader !== 'undefined') {
                     PageLoader.loadNews();
                 }
