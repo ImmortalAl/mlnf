@@ -107,6 +107,7 @@ body {
   color: var(--gray-900);
   background-color: var(--cream);
   overflow-x: hidden;
+  overflow-y: auto; /* Allow vertical scrolling */
   min-height: 100vh;
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
@@ -424,13 +425,13 @@ body.debug-mobile .mobile-menu-toggle {
 }
 
 .sidebar.collapsed {
-  transform: translateX(calc(100% - 0px)); /* Slide completely off screen */
+  transform: translateX(100%); /* Slide completely off screen */
 }
 
 .sidebar-toggle {
-  position: absolute;
-  left: -42px;
-  top: var(--space-lg);
+  position: fixed; /* Changed from absolute to fixed to escape overflow-x: hidden */
+  right: 280px; /* Position 280px from right edge (where sidebar is) */
+  top: calc(90px + var(--space-lg)); /* Offset from header + spacing */
   background: var(--gold);
   color: var(--navy);
   border: none;
@@ -438,13 +439,18 @@ body.debug-mobile .mobile-menu-toggle {
   border-radius: var(--radius-md) 0 0 var(--radius-md);
   cursor: pointer;
   box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
+  transition: right 0.3s ease-in-out, transform 0.3s ease; /* Smooth transition */
   width: 42px;
   height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 901; /* Above sidebar */
+}
+
+/* When sidebar collapses, move toggle to viewport edge */
+body.sidebar-collapsed .sidebar-toggle {
+  right: 0; /* Move to viewport right edge */
 }
 
 .sidebar-toggle:hover {
@@ -1263,6 +1269,15 @@ body.debug-mobile .mobile-menu-toggle {
     width: 260px;
   }
   
+  /* Adjust toggle button position for narrower sidebar */
+  .sidebar-toggle {
+    right: 260px;
+  }
+  
+  body.sidebar-collapsed .sidebar-toggle {
+    right: 0;
+  }
+  
   .grid-4 {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1278,6 +1293,15 @@ body.debug-mobile .mobile-menu-toggle {
     width: 240px;
     top: 80px;
     height: calc(100vh - 100px);
+  }
+  
+  /* Adjust toggle button position for narrower sidebar on tablets */
+  .sidebar-toggle {
+    right: 240px;
+  }
+  
+  body.sidebar-collapsed .sidebar-toggle {
+    right: 0;
   }
   
   .grid-3,
@@ -1336,6 +1360,11 @@ body.debug-mobile .mobile-menu-toggle {
   
   .sidebar.mobile-active {
     transform: translateX(0);
+  }
+  
+  /* Position toggle at viewport edge on mobile */
+  .sidebar-toggle {
+    right: 0 !important;
   }
   
   /* Single column grids */
