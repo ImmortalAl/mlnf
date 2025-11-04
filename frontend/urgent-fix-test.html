@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URGENT FIX TEST</title>
+    <link rel="stylesheet" href="styles.css?v=urgentfix">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #333;
+            color: white;
+            font-family: monospace;
+        }
+
+        /* FORCE CHEVRON TO BE VISIBLE */
+        .sidebar-toggle {
+            position: fixed !important;
+            right: 240px !important;
+            top: 125px !important;
+            width: 50px !important;
+            height: 50px !important;
+            background: #FFD700 !important;
+            border: 3px solid #000 !important;
+            z-index: 99999 !important;
+            font-size: 24px !important;
+            color: #000 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 8px 0 0 8px !important;
+            box-shadow: -4px 4px 10px rgba(0,0,0,0.5) !important;
+        }
+
+        .sidebar-toggle i {
+            display: block !important;
+            font-size: 24px !important;
+            color: #000 !important;
+        }
+
+        /* FIX LOGO COLLISION */
+        .site-logo {
+            margin-right: 2rem !important;
+        }
+
+        .site-nav {
+            margin-left: auto !important;
+        }
+
+        .test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: black;
+            padding: 20px;
+            border: 2px solid lime;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <h2>URGENT FIXES TEST</h2>
+        <p>1. Chevron should be HUGE and VISIBLE</p>
+        <p>2. Logo should NOT overlap Home button</p>
+        <hr>
+        <p>Font Awesome Test Icons:</p>
+        <div style="font-size: 30px;">
+            <i class="fas fa-chevron-right"></i> chevron-right<br>
+            <i class="fas fa-chevron-left"></i> chevron-left<br>
+            <i class="fas fa-bars"></i> bars<br>
+            <i class="fas fa-times"></i> times
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between" style="gap: 2rem;">
+                <div class="site-logo" style="white-space: nowrap; flex-shrink: 0;">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav" id="mainNav" style="flex-grow: 1;">
+                    <a href="#" class="nav-link active">Home</a>
+                    <a href="#" class="nav-link">Love Vault</a>
+                    <a href="#" class="nav-link">Blog</a>
+                    <a href="#" class="nav-link">News</a>
+                    <a href="#" class="nav-link">Board</a>
+                    <a href="#" class="nav-link">Support</a>
+                    <a href="#" class="nav-link">Merch</a>
+                    <a href="#" class="nav-link">Login</a>
+                </nav>
+
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <!-- CHEVRON BUTTON WITH FORCED VISIBILITY -->
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+            <!-- Fallback if icon doesn't load -->
+            <span style="display: none;">►</span>
+        </button>
+
+        <div class="runegold-display">
+            <div>Your Runegold</div>
+            <div class="runegold-amount">0</div>
+        </div>
+
+        <h6>
+            <i class="fas fa-users"></i> Online Users (0)
+        </h6>
+    </aside>
+
+    <script>
+        // Check if Font Awesome loaded
+        window.addEventListener('load', function() {
+            const testIcon = document.querySelector('.fas.fa-chevron-right');
+            if (testIcon) {
+                const computed = window.getComputedStyle(testIcon, '::before');
+                const content = computed.getPropertyValue('content');
+                console.log('Font Awesome content:', content);
+
+                if (!content || content === 'none') {
+                    alert('FONT AWESOME NOT LOADING PROPERLY!');
+                    // Fallback to text
+                    document.querySelectorAll('.sidebar-toggle').forEach(btn => {
+                        btn.innerHTML = '►';
+                        btn.style.fontSize = '30px';
+                    });
+                }
+            }
+        });
+
+        // Toggle functionality
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        toggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            const icon = toggle.querySelector('i');
+            const fallback = toggle.querySelector('span');
+
+            if (sidebar.classList.contains('collapsed')) {
+                if (icon) icon.className = 'fas fa-chevron-left';
+                if (fallback) fallback.textContent = '◄';
+            } else {
+                if (icon) icon.className = 'fas fa-chevron-right';
+                if (fallback) fallback.textContent = '►';
+            }
+        });
+    </script>
+</body>
+</html>
