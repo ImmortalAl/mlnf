@@ -1377,14 +1377,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     if (sidebarToggle && sidebar) {
         sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
+            const isCollapsed = sidebar.classList.toggle('collapsed');
+            
+            // Toggle body class to adjust main content margin
+            document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+            
+            // Update toggle icon direction
             const icon = sidebarToggle.querySelector('i');
             if (icon) {
-                icon.className = sidebar.classList.contains('collapsed') 
+                icon.className = isCollapsed 
                     ? 'fas fa-chevron-left' 
                     : 'fas fa-chevron-right';
             }
+            
+            // Save state to localStorage
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
         });
+        
+        // Restore sidebar state from localStorage on page load
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true') {
+            sidebar.classList.add('collapsed');
+            document.body.classList.add('sidebar-collapsed');
+            const icon = sidebarToggle.querySelector('i');
+            if (icon) {
+                icon.className = 'fas fa-chevron-left';
+            }
+        }
     }
 
     // Page-specific initialization

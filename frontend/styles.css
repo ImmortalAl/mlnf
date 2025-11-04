@@ -110,6 +110,12 @@ body {
   min-height: 100vh;
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
+  margin-right: 280px; /* Make room for sidebar on desktop */
+}
+
+/* Remove margin when sidebar is collapsed */
+body.sidebar-collapsed {
+  margin-right: 0;
 }
 
 /* Physical spacer for fixed header - prevents content overlap */
@@ -1313,6 +1319,11 @@ body.debug-mobile .mobile-menu-toggle {
   
   .container {
     padding: 0 var(--space-md);
+  }
+  
+  /* Remove sidebar margin on mobile */
+  body {
+    margin-right: 0 !important;
   }
   
   /* Hide sidebar by default on mobile */
