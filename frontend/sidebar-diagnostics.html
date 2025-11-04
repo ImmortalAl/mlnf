@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Diagnostics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .diagnostic-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #0f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 10000;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .diagnostic-panel h3 {
+            color: #ff0;
+            margin: 0 0 10px 0;
+        }
+        .diagnostic-panel .section {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .diagnostic-panel .label {
+            color: #0ff;
+            font-weight: bold;
+        }
+        .diagnostic-panel .value {
+            color: #0f0;
+        }
+        .diagnostic-panel .error {
+            color: #f00;
+        }
+        .diagnostic-panel .warning {
+            color: #fa0;
+        }
+        .diagnostic-panel .success {
+            color: #0f0;
+        }
+        .refresh-btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+    
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Sidebar Diagnostics</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 2rem;">
+        <h1>Sidebar Diagnostic Tool</h1>
+        <p>This page will help us identify why the sidebar toggle button isn't visible.</p>
+        <p>The diagnostic panel on the left shows real-time information about the sidebar and toggle button.</p>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Diagnostic Panel -->
+    <div class="diagnostic-panel" id="diagnosticPanel">
+        <h3>🔍 Sidebar Diagnostics</h3>
+        <button class="refresh-btn" onclick="updateDiagnostics()">Refresh</button>
+        <div id="diagnosticContent"></div>
+    </div>
+
+    <script>
+        function updateDiagnostics() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const body = document.body;
+            const content = document.getElementById('diagnosticContent');
+            
+            if (!sidebar || !toggle) {
+                content.innerHTML = '<div class="error">ERROR: Sidebar or toggle not found in DOM!</div>';
+                return;
+            }
+
+            const sidebarRect = sidebar.getBoundingClientRect();
+            const toggleRect = toggle.getBoundingClientRect();
+            const sidebarStyles = window.getComputedStyle(sidebar);
+            const toggleStyles = window.getComputedStyle(toggle);
+            const bodyStyles = window.getComputedStyle(body);
+
+            let html = '';
+
+            // Viewport Info
+            html += '<div class="section">';
+            html += '<div class="label">VIEWPORT:</div>';
+            html += `<div>Width: <span class="value">${window.innerWidth}px</span></div>`;
+            html += `<div>Height: <span class="value">${window.innerHeight}px</span></div>`;
+            html += `<div>Device: <span class="value">${window.innerWidth > 768 ? 'DESKTOP' : 'MOBILE'}</span></div>`;
+            html += '</div>';
+
+            // Body Styles
+            html += '<div class="section">';
+            html += '<div class="label">BODY STYLES:</div>';
+            html += `<div>margin-right: <span class="${bodyStyles.marginRight === '280px' ? 'success' : 'warning'}">${bodyStyles.marginRight}</span></div>`;
+            html += `<div>overflow-x: <span class="value">${bodyStyles.overflowX}</span></div>`;
+            html += `<div>Has .sidebar-collapsed: <span class="${body.classList.contains('sidebar-collapsed') ? 'warning' : 'success'}">${body.classList.contains('sidebar-collapsed')}</span></div>`;
+            html += '</div>';
+
+            // Sidebar Position & Visibility
+            html += '<div class="section">';
+            html += '<div class="label">SIDEBAR POSITION:</div>';
+            html += `<div>position: <span class="${sidebarStyles.position === 'fixed' ? 'success' : 'error'}">${sidebarStyles.position}</span></div>`;
+            html += `<div>right: <span class="value">${sidebarStyles.right}</span></div>`;
+            html += `<div>top: <span class="value">${sidebarStyles.top}</span></div>`;
+            html += `<div>width: <span class="value">${sidebarStyles.width}</span></div>`;
+            html += `<div>transform: <span class="value">${sidebarStyles.transform}</span></div>`;
+            html += `<div>z-index: <span class="value">${sidebarStyles.zIndex}</span></div>`;
+            html += `<div>display: <span class="${sidebarStyles.display === 'none' ? 'error' : 'success'}">${sidebarStyles.display}</span></div>`;
+            html += `<div>visibility: <span class="${sidebarStyles.visibility === 'hidden' ? 'error' : 'success'}">${sidebarStyles.visibility}</span></div>`;
+            html += `<div>opacity: <span class="${parseFloat(sidebarStyles.opacity) === 0 ? 'error' : 'success'}">${sidebarStyles.opacity}</span></div>`;
+            html += '</div>';
+
+            // Sidebar BoundingRect
+            html += '<div class="section">';
+            html += '<div class="label">SIDEBAR BOUNDING BOX:</div>';
+            html += `<div>left: <span class="value">${sidebarRect.left.toFixed(2)}px</span></div>`;
+            html += `<div>right: <span class="value">${sidebarRect.right.toFixed(2)}px</span></div>`;
+            html += `<div>top: <span class="value">${sidebarRect.top.toFixed(2)}px</span></div>`;
+            html += `<div>width: <span class="value">${sidebarRect.width.toFixed(2)}px</span></div>`;
+            html += `<div>In Viewport: <span class="${sidebarRect.right > 0 && sidebarRect.left < window.innerWidth ? 'success' : 'error'}">${sidebarRect.right > 0 && sidebarRect.left < window.innerWidth}</span></div>`;
+            html += '</div>';
+
+            // Toggle Button Position & Visibility
+            html += '<div class="section">';
+            html += '<div class="label">TOGGLE BUTTON POSITION:</div>';
+            html += `<div>position: <span class="${toggleStyles.position === 'absolute' ? 'success' : 'error'}">${toggleStyles.position}</span></div>`;
+            html += `<div>left: <span class="value">${toggleStyles.left}</span></div>`;
+            html += `<div>top: <span class="value">${toggleStyles.top}</span></div>`;
+            html += `<div>width: <span class="value">${toggleStyles.width}</span></div>`;
+            html += `<div>height: <span class="value">${toggleStyles.height}</span></div>`;
+            html += `<div>z-index: <span class="value">${toggleStyles.zIndex}</span></div>`;
+            html += `<div>display: <span class="${toggleStyles.display === 'none' ? 'error' : 'success'}">${toggleStyles.display}</span></div>`;
+            html += `<div>visibility: <span class="${toggleStyles.visibility === 'hidden' ? 'error' : 'success'}">${toggleStyles.visibility}</span></div>`;
+            html += `<div>opacity: <span class="${parseFloat(toggleStyles.opacity) === 0 ? 'error' : 'success'}">${toggleStyles.opacity}</span></div>`;
+            html += `<div>background: <span class="value">${toggleStyles.backgroundColor}</span></div>`;
+            html += '</div>';
+
+            // Toggle Button BoundingRect
+            html += '<div class="section">';
+            html += '<div class="label">TOGGLE BOUNDING BOX:</div>';
+            html += `<div>left: <span class="value">${toggleRect.left.toFixed(2)}px</span></div>`;
+            html += `<div>right: <span class="value">${toggleRect.right.toFixed(2)}px</span></div>`;
+            html += `<div>top: <span class="value">${toggleRect.top.toFixed(2)}px</span></div>`;
+            html += `<div>width: <span class="value">${toggleRect.width.toFixed(2)}px</span></div>`;
+            html += `<div>height: <span class="value">${toggleRect.height.toFixed(2)}px</span></div>`;
+            
+            const toggleVisible = toggleRect.right > 0 && 
+                                 toggleRect.left < window.innerWidth && 
+                                 toggleRect.bottom > 0 && 
+                                 toggleRect.top < window.innerHeight &&
+                                 toggleRect.width > 0 &&
+                                 toggleRect.height > 0;
+            
+            html += `<div>In Viewport: <span class="${toggleVisible ? 'success' : 'error'}">${toggleVisible}</span></div>`;
+            html += `<div>Expected Left: <span class="value">${sidebarRect.left - 42}px</span></div>`;
+            html += `<div>Actual Left: <span class="value">${toggleRect.left.toFixed(2)}px</span></div>`;
+            html += `<div>Diff: <span class="${Math.abs((sidebarRect.left - 42) - toggleRect.left) < 5 ? 'success' : 'warning'}">${((sidebarRect.left - 42) - toggleRect.left).toFixed(2)}px</span></div>`;
+            html += '</div>';
+
+            // LocalStorage
+            html += '<div class="section">';
+            html += '<div class="label">LOCALSTORAGE:</div>';
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            html += `<div>sidebarCollapsed: <span class="${savedState === 'true' ? 'warning' : 'success'}">${savedState || 'null'}</span></div>`;
+            html += '</div>';
+
+            // CSS Classes
+            html += '<div class="section">';
+            html += '<div class="label">CSS CLASSES:</div>';
+            html += `<div>Sidebar: <span class="value">${sidebar.className}</span></div>`;
+            html += `<div>Body: <span class="value">${body.className}</span></div>`;
+            html += '</div>';
+
+            // Issues Detection
+            html += '<div class="section">';
+            html += '<div class="label">ISSUES DETECTED:</div>';
+            const issues = [];
+            
+            if (sidebarRect.right <= window.innerWidth - 280) {
+                issues.push('❌ Sidebar not at right edge of viewport');
+            }
+            if (!toggleVisible) {
+                issues.push('❌ Toggle button not visible in viewport');
+            }
+            if (toggleRect.left < 0) {
+                issues.push('❌ Toggle button off-screen (left < 0)');
+            }
+            if (toggleRect.right < 0) {
+                issues.push('❌ Toggle button completely off-screen left');
+            }
+            if (toggleRect.left > window.innerWidth) {
+                issues.push('❌ Toggle button off-screen right');
+            }
+            if (parseFloat(toggleStyles.opacity) === 0) {
+                issues.push('❌ Toggle button opacity is 0');
+            }
+            if (toggleStyles.display === 'none') {
+                issues.push('❌ Toggle button display is none');
+            }
+            if (toggleStyles.visibility === 'hidden') {
+                issues.push('❌ Toggle button visibility is hidden');
+            }
+            if (bodyStyles.marginRight !== '280px' && window.innerWidth > 768) {
+                issues.push('⚠️ Body margin-right not 280px on desktop');
+            }
+            if (savedState === 'true') {
+                issues.push('⚠️ Sidebar collapsed in localStorage');
+            }
+            if (sidebar.classList.contains('collapsed')) {
+                issues.push('⚠️ Sidebar has .collapsed class');
+            }
+            
+            if (issues.length === 0) {
+                html += '<div class="success">✅ No issues detected - toggle should be visible!</div>';
+            } else {
+                issues.forEach(issue => {
+                    html += `<div>${issue}</div>`;
+                });
+            }
+            html += '</div>';
+
+            content.innerHTML = html;
+        }
+
+        // Run diagnostics on load
+        updateDiagnostics();
+
+        // Update on resize
+        window.addEventListener('resize', updateDiagnostics);
+
+        // Update every 2 seconds
+        setInterval(updateDiagnostics, 2000);
+    </script>
+</body>
+</html>
