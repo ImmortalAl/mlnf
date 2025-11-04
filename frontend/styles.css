@@ -431,7 +431,7 @@ body.debug-mobile .mobile-menu-toggle {
 .sidebar-toggle {
   position: fixed; /* Changed from absolute to fixed to escape overflow-x: hidden */
   right: 280px; /* Position 280px from right edge (where sidebar is) */
-  top: calc(90px + var(--space-lg)); /* Offset from header + spacing */
+  top: 200px; /* Moved much lower to be visible below header */
   background: var(--gold);
   color: var(--navy);
   border: none;
