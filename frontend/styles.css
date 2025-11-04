@@ -445,7 +445,7 @@ body.debug-mobile .mobile-menu-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 901; /* Above sidebar */
+  z-index: 1001; /* Above header (1000) and sidebar (900) */
 }
 
 /* When sidebar collapses, move toggle to viewport edge */
