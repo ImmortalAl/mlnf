@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Z-Index Fix Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Debug styles to clearly show z-index layering */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .debug-info h3 {
+            color: #00ff00;
+            margin-top: 0;
+        }
+
+        .debug-info div {
+            margin: 5px 0;
+        }
+
+        .z-value {
+            color: #ffff00;
+            font-weight: bold;
+        }
+
+        /* Visual indicators */
+        .site-header {
+            outline: 3px solid red !important;
+        }
+
+        .sidebar {
+            outline: 3px solid lime !important;
+        }
+
+        .sidebar-toggle {
+            outline: 3px solid yellow !important;
+        }
+
+        /* Test content to verify scrolling behavior */
+        .test-content {
+            padding: 100px 20px 20px;
+            min-height: 200vh;
+            background: linear-gradient(to bottom, #f0f0f0 0%, #333 100%);
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (from index.html) -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav" id="mainNav">
+                    <a href="#" class="nav-link active">Home</a>
+                    <a href="#" class="nav-link">Love Vault</a>
+                    <a href="#" class="nav-link">Blog</a>
+                    <a href="#" class="nav-link">News</a>
+                    <a href="#" class="nav-link">Board</a>
+                    <a href="#" class="nav-link">Support</a>
+                    <a href="#" class="nav-link">Merch</a>
+                    <a href="#" class="nav-link">Login</a>
+
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Test Content -->
+    <div class="test-content">
+        <div class="container">
+            <div class="test-section">
+                <h1>Sidebar Z-Index Fix Test</h1>
+                <p>This page tests that the sidebar appears above the header and is not covered by it.</p>
+                <ul>
+                    <li>Red outline: Header (z-index: 1000)</li>
+                    <li>Green outline: Sidebar (z-index: 1001)</li>
+                    <li>Yellow outline: Sidebar toggle (z-index: 1002)</li>
+                </ul>
+            </div>
+
+            <div class="test-section">
+                <h2>Expected Behavior:</h2>
+                <ol>
+                    <li>The sidebar should be visible on the right side</li>
+                    <li>The sidebar should NOT be covered by the header</li>
+                    <li>The sidebar toggle button should be visible and clickable</li>
+                    <li>When collapsed, the sidebar should slide out completely</li>
+                    <li>The header should remain sticky at the top when scrolling</li>
+                </ol>
+            </div>
+
+            <div class="test-section">
+                <h2>Scroll Test Content</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>Keep scrolling to test that the header stays fixed and the sidebar remains accessible...</p>
+            </div>
+
+            <!-- More content for scrolling -->
+            <div class="test-section" style="height: 500px;">
+                <h2>Long Content Area</h2>
+                <p>This section is tall to test scrolling behavior.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar (from index.html) -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="#" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(3)</span>
+        </h6>
+
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="online-user-item">
+                <div class="user-avatar">
+                    <span>JD</span>
+                    <span class="online-status"></span>
+                </div>
+                <span>John Doe</span>
+            </li>
+            <li class="online-user-item">
+                <div class="user-avatar">
+                    <span>AS</span>
+                    <span class="online-status"></span>
+                </div>
+                <span>Alice Smith</span>
+            </li>
+            <li class="online-user-item">
+                <div class="user-avatar">
+                    <span>BJ</span>
+                    <span class="online-status"></span>
+                </div>
+                <span>Bob Johnson</span>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Debug Info Panel -->
+    <div class="debug-info">
+        <h3>Z-Index Debug Info</h3>
+        <div>Header: <span class="z-value">z-index: 1000</span></div>
+        <div>Sidebar: <span class="z-value">z-index: 1001</span></div>
+        <div>Toggle: <span class="z-value">z-index: 1002</span></div>
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #666;">
+            <strong>Status:</strong> <span id="status" style="color: #00ff00;">Testing...</span>
+        </div>
+    </div>
+
+    <script>
+        // Simple toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.getElementById('sidebarToggle');
+        const icon = toggle.querySelector('i');
+
+        toggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+            } else {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+            }
+        });
+
+        // Check z-index values
+        window.addEventListener('load', function() {
+            const header = document.querySelector('.site-header');
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+
+            const headerZ = window.getComputedStyle(header).zIndex;
+            const sidebarZ = window.getComputedStyle(sidebar).zIndex;
+            const toggleZ = window.getComputedStyle(toggle).zIndex;
+
+            const status = document.getElementById('status');
+
+            console.log('Z-Index Values:');
+            console.log('Header:', headerZ);
+            console.log('Sidebar:', sidebarZ);
+            console.log('Toggle:', toggleZ);
+
+            // Verify z-index hierarchy
+            if (parseInt(sidebarZ) > parseInt(headerZ) && parseInt(toggleZ) >= parseInt(sidebarZ)) {
+                status.textContent = 'PASSED - Z-index hierarchy is correct!';
+                status.style.color = '#00ff00';
+            } else {
+                status.textContent = 'FAILED - Z-index issue detected!';
+                status.style.color = '#ff0000';
+            }
+
+            // Update debug display with actual values
+            document.querySelector('.debug-info').innerHTML +=
+                '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #666;">' +
+                '<strong>Actual Computed Values:</strong><br>' +
+                'Header: ' + headerZ + '<br>' +
+                'Sidebar: ' + sidebarZ + '<br>' +
+                'Toggle: ' + toggleZ +
+                '</div>';
+        });
+
+        // Mobile menu toggle (for testing mobile view)
+        const mobileToggle = document.getElementById('mobileMenuToggle');
+        const nav = document.getElementById('mainNav');
+
+        mobileToggle.addEventListener('click', function() {
+            nav.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

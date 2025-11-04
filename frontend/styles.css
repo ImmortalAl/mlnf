@@ -419,7 +419,7 @@ body.debug-mobile .mobile-menu-toggle {
   box-shadow: var(--shadow-lg);
   padding: var(--space-lg);
   overflow-y: auto;
-  z-index: 900;
+  z-index: 1001; /* Higher than header (1000) to prevent overlap */
   transition: transform 0.3s ease-in-out;
   transform: translateX(0); /* Visible by default */
 }
@@ -444,9 +444,9 @@ body.debug-mobile .mobile-menu-toggle {
   height: 70px; /* TEMPORARY: Even larger for visibility */
   font-size: 30px; /* TEMPORARY: Even larger icon */
   display: flex;
+  z-index: 1002; /* Higher than sidebar (1001) to always be clickable */
   align-items: center;
   justify-content: center;
-  z-index: 1001; /* Above header (1000) and sidebar (900) */
 }
 
 /* When sidebar collapses, move toggle to viewport edge */
@@ -1356,7 +1356,7 @@ body.sidebar-collapsed .sidebar-toggle {
     transform: translateX(100%);
     width: 85%;
     max-width: 320px;
-    z-index: 1000;
+    z-index: 1001; /* Higher than header (1000) to prevent overlap */
   }
   
   .sidebar.mobile-active {
