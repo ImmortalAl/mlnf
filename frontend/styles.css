@@ -281,8 +281,9 @@ a:hover {
   width: 100%;
   z-index: 1000;
   border-bottom: 3px solid var(--gold);
-  height: auto;
-  min-height: 70px;
+  height: 115px; /* Fixed height to prevent jumping */
+  display: flex;
+  align-items: center;
 }
 
 /* Ensure all main content starts below the fixed header */
@@ -367,7 +368,7 @@ body.debug-mobile .mobile-menu-toggle {
   width: auto;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .site-header .container > .flex-between {
     display: flex;
     flex-direction: row;
@@ -1403,11 +1404,7 @@ body.sidebar-collapsed .sidebar-toggle {
   }
   
   /* Optimize header FIRST - before general flex rules */
-  .site-header {
-    padding: var(--space-md) 0;
-    min-height: auto !important;
-    height: auto !important;
-  }
+  /* Header maintains fixed height */
 
   .site-header .container {
     min-height: auto !important;
@@ -1520,9 +1517,7 @@ body.sidebar-collapsed .sidebar-toggle {
   }
   
   /* Compact header */
-  .site-header {
-    padding: var(--space-sm) 0;
-  }
+  /* Header maintains fixed height */
   
   .site-logo {
     gap: var(--space-xs);
@@ -1694,9 +1689,7 @@ body.sidebar-collapsed .sidebar-toggle {
     z-index: 1001; /* Maintain z-index in media query */
   }
   
-  .site-header {
-    padding: var(--space-sm) 0;
-  }
+  /* Header maintains fixed height */
   
   .modal-content {
     max-height: 85vh;

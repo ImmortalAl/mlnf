@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout Debug</title>
+    <link rel="stylesheet" href="styles.css?v=responsive-debug">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Debug panel */
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 99999;
+            min-width: 300px;
+            border: 2px solid lime;
+        }
+
+        .debug-panel h3 {
+            color: lime;
+            margin: 0 0 10px 0;
+        }
+
+        .viewport-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .breakpoint-active {
+            color: yellow;
+            font-weight: bold;
+        }
+
+        .measurement {
+            margin: 5px 0;
+        }
+
+        .value {
+            color: cyan;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: orange;
+            font-weight: bold;
+        }
+
+        /* Visual guides */
+        .header-outline {
+            outline: 3px solid red !important;
+            outline-offset: -3px;
+        }
+
+        .nav-outline {
+            outline: 3px solid lime !important;
+            outline-offset: -3px;
+        }
+
+        .sidebar-outline {
+            outline: 3px solid yellow !important;
+            outline-offset: -3px;
+        }
+
+        /* Force visibility for testing */
+        .site-header {
+            background: rgba(255, 0, 0, 0.2) !important;
+        }
+
+        .site-nav {
+            background: rgba(0, 255, 0, 0.2) !important;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 0, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Debug Panel -->
+    <div class="debug-panel">
+        <h3>📐 RESPONSIVE DEBUG</h3>
+
+        <div class="viewport-info">
+            <div class="measurement">
+                Viewport Width: <span class="value" id="viewportWidth">--</span>
+            </div>
+            <div class="measurement">
+                Viewport Height: <span class="value" id="viewportHeight">--</span>
+            </div>
+            <div class="measurement">
+                Active Breakpoint: <span class="breakpoint-active" id="activeBreakpoint">--</span>
+            </div>
+        </div>
+
+        <div class="viewport-info">
+            <strong>Element Positions:</strong>
+            <div class="measurement">
+                Header Height: <span class="value" id="headerHeight">--</span>
+            </div>
+            <div class="measurement">
+                Header Top: <span class="value" id="headerTop">--</span>
+            </div>
+            <div class="measurement">
+                Nav Display: <span class="value" id="navDisplay">--</span>
+            </div>
+            <div class="measurement">
+                Nav Position: <span class="value" id="navPosition">--</span>
+            </div>
+            <div class="measurement">
+                Sidebar Top: <span class="value" id="sidebarTop">--</span>
+            </div>
+            <div class="measurement">
+                Sidebar Transform: <span class="value" id="sidebarTransform">--</span>
+            </div>
+        </div>
+
+        <div class="viewport-info">
+            <strong>CSS Media Queries:</strong>
+            <div id="mediaQueries"></div>
+        </div>
+
+        <div class="viewport-info">
+            <strong>Issues Detected:</strong>
+            <div id="issues"></div>
+        </div>
+    </div>
+
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+
+    <!-- Header -->
+    <header class="site-header header-outline">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav nav-outline" id="mainNav">
+                    <a href="#" class="nav-link active">Home</a>
+                    <a href="#" class="nav-link">Love Vault</a>
+                    <a href="#" class="nav-link">Blog</a>
+                    <a href="#" class="nav-link">News</a>
+                    <a href="#" class="nav-link">Board</a>
+                    <a href="#" class="nav-link">Support</a>
+                    <a href="#" class="nav-link">Merch</a>
+                    <a href="#" class="nav-link">Login</a>
+                </nav>
+
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container" style="padding-top: 20px;">
+        <h1>Responsive Layout Debug</h1>
+        <p>Resize the viewport to see how elements reposition.</p>
+        <p style="background: yellow; color: black; padding: 10px;">
+            <strong>RESIZE YOUR BROWSER WINDOW</strong> to test responsive behavior
+        </p>
+
+        <div style="height: 2000px; background: linear-gradient(to bottom, #f0f0f0, #333);">
+            <p>Scroll content...</p>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar sidebar-outline" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="runegold-display">
+            <div>Your Runegold</div>
+            <div class="runegold-amount">0</div>
+        </div>
+
+        <h6>
+            <i class="fas fa-users"></i> Online Users (0)
+        </h6>
+    </aside>
+
+    <script>
+        let resizeTimeout;
+        let previousWidth = window.innerWidth;
+
+        function updateDebugInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            // Update viewport info
+            document.getElementById('viewportWidth').textContent = width + 'px';
+            document.getElementById('viewportHeight').textContent = height + 'px';
+
+            // Determine active breakpoint
+            let breakpoint = 'Desktop (>1280px)';
+            if (width <= 479) breakpoint = 'Small Mobile (≤479px)';
+            else if (width <= 639) breakpoint = 'Mobile (≤639px)';
+            else if (width <= 767) breakpoint = 'Tablet Portrait (≤767px)';
+            else if (width <= 768) breakpoint = 'Tablet/Mobile Break (≤768px)';
+            else if (width <= 1023) breakpoint = 'Tablet Landscape (≤1023px)';
+            else if (width <= 1279) breakpoint = 'Small Desktop (≤1279px)';
+
+            document.getElementById('activeBreakpoint').textContent = breakpoint;
+
+            // Measure elements
+            const header = document.querySelector('.site-header');
+            const nav = document.querySelector('.site-nav');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (header) {
+                const headerRect = header.getBoundingClientRect();
+                const headerStyles = window.getComputedStyle(header);
+                document.getElementById('headerHeight').textContent = headerRect.height.toFixed(1) + 'px';
+                document.getElementById('headerTop').textContent = headerRect.top.toFixed(1) + 'px';
+            }
+
+            if (nav) {
+                const navStyles = window.getComputedStyle(nav);
+                document.getElementById('navDisplay').textContent = navStyles.display;
+                document.getElementById('navPosition').textContent = navStyles.position;
+            }
+
+            if (sidebar) {
+                const sidebarRect = sidebar.getBoundingClientRect();
+                const sidebarStyles = window.getComputedStyle(sidebar);
+                document.getElementById('sidebarTop').textContent = sidebarStyles.top;
+                document.getElementById('sidebarTransform').textContent = sidebarStyles.transform;
+            }
+
+            // Check which media queries are active
+            const mediaQueries = [
+                { query: '(max-width: 479px)', name: 'Small Mobile' },
+                { query: '(max-width: 639px)', name: 'Mobile' },
+                { query: '(max-width: 767px)', name: 'Tablet Portrait' },
+                { query: '(max-width: 768px)', name: 'Mobile Nav Break' },
+                { query: '(max-width: 1023px)', name: 'Tablet Landscape' },
+                { query: '(max-width: 1279px)', name: 'Small Desktop' },
+                { query: '(min-width: 1920px)', name: 'Extra Large Desktop' }
+            ];
+
+            const activeQueries = [];
+            mediaQueries.forEach(mq => {
+                if (window.matchMedia(mq.query).matches) {
+                    activeQueries.push(`✓ ${mq.name}: ${mq.query}`);
+                }
+            });
+
+            document.getElementById('mediaQueries').innerHTML =
+                activeQueries.length > 0
+                    ? activeQueries.join('<br>')
+                    : 'No media queries active';
+
+            // Detect issues
+            const issues = [];
+
+            // Check if elements jump on resize
+            if (Math.abs(width - previousWidth) > 50) {
+                issues.push('<span class="warning">Large viewport change detected</span>');
+            }
+
+            if (header && sidebar) {
+                const headerBottom = header.getBoundingClientRect().bottom;
+                const sidebarTop = sidebar.getBoundingClientRect().top;
+                const gap = sidebarTop - headerBottom;
+
+                if (Math.abs(gap) > 5) {
+                    if (gap > 0) {
+                        issues.push(`Gap of ${gap.toFixed(1)}px between header and sidebar`);
+                    } else {
+                        issues.push(`<span class="warning">Sidebar overlaps header by ${Math.abs(gap).toFixed(1)}px</span>`);
+                    }
+                }
+            }
+
+            // Check nav position changes
+            if (nav) {
+                const navStyles = window.getComputedStyle(nav);
+                if (navStyles.position === 'fixed' && navStyles.display !== 'none') {
+                    const navTop = nav.getBoundingClientRect().top;
+                    if (navTop < 0) {
+                        issues.push(`<span class="warning">Nav is above viewport (top: ${navTop}px)</span>`);
+                    }
+                }
+            }
+
+            document.getElementById('issues').innerHTML =
+                issues.length > 0
+                    ? issues.join('<br>')
+                    : '<span style="color: lime;">✓ No issues detected</span>';
+
+            previousWidth = width;
+        }
+
+        // Update on load
+        updateDebugInfo();
+
+        // Update on resize with debouncing
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updateDebugInfo, 100);
+
+            // Immediate update for critical info
+            document.getElementById('viewportWidth').textContent = window.innerWidth + 'px';
+        });
+
+        // Monitor for layout shifts
+        let observer = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                if (entry.target.classList.contains('site-header') ||
+                    entry.target.classList.contains('sidebar')) {
+                    console.log('Layout shift detected:', entry.target.className);
+                    updateDebugInfo();
+                }
+            }
+        });
+
+        const header = document.querySelector('.site-header');
+        const sidebar = document.querySelector('.sidebar');
+        if (header) observer.observe(header);
+        if (sidebar) observer.observe(sidebar);
+
+        // Toggle functionality
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebarEl = document.getElementById('sidebar');
+
+        toggle.addEventListener('click', function() {
+            sidebarEl.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            updateDebugInfo();
+        });
+    </script>
+</body>
+</html>
