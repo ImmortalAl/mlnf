@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URGENT - Can You See This Button?</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* EXTREME VISIBILITY OVERRIDE - Make toggle IMPOSSIBLE to miss */
+        .sidebar-toggle {
+            position: fixed !important;
+            right: 280px !important;
+            top: 150px !important;
+            background: #FF00FF !important; /* Hot magenta */
+            color: #FFFFFF !important;
+            border: 10px solid #00FF00 !important; /* Neon green border */
+            padding: 20px !important;
+            width: 80px !important;
+            height: 80px !important;
+            font-size: 40px !important;
+            z-index: 999999 !important; /* Maximum z-index */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 0 50px #FF00FF, 0 0 100px #FF00FF !important; /* Massive glow */
+            animation: pulse 1s infinite !important;
+            cursor: pointer !important;
+            border-radius: 10px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* Make sidebar also super visible */
+        .sidebar {
+            background: rgba(255, 255, 0, 0.8) !important; /* Bright yellow */
+            border-left: 10px solid #FF0000 !important;
+            z-index: 99999 !important;
+        }
+        
+        /* Big warning banner */
+        .warning-banner {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF0000;
+            color: #FFFFFF;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1000000;
+            border: 5px solid #FFFF00;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 30px #FF0000;
+        }
+        
+        .instruction-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: #00FF00;
+            padding: 20px;
+            border: 3px solid #00FF00;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 18px;
+            z-index: 1000000;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Warning Banner -->
+    <div class="warning-banner">
+        ⚠️ LOOK FOR THE HOT PINK PULSING BUTTON ON THE RIGHT! ⚠️
+    </div>
+    
+    <!-- Instruction Box -->
+    <div class="instruction-box">
+        <div style="text-align: center; margin-bottom: 10px;">
+            🔍 <strong>WHERE IS THE BUTTON?</strong> 🔍
+        </div>
+        <div>
+            ➡️ Look at the RIGHT side of your screen<br>
+            ➡️ Should be a HUGE hot pink button<br>
+            ➡️ Pulsing/glowing effect<br>
+            ➡️ Neon green border<br>
+            ➡️ 280px from right edge<br>
+            <br>
+            If you DON'T see it, there's a serious rendering issue!
+        </div>
+    </div>
+
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+    
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>URGENT SIDEBAR TEST</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 2rem;">
+        <div class="card" style="background: #FFE6E6; border: 5px solid #FF0000;">
+            <div class="card-body">
+                <h1 style="color: #FF0000; font-size: 3rem;">🚨 EMERGENCY VISIBILITY TEST 🚨</h1>
+                
+                <div style="background: #FFFF99; padding: 20px; border: 3px solid #FF0000; margin: 20px 0;">
+                    <h2 style="color: #000;">CAN YOU SEE THESE THINGS?</h2>
+                    <ol style="font-size: 1.5rem; line-height: 2;">
+                        <li>❓ Hot pink PULSING button on the RIGHT side?</li>
+                        <li>❓ Yellow sidebar with red border on the RIGHT?</li>
+                        <li>❓ Button should be 280px from right edge</li>
+                    </ol>
+                </div>
+                
+                <div style="background: #E6F3FF; padding: 20px; border: 3px solid #0066CC; margin: 20px 0;">
+                    <h2>📸 PLEASE TAKE A SCREENSHOT</h2>
+                    <p style="font-size: 1.2rem;">
+                        Take a full screenshot of this page and tell me:
+                    </p>
+                    <ul style="font-size: 1.1rem; line-height: 1.8;">
+                        <li><strong>Do you see the HOT PINK button?</strong> (Should be IMPOSSIBLE to miss)</li>
+                        <li><strong>Do you see the YELLOW sidebar?</strong></li>
+                        <li><strong>What is your browser window width?</strong> (shown below)</li>
+                    </ul>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #0066CC;">
+                        Browser Width: <span id="browserWidth">Loading...</span>
+                    </p>
+                </div>
+                
+                <button onclick="checkElements()" style="width: 100%; padding: 20px; font-size: 1.5rem; background: #00CC00; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px;">
+                    🔍 RUN DIAGNOSTIC CHECK
+                </button>
+                
+                <div id="diagnosticOutput" style="margin-top: 20px; padding: 20px; background: #000; color: #0F0; font-family: monospace; border-radius: 10px; white-space: pre-wrap; display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Sidebar with EXTREME visibility -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div style="padding: 20px; background: #000; color: #0F0; margin-bottom: 20px;">
+            <h3>🟢 SIDEBAR IS HERE</h3>
+            <p>If you can read this, the sidebar is visible!</p>
+        </div>
+        
+        <div class="runegold-display">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount">0</div>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+        </h6>
+        
+        <ul class="online-users-list">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem;"></i>
+                <p style="margin-top: 1rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <script>
+        function updateWidth() {
+            document.getElementById('browserWidth').textContent = window.innerWidth + 'px';
+        }
+        
+        function checkElements() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const output = document.getElementById('diagnosticOutput');
+            
+            let report = 'DIAGNOSTIC REPORT:\n';
+            report += '===================\n\n';
+            
+            // Check if elements exist
+            report += `Sidebar element exists: ${sidebar ? 'YES ✓' : 'NO ✗'}\n`;
+            report += `Toggle element exists: ${toggle ? 'YES ✓' : 'NO ✗'}\n\n`;
+            
+            if (sidebar) {
+                const sidebarRect = sidebar.getBoundingClientRect();
+                const sidebarStyles = window.getComputedStyle(sidebar);
+                
+                report += 'SIDEBAR:\n';
+                report += `  Position: ${sidebarStyles.position}\n`;
+                report += `  Right: ${sidebarStyles.right}\n`;
+                report += `  Top: ${sidebarStyles.top}\n`;
+                report += `  Width: ${sidebarStyles.width}\n`;
+                report += `  Display: ${sidebarStyles.display}\n`;
+                report += `  Visibility: ${sidebarStyles.visibility}\n`;
+                report += `  Opacity: ${sidebarStyles.opacity}\n`;
+                report += `  Z-index: ${sidebarStyles.zIndex}\n`;
+                report += `  Background: ${sidebarStyles.backgroundColor}\n`;
+                report += `  Border: ${sidebarStyles.borderLeft}\n\n`;
+                
+                report += 'SIDEBAR BOUNDING BOX:\n';
+                report += `  Left: ${sidebarRect.left.toFixed(2)}px\n`;
+                report += `  Right: ${sidebarRect.right.toFixed(2)}px\n`;
+                report += `  Top: ${sidebarRect.top.toFixed(2)}px\n`;
+                report += `  Width: ${sidebarRect.width.toFixed(2)}px\n`;
+                report += `  In viewport: ${sidebarRect.right > 0 && sidebarRect.left < window.innerWidth ? 'YES ✓' : 'NO ✗'}\n\n`;
+            }
+            
+            if (toggle) {
+                const toggleRect = toggle.getBoundingClientRect();
+                const toggleStyles = window.getComputedStyle(toggle);
+                
+                report += 'TOGGLE BUTTON:\n';
+                report += `  Position: ${toggleStyles.position}\n`;
+                report += `  Right: ${toggleStyles.right}\n`;
+                report += `  Top: ${toggleStyles.top}\n`;
+                report += `  Width: ${toggleStyles.width}\n`;
+                report += `  Height: ${toggleStyles.height}\n`;
+                report += `  Display: ${toggleStyles.display}\n`;
+                report += `  Visibility: ${toggleStyles.visibility}\n`;
+                report += `  Opacity: ${toggleStyles.opacity}\n`;
+                report += `  Z-index: ${toggleStyles.zIndex}\n`;
+                report += `  Background: ${toggleStyles.backgroundColor}\n`;
+                report += `  Border: ${toggleStyles.border}\n\n`;
+                
+                report += 'TOGGLE BOUNDING BOX:\n';
+                report += `  Left: ${toggleRect.left.toFixed(2)}px\n`;
+                report += `  Right: ${toggleRect.right.toFixed(2)}px\n`;
+                report += `  Top: ${toggleRect.top.toFixed(2)}px\n`;
+                report += `  Width: ${toggleRect.width.toFixed(2)}px\n`;
+                report += `  Height: ${toggleRect.height.toFixed(2)}px\n\n`;
+                
+                const isVisible = toggleRect.right > 0 && 
+                                 toggleRect.left < window.innerWidth && 
+                                 toggleRect.width > 0 && 
+                                 toggleRect.height > 0 &&
+                                 toggleStyles.display !== 'none' &&
+                                 toggleStyles.visibility !== 'hidden' &&
+                                 parseFloat(toggleStyles.opacity) > 0;
+                
+                report += `TOGGLE VISIBLE IN VIEWPORT: ${isVisible ? 'YES ✓✓✓' : 'NO ✗✗✗'}\n\n`;
+                
+                if (!isVisible) {
+                    report += '❌ ISSUES DETECTED:\n';
+                    if (toggleRect.left < 0) report += '  - Button is off-screen LEFT\n';
+                    if (toggleRect.right < 0) report += '  - Button is completely off-screen LEFT\n';
+                    if (toggleRect.left > window.innerWidth) report += '  - Button is off-screen RIGHT\n';
+                    if (toggleRect.width === 0) report += '  - Button has zero width\n';
+                    if (toggleRect.height === 0) report += '  - Button has zero height\n';
+                    if (toggleStyles.display === 'none') report += '  - Button has display: none\n';
+                    if (toggleStyles.visibility === 'hidden') report += '  - Button has visibility: hidden\n';
+                    if (parseFloat(toggleStyles.opacity) === 0) report += '  - Button has opacity: 0\n';
+                }
+            }
+            
+            report += '\nVIEWPORT:\n';
+            report += `  Width: ${window.innerWidth}px\n`;
+            report += `  Height: ${window.innerHeight}px\n`;
+            
+            output.textContent = report;
+            output.style.display = 'block';
+            
+            // Scroll to results
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Add toggle functionality
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (toggle && sidebar) {
+            toggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                alert('🎉 TOGGLE BUTTON CLICKED!\n\nThe button IS working!\n\nSidebar state: ' + 
+                      (sidebar.classList.contains('collapsed') ? 'COLLAPSED' : 'EXPANDED'));
+            });
+        }
+        
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+    </script>
+</body>
+</html>
