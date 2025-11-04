@@ -434,15 +434,15 @@ body.debug-mobile .mobile-menu-toggle {
   top: 200px; /* Moved much lower to be visible below header */
   background: var(--gold);
   color: var(--navy);
-  border: 3px solid #00FF00; /* TEMPORARY: Neon green border */
-  padding: var(--space-md);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md) 0 0 var(--radius-md);
-  box-shadow: 0 0 20px var(--gold); /* TEMPORARY: Glow effect */
+  box-shadow: var(--shadow-md);
   cursor: pointer;
-  transition: right 0.3s ease-in-out, transform 0.3s ease; /* Smooth transition */
-  width: 70px; /* TEMPORARY: Even larger for visibility */
-  height: 70px; /* TEMPORARY: Even larger for visibility */
-  font-size: 30px; /* TEMPORARY: Even larger icon */
+  transition: right 0.3s ease-in-out, transform 0.3s ease;
+  width: 42px;
+  height: 42px;
+  font-size: 1.25rem;
   display: flex;
   z-index: 1002; /* Higher than sidebar (1001) to always be clickable */
   align-items: center;
