@@ -411,9 +411,9 @@ body.debug-mobile .mobile-menu-toggle {
 .sidebar {
   position: fixed;
   right: 0;
-  top: 90px; /* Align with header height */
+  top: 73px; /* Exact header height: 70px min-height + 3px border */
   width: 280px;
-  height: calc(100vh - 90px); /* Full height minus header */
+  height: calc(100vh - 73px); /* Full height minus exact header height */
   background: white;
   border-left: 2px solid var(--gold);
   box-shadow: var(--shadow-lg);
@@ -429,20 +429,20 @@ body.debug-mobile .mobile-menu-toggle {
 }
 
 .sidebar-toggle {
-  position: fixed; /* Changed from absolute to fixed to escape overflow-x: hidden */
-  right: 280px; /* Position 280px from right edge (where sidebar is) */
-  top: 200px; /* Moved much lower to be visible below header */
+  position: fixed;
+  right: 280px; /* Aligned with sidebar width */
+  top: 120px; /* Below header for better visibility */
   background: var(--gold);
   color: var(--navy);
-  border: none;
-  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--navy);
+  padding: var(--space-sm);
   border-radius: var(--radius-md) 0 0 var(--radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   cursor: pointer;
-  transition: right 0.3s ease-in-out, transform 0.3s ease;
-  width: 42px;
-  height: 42px;
-  font-size: 1.25rem;
+  transition: all 0.3s ease;
+  width: 35px;
+  height: 50px;
+  font-size: 1.5rem;
   display: flex;
   z-index: 1002; /* Higher than sidebar (1001) to always be clickable */
   align-items: center;
@@ -456,7 +456,8 @@ body.sidebar-collapsed .sidebar-toggle {
 
 .sidebar-toggle:hover {
   background: var(--peach);
-  transform: scale(1.1);
+  transform: translateX(-5px);
+  box-shadow: var(--shadow-xl);
 }
 
 .online-users-list {
@@ -1294,8 +1295,8 @@ body.sidebar-collapsed .sidebar-toggle {
   
   .sidebar {
     width: 240px;
-    top: 80px;
-    height: calc(100vh - 100px);
+    top: 73px;
+    height: calc(100vh - 73px);
     z-index: 1001; /* Maintain z-index in media query */
   }
   
@@ -1678,8 +1679,8 @@ body.sidebar-collapsed .sidebar-toggle {
 /* Landscape Mobile Optimization */
 @media (max-height: 500px) and (orientation: landscape) {
   .sidebar {
-    height: calc(100vh - 60px);
-    top: 60px;
+    height: calc(100vh - 73px);
+    top: 73px;
     z-index: 1001; /* Maintain z-index in media query */
   }
   
