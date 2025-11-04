@@ -272,7 +272,7 @@ a:hover {
 .site-header {
   background: linear-gradient(135deg, var(--navy) 0%, var(--gray-800) 100%);
   color: var(--cream);
-  padding: var(--space-lg) 0;
+  padding: 0; /* Remove padding to control height precisely */
   box-shadow: var(--shadow-lg);
   position: fixed;
   top: 0;
@@ -282,8 +282,20 @@ a:hover {
   z-index: 1000;
   border-bottom: 3px solid var(--gold);
   height: 115px; /* Fixed height to prevent jumping */
+}
+
+/* Header container should fill height and center content */
+.site-header .container {
+  height: 100%;
   display: flex;
   align-items: center;
+}
+
+.site-header .flex-between {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* Ensure all main content starts below the fixed header */
@@ -463,6 +475,24 @@ body.sidebar-collapsed .sidebar-toggle {
   font-size: inherit !important;
   color: inherit !important;
   line-height: 1 !important;
+}
+
+/* Fallback chevron using CSS pseudo-element */
+.sidebar-toggle::after {
+  content: '›';
+  font-size: 28px;
+  font-weight: bold;
+  display: block;
+  transform: scaleX(1.5);
+}
+
+/* Hide Font Awesome icon if it's not loading */
+.sidebar-toggle i:empty::before {
+  content: '';
+}
+
+body.sidebar-collapsed .sidebar-toggle::after {
+  content: '‹';
 }
 
 .sidebar-toggle:hover {
@@ -1230,6 +1260,27 @@ body.sidebar-collapsed .sidebar-toggle {
 @media (max-width: 767px) {
   .hidden-mobile { display: none !important; }
   .show-mobile { display: block !important; }
+}
+
+@media (min-width: 768px) {
+  /* Reset mobile nav styles when returning to desktop */
+  .site-nav {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: row !important;
+  }
+
+  .mobile-menu-toggle {
+    display: none !important;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
