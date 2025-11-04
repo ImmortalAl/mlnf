@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Visual Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Override to make toggle SUPER visible for testing */
+        .sidebar-toggle {
+            background: #ff00ff !important; /* Hot pink */
+            border: 5px solid #00ff00 !important; /* Neon green border */
+            box-shadow: 0 0 20px #ff00ff !important; /* Glowing effect */
+            width: 60px !important; /* Larger */
+            height: 60px !important; /* Larger */
+            z-index: 99999 !important; /* Way above everything */
+            font-size: 24px !important;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 0, 0.5) !important; /* Semi-transparent yellow */
+            border: 5px solid #ff0000 !important; /* Red border */
+        }
+        
+        /* Visual indicators */
+        .visual-marker {
+            position: fixed;
+            background: rgba(0, 255, 0, 0.5);
+            border: 2px solid #0f0;
+            color: #000;
+            padding: 10px;
+            font-weight: bold;
+            z-index: 100000;
+            font-family: monospace;
+        }
+        
+        .marker-top-right {
+            top: 100px;
+            right: 0px;
+        }
+        
+        .marker-toggle-expected {
+            top: 100px;
+            right: 280px;
+            background: rgba(255, 0, 255, 0.5);
+        }
+        
+        body::before {
+            content: 'VIEWPORT: ' attr(data-viewport);
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #0f0;
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 100001;
+            font-family: monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+    
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Sidebar Visual Test - LOOK FOR HOT PINK BUTTON!</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 2rem;">
+        <div class="card" style="margin-bottom: 2rem; background: #ffffcc; border: 3px solid #ff0000;">
+            <div class="card-body">
+                <h1 style="color: #ff0000;">🔍 SIDEBAR VISUAL TEST</h1>
+                <p style="font-size: 1.2rem; font-weight: bold;">
+                    Look at the right side of your screen:
+                </p>
+                <ul style="font-size: 1.1rem; line-height: 2;">
+                    <li><strong style="color: #ff00ff;">HOT PINK BUTTON with green border</strong> = Toggle button (should stick out from right edge)</li>
+                    <li><strong style="color: #ffff00;">Semi-transparent yellow box with red border</strong> = Sidebar</li>
+                    <li><strong style="color: #00ff00;">Green markers</strong> = Position indicators</li>
+                </ul>
+                <p style="font-size: 1.2rem; color: #ff0000; font-weight: bold;">
+                    ⚠️ If you DON'T see the hot pink button, something is wrong!
+                </p>
+                <p style="font-size: 1.1rem;">
+                    Current viewport width: <strong id="viewportWidth">Loading...</strong>
+                </p>
+                <p style="font-size: 1.1rem;">
+                    Expected behavior based on width:
+                </p>
+                <ul style="font-size: 1rem; line-height: 1.8;">
+                    <li><strong>&gt; 768px (Desktop):</strong> Sidebar visible with hot pink toggle button</li>
+                    <li><strong>≤ 768px (Tablet/Mobile):</strong> Sidebar may be hidden or responsive behavior</li>
+                </ul>
+                <button onclick="location.reload()" style="margin-top: 1rem; padding: 1rem 2rem; font-size: 1.2rem; background: #0066cc; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    🔄 Refresh Test
+                </button>
+            </div>
+        </div>
+
+        <div class="card" style="background: #e6f3ff;">
+            <div class="card-body">
+                <h2>📊 Live Diagnostics</h2>
+                <div id="diagnostics" style="font-family: monospace; background: #000; color: #0f0; padding: 1rem; border-radius: 8px; white-space: pre-wrap; overflow-x: auto;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Visual Markers -->
+    <div class="visual-marker marker-top-right">
+        ← SIDEBAR<br>SHOULD BE<br>HERE (right: 0)
+    </div>
+    
+    <div class="visual-marker marker-toggle-expected">
+        ← TOGGLE<br>BUTTON<br>SHOULD BE<br>HERE
+    </div>
+
+    <!-- Sidebar with super-visible styling -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+        </div>
+        
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+        
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <script>
+        function updateDiagnostics() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const diagnosticsEl = document.getElementById('diagnostics');
+            const viewportWidthEl = document.getElementById('viewportWidth');
+            
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            viewportWidthEl.textContent = `${width}px × ${height}px`;
+            document.body.setAttribute('data-viewport', `${width}px × ${height}px`);
+            
+            if (!sidebar || !toggle) {
+                diagnosticsEl.textContent = 'ERROR: Elements not found!';
+                return;
+            }
+            
+            const sidebarRect = sidebar.getBoundingClientRect();
+            const toggleRect = toggle.getBoundingClientRect();
+            const sidebarStyles = window.getComputedStyle(sidebar);
+            const toggleStyles = window.getComputedStyle(toggle);
+            
+            let output = `VIEWPORT:
+  Width: ${width}px
+  Height: ${height}px
+  Device Type: ${width > 768 ? 'DESKTOP' : 'MOBILE'}
+
+SIDEBAR:
+  Position: ${sidebarStyles.position}
+  Right: ${sidebarStyles.right}
+  Top: ${sidebarStyles.top}
+  Width: ${sidebarStyles.width}
+  Transform: ${sidebarStyles.transform}
+  Display: ${sidebarStyles.display}
+  Visibility: ${sidebarStyles.visibility}
+  Opacity: ${sidebarStyles.opacity}
+  Z-index: ${sidebarStyles.zIndex}
+  Background: ${sidebarStyles.backgroundColor}
+  Border: ${sidebarStyles.borderLeft}
+  
+  Bounding Box:
+    Left: ${sidebarRect.left.toFixed(2)}px
+    Right: ${sidebarRect.right.toFixed(2)}px
+    Top: ${sidebarRect.top.toFixed(2)}px
+    Width: ${sidebarRect.width.toFixed(2)}px
+    In Viewport: ${sidebarRect.right > 0 && sidebarRect.left < width ? 'YES ✓' : 'NO ✗'}
+
+TOGGLE BUTTON:
+  Position: ${toggleStyles.position}
+  Left: ${toggleStyles.left}
+  Top: ${toggleStyles.top}
+  Width: ${toggleStyles.width}
+  Height: ${toggleStyles.height}
+  Display: ${toggleStyles.display}
+  Visibility: ${toggleStyles.visibility}
+  Opacity: ${toggleStyles.opacity}
+  Z-index: ${toggleStyles.zIndex}
+  Background: ${toggleStyles.backgroundColor}
+  
+  Bounding Box:
+    Left: ${toggleRect.left.toFixed(2)}px
+    Right: ${toggleRect.right.toFixed(2)}px
+    Top: ${toggleRect.top.toFixed(2)}px
+    Width: ${toggleRect.width.toFixed(2)}px
+    Height: ${toggleRect.height.toFixed(2)}px
+    In Viewport: ${
+      toggleRect.right > 0 && 
+      toggleRect.left < width && 
+      toggleRect.bottom > 0 && 
+      toggleRect.top < height &&
+      toggleRect.width > 0 &&
+      toggleRect.height > 0
+        ? 'YES ✓' 
+        : 'NO ✗'
+    }
+
+EXPECTED vs ACTUAL:
+  Expected toggle left: ${(sidebarRect.left - 42).toFixed(2)}px
+  Actual toggle left: ${toggleRect.left.toFixed(2)}px
+  Difference: ${((sidebarRect.left - 42) - toggleRect.left).toFixed(2)}px
+
+ISSUES:
+`;
+            
+            const issues = [];
+            if (sidebarRect.right <= width - 280) {
+                issues.push('✗ Sidebar not at right edge');
+            }
+            if (toggleRect.left < 0) {
+                issues.push('✗ Toggle off-screen (left < 0)');
+            }
+            if (toggleRect.right < 0) {
+                issues.push('✗ Toggle completely off-screen left');
+            }
+            if (toggleRect.left > width) {
+                issues.push('✗ Toggle off-screen right');
+            }
+            if (toggleStyles.display === 'none') {
+                issues.push('✗ Toggle display: none');
+            }
+            if (toggleStyles.visibility === 'hidden') {
+                issues.push('✗ Toggle visibility: hidden');
+            }
+            if (parseFloat(toggleStyles.opacity) === 0) {
+                issues.push('✗ Toggle opacity: 0');
+            }
+            
+            if (issues.length === 0) {
+                output += '  ✓ No issues detected - toggle should be visible!\n';
+            } else {
+                issues.forEach(issue => {
+                    output += `  ${issue}\n`;
+                });
+            }
+            
+            diagnosticsEl.textContent = output;
+        }
+        
+        // Update on load and resize
+        updateDiagnostics();
+        window.addEventListener('resize', updateDiagnostics);
+        setInterval(updateDiagnostics, 1000);
+        
+        // Add click handler to toggle
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            alert('Toggle button clicked! It works!');
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>
