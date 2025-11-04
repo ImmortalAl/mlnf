@@ -216,6 +216,34 @@
     </aside>
 
     <!-- Scripts -->
+    <script>
+        // CRITICAL: Protect header spacer from being removed or hidden
+        (function() {
+            const observer = new MutationObserver(function(mutations) {
+                const spacer = document.querySelector('.header-spacer');
+                if (!spacer) {
+                    console.error('⚠️ HEADER SPACER WAS REMOVED! Recreating...');
+                    const newSpacer = document.createElement('div');
+                    newSpacer.className = 'header-spacer';
+                    document.body.insertBefore(newSpacer, document.body.firstChild);
+                } else if (spacer.style.display === 'none' || spacer.style.height === '0px') {
+                    console.error('⚠️ HEADER SPACER WAS HIDDEN! Fixing...');
+                    spacer.style.display = 'block';
+                    spacer.style.height = '90px';
+                }
+            });
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                observer.observe(document.body, { 
+                    childList: true, 
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['style', 'class']
+                });
+                console.log('✅ Header spacer protection active');
+            });
+        })();
+    </script>
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script src="auth-handler.js"></script>
     <script src="mock-data.js"></script>
