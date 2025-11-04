@@ -121,12 +121,12 @@ body.sidebar-collapsed {
 
 /* Physical spacer for fixed header - prevents content overlap */
 .header-spacer {
-  height: 73px !important; /* Match actual header height: 70px + 3px border */
+  height: 115px !important; /* Match actual header height with padding */
   width: 100% !important;
   display: block !important;
   flex-shrink: 0 !important;
-  min-height: 73px !important;
-  max-height: 73px !important;
+  min-height: 115px !important;
+  max-height: 115px !important;
   visibility: hidden !important; /* Hide but maintain space */
   opacity: 0 !important;
 }
@@ -411,9 +411,9 @@ body.debug-mobile .mobile-menu-toggle {
 .sidebar {
   position: fixed;
   right: 0;
-  top: 73px; /* Exact header height: 70px min-height + 3px border */
+  top: 115px; /* Actual header height including padding */
   width: 280px;
-  height: calc(100vh - 73px); /* Full height minus exact header height */
+  height: calc(100vh - 115px); /* Full height minus actual header height */
   background: white;
   border-left: 2px solid var(--gold);
   box-shadow: var(--shadow-lg);
@@ -431,7 +431,7 @@ body.debug-mobile .mobile-menu-toggle {
 .sidebar-toggle {
   position: fixed; /* Fixed positioning to stay in place */
   right: 280px; /* At the left edge of the sidebar */
-  top: 100px; /* Below the header */
+  top: 125px; /* Below the header (115px) with small gap */
   background: var(--gold);
   color: var(--navy);
   border: 2px solid var(--navy);
@@ -1295,8 +1295,8 @@ body.sidebar-collapsed .sidebar-toggle {
   
   .sidebar {
     width: 240px;
-    top: 73px;
-    height: calc(100vh - 73px);
+    top: 115px;
+    height: calc(100vh - 115px);
     z-index: 1001; /* Maintain z-index in media query */
   }
   
@@ -1679,8 +1679,8 @@ body.sidebar-collapsed .sidebar-toggle {
 /* Landscape Mobile Optimization */
 @media (max-height: 500px) and (orientation: landscape) {
   .sidebar {
-    height: calc(100vh - 73px);
-    top: 73px;
+    height: calc(100vh - 115px);
+    top: 115px;
     z-index: 1001; /* Maintain z-index in media query */
   }
   
