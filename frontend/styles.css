@@ -434,14 +434,15 @@ body.debug-mobile .mobile-menu-toggle {
   top: 200px; /* Moved much lower to be visible below header */
   background: var(--gold);
   color: var(--navy);
-  border: none;
+  border: 3px solid #00FF00; /* TEMPORARY: Neon green border */
   padding: var(--space-md);
   border-radius: var(--radius-md) 0 0 var(--radius-md);
+  box-shadow: 0 0 20px var(--gold); /* TEMPORARY: Glow effect */
   cursor: pointer;
-  box-shadow: var(--shadow-md);
   transition: right 0.3s ease-in-out, transform 0.3s ease; /* Smooth transition */
-  width: 42px;
-  height: 42px;
+  width: 70px; /* TEMPORARY: Even larger for visibility */
+  height: 70px; /* TEMPORARY: Even larger for visibility */
+  font-size: 30px; /* TEMPORARY: Even larger icon */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1761,5 +1762,8 @@ body.sidebar-collapsed .sidebar-toggle {
   .btn,
   .video-controls {
     display: none !important;
+  }
+}
+  display: none !important;
   }
 }
