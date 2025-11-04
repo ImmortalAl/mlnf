@@ -1242,6 +1242,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fix for mobile viewport height issue (iOS Safari, Chrome mobile, etc.)
         let fixAppliedCount = 0;
         const setMobileViewportHeight = () => {
+            // Skip on desktop (only run on mobile devices)
+            if (window.innerWidth > 768) {
+                return;
+            }
+            
             // Use visualViewport if available (more accurate on mobile), otherwise innerHeight
             const vh = (window.visualViewport?.height || window.innerHeight) * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
