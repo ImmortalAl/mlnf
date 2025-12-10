@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Live Stream - Much Love, No Fear - 24/7 Truth Broadcasting">
+    <title>Live Stream - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Live page specific styles */
+        .live-container {
+            display: flex;
+            gap: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .stream-section {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-section {
+            width: 380px;
+            flex-shrink: 0;
+        }
+
+        .stream-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stream-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .chat-wrapper {
+            height: calc(100vh - 200px);
+            min-height: 500px;
+            max-height: 700px;
+            background: var(--gray-900);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .chat-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--error);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            animation: pulse-live 2s infinite;
+        }
+
+        .live-badge i {
+            font-size: 0.5rem;
+        }
+
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .stream-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--gray-800);
+            border-radius: var(--radius-md);
+        }
+
+        .stream-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stream-title h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .stream-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        .offline-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--gray-400);
+        }
+
+        .offline-message i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Placeholder styles - remove when you add real embeds */
+        .placeholder-embed {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-800);
+            color: var(--gray-400);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .placeholder-embed.stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .placeholder-embed.chat {
+            height: 100%;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .live-container {
+                flex-direction: column;
+            }
+
+            .chat-section {
+                width: 100%;
+            }
+
+            .chat-wrapper {
+                height: 400px;
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stream-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .stream-meta {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="live.html" class="nav-link active">Live</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Live Stream Section -->
+    <main style="padding: 1rem 0; background: var(--gray-900); min-height: calc(100vh - 80px);">
+        <div class="live-container">
+            <!-- Stream Player -->
+            <div class="stream-section">
+                <div class="stream-wrapper">
+                    <!-- ===========================================
+                         RUMBLE VIDEO EMBED - REPLACE THIS SECTION
+                         ===========================================
+
+                         Get your embed code from Rumble Studio:
+                         1. Go to rumble.com/studio
+                         2. Click "Go Live" or select your channel
+                         3. Find "Embed" options
+                         4. Copy the iframe code
+
+                         Example format:
+                         <iframe src="https://rumble.com/embed/YOUR_VIDEO_OR_CHANNEL_ID/?pub=YOUR_PUB_ID"
+                                 frameborder="0" allowfullscreen></iframe>
+
+                         Delete the placeholder div below and paste your iframe
+                    -->
+                    <div class="placeholder-embed stream">
+                        <div>
+                            <i class="fas fa-broadcast-tower" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <h3>Rumble Stream Embed Goes Here</h3>
+                            <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+                                Replace this placeholder with your Rumble iframe embed code
+                            </p>
+                        </div>
+                    </div>
+                    <!-- END RUMBLE VIDEO EMBED -->
+                </div>
+
+                <!-- Stream Info -->
+                <div class="stream-info">
+                    <div class="stream-title">
+                        <h1>MLNF 24/7 Live</h1>
+                        <span class="live-badge">
+                            <i class="fas fa-circle"></i> LIVE
+                        </span>
+                    </div>
+                    <div class="stream-meta">
+                        <span><i class="fas fa-eye"></i> Viewers on Rumble</span>
+                        <span><i class="fas fa-clock"></i> 24/7 Broadcast</span>
+                        <span><i class="fas fa-heart"></i> Much Love, No Fear</span>
+                    </div>
+                </div>
+
+                <!-- Stream Description -->
+                <div class="card" style="margin-top: 1rem;">
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 0.5rem;">About This Stream</h3>
+                        <p>24/7 truth broadcasting. No censorship. No fear. Join the community and be part of the awakening.</p>
+                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <span class="badge badge-primary">truth</span>
+                            <span class="badge badge-primary">freedom</span>
+                            <span class="badge badge-primary">awakening</span>
+                            <span class="badge badge-primary">community</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-wrapper">
+                    <!-- ===========================================
+                         RUMBLE CHAT EMBED - REPLACE THIS SECTION
+                         ===========================================
+
+                         Get your chat embed code from Rumble:
+                         The chat embed URL usually follows this pattern:
+                         https://rumble.com/chat/embed/YOUR_CHANNEL_URL/
+
+                         Example:
+                         <iframe src="https://rumble.com/chat/embed/c/YourChannel"
+                                 frameborder="0"></iframe>
+
+                         Delete the placeholder div below and paste your iframe
+                    -->
+                    <div class="placeholder-embed chat">
+                        <div>
+                            <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <h3>Rumble Chat Embed Goes Here</h3>
+                            <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+                                Replace this with your Rumble chat iframe
+                            </p>
+                        </div>
+                    </div>
+                    <!-- END RUMBLE CHAT EMBED -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 2rem 0;">
+        <div class="container">
+            <div class="text-center">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with love and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../api-client.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+    <script src="../page-loader.js"></script>
+</body>
+</html>
