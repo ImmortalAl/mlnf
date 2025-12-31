@@ -424,7 +424,12 @@
                         </div>
 
                         <div class="mead-hall-messages" id="chatMessages">
-                            <!-- Messages will appear here -->
+                            <!-- Welcome message / Empty state -->
+                            <div id="chatWelcome" style="text-align: center; padding: 2rem 1rem; color: rgba(248, 244, 227, 0.6);">
+                                <i class="fas fa-beer" style="font-size: 2rem; opacity: 0.5; margin-bottom: 1rem;"></i>
+                                <p style="font-size: 0.9375rem;">Welcome to The Mead Hall!</p>
+                                <p style="font-size: 0.875rem; margin-top: 0.5rem;">Chat messages will appear here when warriors start talking.</p>
+                            </div>
                         </div>
 
                         <div class="mead-hall-input">
@@ -594,6 +599,12 @@
 
         // Chat functionality
         function addMessage(message) {
+            // Remove welcome message if it exists
+            const welcomeMsg = document.getElementById('chatWelcome');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message';
 
@@ -630,8 +641,36 @@
             if (!text) return;
 
             if (!currentUser) {
-                alert('Please login to chat in the Mead Hall!');
-                window.location.href = 'auth.html';
+                // Show inline message instead of alert
+                const loginPrompt = document.createElement('div');
+                loginPrompt.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, var(--navy), var(--indigo));
+                    color: var(--cream);
+                    padding: 2rem;
+                    border-radius: var(--radius-lg);
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                    border: 2px solid var(--gold);
+                    z-index: 10000;
+                    text-align: center;
+                    max-width: 400px;
+                `;
+                loginPrompt.innerHTML = `
+                    <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                    <h3 style="color: var(--gold); margin-bottom: 1rem;">Join The Mead Hall</h3>
+                    <p style="margin-bottom: 1.5rem; opacity: 0.9;">You must be a warrior to speak in The Mead Hall!</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="auth.html" class="btn btn-viking">Login / Sign Up</a>
+                        <button class="btn btn-outline" style="color: var(--cream); border-color: var(--cream);" onclick="this.parentElement.parentElement.remove()">
+                            Maybe Later
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(loginPrompt);
+                chatInput.value = '';
                 return;
             }
 
