@@ -6,6 +6,7 @@
     <meta name="description" content="User Dashboard - Much Love, No Fear">
     <title>Dashboard - Much Love, No Fear</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/dashboard-viking.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -344,6 +345,84 @@
                         </div>
                     </div>
 
+                    <!-- Messages Section (instant messaging) -->
+                    <div id="messagesSection" class="hidden">
+                        <!-- Messages Header -->
+                        <div class="card mb-3" style="background: linear-gradient(135deg, var(--indigo), var(--navy)); color: white; border: none;">
+                            <div class="card-body">
+                                <div class="flex flex-between" style="align-items: center;">
+                                    <div>
+                                        <h3 style="color: white; margin: 0;"><i class="fas fa-envelope"></i> Messages</h3>
+                                        <p style="margin: 0.5rem 0 0; opacity: 0.9;">Connect directly with warriors</p>
+                                    </div>
+                                    <button class="btn" style="background: var(--gold); color: var(--navy);" onclick="openNewMessage()">
+                                        <i class="fas fa-plus-circle"></i> New Message
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Messages Interface -->
+                        <div class="grid grid-2 gap-md" style="min-height: 600px;">
+                            <!-- Conversations List -->
+                            <div class="card">
+                                <div class="card-body" style="padding: 0;">
+                                    <div style="padding: 1rem; border-bottom: 2px solid var(--gray-200);">
+                                        <input type="search" class="form-control" placeholder="Search conversations..." id="conversationSearch" style="border-radius: 20px;">
+                                    </div>
+
+                                    <div id="conversationsList" style="max-height: 500px; overflow-y: auto;">
+                                        <!-- Conversations will be loaded here -->
+                                        <div class="text-center text-muted" style="padding: 3rem 1rem;">
+                                            <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                                            <p>No conversations yet</p>
+                                            <small>Send a message to start chatting!</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chat Window -->
+                            <div class="card">
+                                <div class="card-body" style="padding: 0; display: flex; flex-direction: column; height: 600px;">
+                                    <!-- Chat Header -->
+                                    <div id="chatHeader" class="hidden" style="padding: 1rem; border-bottom: 2px solid var(--gray-200); background: var(--gray-50);">
+                                        <div class="flex gap-md" style="align-items: center;">
+                                            <div class="thread-avatar" style="width: 40px; height: 40px; font-size: 1rem;">
+                                                U
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <h5 style="margin: 0;" id="chatUsername">Username</h5>
+                                                <small class="text-muted" id="chatStatus">Online</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline" onclick="closeChat()">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Chat Messages -->
+                                    <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 1.5rem; background: white;">
+                                        <div class="text-center text-muted" style="padding: 3rem 1rem;">
+                                            <i class="fas fa-comments" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                                            <p>Select a conversation to start chatting</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Message Input -->
+                                    <div id="messageInput" class="hidden" style="padding: 1rem; border-top: 2px solid var(--gray-200); background: var(--gray-50);">
+                                        <form id="sendMessageForm" class="flex gap-md" style="align-items: center;">
+                                            <input type="text" class="form-control" placeholder="Type a message..." id="messageText" required style="flex: 1; border-radius: 20px;">
+                                            <button type="submit" class="btn btn-viking" style="border-radius: 50%; width: 48px; height: 48px; padding: 0;">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Your Videos Section -->
                     <div class="card mb-3">
                         <div class="card-body">
@@ -353,7 +432,7 @@
                                     <i class="fas fa-upload"></i> Upload New
                                 </button>
                             </div>
-                            
+
                             <div class="grid grid-3">
                                 <div class="video-card">
                                     <div class="video-thumbnail" style="position: relative;">
@@ -847,25 +926,43 @@
     
     <!-- Dashboard Real Data Loader -->
     <script>
-        // Load real user data from API
+        // Load real user data from API with proper loading states
         document.addEventListener('DOMContentLoaded', async function() {
+            // Show loading indicators
+            showLoadingState();
+
             try {
                 // Fetch current user data from API
                 const response = await APIClient.auth.getProfile();
                 const user = response.user;
-                
+
+                console.log('✅ Dashboard - Loaded user data:', user);
+
                 // Update Runegold balance
                 const runegoldElements = document.querySelectorAll('.runegold-balance, .runegold-amount, #runegoldAmount');
                 runegoldElements.forEach(el => {
-                    el.textContent = user.runegoldBalance || 0;
+                    animateNumber(el, 0, user.runegoldBalance || 0, 800);
                 });
-                
-                // Update user stats (videos, followers, etc.)
-                // These would come from additional API calls in production
-                
-                console.log('Dashboard loaded with real user data:', user);
+
+                // Update user stats from REAL data
+                updateDashboardStats(user);
+
+                // Load user's actual videos
+                await loadUserVideos(user._id);
+
+                // Load real activity feed
+                await loadRecentActivity(user._id);
+
+                // Hide loading indicators
+                hideLoadingState();
+
             } catch (error) {
-                console.error('Error loading dashboard data:', error);
+                console.error('❌ Error loading dashboard data:', error);
+                hideLoadingState();
+
+                // Show error message to user
+                showNotification('Failed to load dashboard data. Please refresh the page.', 'error');
+
                 // Fallback to localStorage data
                 const userData = localStorage.getItem('mlnf_user');
                 if (userData) {
@@ -877,6 +974,246 @@
                 }
             }
         });
+
+        // Update dashboard stats with real data
+        function updateDashboardStats(user) {
+            // Total Videos (from uploadedVideos array)
+            const totalVideos = user.uploadedVideos ? user.uploadedVideos.length : 0;
+            const totalVideosEl = document.getElementById('totalVideos');
+            if (totalVideosEl) {
+                animateNumber(totalVideosEl, 0, totalVideos, 600);
+            }
+
+            // Total Followers (from followers array)
+            const totalFollowers = user.followers ? user.followers.length : 0;
+            const totalFollowersEl = document.getElementById('totalFollowers');
+            if (totalFollowersEl) {
+                animateNumber(totalFollowersEl, 0, totalFollowers, 600);
+            }
+
+            // Calculate total views from user's videos
+            let totalViews = 0;
+            if (user.uploadedVideos && user.uploadedVideos.length > 0) {
+                totalViews = user.uploadedVideos.reduce((sum, video) => sum + (video.views || 0), 0);
+            }
+            const totalViewsEl = document.getElementById('totalViews');
+            if (totalViewsEl) {
+                animateNumber(totalViewsEl, 0, totalViews, 800);
+            }
+
+            // Total Comments (would need separate API call in full implementation)
+            // For now, show 0 or calculate from videos if comments are embedded
+            const totalCommentsEl = document.getElementById('totalComments');
+            if (totalCommentsEl) {
+                totalCommentsEl.textContent = '0';
+                totalCommentsEl.style.opacity = '0.5';
+            }
+        }
+
+        // Animate number changes (smooth counting effect)
+        function animateNumber(element, start, end, duration) {
+            const startTime = performance.now();
+            const range = end - start;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function (ease-out)
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (range * easeOut));
+
+                element.textContent = current.toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Load user's actual videos
+        async function loadUserVideos(userId) {
+            const videosContainer = document.querySelector('.grid.grid-3');
+            if (!videosContainer) return;
+
+            // Clear placeholder videos
+            videosContainer.innerHTML = '<div class="col-span-3 text-center" style="padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--indigo);"></i><p class="mt-2 text-muted">Loading your videos...</p></div>';
+
+            try {
+                // Fetch user's videos from API
+                const response = await fetch(`${APIClient.auth.getProfile().then(r => r.user._id) === userId ? '/api' : 'https://much-love-no-fear.onrender.com/api'}/videos?userId=${userId}`);
+                const data = await response.json();
+
+                if (data.videos && data.videos.length > 0) {
+                    // Clear loading message
+                    videosContainer.innerHTML = '';
+
+                    // Display up to 3 most recent videos
+                    const recentVideos = data.videos.slice(0, 3);
+                    recentVideos.forEach(video => {
+                        const videoCard = createVideoCard(video);
+                        videosContainer.appendChild(videoCard);
+                    });
+                } else {
+                    // No videos uploaded yet
+                    videosContainer.innerHTML = `
+                        <div class="col-span-3 text-center" style="padding: 3rem;">
+                            <i class="fas fa-video" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                            <h4 style="color: var(--gray-600);">No videos yet</h4>
+                            <p class="text-muted">Upload your first video to share with warriors!</p>
+                            <button class="btn btn-viking mt-3">
+                                <i class="fas fa-upload"></i> Upload Video
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading videos:', error);
+                videosContainer.innerHTML = `
+                    <div class="col-span-3 text-center text-error" style="padding: 2rem;">
+                        <i class="fas fa-exclamation-triangle"></i> Failed to load videos
+                    </div>
+                `;
+            }
+        }
+
+        // Create video card element
+        function createVideoCard(video) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+
+            const thumbnail = video.thumbnail || 'https://via.placeholder.com/320x180/333333/FFFFFF?text=Video';
+            const isLive = video.status === 'live';
+
+            card.innerHTML = `
+                <div class="video-thumbnail" style="position: relative;">
+                    <img src="${thumbnail}" alt="${video.title}" style="width: 100%; border-radius: var(--radius-md); aspect-ratio: 16/9; object-fit: cover;">
+                    ${isLive ? '<span class="badge badge-error" style="position: absolute; top: 10px; right: 10px;">LIVE</span>' : ''}
+                </div>
+                <h5 class="mt-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${video.title}">${video.title}</h5>
+                <div class="flex gap-md text-sm text-muted">
+                    <span><i class="fas fa-eye"></i> ${formatNumber(video.views || 0)}</span>
+                    <span><i class="fas fa-thumbs-up"></i> ${formatNumber(video.upvotes || 0)}</span>
+                    <span><i class="fas fa-comment"></i> ${formatNumber(video.comments?.length || 0)}</span>
+                </div>
+            `;
+
+            // Make clickable
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => {
+                window.location.href = `/pages/video.html?id=${video._id}`;
+            });
+
+            return card;
+        }
+
+        // Format large numbers (1000 -> 1k, 1000000 -> 1M)
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return num.toString();
+        }
+
+        // Load recent activity feed
+        async function loadRecentActivity(userId) {
+            const activityTimeline = document.querySelector('.activity-timeline');
+            if (!activityTimeline) return;
+
+            // Clear placeholder activity
+            activityTimeline.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Loading activity...</div>';
+
+            try {
+                // In a full implementation, this would fetch from an activity/notifications endpoint
+                // For now, we'll generate activity from user's actual data
+                const response = await APIClient.auth.getProfile();
+                const user = response.user;
+
+                const activities = [];
+
+                // Check if user has videos with views
+                if (user.uploadedVideos && user.uploadedVideos.length > 0) {
+                    const topVideo = user.uploadedVideos.reduce((prev, current) =>
+                        (current.views > (prev?.views || 0)) ? current : prev
+                    , null);
+
+                    if (topVideo && topVideo.views > 0) {
+                        activities.push({
+                            icon: 'fa-video',
+                            color: 'var(--success)',
+                            text: `Your video "${topVideo.title}" has ${formatNumber(topVideo.views)} views!`,
+                            time: 'Recently'
+                        });
+                    }
+                }
+
+                // Check if user has followers
+                if (user.followers && user.followers.length > 0) {
+                    const recentFollower = user.followers[user.followers.length - 1];
+                    activities.push({
+                        icon: 'fa-user-plus',
+                        color: 'var(--peach)',
+                        text: `<strong>${recentFollower.username}</strong> started following you`,
+                        time: 'Recently'
+                    });
+                }
+
+                // If user has Runegold
+                if (user.runegoldBalance > 0) {
+                    activities.push({
+                        icon: 'fa-coins',
+                        color: 'var(--gold)',
+                        text: `Your Runegold balance: <strong>${user.runegoldBalance} RG</strong>`,
+                        time: 'Current'
+                    });
+                }
+
+                // Display activities or show empty state
+                if (activities.length > 0) {
+                    activityTimeline.innerHTML = activities.map(activity => `
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: ${activity.color};">
+                                <i class="fas ${activity.icon}"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>${activity.text}</p>
+                                <small class="text-muted">${activity.time}</small>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    activityTimeline.innerHTML = `
+                        <div class="text-center text-muted" style="padding: 2rem;">
+                            <i class="fas fa-history" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
+                            <p>No recent activity</p>
+                            <small>Start uploading videos and engaging with the community!</small>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Error loading activity:', error);
+                activityTimeline.innerHTML = '<div class="text-center text-error">Failed to load activity</div>';
+            }
+        }
+
+        // Loading state management
+        function showLoadingState() {
+            // Add shimmer effect to stat cards
+            const statCards = document.querySelectorAll('.stat-card h3');
+            statCards.forEach(stat => {
+                stat.style.opacity = '0.3';
+                stat.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            });
+        }
+
+        function hideLoadingState() {
+            // Loading complete - stats will be populated by updateDashboardStats
+        }
     </script>
     
     <!-- Dashboard specific styles -->
@@ -1546,13 +1883,143 @@
                 // Get section from href
                 const section = link.getAttribute('href').substring(1); // Remove #
 
-                // Show/hide sections
-                document.getElementById('statsOverview').style.display = section === 'overview' ? 'grid' : 'none';
-                document.getElementById('livestreamSection').style.display = section === 'livestream' ? 'block' : 'none';
+                // Hide all sections first
+                document.getElementById('statsOverview').style.display = 'none';
+                document.getElementById('livestreamSection')?.classList.add('hidden');
+                document.getElementById('messagesSection')?.classList.add('hidden');
 
-                // Load livestream data when section is shown
-                if (section === 'livestream') {
+                // Show selected section
+                if (section === 'overview') {
+                    document.getElementById('statsOverview').style.display = 'grid';
+                } else if (section === 'livestream') {
+                    document.getElementById('livestreamSection')?.classList.remove('hidden');
                     loadUserStreams();
+                } else if (section === 'messages') {
+                    document.getElementById('messagesSection')?.classList.remove('hidden');
+                    loadConversations();
+                }
+            });
+        });
+
+        // ===== MESSAGING FUNCTIONALITY =====
+
+        let currentConversation = null;
+
+        // Load user's conversations
+        async function loadConversations() {
+            const conversationsList = document.getElementById('conversationsList');
+            if (!conversationsList) return;
+
+            conversationsList.innerHTML = '<div class="text-center text-muted" style="padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading conversations...</div>';
+
+            try {
+                // In full implementation, this would fetch from /api/messages or similar
+                // For now, show empty state
+                conversationsList.innerHTML = `
+                    <div class="text-center text-muted" style="padding: 3rem 1rem;">
+                        <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                        <p>No conversations yet</p>
+                        <small>Send a message to start chatting!</small>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                conversationsList.innerHTML = '<div class="text-center text-error">Failed to load conversations</div>';
+            }
+        }
+
+        // Open new message dialog
+        function openNewMessage() {
+            showNotification('Direct messaging coming soon! For now, connect with warriors in the Message Board.', 'info');
+            // In full implementation, this would open a modal to select a user and start a conversation
+        }
+
+        // Open a conversation
+        function openConversation(conversationId, username) {
+            currentConversation = conversationId;
+
+            // Show chat header and input
+            document.getElementById('chatHeader')?.classList.remove('hidden');
+            document.getElementById('messageInput')?.classList.remove('hidden');
+
+            // Update chat header
+            document.getElementById('chatUsername').textContent = username;
+
+            // Load messages for this conversation
+            loadMessages(conversationId);
+        }
+
+        // Load messages for a conversation
+        async function loadMessages(conversationId) {
+            const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages) return;
+
+            chatMessages.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Loading messages...</div>';
+
+            try {
+                // In full implementation, fetch from /api/messages/{conversationId}
+                // For now, show empty state
+                chatMessages.innerHTML = `
+                    <div class="text-center text-muted" style="padding: 2rem;">
+                        <p>No messages yet. Say hi!</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                chatMessages.innerHTML = '<div class="text-center text-error">Failed to load messages</div>';
+            }
+        }
+
+        // Close chat
+        function closeChat() {
+            currentConversation = null;
+            document.getElementById('chatHeader')?.classList.add('hidden');
+            document.getElementById('messageInput')?.classList.add('hidden');
+
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                chatMessages.innerHTML = `
+                    <div class="text-center text-muted" style="padding: 3rem 1rem;">
+                        <i class="fas fa-comments" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                        <p>Select a conversation to start chatting</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Send message
+        document.getElementById('sendMessageForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const messageText = document.getElementById('messageText');
+            if (!messageText || !messageText.value.trim()) return;
+
+            const message = messageText.value.trim();
+
+            try {
+                // In full implementation, POST to /api/messages
+                // For now, show notification
+                showNotification('Direct messaging API coming soon!', 'info');
+
+                // Clear input
+                messageText.value = '';
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showNotification('Failed to send message', 'error');
+            }
+        });
+
+        // Conversation search
+        document.getElementById('conversationSearch')?.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const conversations = document.querySelectorAll('.conversation-item');
+
+            conversations.forEach(conv => {
+                const username = conv.getAttribute('data-username')?.toLowerCase() || '';
+                if (username.includes(searchTerm)) {
+                    conv.style.display = 'flex';
+                } else {
+                    conv.style.display = 'none';
                 }
             });
         });
@@ -1804,5 +2271,13 @@
             }
         }
     </script>
+
+    <!-- Socket.IO for real-time messaging -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+    <!-- MLNF Dashboard Integration -->
+    <script src="js/dashboard-api.js"></script>
+    <script src="js/messaging.js"></script>
+    <script src="js/dashboard-init.js"></script>
 </body>
 </html>
