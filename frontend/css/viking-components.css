@@ -1,0 +1,804 @@
+/**
+ * MLNF Viking Components Library
+ * Reusable, enhanced components with battle-worn aesthetic
+ * Extends styles.css and integrates with dashboard-viking.css
+ */
+
+/* ===== ENHANCED COLOR SYSTEM ===== */
+:root {
+    /* Viking Battle Colors (extends existing palette) */
+    --battle-bronze: #CD7F32;
+    --torch-amber: #FFBF00;
+    --rune-silver: #C0C0C0;
+    --blood-crimson: #DC143C;
+    --parchment: #F4E8D0;
+    --charcoal: #36454F;
+    --viking-purple: #5E3A8C;
+    --mead-gold: #F2C94C;
+
+    /* Enhanced shadows */
+    --shadow-rune: 0 2px 8px rgba(205, 127, 50, 0.3);
+    --shadow-torch: 0 0 20px rgba(255, 191, 0, 0.4);
+    --shadow-battle: 0 8px 24px rgba(26, 35, 50, 0.15);
+
+    /* Animation timings */
+    --animate-fast: 200ms ease;
+    --animate-normal: 300ms ease;
+    --animate-slow: 500ms ease;
+}
+
+/* ===== ENHANCED BUTTONS ===== */
+
+/* Primary Viking Button */
+.btn-viking-primary {
+    background: linear-gradient(135deg, var(--indigo) 0%, #3a4275 100%);
+    color: var(--gold);
+    border: 2px solid var(--battle-bronze);
+    padding: 0.875rem 2rem;
+    border-radius: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--animate-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-rune);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-viking-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-viking-primary:hover::before {
+    left: 100%;
+}
+
+.btn-viking-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-battle);
+    border-color: var(--torch-amber);
+}
+
+.btn-viking-primary:active {
+    transform: translateY(0);
+}
+
+.btn-viking-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Secondary Viking Button */
+.btn-viking-secondary {
+    background: transparent;
+    color: var(--indigo);
+    border: 2px solid var(--battle-bronze);
+    padding: 0.875rem 2rem;
+    border-radius: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--animate-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.btn-viking-secondary:hover {
+    background: var(--parchment);
+    border-color: var(--torch-amber);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-rune);
+}
+
+/* Danger Button (for delete actions) */
+.btn-viking-danger {
+    background: linear-gradient(135deg, var(--blood-crimson) 0%, #B91C1C 100%);
+    color: white;
+    border: 2px solid #991B1B;
+    padding: 0.875rem 2rem;
+    border-radius: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--animate-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-rune);
+}
+
+.btn-viking-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-battle);
+}
+
+/* Icon Button (for toolbar actions) */
+.btn-viking-icon {
+    background: rgba(74, 144, 226, 0.1);
+    border: 1px solid var(--battle-bronze);
+    width: 40px;
+    height: 40px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--animate-fast);
+    color: var(--indigo);
+}
+
+.btn-viking-icon:hover {
+    background: var(--parchment);
+    border-color: var(--torch-amber);
+    transform: scale(1.1);
+}
+
+/* ===== ENHANCED CARDS ===== */
+
+.viking-card {
+    background: linear-gradient(135deg, white 0%, var(--parchment) 100%);
+    border: 2px solid var(--battle-bronze);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-rune);
+    transition: all var(--animate-normal);
+}
+
+.viking-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-battle);
+    border-color: var(--torch-amber);
+}
+
+.viking-card-header {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--battle-bronze);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.viking-card-body {
+    font-family: var(--font-body);
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+
+.viking-card-footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* ===== ENHANCED FORMS ===== */
+
+.viking-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.viking-label {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.viking-input,
+.viking-textarea,
+.viking-select {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--gray-300);
+    border-radius: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    background: white;
+    transition: all var(--animate-fast);
+    color: var(--gray-900);
+}
+
+.viking-input:focus,
+.viking-textarea:focus,
+.viking-select:focus {
+    outline: none;
+    border-color: var(--battle-bronze);
+    box-shadow: var(--shadow-rune);
+    background: var(--parchment);
+}
+
+.viking-input::placeholder,
+.viking-textarea::placeholder {
+    color: var(--gray-400);
+    font-style: italic;
+}
+
+.viking-textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+.viking-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.viking-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--battle-bronze);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    accent-color: var(--indigo);
+}
+
+.viking-checkbox-label {
+    font-family: var(--font-body);
+    color: var(--gray-700);
+    cursor: pointer;
+}
+
+/* Form Validation States */
+.viking-input.error,
+.viking-textarea.error,
+.viking-select.error {
+    border-color: var(--blood-crimson);
+}
+
+.viking-input.success,
+.viking-textarea.success,
+.viking-select.success {
+    border-color: var(--success);
+}
+
+.viking-error-message {
+    color: var(--blood-crimson);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.viking-success-message {
+    color: var(--success);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ===== ENHANCED BADGES ===== */
+
+.viking-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    border-radius: 1rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.viking-badge-gold {
+    background: linear-gradient(135deg, var(--mead-gold) 0%, var(--torch-amber) 100%);
+    color: var(--charcoal);
+    border: 2px solid var(--battle-bronze);
+    box-shadow: var(--shadow-rune);
+}
+
+.viking-badge-silver {
+    background: linear-gradient(135deg, var(--rune-silver) 0%, #A8A8A8 100%);
+    color: var(--charcoal);
+    border: 2px solid var(--gray-400);
+}
+
+.viking-badge-bronze {
+    background: linear-gradient(135deg, var(--battle-bronze) 0%, #B87333 100%);
+    color: white;
+    border: 2px solid #996633;
+}
+
+.viking-badge-live {
+    background: var(--blood-crimson);
+    color: white;
+    border: 2px solid #B91C1C;
+    animation: pulseLive 2s ease-in-out infinite;
+}
+
+@keyframes pulseLive {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ===== ENHANCED ALERTS ===== */
+
+.viking-alert {
+    padding: 1.25rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 2px solid;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-body);
+}
+
+.viking-alert-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.viking-alert-content {
+    flex: 1;
+}
+
+.viking-alert-title {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-display);
+}
+
+.viking-alert-message {
+    line-height: 1.6;
+}
+
+.viking-alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+    color: #047857;
+}
+
+.viking-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--warning);
+    color: #92400E;
+}
+
+.viking-alert-error {
+    background: rgba(220, 20, 60, 0.1);
+    border-color: var(--blood-crimson);
+    color: #991B1B;
+}
+
+.viking-alert-info {
+    background: rgba(74, 144, 226, 0.1);
+    border-color: var(--indigo);
+    color: #1E3A8A;
+}
+
+/* ===== ENHANCED VIDEO PLAYER ===== */
+
+.viking-video-container {
+    position: relative;
+    background: var(--charcoal);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-battle);
+    border: 3px solid var(--battle-bronze);
+}
+
+.viking-video-player {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16/9;
+}
+
+.viking-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
+    transition: opacity var(--animate-normal);
+    pointer-events: none;
+}
+
+.viking-video-container:hover .viking-video-overlay {
+    opacity: 1;
+}
+
+.viking-video-title {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    color: white;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.viking-video-meta {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.viking-video-stats {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+/* ===== ENHANCED LOADING STATES ===== */
+
+.viking-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.viking-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--gray-200);
+    border-top-color: var(--torch-amber);
+    border-radius: 50%;
+    animation: vikingSpinAnimation 1s linear infinite;
+}
+
+@keyframes vikingSpinAnimation {
+    to { transform: rotate(360deg); }
+}
+
+.viking-loading-text {
+    font-family: var(--font-display);
+    color: var(--indigo);
+    margin-top: 1rem;
+    font-size: 1.125rem;
+}
+
+/* Skeleton Loading */
+.viking-skeleton {
+    background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+    background-size: 200% 100%;
+    animation: vikingSkeletonAnimation 1.5s ease-in-out infinite;
+    border-radius: 0.5rem;
+}
+
+@keyframes vikingSkeletonAnimation {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ===== ENHANCED EMPTY STATES ===== */
+
+.viking-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, white 0%, var(--parchment) 100%);
+    border: 2px dashed var(--battle-bronze);
+    border-radius: 12px;
+}
+
+.viking-empty-icon {
+    font-size: 4rem;
+    color: var(--torch-amber);
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+}
+
+.viking-empty-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--navy);
+    margin-bottom: 0.75rem;
+}
+
+.viking-empty-message {
+    font-family: var(--font-body);
+    color: var(--gray-600);
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.viking-empty-action {
+    margin-top: 1.5rem;
+}
+
+/* ===== ENHANCED MODALS ===== */
+
+.viking-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 35, 50, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: vikingFadeIn 0.3s ease;
+}
+
+@keyframes vikingFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.viking-modal {
+    background: white;
+    border: 3px solid var(--battle-bronze);
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-battle);
+    animation: vikingSlideUp 0.3s ease;
+}
+
+@keyframes vikingSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.viking-modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 2px solid var(--battle-bronze);
+    background: linear-gradient(135deg, var(--indigo) 0%, #3a4275 100%);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.viking-modal-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.viking-modal-close {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all var(--animate-fast);
+    padding: 0.5rem;
+}
+
+.viking-modal-close:hover {
+    transform: scale(1.2);
+    color: var(--torch-amber);
+}
+
+.viking-modal-body {
+    padding: 2rem;
+}
+
+.viking-modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* ===== ENHANCED TOOLTIPS ===== */
+
+.viking-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.viking-tooltip-text {
+    visibility: hidden;
+    background: var(--charcoal);
+    color: var(--gold);
+    text-align: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--battle-bronze);
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-rune);
+    opacity: 0;
+    transition: opacity var(--animate-fast);
+}
+
+.viking-tooltip:hover .viking-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.viking-tooltip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--charcoal) transparent transparent transparent;
+}
+
+/* ===== ENHANCED PROGRESS BARS ===== */
+
+.viking-progress {
+    width: 100%;
+    height: 20px;
+    background: var(--gray-200);
+    border-radius: 10px;
+    border: 2px solid var(--battle-bronze);
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.viking-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--torch-amber) 0%, var(--mead-gold) 100%);
+    border-radius: 8px;
+    transition: width 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.viking-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: vikingProgressShine 2s ease infinite;
+}
+
+@keyframes vikingProgressShine {
+    to { left: 100%; }
+}
+
+/* ===== ENHANCED TABS ===== */
+
+.viking-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--battle-bronze);
+    margin-bottom: 2rem;
+}
+
+.viking-tab {
+    padding: 1rem 2rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--gray-600);
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all var(--animate-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+}
+
+.viking-tab:hover {
+    color: var(--indigo);
+    background: rgba(74, 144, 226, 0.05);
+}
+
+.viking-tab.active {
+    color: var(--indigo);
+    border-bottom-color: var(--torch-amber);
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+
+@media (max-width: 768px) {
+    .btn-viking-primary,
+    .btn-viking-secondary,
+    .btn-viking-danger {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .viking-modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .viking-modal-header,
+    .viking-modal-body,
+    .viking-modal-footer {
+        padding: 1.25rem;
+    }
+
+    .viking-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .viking-tab {
+        flex-shrink: 0;
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+.viking-text-gold {
+    color: var(--gold);
+}
+
+.viking-text-bronze {
+    color: var(--battle-bronze);
+}
+
+.viking-text-amber {
+    color: var(--torch-amber);
+}
+
+.viking-bg-parchment {
+    background: var(--parchment);
+}
+
+.viking-border-battle {
+    border: 2px solid var(--battle-bronze);
+}
+
+.viking-shadow-rune {
+    box-shadow: var(--shadow-rune);
+}
+
+.viking-shadow-battle {
+    box-shadow: var(--shadow-battle);
+}

@@ -7,6 +7,7 @@
     <title>Much Love, No Fear - Video Sanctuary</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/viking-components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -54,19 +55,30 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" style="background: linear-gradient(135deg, var(--navy) 0%, var(--gray-800) 100%); padding: 4rem 0; color: var(--cream);">
-        <div class="container text-center">
-            <h1 style="color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+    <section class="hero" style="background: linear-gradient(135deg, var(--navy) 0%, var(--gray-800) 100%); padding: 6rem 0; color: var(--cream); position: relative; overflow: hidden;">
+        <!-- Decorative Viking elements -->
+        <div style="position: absolute; top: -50px; left: -50px; opacity: 0.05; font-size: 300px; transform: rotate(-15deg);">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div style="position: absolute; bottom: -50px; right: -50px; opacity: 0.05; font-size: 300px; transform: rotate(15deg);">
+            <i class="fas fa-helmet-battle"></i>
+        </div>
+
+        <div class="container text-center" style="position: relative; z-index: 1;">
+            <h1 style="color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5); margin-bottom: 1.5rem;">
                 <i class="fas fa-shield-alt"></i> Much Love, No Fear
             </h1>
-            <p style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--cream);">
+            <p style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--cream); max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.6;">
                 Your sanctuary for uncensored truth. Share videos without fear of demonetization or censorship.
             </p>
+            <p style="font-size: 1.125rem; color: rgba(248, 244, 227, 0.8); margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Join a community of warriors standing for free speech, sovereignty, and authentic connection.
+            </p>
             <div class="flex flex-center gap-lg" style="flex-wrap: wrap;">
-                <a href="pages/archive.html" class="btn btn-viking btn-lg">
+                <a href="pages/archive.html" class="btn-viking-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-video"></i> Explore Love Vault
                 </a>
-                <a href="pages/auth.html" class="btn btn-outline btn-lg" style="color: var(--cream); border-color: var(--cream);">
+                <a href="pages/auth.html" class="btn-viking-secondary" style="color: var(--cream); border-color: var(--cream); display: inline-flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-user-plus"></i> Join the Movement
                 </a>
             </div>
@@ -89,7 +101,7 @@
                     </h2>
                     <p style="color: var(--gray-600); margin: 0;">Warriors broadcasting truth right now</p>
                 </div>
-                <a href="pages/live.html" class="btn btn-viking">
+                <a href="pages/live.html" class="btn-viking-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-compass"></i> View All Streams
                 </a>
             </div>
@@ -111,7 +123,7 @@
                     <p style="color: var(--gray-600); max-width: 400px; margin: 0 auto 1.5rem;">
                         The Fleet is docked, but warriors will return soon. Be the first to set sail!
                     </p>
-                    <a href="pages/auth.html" class="btn btn-viking">
+                    <a href="pages/auth.html" class="btn-viking-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-user-shield"></i> Start Your Voyage
                     </a>
                 </div>
