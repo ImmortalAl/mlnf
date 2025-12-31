@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <!-- Socket.io for real-time chat -->
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
 
     <style>
         /* Live page specific styles */
@@ -470,8 +470,28 @@
         const urlParams = new URLSearchParams(window.location.search);
         const streamId = urlParams.get('stream');
 
-        // Initialize Socket.io connection (connects to same origin, Netlify proxies to backend)
-        const socket = io();
+        // Initialize Socket.io connection to Oracle backend server
+        // Note: Socket.io WebSocket connections can't be proxied through Netlify redirects
+        const socket = io('http://150.136.140.253:5000', {
+            transports: ['websocket', 'polling'],
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: 5
+        });
+
+        // Socket.io connection status
+        socket.on('connect', () => {
+            console.log('✅ Connected to Mead Hall (Socket.io)');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('⚠️ Disconnected from Mead Hall');
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('❌ Mead Hall connection error:', error);
+        });
 
         // Initialize HLS player
         const video = document.getElementById('videoPlayer');
@@ -510,9 +530,20 @@
             try {
                 // Fetch stream data from backend
                 const response = await fetch(`/api/livestream/${streamId}`);
-                const stream = await response.json();
+                const data = await response.json();
 
-                if (!stream || !stream.isLive) {
+                if (!response.ok || !data.stream) {
+                    console.error('Failed to fetch stream:', data);
+                    video.style.display = 'none';
+                    offlineMessage.style.display = 'flex';
+                    return;
+                }
+
+                const stream = data.stream;
+
+                // Check if stream is live
+                if (stream.status !== 'live') {
+                    console.log('Stream is not live, status:', stream.status);
                     video.style.display = 'none';
                     offlineMessage.style.display = 'flex';
                     return;
@@ -523,6 +554,8 @@
 
                 // Load HLS stream (direct from Oracle server nginx)
                 const streamUrl = `http://150.136.140.253:8080/hls/${stream.streamKey}.m3u8`;
+
+                console.log('Loading HLS stream:', streamUrl);
 
                 if (Hls.isSupported()) {
                     hls = new Hls();
@@ -578,7 +611,7 @@
                     <span class="chat-username">${message.username}</span>
                     <span class="chat-timestamp">${timestamp}</span>
                 </div>
-                <div class="chat-text">${escapeHtml(message.text)}</div>
+                <div class="chat-content">${escapeHtml(message.text)}</div>
             `;
 
             chatMessages.appendChild(messageDiv);

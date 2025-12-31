@@ -31,6 +31,27 @@ router.get('/fleet', async (req, res) => {
   }
 });
 
+// Get my streams (authenticated user) - MUST be before /:id route
+router.get('/my-streams', authMiddleware, async (req, res) => {
+  try {
+    const { limit = 20, status } = req.query;
+
+    const query = { creator: req.user._id };
+    if (status) {
+      query.status = status;
+    }
+
+    const streams = await Livestream.find(query)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit));
+
+    res.json({ streams });
+  } catch (error) {
+    console.error('Get my streams error:', error);
+    res.status(500).json({ error: 'Failed to get your streams' });
+  }
+});
+
 // Get single stream details
 router.get('/:id', async (req, res) => {
   try {
@@ -331,27 +352,6 @@ router.post('/:id/flag', authMiddleware, [
   } catch (error) {
     console.error('Flag stream error:', error);
     res.status(500).json({ error: 'Failed to flag stream' });
-  }
-});
-
-// Get my streams (authenticated user)
-router.get('/my-streams', authMiddleware, async (req, res) => {
-  try {
-    const { limit = 20, status } = req.query;
-
-    const query = { creator: req.user._id };
-    if (status) {
-      query.status = status;
-    }
-
-    const streams = await Livestream.find(query)
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit));
-
-    res.json({ streams });
-  } catch (error) {
-    console.error('Get my streams error:', error);
-    res.status(500).json({ error: 'Failed to get your streams' });
   }
 });
 
