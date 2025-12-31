@@ -72,14 +72,14 @@
                         </h2>
                         
                         <form>
-                            <div class="form-group">
-                                <label for="loginEmail">Email or Username</label>
-                                <input type="text" id="loginEmail" class="form-control" placeholder="Enter your email or username" required>
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="loginEmail">Email or Username</label>
+                                <input type="text" id="loginEmail" class="viking-input" placeholder="Enter your email or username" required>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="loginPassword">Password</label>
-                                <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="loginPassword">Password</label>
+                                <input type="password" id="loginPassword" class="viking-input" placeholder="Enter your password" required>
                             </div>
                             
                             <div class="flex flex-between mb-3">
@@ -89,7 +89,7 @@
                                 <a href="#" style="color: var(--indigo);">Forgot password?</a>
                             </div>
                             
-                            <button type="submit" class="btn btn-viking btn-lg" style="width: 100%;">
+                            <button type="submit" class="btn-viking-primary" style="width: 100%;">
                                 <i class="fas fa-sign-in-alt"></i> Login to Your Account
                             </button>
                         </form>
@@ -97,13 +97,13 @@
                         <div class="text-center mt-4">
                             <p>Or continue with</p>
                             <div class="flex flex-center gap-md mt-2">
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fab fa-google"></i> Google
                                 </button>
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fab fa-twitter"></i> Twitter
                                 </button>
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fab fa-telegram"></i> Telegram
                                 </button>
                             </div>
@@ -120,32 +120,32 @@
                         
                         <form>
                             <div class="grid grid-2 gap-md">
-                                <div class="form-group">
-                                    <label for="firstName">First Name (Optional)</label>
-                                    <input type="text" id="firstName" class="form-control" placeholder="Your first name">
+                                <div class="viking-form-group">
+                                    <label class="viking-label" for="firstName">First Name (Optional)</label>
+                                    <input type="text" id="firstName" class="viking-input" placeholder="Your first name">
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label for="lastName">Last Name (Optional)</label>
-                                    <input type="text" id="lastName" class="form-control" placeholder="Your last name">
+                                <div class="viking-form-group">
+                                    <label class="viking-label" for="lastName">Last Name (Optional)</label>
+                                    <input type="text" id="lastName" class="viking-input" placeholder="Your last name">
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="signupUsername">Username</label>
-                                <input type="text" id="signupUsername" class="form-control" placeholder="Choose a warrior name" required>
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="signupUsername">Username</label>
+                                <input type="text" id="signupUsername" class="viking-input" placeholder="Choose a warrior name" required>
                                 <small class="text-muted">This will be your public identity</small>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="signupEmail">Email (Optional)</label>
-                                <input type="email" id="signupEmail" class="form-control" placeholder="your@email.com">
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="signupEmail">Email (Optional)</label>
+                                <input type="email" id="signupEmail" class="viking-input" placeholder="your@email.com">
                                 <small class="text-muted">Optional - We'll never share your email</small>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="signupPassword">Password</label>
-                                <input type="password" id="signupPassword" class="form-control" placeholder="Create a strong password" required>
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="signupPassword">Password</label>
+                                <input type="password" id="signupPassword" class="viking-input" placeholder="Create a strong password" required>
                                 <div class="password-strength mt-2">
                                     <div class="password-strength-bar" style="height: 4px; background: var(--gray-200); border-radius: 2px;">
                                         <div id="strengthBar" style="height: 100%; width: 0%; background: var(--success); border-radius: 2px; transition: all 0.3s;"></div>
@@ -154,12 +154,12 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="confirmPassword">Confirm Password</label>
-                                <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter your password" required>
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="confirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" class="viking-input" placeholder="Re-enter your password" required>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="viking-form-group">
                                 <label>Security Question (Optional)</label>
                                 <select class="form-control mb-2">
                                     <option>What truth awakened you?</option>
@@ -167,22 +167,22 @@
                                     <option>Favorite freedom fighter?</option>
                                     <option>What year did you wake up?</option>
                                 </select>
-                                <input type="text" class="form-control" placeholder="Your answer">
+                                <input type="text" class="viking-input" placeholder="Your answer">
                             </div>
                             
-                            <div class="form-group">
+                            <div class="viking-form-group">
                                 <label>
                                     <input type="checkbox" required> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
                                 </label>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="viking-form-group">
                                 <label>
                                     <input type="checkbox"> Send me uncensored news updates (optional)
                                 </label>
                             </div>
                             
-                            <button type="submit" class="btn btn-viking btn-lg" style="width: 100%;">
+                            <button type="submit" class="btn-viking-primary" style="width: 100%;">
                                 <i class="fas fa-user-plus"></i> Create Free Account
                             </button>
                         </form>
@@ -190,13 +190,13 @@
                         <div class="text-center mt-4">
                             <p>Or sign up with</p>
                             <div class="flex flex-center gap-md mt-2">
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fab fa-google"></i> Google
                                 </button>
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fab fa-twitter"></i> Twitter
                                 </button>
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fab fa-telegram"></i> Telegram
                                 </button>
                             </div>
@@ -623,5 +623,6 @@
         `;
         document.head.appendChild(style);
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

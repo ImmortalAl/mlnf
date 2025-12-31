@@ -67,13 +67,13 @@
         <div class="container">
             <div class="flex gap-md flex-wrap">
                 <button class="btn btn-outline active" data-category="all">All Posts</button>
-                <button class="btn btn-outline" data-category="freedom">Freedom</button>
-                <button class="btn btn-outline" data-category="health">Health</button>
-                <button class="btn btn-outline" data-category="spirituality">Spirituality</button>
-                <button class="btn btn-outline" data-category="politics">Politics</button>
-                <button class="btn btn-outline" data-category="economy">Economy</button>
-                <button class="btn btn-outline" data-category="technology">Technology</button>
-                <button class="btn btn-secondary" id="writeBlogBtn">
+                <button class="btn-viking-secondary" data-category="freedom">Freedom</button>
+                <button class="btn-viking-secondary" data-category="health">Health</button>
+                <button class="btn-viking-secondary" data-category="spirituality">Spirituality</button>
+                <button class="btn-viking-secondary" data-category="politics">Politics</button>
+                <button class="btn-viking-secondary" data-category="economy">Economy</button>
+                <button class="btn-viking-secondary" data-category="technology">Technology</button>
+                <button class="btn-viking-secondary" id="writeBlogBtn">
                     <i class="fas fa-pen"></i> Write Article
                 </button>
             </div>
@@ -96,7 +96,7 @@
                         <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
                             In an age of unprecedented censorship and information control, the need for platforms that protect free speech has never been more critical. This article explores the systematic suppression of dissenting voices and why we must stand together...
                         </p>
-                        <a href="#" class="btn btn-viking">Read Full Article <i class="fas fa-arrow-right"></i></a>
+                        <a href="#" class="btn-viking-primary">Read Full Article <i class="fas fa-arrow-right"></i></a>
                     </div>
                     <div style="width: 300px;">
                         <img src="https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=Featured+Article" alt="Featured Article" style="width: 100%; border-radius: var(--radius-lg);" onerror="this.style.display='none'">
@@ -131,8 +131,8 @@
                     Get uncensored news and insights delivered to your inbox
                 </p>
                 <form class="flex flex-center gap-md" style="max-width: 500px; margin: 0 auto;">
-                    <input type="email" placeholder="Enter your email" class="form-control" style="flex: 1;">
-                    <button type="submit" class="btn btn-viking">Subscribe</button>
+                    <input type="email" placeholder="Enter your email" class="viking-input" style="flex: 1;">
+                    <button type="submit" class="btn-viking-primary">Subscribe</button>
                 </form>
             </div>
         </div>
@@ -215,22 +215,22 @@
             </div>
             <div class="modal-body">
                 <form id="createBlogForm">
-                    <div class="form-group">
-                        <label for="blogTitle">Article Title *</label>
-                        <input type="text" id="blogTitle" class="form-control" required maxlength="200" 
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="blogTitle">Article Title *</label>
+                        <input type="text" id="blogTitle" class="viking-input" required maxlength="200" 
                                placeholder="Enter a compelling title...">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="blogExcerpt">Excerpt (Short Summary) *</label>
-                        <textarea id="blogExcerpt" class="form-control" rows="2" required maxlength="300"
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="blogExcerpt">Excerpt (Short Summary) *</label>
+                        <textarea class="viking-textarea" id="blogExcerpt" class="viking-input" rows="2" required maxlength="300"
                                   placeholder="Write a brief summary that will appear in the blog listing..."></textarea>
                         <small class="text-muted">Maximum 300 characters</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="blogCategory">Category *</label>
-                        <select id="blogCategory" class="form-control" required>
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="blogCategory">Category *</label>
+                        <select class="viking-select" id="blogCategory" class="viking-input" required>
                             <option value="">Select a category...</option>
                             <option value="Freedom">Freedom & Liberty</option>
                             <option value="Health">Health & Wellness</option>
@@ -241,29 +241,29 @@
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="blogTags">Tags (comma-separated)</label>
-                        <input type="text" id="blogTags" class="form-control" 
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="blogTags">Tags (comma-separated)</label>
+                        <input type="text" id="blogTags" class="viking-input" 
                                placeholder="awakening, truth, freedom, health">
                         <small class="text-muted">Add relevant tags separated by commas</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="blogContent">Article Content *</label>
-                        <textarea id="blogContent" class="form-control" rows="12" required
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="blogContent">Article Content *</label>
+                        <textarea class="viking-textarea" id="blogContent" class="viking-input" rows="12" required
                                   placeholder="Write your article here... (HTML supported: &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;)"></textarea>
                         <small class="text-muted">You can use basic HTML formatting</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="checkbox-label">
+                    <div class="viking-form-group">
+                        <label class="viking-label" class="checkbox-label">
                             <input type="checkbox" id="blogFeatured">
                             <span>Feature this article (show prominently on blog page)</span>
                         </label>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="checkbox-label">
+                    <div class="viking-form-group">
+                        <label class="viking-label" class="checkbox-label">
                             <input type="checkbox" id="blogPublished" checked>
                             <span>Publish immediately</span>
                         </label>
@@ -413,5 +413,6 @@
             }
         });
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

@@ -83,13 +83,13 @@
         <div class="container">
             <div class="flex gap-md flex-wrap">
                 <button class="btn btn-outline active" data-category="all">All News</button>
-                <button class="btn btn-outline" data-category="breaking">Breaking</button>
-                <button class="btn btn-outline" data-category="world">World</button>
-                <button class="btn btn-outline" data-category="health">Health</button>
-                <button class="btn btn-outline" data-category="finance">Finance</button>
-                <button class="btn btn-outline" data-category="tech">Technology</button>
-                <button class="btn btn-outline" data-category="politics">Politics</button>
-                <button class="btn btn-secondary" id="submitNewsBtn">
+                <button class="btn-viking-secondary" data-category="breaking">Breaking</button>
+                <button class="btn-viking-secondary" data-category="world">World</button>
+                <button class="btn-viking-secondary" data-category="health">Health</button>
+                <button class="btn-viking-secondary" data-category="finance">Finance</button>
+                <button class="btn-viking-secondary" data-category="tech">Technology</button>
+                <button class="btn-viking-secondary" data-category="politics">Politics</button>
+                <button class="btn-viking-secondary" id="submitNewsBtn">
                     <i class="fas fa-plus-circle"></i> Submit News
                 </button>
             </div>
@@ -117,7 +117,7 @@
                                 Explosive new documents obtained by independent journalists reveal a coordinated effort between Big Tech companies and government agencies to suppress dissenting voices across all major platforms. The documents, which span over 1000 pages, detail specific targeting criteria and automated censorship systems...
                             </p>
                             <div class="flex flex-between">
-                                <a href="#" class="btn btn-viking">Read Full Story</a>
+                                <a href="#" class="btn-viking-primary">Read Full Story</a>
                                 <div class="flex gap-md">
                                     <button class="btn btn-outline btn-sm"><i class="fas fa-share"></i> Share</button>
                                     <button class="btn btn-outline btn-sm"><i class="fas fa-bookmark"></i> Save</button>
@@ -306,22 +306,22 @@
             </div>
             <div class="modal-body">
                 <form id="submitNewsForm">
-                    <div class="form-group">
-                        <label for="newsTitle">Article Title *</label>
-                        <input type="text" id="newsTitle" class="form-control" required maxlength="200" 
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="newsTitle">Article Title *</label>
+                        <input type="text" id="newsTitle" class="viking-input" required maxlength="200" 
                                placeholder="Enter breaking news headline...">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="newsExcerpt">Excerpt (Short Summary) *</label>
-                        <textarea id="newsExcerpt" class="form-control" rows="2" required maxlength="300"
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="newsExcerpt">Excerpt (Short Summary) *</label>
+                        <textarea class="viking-textarea" id="newsExcerpt" class="viking-input" rows="2" required maxlength="300"
                                   placeholder="Write a brief summary that will appear in the news listing..."></textarea>
                         <small class="text-muted">Maximum 300 characters</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="newsCategory">Category *</label>
-                        <select id="newsCategory" class="form-control" required>
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="newsCategory">Category *</label>
+                        <select class="viking-select" id="newsCategory" class="viking-input" required>
                             <option value="">Select a category...</option>
                             <option value="Breaking">Breaking News</option>
                             <option value="Politics">Politics</option>
@@ -332,22 +332,22 @@
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="newsSource">Source (Optional)</label>
-                        <input type="text" id="newsSource" class="form-control" 
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="newsSource">Source (Optional)</label>
+                        <input type="text" id="newsSource" class="viking-input" 
                                placeholder="e.g., Independent Reporters Network, Citizen Journalist">
                         <small class="text-muted">Credit the original source if applicable</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="newsContent">Full Article *</label>
-                        <textarea id="newsContent" class="form-control" rows="12" required
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="newsContent">Full Article *</label>
+                        <textarea class="viking-textarea" id="newsContent" class="viking-input" rows="12" required
                                   placeholder="Write the full article here... (HTML supported: &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;)"></textarea>
                         <small class="text-muted">You can use basic HTML formatting</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="checkbox-label">
+                    <div class="viking-form-group">
+                        <label class="viking-label" class="checkbox-label">
                             <input type="checkbox" id="newsBreaking">
                             <span>Mark as Breaking News</span>
                         </label>
@@ -459,5 +459,6 @@
             }
         });
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

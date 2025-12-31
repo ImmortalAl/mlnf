@@ -179,10 +179,10 @@
                             <div class="mb-4" id="commentFormContainer">
                                 <textarea id="commentText" class="form-control" rows="3" placeholder="Add a comment... (Login required)"></textarea>
                                 <div class="flex gap-md mt-2">
-                                    <button class="btn btn-viking" id="submitCommentBtn">
+                                    <button class="btn-viking-primary" id="submitCommentBtn">
                                         <i class="fas fa-comment"></i> Post Comment
                                     </button>
-                                    <button class="btn btn-outline" id="cancelCommentBtn" style="display: none;">
+                                    <button class="btn-viking-secondary" id="cancelCommentBtn" style="display: none;">
                                         Cancel
                                     </button>
                                 </div>
@@ -254,7 +254,7 @@
 
                             <!-- Load More -->
                             <div class="text-center mt-3">
-                                <button class="btn btn-outline">
+                                <button class="btn-viking-secondary">
                                     <i class="fas fa-chevron-down"></i> Show More Comments
                                 </button>
                             </div>
@@ -750,5 +750,6 @@
             await loadComments();
         });
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

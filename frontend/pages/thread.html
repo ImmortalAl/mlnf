@@ -130,11 +130,11 @@
                 <div class="card-body">
                     <h3 class="mb-3"><i class="fas fa-reply"></i> Join the Discussion</h3>
                     <form id="replyForm">
-                        <div class="form-group">
-                            <textarea id="replyContent" class="form-control" rows="4" placeholder="Share your thoughts..." required maxlength="5000"></textarea>
+                        <div class="viking-form-group">
+                            <textarea class="viking-textarea" id="replyContent" class="viking-input" rows="4" placeholder="Share your thoughts..." required maxlength="5000"></textarea>
                             <small class="text-muted"><span id="replyCharCount">0</span>/5000 characters</small>
                         </div>
-                        <button type="submit" class="btn btn-viking">
+                        <button type="submit" class="btn-viking-primary">
                             <i class="fas fa-paper-plane"></i> Post Reply
                         </button>
                     </form>
@@ -403,5 +403,6 @@
             setTimeout(() => notif.remove(), 3000);
         }
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

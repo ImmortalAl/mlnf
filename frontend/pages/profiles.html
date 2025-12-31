@@ -135,11 +135,11 @@
         <div class="container">
             <div class="flex flex-between flex-wrap gap-md">
                 <div class="search-box flex-grow">
-                    <input type="text" id="searchWarriors" class="form-control" placeholder="🔍 Search warriors by name..." style="width: 100%;">
+                    <input type="text" id="searchWarriors" class="viking-input" placeholder="🔍 Search warriors by name..." style="width: 100%;">
                 </div>
                 
                 <div class="filter-buttons flex gap-md">
-                    <select id="sortFilter" class="form-control">
+                    <select class="viking-select" id="sortFilter" class="viking-input">
                         <option value="newest">Newest Warriors</option>
                         <option value="mostFollowers">Most Followers</option>
                         <option value="mostVideos">Most Videos</option>
@@ -446,5 +446,6 @@
         `;
         document.head.appendChild(style);
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

@@ -308,9 +308,9 @@
                 <div class="filter-bar">
                     <div class="flex flex-between flex-wrap gap-md">
                         <div style="flex: 1; min-width: 250px;">
-                            <input type="text" id="searchThreads" class="form-control" placeholder="Search discussions...">
+                            <input type="text" id="searchThreads" class="viking-input" placeholder="Search discussions...">
                         </div>
-                        <select id="sortThreads" class="form-control" style="width: auto;">
+                        <select class="viking-select" id="sortThreads" class="viking-input" style="width: auto;">
                             <option value="latest">Latest Activity</option>
                             <option value="popular">Most Views</option>
                             <option value="replies">Most Replies</option>
@@ -331,11 +331,11 @@
 
                 <!-- Pagination -->
                 <div class="flex flex-center gap-md mt-3">
-                    <button class="btn btn-outline" id="prevPage" disabled>
+                    <button class="btn-viking-secondary" id="prevPage" disabled>
                         <i class="fas fa-chevron-left"></i> Previous
                     </button>
                     <span>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
-                    <button class="btn btn-outline" id="nextPage">
+                    <button class="btn-viking-secondary" id="nextPage">
                         Next <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -357,9 +357,9 @@
             </div>
             <div class="modal-body">
                 <form id="createThreadForm">
-                    <div class="form-group">
-                        <label for="threadCategory">Choose Your Hall *</label>
-                        <select id="threadCategory" class="form-control" required>
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="threadCategory">Choose Your Hall *</label>
+                        <select class="viking-select" id="threadCategory" class="viking-input" required>
                             <option value="">Select a category...</option>
                             <option value="war_council">🗡️ War Council</option>
                             <option value="healing_hall">🏥 Healing Hall</option>
@@ -370,21 +370,21 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="threadTitle">Title of Your Saga *</label>
-                        <input type="text" id="threadTitle" class="form-control" placeholder="A compelling title for your discussion..." required maxlength="200">
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="threadTitle">Title of Your Saga *</label>
+                        <input type="text" id="threadTitle" class="viking-input" placeholder="A compelling title for your discussion..." required maxlength="200">
                         <small class="text-muted"><span id="titleCharCount">0</span>/200 characters</small>
                     </div>
 
-                    <div class="form-group">
-                        <label for="threadContent">Your Message *</label>
-                        <textarea id="threadContent" class="form-control" rows="8" placeholder="Share your wisdom, ask questions, or start a discussion..." required maxlength="10000"></textarea>
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="threadContent">Your Message *</label>
+                        <textarea class="viking-textarea" id="threadContent" class="viking-input" rows="8" placeholder="Share your wisdom, ask questions, or start a discussion..." required maxlength="10000"></textarea>
                         <small class="text-muted"><span id="contentCharCount">0</span>/10000 characters</small>
                     </div>
 
-                    <div class="form-group">
-                        <label for="threadTags">Tags (Optional)</label>
-                        <input type="text" id="threadTags" class="form-control" placeholder="tag1, tag2, tag3">
+                    <div class="viking-form-group">
+                        <label class="viking-label" for="threadTags">Tags (Optional)</label>
+                        <input type="text" id="threadTags" class="viking-input" placeholder="tag1, tag2, tag3">
                         <small class="text-muted">Separate tags with commas</small>
                     </div>
 
@@ -886,5 +886,6 @@
             setTimeout(() => notif.remove(), 5000);
         }
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>

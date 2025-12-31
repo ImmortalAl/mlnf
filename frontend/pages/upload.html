@@ -218,32 +218,32 @@
                     <div class="card-body">
                         <h3 class="mb-3"><i class="fas fa-info-circle"></i> Video Details</h3>
                         
-                        <div class="form-group">
-                            <label for="videoTitle">Title *</label>
+                        <div class="viking-form-group">
+                            <label class="viking-label" for="videoTitle">Title *</label>
                             <input 
                                 type="text" 
                                 id="videoTitle" 
-                                class="form-control" 
+                                class="viking-input" 
                                 placeholder="Enter video title" 
                                 maxlength="200" 
                                 required>
                             <small class="text-muted">Maximum 200 characters</small>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="videoDescription">Description</label>
-                            <textarea 
+                        <div class="viking-form-group">
+                            <label class="viking-label" for="videoDescription">Description</label>
+                            <textarea class="viking-textarea" 
                                 id="videoDescription" 
-                                class="form-control" 
+                                class="viking-input" 
                                 rows="5" 
                                 placeholder="Describe your video..."
                                 maxlength="5000"></textarea>
                             <small class="text-muted">Maximum 5000 characters</small>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="videoCategory">Category *</label>
-                            <select id="videoCategory" class="form-control" required>
+                        <div class="viking-form-group">
+                            <label class="viking-label" for="videoCategory">Category *</label>
+                            <select class="viking-select" id="videoCategory" class="viking-input" required>
                                 <option value="">Select a category</option>
                                 <option value="truth">Truth Uncensored</option>
                                 <option value="health">Health Freedom</option>
@@ -255,18 +255,18 @@
                             </select>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="viking-form-group">
                             <label>Tags * (Select 1-3)</label>
                             <div class="flex gap-md" style="flex-wrap: wrap;">
-                                <label class="flex gap-sm" style="align-items: center;">
+                                <label class="viking-label" class="flex gap-sm" style="align-items: center;">
                                     <input type="checkbox" name="tags" value="Truths" class="tag-checkbox">
                                     <span class="badge badge-primary">Truths</span>
                                 </label>
-                                <label class="flex gap-sm" style="align-items: center;">
+                                <label class="viking-label" class="flex gap-sm" style="align-items: center;">
                                     <input type="checkbox" name="tags" value="Rebels" class="tag-checkbox">
                                     <span class="badge badge-primary">Rebels</span>
                                 </label>
-                                <label class="flex gap-sm" style="align-items: center;">
+                                <label class="viking-label" class="flex gap-sm" style="align-items: center;">
                                     <input type="checkbox" name="tags" value="General" class="tag-checkbox">
                                     <span class="badge badge-primary">General</span>
                                 </label>
@@ -281,8 +281,8 @@
                     <div class="card-body">
                         <h3 class="mb-3"><i class="fas fa-cog"></i> Advanced Options</h3>
                         
-                        <div class="form-group">
-                            <label class="flex gap-md" style="align-items: center; cursor: pointer;">
+                        <div class="viking-form-group">
+                            <label class="viking-label" class="flex gap-md" style="align-items: center; cursor: pointer;">
                                 <input type="checkbox" id="isExclusive">
                                 <div>
                                     <strong>Make this exclusive content</strong>
@@ -292,12 +292,12 @@
                         </div>
                         
                         <div id="exclusivePriceContainer" style="display: none;">
-                            <div class="form-group">
-                                <label for="exclusivePrice">Price (Runegold)</label>
+                            <div class="viking-form-group">
+                                <label class="viking-label" for="exclusivePrice">Price (Runegold)</label>
                                 <input 
                                     type="number" 
                                     id="exclusivePrice" 
-                                    class="form-control" 
+                                    class="viking-input" 
                                     value="200" 
                                     min="10" 
                                     max="1000">
@@ -310,8 +310,8 @@
                 <!-- Terms and Submit -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div class="form-group">
-                            <label class="flex gap-md" style="align-items: flex-start; cursor: pointer;">
+                        <div class="viking-form-group">
+                            <label class="viking-label" class="flex gap-md" style="align-items: flex-start; cursor: pointer;">
                                 <input type="checkbox" id="agreeTerms" required>
                                 <div>
                                     <strong>I agree to the Terms of Service and Community Guidelines</strong>
@@ -649,5 +649,6 @@
             }
         });
     </script>
+    <script src="../js/site-enhancements.js"></script>
 </body>
 </html>
