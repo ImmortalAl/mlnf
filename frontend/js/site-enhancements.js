@@ -312,6 +312,125 @@
         });
     }
 
+    // ===== MOBILE MENU (HAMBURGER) =====
+
+    function initMobileMenu() {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mainNav = document.getElementById('mainNav');
+        const body = document.body;
+
+        if (!mobileMenuToggle || !mainNav) return;
+
+        // Toggle mobile menu
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            mainNav.classList.toggle('active');
+            body.classList.toggle('mobile-nav-open');
+
+            // Update icon
+            const icon = this.querySelector('i');
+            if (icon) {
+                if (mainNav.classList.contains('active')) {
+                    icon.className = 'fas fa-times';
+                } else {
+                    icon.className = 'fas fa-bars';
+                }
+            }
+
+            // Add animation
+            if (mainNav.classList.contains('active')) {
+                mainNav.style.animation = 'vikingSlideDown 0.3s ease';
+            }
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (mainNav.classList.contains('active') &&
+                !mainNav.contains(e.target) &&
+                !mobileMenuToggle.contains(e.target)) {
+                mainNav.classList.remove('active');
+                body.classList.remove('mobile-nav-open');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (icon) icon.className = 'fas fa-bars';
+            }
+        });
+
+        // Close menu when clicking a link
+        mainNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                mainNav.classList.remove('active');
+                body.classList.remove('mobile-nav-open');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (icon) icon.className = 'fas fa-bars';
+            });
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (window.innerWidth > 768 && mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    body.classList.remove('mobile-nav-open');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) icon.className = 'fas fa-bars';
+                }
+            }, 250);
+        });
+    }
+
+    // Add slide down animation
+    const mobileMenuStyle = document.createElement('style');
+    mobileMenuStyle.textContent = `
+        @keyframes vikingSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced mobile menu styling */
+        @media (max-width: 768px) {
+            .site-nav.active {
+                animation: vikingSlideDown 0.3s ease !important;
+            }
+
+            .site-nav a {
+                padding: 1rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                transition: all 0.2s ease;
+            }
+
+            .site-nav a:hover {
+                background: rgba(255, 255, 255, 0.1);
+                padding-left: 1.5rem;
+            }
+
+            body.mobile-nav-open {
+                overflow: hidden;
+            }
+
+            /* Overlay when menu is open */
+            body.mobile-nav-open::after {
+                content: '';
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 998;
+                animation: vikingFadeIn 0.3s ease;
+            }
+        }
+    `;
+    document.head.appendChild(mobileMenuStyle);
+
     // ===== INITIALIZE =====
 
     function init() {
@@ -332,6 +451,9 @@
         animateStatsOnScroll();
         addKeyboardShortcuts();
         improveAccessibility();
+
+        // Mobile menu
+        initMobileMenu();
 
         console.log('🛡️ MLNF Site Enhancements loaded');
     }

@@ -38,15 +38,78 @@ class RavenMessenger {
     initSocket() {
         // Connect to Socket.IO server
         this.socket = io('https://much-love-no-fear.onrender.com', {
-            auth: { token: this.token }
+            auth: { token: this.token },
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionAttempts: 5
         });
 
+        // Connection events
+        this.socket.on('connect', () => {
+            console.log('🔗 Connected to messaging server');
+            this.updateConnectionStatus(true);
+        });
+
+        this.socket.on('disconnect', () => {
+            console.log('⚠️ Disconnected from messaging server');
+            this.updateConnectionStatus(false);
+        });
+
+        this.socket.on('reconnect', (attemptNumber) => {
+            console.log('🔄 Reconnected after', attemptNumber, 'attempts');
+            this.loadConversations(); // Refresh conversations on reconnect
+        });
+
+        // Message events
         this.socket.on('message', (message) => {
             this.handleIncomingMessage(message);
         });
 
+        this.socket.on('message:read', (data) => {
+            this.handleMessageRead(data);
+        });
+
         this.socket.on('typing', (data) => {
             this.handleTypingIndicator(data);
+        });
+
+        // User status events
+        this.socket.on('user:online', (userId) => {
+            this.updateUserOnlineStatus(userId, true);
+        });
+
+        this.socket.on('user:offline', (userId) => {
+            this.updateUserOnlineStatus(userId, false);
+        });
+    }
+
+    updateConnectionStatus(isConnected) {
+        const statusIndicator = document.getElementById('connectionStatus');
+        if (statusIndicator) {
+            statusIndicator.textContent = isConnected ? 'Connected' : 'Disconnected';
+            statusIndicator.style.color = isConnected ? 'var(--success)' : 'var(--error)';
+        }
+    }
+
+    handleMessageRead(data) {
+        // Update message read status
+        const messageElements = document.querySelectorAll(`.message[data-message-id="${data.messageId}"]`);
+        messageElements.forEach(el => {
+            el.classList.add('read');
+            const statusIcon = el.querySelector('.message-status');
+            if (statusIcon) {
+                statusIcon.innerHTML = '<i class="fas fa-check-double" style="color: var(--indigo);"></i>';
+            }
+        });
+    }
+
+    updateUserOnlineStatus(userId, isOnline) {
+        const userElements = document.querySelectorAll(`[data-user-id="${userId}"]`);
+        userElements.forEach(el => {
+            const statusDot = el.querySelector('.status-dot');
+            if (statusDot) {
+                statusDot.style.background = isOnline ? 'var(--success)' : 'var(--gray-400)';
+            }
         });
     }
 
@@ -285,6 +348,9 @@ class RavenMessenger {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
         });
+
+        // Setup typing indicator
+        this.setupTypingIndicator();
     }
 
     renderMessage(message) {
@@ -311,6 +377,9 @@ class RavenMessenger {
         if (!content || !this.activeConversation) return;
 
         try {
+            // Stop typing indicator
+            this.socket.emit('typing:stop', { userId: this.activeConversation.userId });
+
             // Send message
             const message = await this.sendMessage(this.activeConversation.userId, content);
 
@@ -324,10 +393,61 @@ class RavenMessenger {
             // Scroll to bottom
             const thread = document.getElementById('messageThread');
             thread.scrollTop = thread.scrollHeight;
+
+            // Play send sound (optional)
+            this.playSendSound();
         } catch (error) {
             console.error('Failed to send message:', error);
-            alert('Failed to send message. Please try again.');
+            window.MLNF.showToast('Failed to send message. Please try again.', 'error');
         }
+    }
+
+    playSendSound() {
+        // Simple beep using Web Audio API
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        } catch (e) {
+            // Silently fail if audio not supported
+        }
+    }
+
+    setupTypingIndicator() {
+        const input = document.getElementById('messageInput');
+        if (!input || !this.activeConversation) return;
+
+        let typingTimeout;
+
+        input.addEventListener('input', () => {
+            // Send typing start
+            this.socket.emit('typing:start', { userId: this.activeConversation.userId });
+
+            // Clear previous timeout
+            clearTimeout(typingTimeout);
+
+            // Stop typing after 2 seconds of inactivity
+            typingTimeout = setTimeout(() => {
+                this.socket.emit('typing:stop', { userId: this.activeConversation.userId });
+            }, 2000);
+        });
+
+        input.addEventListener('blur', () => {
+            clearTimeout(typingTimeout);
+            this.socket.emit('typing:stop', { userId: this.activeConversation.userId });
+        });
     }
 
     appendMessageToChat(message) {
