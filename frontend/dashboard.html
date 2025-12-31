@@ -85,6 +85,7 @@
                             
                             <nav class="dashboard-nav">
                                 <a href="#overview" class="active"><i class="fas fa-home"></i> Overview</a>
+                                <a href="#livestream"><i class="fas fa-broadcast-tower"></i> Go Live</a>
                                 <a href="#videos"><i class="fas fa-video"></i> My Videos</a>
                                 <a href="#blog-posts"><i class="fas fa-pen"></i> Blog Posts</a>
                                 <a href="#runegold"><i class="fas fa-coins"></i> Runegold Shop</a>
@@ -100,51 +101,174 @@
                 <!-- Main Dashboard Area -->
                 <main>
                     <!-- Stats Overview -->
-                    <div class="grid grid-4 mb-3">
+                    <div class="grid grid-4 mb-3" id="statsOverview">
                         <div class="card">
                             <div class="card-body">
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Total Views</p>
-                                        <h3>45,892</h3>
+                                        <h3 id="totalViews">45,892</h3>
                                     </div>
                                     <i class="fas fa-eye text-indigo" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="card">
                             <div class="card-body">
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Followers</p>
-                                        <h3>1,234</h3>
+                                        <h3 id="totalFollowers">1,234</h3>
                                     </div>
                                     <i class="fas fa-users text-peach" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="card">
                             <div class="card-body">
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Videos</p>
-                                        <h3>28</h3>
+                                        <h3 id="totalVideos">28</h3>
                                     </div>
                                     <i class="fas fa-video text-gold" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="card">
                             <div class="card-body">
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Comments</p>
-                                        <h3>892</h3>
+                                        <h3 id="totalComments">892</h3>
                                     </div>
                                     <i class="fas fa-comments text-success" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Creator Studio - Livestreaming Section (hidden by default) -->
+                    <div id="livestreamSection" class="hidden">
+                        <!-- Live Status Banner -->
+                        <div class="card mb-3" id="liveStatusBanner" style="display: none; background: linear-gradient(135deg, var(--error) 0%, var(--peach) 100%); color: white;">
+                            <div class="card-body">
+                                <div class="flex flex-between">
+                                    <div>
+                                        <h3 style="color: white; margin: 0;"><i class="fas fa-circle" style="animation: pulse-live 2s infinite;"></i> You're Live!</h3>
+                                        <p style="margin: 0.5rem 0 0; opacity: 0.9;">Stream started <span id="streamStartTime">--</span> ago</p>
+                                    </div>
+                                    <div style="display: flex; gap: 1rem; align-items: center;">
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 2rem; font-weight: bold;"><span id="currentViewers">0</span></div>
+                                            <div style="font-size: 0.875rem; opacity: 0.9;">Watching Now</div>
+                                        </div>
+                                        <button class="btn" style="background: white; color: var(--error);" onclick="endStream()">
+                                            <i class="fas fa-stop"></i> End Stream
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Create New Stream -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="mb-3"><i class="fas fa-broadcast-tower"></i> Creator Studio</h3>
+
+                                <form id="createStreamForm" class="mb-3">
+                                    <div class="grid grid-2 gap-md mb-3">
+                                        <div class="form-group">
+                                            <label for="streamTitle">Stream Title *</label>
+                                            <input type="text" id="streamTitle" class="form-control" placeholder="Enter an engaging title..." maxlength="100" required>
+                                            <small class="text-muted">Make it descriptive so warriors know what to expect</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="streamCategory">Category</label>
+                                            <select id="streamCategory" class="form-control">
+                                                <option value="General">General</option>
+                                                <option value="Politics">Politics</option>
+                                                <option value="Health">Health & Wellness</option>
+                                                <option value="Finance">Finance & Economics</option>
+                                                <option value="Tech">Technology</option>
+                                                <option value="Education">Education</option>
+                                                <option value="Entertainment">Entertainment</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="streamDescription">Description (Optional)</label>
+                                        <textarea id="streamDescription" class="form-control" rows="3" placeholder="What will you be discussing?" maxlength="1000"></textarea>
+                                    </div>
+
+                                    <div class="flex gap-md">
+                                        <button type="submit" class="btn btn-viking">
+                                            <i class="fas fa-plus-circle"></i> Create Stream & Get Key
+                                        </button>
+                                        <button type="button" class="btn btn-outline" onclick="toggleOBSGuide()">
+                                            <i class="fas fa-question-circle"></i> OBS Setup Guide
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- OBS Setup Guide (collapsed by default) -->
+                                <div id="obsGuide" class="hidden" style="background: var(--gray-50); padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1rem;">
+                                    <h4 class="mb-2"><i class="fas fa-desktop"></i> How to Stream with OBS</h4>
+                                    <ol style="line-height: 1.8;">
+                                        <li>Create your stream above to get your unique stream key</li>
+                                        <li>Open OBS Studio (Download from <a href="https://obsproject.com/" target="_blank">obsproject.com</a>)</li>
+                                        <li>Go to <strong>Settings → Stream</strong></li>
+                                        <li>Service: <strong>Custom</strong></li>
+                                        <li>Server: <code style="background: var(--gray-100); padding: 0.25rem 0.5rem; border-radius: 4px;">rtmp://150.136.140.253:1935/live</code></li>
+                                        <li>Stream Key: <strong>Paste your key from below</strong></li>
+                                        <li>Click "Start Streaming" in OBS</li>
+                                        <li>Come back here and click "Go Live" to make your stream visible to warriors!</li>
+                                    </ol>
+                                    <div style="margin-top: 1rem; padding: 1rem; background: var(--indigo); color: white; border-radius: var(--radius-md);">
+                                        <strong><i class="fas fa-shield-alt"></i> Pro Tip:</strong> Test your stream settings before going live. Recommended bitrate: 3500-6000 Kbps for 1080p.
+                                    </div>
+                                </div>
+
+                                <!-- Stream Key Display (appears after creating stream) -->
+                                <div id="streamKeyDisplay" class="hidden" style="background: linear-gradient(135deg, var(--navy), var(--indigo)); color: white; padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1rem;">
+                                    <h4 style="color: var(--gold); margin-bottom: 1rem;"><i class="fas fa-key"></i> Your Stream Key</h4>
+                                    <div class="flex gap-md" style="align-items: center;">
+                                        <input type="password" id="streamKeyValue" class="form-control" style="flex: 1; font-family: monospace; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white;" readonly>
+                                        <button class="btn" style="background: var(--gold); color: var(--navy);" onclick="toggleStreamKeyVisibility()">
+                                            <i class="fas fa-eye" id="streamKeyToggleIcon"></i>
+                                        </button>
+                                        <button class="btn" style="background: var(--peach); color: white;" onclick="copyStreamKey()">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: var(--radius-md);">
+                                        <strong style="color: var(--gold);"><i class="fas fa-exclamation-triangle"></i> Keep this secret!</strong> Anyone with your stream key can broadcast to your channel.
+                                    </div>
+                                    <div style="margin-top: 1rem;">
+                                        <button class="btn btn-viking" onclick="goLive()" id="goLiveButton">
+                                            <i class="fas fa-play-circle"></i> ⚡ Go Live!
+                                        </button>
+                                        <small style="display: block; margin-top: 0.5rem; opacity: 0.8;">Make sure OBS is streaming before clicking this!</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Your Streams -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="mb-3"><i class="fas fa-history"></i> Your Streams</h3>
+                                <div id="userStreamsList">
+                                    <div class="text-center text-muted" style="padding: 2rem;">
+                                        <i class="fas fa-broadcast-tower" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                                        <p>No streams yet. Create your first stream above!</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1381,6 +1505,282 @@
                 submitBtn.disabled = false;
             }
         });
+
+        // ===== LIVESTREAMING FUNCTIONALITY =====
+
+        let currentStream = null;
+        let viewerCountInterval = null;
+
+        // Dashboard Navigation
+        document.querySelectorAll('.dashboard-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Remove active class from all links
+                document.querySelectorAll('.dashboard-nav a').forEach(l => l.classList.remove('active'));
+                // Add active to clicked link
+                link.classList.add('active');
+
+                // Get section from href
+                const section = link.getAttribute('href').substring(1); // Remove #
+
+                // Show/hide sections
+                document.getElementById('statsOverview').style.display = section === 'overview' ? 'grid' : 'none';
+                document.getElementById('livestreamSection').style.display = section === 'livestream' ? 'block' : 'none';
+
+                // Load livestream data when section is shown
+                if (section === 'livestream') {
+                    loadUserStreams();
+                }
+            });
+        });
+
+        // Toggle OBS Guide
+        function toggleOBSGuide() {
+            const guide = document.getElementById('obsGuide');
+            guide.classList.toggle('hidden');
+        }
+
+        // Create Stream Form
+        document.getElementById('createStreamForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('streamTitle').value;
+            const category = document.getElementById('streamCategory').value;
+            const description = document.getElementById('streamDescription').value;
+
+            try {
+                const response = await fetch('/api/livestream/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ title, category, description })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentStream = data.stream;
+
+                    // Show stream key
+                    document.getElementById('streamKeyValue').value = data.stream.streamKey;
+                    document.getElementById('streamKeyDisplay').classList.remove('hidden');
+
+                    // Show OBS guide
+                    document.getElementById('obsGuide').classList.remove('hidden');
+
+                    showNotification('Stream created successfully! Copy your stream key and configure OBS.', 'success');
+
+                    // Clear form
+                    document.getElementById('createStreamForm').reset();
+                } else {
+                    showNotification(data.error || 'Failed to create stream', 'error');
+                }
+            } catch (error) {
+                console.error('Create stream error:', error);
+                showNotification('Failed to create stream. Please try again.', 'error');
+            }
+        });
+
+        // Toggle Stream Key Visibility
+        function toggleStreamKeyVisibility() {
+            const keyInput = document.getElementById('streamKeyValue');
+            const icon = document.getElementById('streamKeyToggleIcon');
+
+            if (keyInput.type === 'password') {
+                keyInput.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                keyInput.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Copy Stream Key
+        async function copyStreamKey() {
+            const keyInput = document.getElementById('streamKeyValue');
+
+            try {
+                await navigator.clipboard.writeText(keyInput.value);
+                showNotification('Stream key copied to clipboard!', 'success');
+            } catch (error) {
+                // Fallback for older browsers
+                keyInput.select();
+                document.execCommand('copy');
+                showNotification('Stream key copied!', 'success');
+            }
+        }
+
+        // Go Live
+        async function goLive() {
+            if (!currentStream) {
+                showNotification('No stream found. Please create a stream first.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/livestream/${currentStream._id}/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Show live status banner
+                    document.getElementById('liveStatusBanner').style.display = 'block';
+                    document.getElementById('streamStartTime').textContent = 'just now';
+
+                    // Hide Go Live button
+                    document.getElementById('goLiveButton').disabled = true;
+                    document.getElementById('goLiveButton').innerHTML = '<i class="fas fa-check-circle"></i> You\'re Live!';
+
+                    showNotification('You\'re now live! Warriors can see your stream.', 'success');
+
+                    // Start viewer count updates
+                    updateViewerCount();
+                    viewerCountInterval = setInterval(updateViewerCount, 10000); // Update every 10 seconds
+                } else {
+                    showNotification(data.error || 'Failed to go live', 'error');
+                }
+            } catch (error) {
+                console.error('Go live error:', error);
+                showNotification('Failed to go live. Make sure OBS is streaming first!', 'error');
+            }
+        }
+
+        // End Stream
+        async function endStream() {
+            if (!currentStream) return;
+
+            if (!confirm('Are you sure you want to end your stream?')) return;
+
+            try {
+                const response = await fetch(`/api/livestream/${currentStream._id}/end`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Hide live status banner
+                    document.getElementById('liveStatusBanner').style.display = 'none';
+
+                    // Clear viewer count interval
+                    if (viewerCountInterval) {
+                        clearInterval(viewerCountInterval);
+                        viewerCountInterval = null;
+                    }
+
+                    // Reset stream
+                    currentStream = null;
+                    document.getElementById('streamKeyDisplay').classList.add('hidden');
+                    document.getElementById('goLiveButton').disabled = false;
+                    document.getElementById('goLiveButton').innerHTML = '<i class="fas fa-play-circle"></i> ⚡ Go Live!';
+
+                    showNotification('Stream ended successfully!', 'success');
+
+                    // Reload streams list
+                    loadUserStreams();
+                } else {
+                    showNotification(data.error || 'Failed to end stream', 'error');
+                }
+            } catch (error) {
+                console.error('End stream error:', error);
+                showNotification('Failed to end stream. Please try again.', 'error');
+            }
+        }
+
+        // Update Viewer Count
+        async function updateViewerCount() {
+            if (!currentStream) return;
+
+            try {
+                const response = await fetch(`/api/livestream/${currentStream._id}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('currentViewers').textContent = data.currentViewers || 0;
+
+                    // Update stream start time
+                    if (data.startedAt) {
+                        const startTime = new Date(data.startedAt);
+                        const now = new Date();
+                        const diff = now - startTime;
+                        const hours = Math.floor(diff / 3600000);
+                        const minutes = Math.floor((diff % 3600000) / 60000);
+
+                        if (hours > 0) {
+                            document.getElementById('streamStartTime').textContent = `${hours}h ${minutes}m`;
+                        } else {
+                            document.getElementById('streamStartTime').textContent = `${minutes}m`;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating viewer count:', error);
+            }
+        }
+
+        // Load User Streams
+        async function loadUserStreams() {
+            try {
+                const response = await fetch('/api/livestream/my-streams', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.streams && data.streams.length > 0) {
+                    const streamsList = document.getElementById('userStreamsList');
+                    streamsList.innerHTML = '';
+
+                    data.streams.forEach(stream => {
+                        const streamCard = document.createElement('div');
+                        streamCard.className = 'card mb-2';
+                        streamCard.style.border = stream.status === 'live' ? '2px solid var(--error)' : '';
+
+                        streamCard.innerHTML = `
+                            <div class="card-body">
+                                <div class="flex flex-between">
+                                    <div style="flex: 1;">
+                                        <h5>${stream.title}</h5>
+                                        <div class="flex gap-md text-sm text-muted" style="margin-top: 0.5rem;">
+                                            <span><i class="fas fa-eye"></i> ${stream.peakViewers || 0} peak viewers</span>
+                                            <span><i class="fas fa-coins text-gold"></i> ${stream.runegoldEarned || 0} RG earned</span>
+                                            <span><i class="fas fa-calendar"></i> ${new Date(stream.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span class="badge ${stream.status === 'live' ? 'badge-error' : stream.status === 'ended' ? 'badge-secondary' : 'badge-warning'}">
+                                            ${stream.status.toUpperCase()}
+                                        </span>
+                                        ${stream.status === 'ended' && stream.duration ? `
+                                            <div class="text-sm text-muted" style="margin-top: 0.5rem;">
+                                                Duration: ${Math.floor(stream.duration / 60)} min
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        streamsList.appendChild(streamCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading streams:', error);
+            }
+        }
     </script>
 </body>
 </html>

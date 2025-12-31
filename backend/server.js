@@ -170,6 +170,7 @@ const blogRoutes = require('./routes/blog');
 const newsRoutes = require('./routes/news');
 const forumRoutes = require('./routes/forum');
 const messageRoutes = require('./routes/messages');
+const livestreamRoutes = require('./routes/livestream');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/videos', videoRoutes);
@@ -180,6 +181,7 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/forum', forumRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/livestream', livestreamRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -194,6 +196,7 @@ app.get('/api/health', (req, res) => {
 // Socket.io connection handling
 const activeUsers = new Map();
 const userSockets = new Map();
+const streamViewers = new Map(); // Track viewers per stream
 
 io.on('connection', (socket) => {
   console.log('New socket connection:', socket.id);
@@ -310,19 +313,98 @@ io.on('connection', (socket) => {
       io.emit('onlineUsers', Array.from(activeUsers.values()));
       console.log(`User ${user.username} disconnected`);
     }
+
+    // Remove socket from all stream viewer counts
+    streamViewers.forEach((viewers, streamId) => {
+      if (viewers.has(socket.id)) {
+        viewers.delete(socket.id);
+
+        // Emit updated warrior count
+        const count = viewers.size;
+        io.to(`stream-${streamId}`).emit('warrior-count', count);
+
+        // Clean up empty stream viewer sets
+        if (count === 0) {
+          streamViewers.delete(streamId);
+        }
+      }
+    });
   });
 
   // Handle typing indicators
   socket.on('typing', (data) => {
     const { to, from, isTyping } = data;
     const recipientSocketId = userSockets.get(to);
-    
+
     if (recipientSocketId) {
       io.to(recipientSocketId).emit('typingStatus', {
         from,
         isTyping
       });
     }
+  });
+
+  // Livestream: Join stream room
+  socket.on('join-stream', (streamId) => {
+    console.log(`Socket ${socket.id} joined stream ${streamId}`);
+    socket.join(`stream-${streamId}`);
+
+    // Track this socket as viewer of this stream
+    if (!streamViewers.has(streamId)) {
+      streamViewers.set(streamId, new Set());
+    }
+    streamViewers.get(streamId).add(socket.id);
+
+    // Emit updated warrior count to all viewers in stream
+    const count = streamViewers.get(streamId).size;
+    io.to(`stream-${streamId}`).emit('warrior-count', count);
+    console.log(`Stream ${streamId} now has ${count} warriors watching`);
+  });
+
+  // Livestream: Leave stream room
+  socket.on('leave-stream', (streamId) => {
+    console.log(`Socket ${socket.id} left stream ${streamId}`);
+    socket.leave(`stream-${streamId}`);
+
+    // Remove this socket from stream viewers
+    if (streamViewers.has(streamId)) {
+      streamViewers.get(streamId).delete(socket.id);
+
+      // Emit updated warrior count
+      const count = streamViewers.get(streamId).size;
+      io.to(`stream-${streamId}`).emit('warrior-count', count);
+
+      // Clean up empty stream viewer sets
+      if (count === 0) {
+        streamViewers.delete(streamId);
+      }
+    }
+  });
+
+  // Livestream: Chat message in stream
+  socket.on('chat-message', async (data) => {
+    try {
+      const { streamId, userId, username, text } = data;
+
+      // Broadcast message to all viewers in this stream
+      io.to(`stream-${streamId}`).emit('new-message', {
+        streamId,
+        userId,
+        username,
+        text,
+        timestamp: new Date()
+      });
+
+      console.log(`Chat message in stream ${streamId} from ${username}: ${text}`);
+    } catch (error) {
+      console.error('Chat message error:', error);
+    }
+  });
+
+  // Livestream: Get warrior count for specific stream
+  socket.on('get-warrior-count', (streamId) => {
+    const count = streamViewers.has(streamId) ? streamViewers.get(streamId).size : 0;
+    socket.emit('warrior-count', count);
   });
 });
 

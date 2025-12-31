@@ -7,6 +7,13 @@
     <title>Live Stream - Much Love, No Fear</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- HLS.js for video streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <!-- Socket.io for real-time chat -->
+    <script src="/socket.io/socket.io.js"></script>
+
     <style>
         /* Live page specific styles */
         .live-container {
@@ -148,6 +155,148 @@
             height: 100%;
         }
 
+        /* Chat Interface Styles */
+        .mead-hall {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: var(--gray-900);
+        }
+
+        .mead-hall-header {
+            padding: 1rem;
+            background: var(--navy);
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .mead-hall-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .chat-message {
+            padding: 0.75rem;
+            background: var(--gray-800);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--gray-600);
+        }
+
+        .chat-message.superchat {
+            background: linear-gradient(135deg, #D4AF37 0%, #cd7f32 100%);
+            border-left: 3px solid var(--gold);
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        .chat-message-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .chat-username {
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .chat-message.superchat .chat-username {
+            color: var(--navy);
+        }
+
+        .chat-timestamp {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .chat-message.superchat .chat-timestamp {
+            color: rgba(26, 26, 26, 0.7);
+        }
+
+        .chat-text {
+            color: var(--gray-200);
+            word-wrap: break-word;
+        }
+
+        .chat-message.superchat .chat-text {
+            color: var(--navy);
+        }
+
+        .mead-hall-input {
+            padding: 1rem;
+            border-top: 2px solid var(--gray-700);
+            background: var(--gray-800);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--gray-900);
+            border: 2px solid var(--gray-600);
+            border-radius: var(--radius-md);
+            color: var(--gray-200);
+            font-size: 0.875rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .btn-send {
+            padding: 0.75rem 1.5rem;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-send:hover {
+            background: var(--peach);
+            transform: translateY(-2px);
+        }
+
+        .btn-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .warrior-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--gray-800);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.5rem;
+            color: var(--gray-300);
+            font-size: 0.875rem;
+        }
+
+        /* Video player styles */
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .live-container {
@@ -218,32 +367,15 @@
             <!-- Stream Player -->
             <div class="stream-section">
                 <div class="stream-wrapper">
-                    <!-- ===========================================
-                         RUMBLE VIDEO EMBED - REPLACE THIS SECTION
-                         ===========================================
+                    <!-- HLS Video Player -->
+                    <video id="videoPlayer" controls autoplay muted style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></video>
 
-                         Get your embed code from Rumble Studio:
-                         1. Go to rumble.com/studio
-                         2. Click "Go Live" or select your channel
-                         3. Find "Embed" options
-                         4. Copy the iframe code
-
-                         Example format:
-                         <iframe src="https://rumble.com/embed/YOUR_VIDEO_OR_CHANNEL_ID/?pub=YOUR_PUB_ID"
-                                 frameborder="0" allowfullscreen></iframe>
-
-                         Delete the placeholder div below and paste your iframe
-                    -->
-                    <div class="placeholder-embed stream">
-                        <div>
-                            <i class="fas fa-broadcast-tower" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                            <h3>Rumble Stream Embed Goes Here</h3>
-                            <p style="margin-top: 0.5rem; font-size: 0.875rem;">
-                                Replace this placeholder with your Rumble iframe embed code
-                            </p>
-                        </div>
+                    <!-- Offline Message (shown when stream is offline) -->
+                    <div class="offline-message" id="offlineMessage" style="display: none;">
+                        <i class="fas fa-broadcast-tower"></i>
+                        <h3>Stream Offline</h3>
+                        <p>The stream will appear here when the warrior goes live.</p>
                     </div>
-                    <!-- END RUMBLE VIDEO EMBED -->
                 </div>
 
                 <!-- Stream Info -->
@@ -279,30 +411,40 @@
             <!-- Chat Section -->
             <div class="chat-section">
                 <div class="chat-wrapper">
-                    <!-- ===========================================
-                         RUMBLE CHAT EMBED - REPLACE THIS SECTION
-                         ===========================================
+                    <!-- The Mead Hall (Chat) -->
+                    <div class="mead-hall">
+                        <div class="mead-hall-header">
+                            <i class="fas fa-beer"></i>
+                            <span>The Mead Hall</span>
+                        </div>
 
-                         Get your chat embed code from Rumble:
-                         The chat embed URL usually follows this pattern:
-                         https://rumble.com/chat/embed/YOUR_CHANNEL_URL/
+                        <div class="warrior-count">
+                            <i class="fas fa-users"></i>
+                            <span id="warriorCount">0 warriors watching</span>
+                        </div>
 
-                         Example:
-                         <iframe src="https://rumble.com/chat/embed/c/YourChannel"
-                                 frameborder="0"></iframe>
+                        <div class="mead-hall-messages" id="chatMessages">
+                            <!-- Messages will appear here -->
+                        </div>
 
-                         Delete the placeholder div below and paste your iframe
-                    -->
-                    <div class="placeholder-embed chat">
-                        <div>
-                            <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                            <h3>Rumble Chat Embed Goes Here</h3>
-                            <p style="margin-top: 0.5rem; font-size: 0.875rem;">
-                                Replace this with your Rumble chat iframe
-                            </p>
+                        <div class="mead-hall-input">
+                            <div class="chat-input-wrapper">
+                                <input
+                                    type="text"
+                                    id="chatInput"
+                                    class="chat-input"
+                                    placeholder="Send a message to the Mead Hall..."
+                                    maxlength="500"
+                                />
+                                <button id="sendButton" class="btn-send">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--gray-500);">
+                                Press Enter to send
+                            </div>
                         </div>
                     </div>
-                    <!-- END RUMBLE CHAT EMBED -->
                 </div>
             </div>
         </div>
@@ -322,5 +464,189 @@
     <script src="../auth-handler.js"></script>
     <script src="../scripts.js"></script>
     <script src="../page-loader.js"></script>
+
+    <script>
+        // Get stream ID from URL (e.g., live.html?stream=abc123)
+        const urlParams = new URLSearchParams(window.location.search);
+        const streamId = urlParams.get('stream');
+
+        // Initialize Socket.io connection (connects to same origin, Netlify proxies to backend)
+        const socket = io();
+
+        // Initialize HLS player
+        const video = document.getElementById('videoPlayer');
+        const offlineMessage = document.getElementById('offlineMessage');
+        let hls;
+
+        // Chat elements
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const warriorCount = document.getElementById('warriorCount');
+
+        // Current user info (from auth)
+        let currentUser = null;
+
+        // Load user from localStorage
+        function loadUser() {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+            const userId = localStorage.getItem('userId');
+
+            if (token && username && userId) {
+                currentUser = { token, username, userId };
+            }
+        }
+
+        // Initialize stream
+        async function initStream() {
+            if (!streamId) {
+                console.error('No stream ID provided');
+                video.style.display = 'none';
+                offlineMessage.style.display = 'flex';
+                return;
+            }
+
+            try {
+                // Fetch stream data from backend
+                const response = await fetch(`/api/livestream/${streamId}`);
+                const stream = await response.json();
+
+                if (!stream || !stream.isLive) {
+                    video.style.display = 'none';
+                    offlineMessage.style.display = 'flex';
+                    return;
+                }
+
+                // Update stream info
+                document.querySelector('.stream-title h1').textContent = stream.title || 'MLNF Live Stream';
+
+                // Load HLS stream (direct from Oracle server nginx)
+                const streamUrl = `http://150.136.140.253:8080/hls/${stream.streamKey}.m3u8`;
+
+                if (Hls.isSupported()) {
+                    hls = new Hls();
+                    hls.loadSource(streamUrl);
+                    hls.attachMedia(video);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        video.play();
+                    });
+                    hls.on(Hls.Events.ERROR, function(event, data) {
+                        if (data.fatal) {
+                            console.error('HLS fatal error:', data);
+                            video.style.display = 'none';
+                            offlineMessage.style.display = 'flex';
+                        }
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Native HLS support (Safari)
+                    video.src = streamUrl;
+                    video.addEventListener('loadedmetadata', function() {
+                        video.play();
+                    });
+                }
+
+                video.style.display = 'block';
+                offlineMessage.style.display = 'none';
+
+                // Join stream room for Socket.io
+                socket.emit('join-stream', streamId);
+
+            } catch (error) {
+                console.error('Error loading stream:', error);
+                video.style.display = 'none';
+                offlineMessage.style.display = 'flex';
+            }
+        }
+
+        // Chat functionality
+        function addMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+
+            if (message.isSuperchat) {
+                messageDiv.classList.add('superchat');
+            }
+
+            const timestamp = new Date(message.timestamp).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            messageDiv.innerHTML = `
+                <div class="chat-message-header">
+                    <span class="chat-username">${message.username}</span>
+                    <span class="chat-timestamp">${timestamp}</span>
+                </div>
+                <div class="chat-text">${escapeHtml(message.text)}</div>
+            `;
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+
+            if (!text) return;
+
+            if (!currentUser) {
+                alert('Please login to chat in the Mead Hall!');
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            socket.emit('chat-message', {
+                streamId,
+                userId: currentUser.userId,
+                username: currentUser.username,
+                text
+            });
+
+            chatInput.value = '';
+        }
+
+        // Socket.io event handlers
+        socket.on('new-message', (message) => {
+            addMessage(message);
+        });
+
+        socket.on('warrior-count', (count) => {
+            warriorCount.textContent = `${count} warrior${count !== 1 ? 's' : ''} watching`;
+        });
+
+        socket.on('stream-ended', () => {
+            video.style.display = 'none';
+            offlineMessage.style.display = 'flex';
+            if (hls) {
+                hls.destroy();
+            }
+        });
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Initialize on page load
+        loadUser();
+        initStream();
+
+        // Update viewer count every 10 seconds
+        setInterval(() => {
+            if (streamId) {
+                socket.emit('get-warrior-count', streamId);
+            }
+        }, 10000);
+    </script>
 </body>
 </html>
