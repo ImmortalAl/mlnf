@@ -154,20 +154,34 @@
                     <!-- Creator Studio - Livestreaming Section (hidden by default) -->
                     <div id="livestreamSection" class="hidden">
                         <!-- Live Status Banner -->
-                        <div class="card mb-3" id="liveStatusBanner" style="display: none; background: linear-gradient(135deg, var(--error) 0%, var(--peach) 100%); color: white;">
-                            <div class="card-body">
-                                <div class="flex flex-between">
+                        <div class="card mb-3" id="liveStatusBanner" style="display: none; background: linear-gradient(135deg, var(--error) 0%, var(--peach) 100%); color: white; border: none; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4); position: relative; overflow: hidden;">
+                            <!-- Animated background effect -->
+                            <div style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); opacity: 0.5;"></div>
+
+                            <div class="card-body" style="position: relative; z-index: 1;">
+                                <div class="flex flex-between" style="align-items: center;">
                                     <div>
-                                        <h3 style="color: white; margin: 0;"><i class="fas fa-circle" style="animation: pulse-live 2s infinite;"></i> You're Live!</h3>
-                                        <p style="margin: 0.5rem 0 0; opacity: 0.9;">Stream started <span id="streamStartTime">--</span> ago</p>
+                                        <h3 style="color: white; margin: 0; font-size: 1.75rem;">
+                                            <i class="fas fa-circle" style="animation: pulse-live 2s infinite; margin-right: 0.5rem;"></i>
+                                            You're Live!
+                                        </h3>
+                                        <p style="margin: 0.5rem 0 0; opacity: 0.95; font-size: 1rem;">
+                                            <i class="fas fa-clock"></i> Stream started <span id="streamStartTime">--</span> ago
+                                        </p>
                                     </div>
-                                    <div style="display: flex; gap: 1rem; align-items: center;">
-                                        <div style="text-align: center;">
-                                            <div style="font-size: 2rem; font-weight: bold;"><span id="currentViewers">0</span></div>
-                                            <div style="font-size: 0.875rem; opacity: 0.9;">Watching Now</div>
+                                    <div style="display: flex; gap: 1.5rem; align-items: center;">
+                                        <!-- Viewer count card -->
+                                        <div style="text-align: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 1.25rem 1.5rem; border-radius: var(--radius-lg); min-width: 120px;">
+                                            <div style="font-size: 2.5rem; font-weight: 800; line-height: 1;">
+                                                <span id="currentViewers">0</span>
+                                            </div>
+                                            <div style="font-size: 0.875rem; opacity: 0.95; margin-top: 0.25rem; font-weight: 600;">
+                                                <i class="fas fa-users"></i> Warriors
+                                            </div>
                                         </div>
-                                        <button class="btn" style="background: white; color: var(--error);" onclick="endStream()">
-                                            <i class="fas fa-stop"></i> End Stream
+                                        <!-- End stream button -->
+                                        <button class="btn" style="background: white; color: var(--error); font-weight: 700; padding: 0.75rem 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);" onclick="endStream()">
+                                            <i class="fas fa-stop-circle"></i> End Stream
                                         </button>
                                     </div>
                                 </div>
@@ -175,9 +189,17 @@
                         </div>
 
                         <!-- Create New Stream -->
-                        <div class="card mb-3">
+                        <div class="card mb-3" style="border: 2px solid var(--gold); box-shadow: var(--shadow-viking);">
                             <div class="card-body">
-                                <h3 class="mb-3"><i class="fas fa-broadcast-tower"></i> Creator Studio</h3>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--gray-200);">
+                                    <div>
+                                        <h3 style="margin: 0; color: var(--navy);"><i class="fas fa-broadcast-tower text-gold"></i> Creator Studio</h3>
+                                        <p style="margin: 0.5rem 0 0; color: var(--gray-600); font-size: 0.9375rem;">Prepare your stream for the warriors</p>
+                                    </div>
+                                    <div style="background: linear-gradient(135deg, var(--gold) 0%, #C4A035 100%); color: var(--navy); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.875rem;">
+                                        <i class="fas fa-shield-alt"></i> Ready to Broadcast
+                                    </div>
+                                </div>
 
                                 <form id="createStreamForm" class="mb-3">
                                     <div class="grid grid-2 gap-md mb-3">

@@ -74,22 +74,50 @@
     </section>
 
     <!-- Live Streams Section (The Fleet) -->
-    <section class="live-streams" style="padding: 4rem 0; background: var(--gray-50);">
-        <div class="container">
-            <div class="flex flex-between mb-3">
-                <h2><i class="fas fa-broadcast-tower text-error"></i> Live Now - The Fleet</h2>
-                <a href="pages/live.html" class="btn btn-viking">View All Streams</a>
+    <section class="live-streams" style="padding: 4rem 0; background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%); position: relative;">
+        <!-- Decorative background elements -->
+        <div style="position: absolute; top: 20px; right: 20px; opacity: 0.05; font-size: 200px;">
+            <i class="fas fa-ship"></i>
+        </div>
+
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="flex flex-between mb-3" style="align-items: center;">
+                <div>
+                    <h2 style="margin-bottom: 0.5rem;">
+                        <i class="fas fa-broadcast-tower text-error" style="animation: pulse-live 2s infinite;"></i>
+                        Live Now - The Fleet
+                    </h2>
+                    <p style="color: var(--gray-600); margin: 0;">Warriors broadcasting truth right now</p>
+                </div>
+                <a href="pages/live.html" class="btn btn-viking">
+                    <i class="fas fa-compass"></i> View All Streams
+                </a>
             </div>
 
             <div id="liveStreamsContainer">
-                <!-- Live streams will be loaded here -->
-                <div class="text-center text-muted" style="padding: 3rem 0;" id="noLiveStreams">
-                    <i class="fas fa-ship" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-                    <h3>No Warriors are Live Right Now</h3>
-                    <p>Check back soon, or <a href="pages/auth.html" style="color: var(--indigo);">create an account</a> to start your own stream!</p>
+                <!-- Loading state -->
+                <div id="liveStreamsLoading" style="display: none;">
+                    <div class="grid grid-3">
+                        <div class="skeleton" style="height: 280px; border-radius: var(--radius-lg);"></div>
+                        <div class="skeleton" style="height: 280px; border-radius: var(--radius-lg);"></div>
+                        <div class="skeleton" style="height: 280px; border-radius: var(--radius-lg);"></div>
+                    </div>
                 </div>
 
-                <div class="grid grid-3" id="liveStreamsGrid" style="display: none;">
+                <!-- Empty state -->
+                <div class="text-center text-muted" style="padding: 3rem 0; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);" id="noLiveStreams">
+                    <i class="fas fa-ship" style="font-size: 4rem; opacity: 0.2; margin-bottom: 1rem; color: var(--indigo);"></i>
+                    <h3 style="color: var(--navy); margin-bottom: 1rem;">No Warriors are Live Right Now</h3>
+                    <p style="color: var(--gray-600); max-width: 400px; margin: 0 auto 1.5rem;">
+                        The Fleet is docked, but warriors will return soon. Be the first to set sail!
+                    </p>
+                    <a href="pages/auth.html" class="btn btn-viking">
+                        <i class="fas fa-user-shield"></i> Start Your Voyage
+                    </a>
+                </div>
+
+                <!-- Live streams grid -->
+                <div class="grid grid-3" id="liveStreamsGrid" style="display: none; gap: 1.5rem;">
                     <!-- Live stream cards will appear here -->
                 </div>
             </div>
@@ -278,12 +306,21 @@
     <script>
         // Load live streams on homepage
         async function loadLiveStreams() {
+            const loadingEl = document.getElementById('liveStreamsLoading');
+            const noStreamsEl = document.getElementById('noLiveStreams');
+            const gridEl = document.getElementById('liveStreamsGrid');
+
             try {
+                // Show loading state
+                loadingEl.style.display = 'block';
+                noStreamsEl.style.display = 'none';
+                gridEl.style.display = 'none';
+
                 const response = await fetch('/api/livestream/fleet?limit=6');
                 const data = await response.json();
 
-                const noStreamsEl = document.getElementById('noLiveStreams');
-                const gridEl = document.getElementById('liveStreamsGrid');
+                // Hide loading
+                loadingEl.style.display = 'none';
 
                 if (data.streams && data.streams.length > 0) {
                     noStreamsEl.style.display = 'none';
@@ -293,40 +330,70 @@
                     data.streams.forEach(stream => {
                         const streamCard = document.createElement('div');
                         streamCard.className = 'card card-viking';
-                        streamCard.style.cursor = 'pointer';
+                        streamCard.style.cssText = `
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            overflow: hidden;
+                        `;
+                        streamCard.onmouseenter = (e) => {
+                            e.currentTarget.style.transform = 'translateY(-8px)';
+                            e.currentTarget.style.boxShadow = 'var(--shadow-xl)';
+                        };
+                        streamCard.onmouseleave = (e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'var(--shadow-viking)';
+                        };
                         streamCard.onclick = () => window.location.href = `pages/live.html?stream=${stream._id}`;
 
                         const creatorPic = stream.creator?.profilePicture || 'https://via.placeholder.com/50/4A90E2/FFFFFF?text=User';
 
                         streamCard.innerHTML = `
-                            <div class="card-body">
-                                <div style="position: relative; background: #000; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 16/9; margin-bottom: 1rem;">
-                                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy), var(--indigo));">
-                                        <i class="fas fa-broadcast-tower" style="font-size: 3rem; opacity: 0.3; color: white;"></i>
+                            <div class="card-body" style="padding: 0;">
+                                <!-- Stream Thumbnail -->
+                                <div style="position: relative; background: #000; overflow: hidden; aspect-ratio: 16/9;">
+                                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy) 0%, var(--indigo) 100%);">
+                                        <i class="fas fa-broadcast-tower" style="font-size: 4rem; opacity: 0.2; color: white;"></i>
                                     </div>
-                                    <span class="badge badge-error" style="position: absolute; top: 10px; left: 10px;">
-                                        <i class="fas fa-circle" style="animation: pulse-live 2s infinite;"></i> LIVE
-                                    </span>
-                                    ${stream.battleTested ? `
-                                        <span class="badge badge-gold" style="position: absolute; top: 10px; right: 10px;">
-                                            <i class="fas fa-shield-alt"></i> BATTLE-TESTED
+
+                                    <!-- Live Badge -->
+                                    <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <span class="badge badge-error" style="font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                            <i class="fas fa-circle" style="animation: pulse-live 2s infinite;"></i> LIVE
                                         </span>
-                                    ` : ''}
-                                    <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
-                                        <i class="fas fa-eye"></i> ${stream.currentViewers || 0}
+                                        ${stream.battleTested ? `
+                                            <span class="badge badge-gold" style="font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                                <i class="fas fa-shield-alt"></i> BATTLE-TESTED
+                                            </span>
+                                        ` : ''}
+                                    </div>
+
+                                    <!-- Viewer Count -->
+                                    <div style="position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); color: white; padding: 0.5rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                        <i class="fas fa-eye"></i> ${stream.currentViewers || 0} watching
                                     </div>
                                 </div>
 
-                                <h5 style="margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${stream.title}</h5>
+                                <!-- Stream Info -->
+                                <div style="padding: 1rem;">
+                                    <h5 style="margin-bottom: 0.75rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.8em;">
+                                        ${stream.title}
+                                    </h5>
 
-                                <div class="flex gap-sm" style="align-items: center; margin-top: 0.5rem;">
-                                    <img src="${creatorPic}" alt="${stream.creator?.username || 'Creator'}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
-                                    <span class="text-sm text-muted">${stream.creator?.username || 'Unknown'}</span>
-                                </div>
+                                    <div class="flex gap-sm" style="align-items: center; margin-bottom: 0.75rem;">
+                                        <img src="${creatorPic}" alt="${stream.creator?.username || 'Creator'}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold);">
+                                        <span class="text-sm" style="font-weight: 600; color: var(--navy);">${stream.creator?.username || 'Unknown'}</span>
+                                    </div>
 
-                                <div class="flex gap-md text-sm text-muted" style="margin-top: 0.5rem;">
-                                    <span><i class="fas fa-folder"></i> ${stream.category || 'General'}</span>
-                                    ${stream.runegoldEarned > 0 ? `<span><i class="fas fa-coins text-gold"></i> ${stream.runegoldEarned} RG</span>` : ''}
+                                    <div class="flex gap-md text-sm text-muted" style="flex-wrap: wrap;">
+                                        <span style="background: var(--gray-100); padding: 0.25rem 0.5rem; border-radius: 12px;">
+                                            <i class="fas fa-folder"></i> ${stream.category || 'General'}
+                                        </span>
+                                        ${stream.runegoldEarned > 0 ? `
+                                            <span style="background: var(--gold); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 600;">
+                                                <i class="fas fa-coins"></i> ${stream.runegoldEarned} RG
+                                            </span>
+                                        ` : ''}
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -339,6 +406,9 @@
                 }
             } catch (error) {
                 console.error('Error loading live streams:', error);
+                loadingEl.style.display = 'none';
+                noStreamsEl.style.display = 'block';
+                gridEl.style.display = 'none';
             }
         }
 
