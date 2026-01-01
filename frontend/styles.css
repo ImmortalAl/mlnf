@@ -128,12 +128,12 @@ body.sidebar-collapsed {
 
 /* Physical spacer for fixed header - prevents content overlap */
 .header-spacer {
-  height: 150px !important; /* Extra space to prevent header overlap */
+  height: var(--header-height) !important; /* Must match header height exactly */
   width: 100% !important;
   display: block !important;
   flex-shrink: 0 !important;
-  min-height: 150px !important;
-  max-height: 150px !important;
+  min-height: var(--header-height) !important;
+  max-height: var(--header-height) !important;
   visibility: hidden !important; /* Hide but maintain space */
   opacity: 0 !important;
 }
