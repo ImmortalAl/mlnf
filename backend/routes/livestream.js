@@ -58,6 +58,7 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     const stream = await Livestream.findById(id)
+      .select('+streamKey') // Include streamKey for HLS URL
       .populate('creator', 'username profilePicture badges runegoldBalance')
       .populate('raidParty', 'username profilePicture');
 
