@@ -66,7 +66,11 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Stream not found' });
     }
 
-    res.json({ stream });
+    // Convert to JSON and add streamKey back (toJSON transform removes it)
+    const streamObj = stream.toJSON();
+    streamObj.streamKey = stream.streamKey;
+
+    res.json({ stream: streamObj });
   } catch (error) {
     console.error('Get stream error:', error);
     res.status(500).json({ error: 'Failed to get stream' });
