@@ -111,6 +111,7 @@ body {
   min-height: 100vh;
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
+  padding-top: 120px; /* Space for fixed header (115px header + 5px breathing room) */
   margin-right: 280px; /* Make room for sidebar on desktop */
 }
 
