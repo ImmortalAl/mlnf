@@ -529,52 +529,260 @@
                         </div>
                     </div>
 
-                    <!-- Achievements -->
-                    <div class="card">
+                    <!-- Monthly Goal Section -->
+                    <div class="card mb-3" id="monthlyGoalSection">
                         <div class="card-body">
-                            <h3 class="mb-3">Your Achievements</h3>
+                            <div class="flex flex-between mb-3">
+                                <h3><i class="fas fa-bullseye text-peach"></i> Monthly Goal</h3>
+                                <button class="btn btn-sm btn-outline" onclick="editMonthlyGoal()">
+                                    <i class="fas fa-edit"></i> Edit Goal
+                                </button>
+                            </div>
+
+                            <div class="monthly-goal-display" id="monthlyGoalDisplay">
+                                <!-- Goal will be loaded dynamically -->
+                                <div class="goal-card" style="background: linear-gradient(135deg, var(--navy) 0%, var(--indigo) 100%); color: white; padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1rem;">
+                                    <div class="flex flex-between" style="align-items: center;">
+                                        <div>
+                                            <p style="opacity: 0.8; font-size: 0.875rem; margin-bottom: 0.25rem;">Current Goal</p>
+                                            <h4 style="color: var(--gold); margin: 0;" id="goalTitle">Upload 10 videos this month</h4>
+                                        </div>
+                                        <div style="text-align: center; min-width: 80px;">
+                                            <div style="font-size: 2rem; font-weight: 800; color: var(--gold);" id="goalProgress">3/10</div>
+                                            <p style="opacity: 0.8; font-size: 0.75rem; margin: 0;">Progress</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Bar -->
+                                    <div style="margin-top: 1rem; background: rgba(255,255,255,0.2); height: 12px; border-radius: 6px; overflow: hidden;">
+                                        <div id="goalProgressBar" style="height: 100%; background: linear-gradient(90deg, var(--gold), var(--peach)); width: 30%; transition: width 0.5s ease; border-radius: 6px;"></div>
+                                    </div>
+
+                                    <div class="flex flex-between" style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.8;">
+                                        <span id="goalDaysLeft">15 days remaining</span>
+                                        <span id="goalPercentage">30% complete</span>
+                                    </div>
+                                </div>
+
+                                <!-- Goal Milestones -->
+                                <div class="grid grid-3 gap-md">
+                                    <div class="milestone-card" style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md); border: 2px solid var(--success);">
+                                        <i class="fas fa-check-circle text-success" style="font-size: 1.5rem;"></i>
+                                        <p style="margin: 0.5rem 0 0; font-size: 0.875rem; font-weight: 600;">First Video</p>
+                                        <small class="text-muted">Completed</small>
+                                    </div>
+                                    <div class="milestone-card" style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md); border: 2px dashed var(--gray-300);">
+                                        <i class="fas fa-circle text-gray" style="font-size: 1.5rem; opacity: 0.3;"></i>
+                                        <p style="margin: 0.5rem 0 0; font-size: 0.875rem; font-weight: 600;">5 Videos</p>
+                                        <small class="text-muted">50 RG reward</small>
+                                    </div>
+                                    <div class="milestone-card" style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md); border: 2px dashed var(--gray-300);">
+                                        <i class="fas fa-trophy text-gold" style="font-size: 1.5rem; opacity: 0.3;"></i>
+                                        <p style="margin: 0.5rem 0 0; font-size: 0.875rem; font-weight: 600;">Goal Complete</p>
+                                        <small class="text-muted">100 RG + badge</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Empty State (shown when no goal set) -->
+                            <div class="goal-empty-state hidden" id="goalEmptyState" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-bullseye" style="font-size: 3rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                                <h4 style="color: var(--gray-600);">No Goal Set</h4>
+                                <p class="text-muted">Set a monthly goal to stay motivated and earn Runegold!</p>
+                                <button class="btn btn-viking mt-2" onclick="editMonthlyGoal()">
+                                    <i class="fas fa-plus-circle"></i> Set Your First Goal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hall of Vikings (Community Leaderboard) -->
+                    <div class="card mb-3" id="hallOfVikingsSection">
+                        <div class="card-body">
+                            <div class="flex flex-between mb-3">
+                                <h3><i class="fas fa-crown text-gold"></i> Hall of Vikings</h3>
+                                <div class="flex gap-sm">
+                                    <button class="btn btn-sm btn-outline active" data-leaderboard="weekly" onclick="switchLeaderboard('weekly')">This Week</button>
+                                    <button class="btn btn-sm btn-outline" data-leaderboard="monthly" onclick="switchLeaderboard('monthly')">This Month</button>
+                                    <button class="btn btn-sm btn-outline" data-leaderboard="alltime" onclick="switchLeaderboard('alltime')">All Time</button>
+                                </div>
+                            </div>
+
+                            <!-- Top 3 Podium -->
+                            <div class="podium-display" style="display: flex; justify-content: center; align-items: flex-end; gap: 1rem; margin-bottom: 2rem; padding: 1rem 0;">
+                                <!-- 2nd Place -->
+                                <div class="podium-place" style="text-align: center; width: 120px;">
+                                    <img src="https://via.placeholder.com/60/C0C0C0/FFFFFF?text=2" alt="2nd" style="width: 60px; height: 60px; border-radius: 50%; border: 3px solid #C0C0C0; margin-bottom: 0.5rem;" id="vikingAvatar2">
+                                    <p style="font-weight: 600; margin: 0; font-size: 0.875rem;" id="vikingName2">SilverWarrior</p>
+                                    <p style="color: var(--gold); font-weight: 700; margin: 0; font-size: 0.875rem;" id="vikingScore2">12,450 pts</p>
+                                    <div style="background: linear-gradient(180deg, #C0C0C0, #A8A8A8); height: 60px; border-radius: 8px 8px 0 0; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                        <span style="font-size: 1.5rem; font-weight: 800; color: white;">2</span>
+                                    </div>
+                                </div>
+
+                                <!-- 1st Place -->
+                                <div class="podium-place" style="text-align: center; width: 140px;">
+                                    <i class="fas fa-crown" style="color: var(--gold); font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                    <img src="https://via.placeholder.com/80/FFD700/FFFFFF?text=1" alt="1st" style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); margin-bottom: 0.5rem;" id="vikingAvatar1">
+                                    <p style="font-weight: 700; margin: 0; font-size: 1rem;" id="vikingName1">TruthSeeker99</p>
+                                    <p style="color: var(--gold); font-weight: 800; margin: 0; font-size: 1rem;" id="vikingScore1">18,720 pts</p>
+                                    <div style="background: linear-gradient(180deg, var(--gold), #C4A035); height: 80px; border-radius: 8px 8px 0 0; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                        <span style="font-size: 2rem; font-weight: 800; color: white;">1</span>
+                                    </div>
+                                </div>
+
+                                <!-- 3rd Place -->
+                                <div class="podium-place" style="text-align: center; width: 120px;">
+                                    <img src="https://via.placeholder.com/60/CD7F32/FFFFFF?text=3" alt="3rd" style="width: 60px; height: 60px; border-radius: 50%; border: 3px solid #CD7F32; margin-bottom: 0.5rem;" id="vikingAvatar3">
+                                    <p style="font-weight: 600; margin: 0; font-size: 0.875rem;" id="vikingName3">BronzeKnight</p>
+                                    <p style="color: var(--gold); font-weight: 700; margin: 0; font-size: 0.875rem;" id="vikingScore3">9,830 pts</p>
+                                    <div style="background: linear-gradient(180deg, #CD7F32, #A66A2A); height: 40px; border-radius: 8px 8px 0 0; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                        <span style="font-size: 1.5rem; font-weight: 800; color: white;">3</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rest of Leaderboard -->
+                            <div class="leaderboard-list" id="leaderboardList">
+                                <div class="leaderboard-item flex flex-between" style="padding: 0.75rem 1rem; background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: 0.5rem;">
+                                    <div class="flex gap-md" style="align-items: center;">
+                                        <span style="font-weight: 700; width: 30px; color: var(--gray-600);">4</span>
+                                        <img src="https://via.placeholder.com/40/4A90E2/FFFFFF?text=U" alt="User" style="width: 40px; height: 40px; border-radius: 50%;">
+                                        <div>
+                                            <p style="margin: 0; font-weight: 600;">FreedomFighter</p>
+                                            <small class="text-muted">Level 12 Warrior</small>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p style="margin: 0; font-weight: 700; color: var(--gold);">7,650 pts</p>
+                                        <small class="text-success"><i class="fas fa-arrow-up"></i> +450</small>
+                                    </div>
+                                </div>
+
+                                <div class="leaderboard-item flex flex-between" style="padding: 0.75rem 1rem; background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: 0.5rem;">
+                                    <div class="flex gap-md" style="align-items: center;">
+                                        <span style="font-weight: 700; width: 30px; color: var(--gray-600);">5</span>
+                                        <img src="https://via.placeholder.com/40/E24A90/FFFFFF?text=U" alt="User" style="width: 40px; height: 40px; border-radius: 50%;">
+                                        <div>
+                                            <p style="margin: 0; font-weight: 600;">LightWorker</p>
+                                            <small class="text-muted">Level 10 Warrior</small>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p style="margin: 0; font-weight: 700; color: var(--gold);">6,230 pts</p>
+                                        <small class="text-success"><i class="fas fa-arrow-up"></i> +120</small>
+                                    </div>
+                                </div>
+
+                                <!-- Your Rank -->
+                                <div class="leaderboard-item flex flex-between" style="padding: 0.75rem 1rem; background: linear-gradient(135deg, var(--indigo), var(--navy)); color: white; border-radius: var(--radius-md); margin-top: 1rem; border: 2px solid var(--gold);">
+                                    <div class="flex gap-md" style="align-items: center;">
+                                        <span style="font-weight: 700; width: 30px;" id="yourRank">42</span>
+                                        <img src="https://via.placeholder.com/40/4A90E2/FFFFFF?text=You" alt="You" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold);" id="yourAvatar">
+                                        <div>
+                                            <p style="margin: 0; font-weight: 600;">You</p>
+                                            <small style="opacity: 0.8;">Keep climbing!</small>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p style="margin: 0; font-weight: 700; color: var(--gold);" id="yourScore">1,250 pts</p>
+                                        <small style="opacity: 0.8;"><i class="fas fa-arrow-up"></i> +50</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- How Points Work -->
+                            <div style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                                <h5 style="margin-bottom: 0.5rem;"><i class="fas fa-info-circle text-indigo"></i> How to Earn Points</h5>
+                                <div class="grid grid-4 gap-sm" style="font-size: 0.75rem;">
+                                    <div><i class="fas fa-video text-gold"></i> Upload Video: +50</div>
+                                    <div><i class="fas fa-comment text-indigo"></i> Comment: +5</div>
+                                    <div><i class="fas fa-thumbs-up text-peach"></i> Get Upvote: +10</div>
+                                    <div><i class="fas fa-broadcast-tower text-error"></i> Go Live: +100</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="mb-3"><i class="fas fa-medal text-gold"></i> Your Achievements</h3>
                             <div class="grid grid-6">
-                                <div class="text-center">
+                                <div class="text-center achievement-badge" style="cursor: pointer;" title="Earned for joining the resistance">
                                     <div class="badge-icon" style="font-size: 3rem; color: var(--gold);">
                                         <i class="fas fa-shield-alt"></i>
                                     </div>
                                     <p class="text-sm">Truth Warrior</p>
                                 </div>
-                                
-                                <div class="text-center">
+
+                                <div class="text-center achievement-badge" style="cursor: pointer;" title="Earned for uploading your first video">
                                     <div class="badge-icon" style="font-size: 3rem; color: var(--indigo);">
                                         <i class="fas fa-video"></i>
                                     </div>
                                     <p class="text-sm">Content Creator</p>
                                 </div>
-                                
-                                <div class="text-center">
+
+                                <div class="text-center achievement-badge" style="cursor: pointer;" title="Earned for gaining 100 followers">
                                     <div class="badge-icon" style="font-size: 3rem; color: var(--peach);">
                                         <i class="fas fa-users"></i>
                                     </div>
                                     <p class="text-sm">Community Leader</p>
                                 </div>
-                                
-                                <div class="text-center">
+
+                                <div class="text-center achievement-badge" style="cursor: pointer;" title="Earned for 50 comments">
                                     <div class="badge-icon" style="font-size: 3rem; color: var(--success);">
                                         <i class="fas fa-comments"></i>
                                     </div>
                                     <p class="text-sm">Active Commenter</p>
                                 </div>
-                                
-                                <div class="text-center">
-                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gray-300);">
-                                        <i class="fas fa-lock"></i>
+
+                                <div class="text-center achievement-badge locked" style="cursor: pointer; opacity: 0.5;" title="Reach 1,000 followers to unlock">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gray-400);">
+                                        <i class="fas fa-star"></i>
                                     </div>
-                                    <p class="text-sm">Locked</p>
+                                    <p class="text-sm">Rising Star</p>
                                 </div>
-                                
-                                <div class="text-center">
-                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gray-300);">
-                                        <i class="fas fa-lock"></i>
+
+                                <div class="text-center achievement-badge locked" style="cursor: pointer; opacity: 0.5;" title="Go live 10 times to unlock">
+                                    <div class="badge-icon" style="font-size: 3rem; color: var(--gray-400);">
+                                        <i class="fas fa-broadcast-tower"></i>
                                     </div>
-                                    <p class="text-sm">Locked</p>
+                                    <p class="text-sm">Live Legend</p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Your Blog Posts Section -->
+                    <div class="card mb-3" id="blogPostsSection">
+                        <div class="card-body">
+                            <div class="flex flex-between mb-3">
+                                <h3><i class="fas fa-feather-alt text-indigo"></i> Your Blog Posts</h3>
+                                <a href="pages/blog.html" class="btn btn-viking btn-sm">
+                                    <i class="fas fa-pen"></i> Write New
+                                </a>
+                            </div>
+
+                            <div id="userBlogPosts">
+                                <!-- Loading State -->
+                                <div class="text-center text-muted" style="padding: 2rem;" id="blogPostsLoading">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                                    <p style="margin-top: 1rem;">Loading your posts...</p>
+                                </div>
+
+                                <!-- Empty State (shown when no posts) -->
+                                <div class="hidden" id="blogPostsEmpty" style="text-align: center; padding: 2rem;">
+                                    <i class="fas fa-feather-alt" style="font-size: 3rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                                    <h4 style="color: var(--gray-600);">No Blog Posts Yet</h4>
+                                    <p class="text-muted">Share your thoughts and insights with the community!</p>
+                                    <a href="pages/blog.html" class="btn btn-viking mt-2">
+                                        <i class="fas fa-pen"></i> Write Your First Post
+                                    </a>
+                                </div>
+
+                                <!-- Blog Posts List (populated dynamically) -->
+                                <div class="hidden" id="blogPostsList"></div>
                             </div>
                         </div>
                     </div>
@@ -1217,6 +1425,227 @@
         function hideLoadingState() {
             // Loading complete - stats will be populated by updateDashboardStats
         }
+
+        // ==========================================
+        // MONTHLY GOAL FUNCTIONALITY
+        // ==========================================
+
+        // Load user's monthly goal from localStorage or API
+        async function loadMonthlyGoal() {
+            const goalDisplay = document.getElementById('monthlyGoalDisplay');
+            const goalEmpty = document.getElementById('goalEmptyState');
+
+            // Try to get goal from localStorage first
+            const savedGoal = localStorage.getItem('mlnf_monthly_goal');
+
+            if (savedGoal) {
+                const goal = JSON.parse(savedGoal);
+                updateGoalDisplay(goal);
+                goalDisplay.classList.remove('hidden');
+                goalEmpty.classList.add('hidden');
+            } else {
+                // Show empty state
+                goalDisplay.classList.add('hidden');
+                goalEmpty.classList.remove('hidden');
+            }
+        }
+
+        function updateGoalDisplay(goal) {
+            document.getElementById('goalTitle').textContent = goal.title;
+            document.getElementById('goalProgress').textContent = `${goal.current}/${goal.target}`;
+
+            const percentage = Math.min((goal.current / goal.target) * 100, 100);
+            document.getElementById('goalProgressBar').style.width = `${percentage}%`;
+            document.getElementById('goalPercentage').textContent = `${Math.round(percentage)}% complete`;
+
+            // Calculate days remaining
+            const endDate = new Date(goal.endDate || new Date().setDate(new Date().getDate() + 30));
+            const today = new Date();
+            const daysLeft = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
+            document.getElementById('goalDaysLeft').textContent = `${daysLeft} days remaining`;
+        }
+
+        function editMonthlyGoal() {
+            const goalTitle = prompt('What is your goal for this month?', 'Upload 10 videos this month');
+            if (!goalTitle) return;
+
+            const goalTarget = prompt('Target number to reach:', '10');
+            if (!goalTarget || isNaN(goalTarget)) return;
+
+            const goal = {
+                title: goalTitle,
+                target: parseInt(goalTarget),
+                current: 0,
+                startDate: new Date().toISOString(),
+                endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString()
+            };
+
+            localStorage.setItem('mlnf_monthly_goal', JSON.stringify(goal));
+            loadMonthlyGoal();
+            showNotification('Monthly goal set! Stay motivated and earn rewards!', 'success');
+        }
+
+        // ==========================================
+        // HALL OF VIKINGS (LEADERBOARD) FUNCTIONALITY
+        // ==========================================
+
+        async function loadLeaderboard(period = 'weekly') {
+            const leaderboardList = document.getElementById('leaderboardList');
+
+            try {
+                // Fetch leaderboard from API
+                const response = await fetch(`/api/leaderboard?period=${period}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateLeaderboardDisplay(data.leaderboard);
+                } else {
+                    // Use mock data if API not available
+                    console.log('Using mock leaderboard data');
+                }
+            } catch (error) {
+                console.log('Leaderboard API not available, using mock data');
+            }
+        }
+
+        function switchLeaderboard(period) {
+            // Update button states
+            document.querySelectorAll('[data-leaderboard]').forEach(btn => {
+                btn.classList.remove('active', 'btn-viking');
+                btn.classList.add('btn-outline');
+            });
+            const activeBtn = document.querySelector(`[data-leaderboard="${period}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            loadLeaderboard(period);
+        }
+
+        function updateLeaderboardDisplay(leaders) {
+            if (!leaders || leaders.length === 0) return;
+
+            // Update top 3 podium
+            if (leaders[0]) {
+                document.getElementById('vikingName1').textContent = leaders[0].username;
+                document.getElementById('vikingScore1').textContent = formatNumber(leaders[0].points) + ' pts';
+            }
+            if (leaders[1]) {
+                document.getElementById('vikingName2').textContent = leaders[1].username;
+                document.getElementById('vikingScore2').textContent = formatNumber(leaders[1].points) + ' pts';
+            }
+            if (leaders[2]) {
+                document.getElementById('vikingName3').textContent = leaders[2].username;
+                document.getElementById('vikingScore3').textContent = formatNumber(leaders[2].points) + ' pts';
+            }
+        }
+
+        // ==========================================
+        // BLOG POSTS FUNCTIONALITY
+        // ==========================================
+
+        async function loadUserBlogPosts() {
+            const loadingEl = document.getElementById('blogPostsLoading');
+            const emptyEl = document.getElementById('blogPostsEmpty');
+            const listEl = document.getElementById('blogPostsList');
+
+            try {
+                const response = await fetch('/api/blog?limit=5');
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Filter to user's posts
+                    const userPosts = data.posts || [];
+
+                    loadingEl.classList.add('hidden');
+
+                    if (userPosts.length === 0) {
+                        emptyEl.classList.remove('hidden');
+                        listEl.classList.add('hidden');
+                    } else {
+                        emptyEl.classList.add('hidden');
+                        listEl.classList.remove('hidden');
+                        renderBlogPosts(userPosts.slice(0, 3));
+                    }
+                } else {
+                    throw new Error('API not available');
+                }
+            } catch (error) {
+                console.log('Blog API not available, showing empty state');
+                loadingEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+            }
+        }
+
+        function renderBlogPosts(posts) {
+            const listEl = document.getElementById('blogPostsList');
+
+            listEl.innerHTML = posts.map(post => `
+                <div class="blog-post-item" style="padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: 0.75rem;">
+                    <div class="flex flex-between" style="align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <h5 style="margin: 0 0 0.5rem; color: var(--navy);">${post.title}</h5>
+                            <p class="text-muted text-sm" style="margin: 0; line-height: 1.4;">${post.excerpt || post.content?.substring(0, 100) + '...'}</p>
+                            <div class="flex gap-md text-sm text-muted" style="margin-top: 0.5rem;">
+                                <span><i class="fas fa-eye"></i> ${formatNumber(post.views || 0)}</span>
+                                <span><i class="fas fa-heart"></i> ${post.likes || 0}</span>
+                                <span><i class="fas fa-comment"></i> ${post.comments?.length || 0}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-sm">
+                            <button class="btn btn-sm btn-outline" onclick="editBlogPost('${post._id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline text-error" onclick="deleteBlogPost('${post._id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editBlogPost(postId) {
+            window.location.href = `pages/blog.html?edit=${postId}`;
+        }
+
+        async function deleteBlogPost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+
+            try {
+                const response = await fetch(`/api/blog/${postId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    showNotification('Blog post deleted', 'success');
+                    loadUserBlogPosts();
+                } else {
+                    showNotification('Failed to delete post', 'error');
+                }
+            } catch (error) {
+                showNotification('Error deleting post', 'error');
+            }
+        }
+
+        // ==========================================
+        // INITIALIZE NEW SECTIONS
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load monthly goal
+            loadMonthlyGoal();
+
+            // Load leaderboard
+            loadLeaderboard('weekly');
+
+            // Load user blog posts
+            loadUserBlogPosts();
+        });
     </script>
     
     <!-- Dashboard specific styles -->

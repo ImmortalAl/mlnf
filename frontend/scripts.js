@@ -733,12 +733,20 @@ const Socket = {
     updateOnlineUsersList() {
         const list = document.getElementById('onlineUsersList');
         const count = document.getElementById('onlineCount');
-        
+
         if (!list) return;
 
-        if (count) count.textContent = `(${State.onlineUsers.length})`;
+        // Use real socket data if available, otherwise fall back to MockData for logged-out users
+        let users = State.onlineUsers;
+        const hasRealData = State.socket && State.socket.connected && users.length > 0;
 
-        if (State.onlineUsers.length === 0) {
+        if (!hasRealData && typeof MockData !== 'undefined' && MockData.onlineUsers) {
+            users = MockData.onlineUsers;
+        }
+
+        if (count) count.textContent = `(${users.length})`;
+
+        if (users.length === 0) {
             list.innerHTML = `
                 <li class="text-center text-muted" style="padding: 2rem 0;">
                     <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
@@ -748,13 +756,16 @@ const Socket = {
             return;
         }
 
-        list.innerHTML = State.onlineUsers.map(user => `
-            <li class="online-user-item" onclick="Messaging.openChat('${user.userId}', '${user.username}')">
+        list.innerHTML = users.map(user => `
+            <li class="online-user-item" ${user.userId ? `onclick="Messaging.openChat('${user.userId}', '${user.username}')"` : ''}>
                 <div class="user-avatar" style="background: ${Utils.getAvatarColor(user.username)}">
                     ${Utils.getInitials(user.username)}
                     <span class="online-status"></span>
                 </div>
-                <span>${user.username}</span>
+                <div>
+                    <span>${user.username}</span>
+                    ${user.badge ? `<div style="font-size: 0.7rem; color: var(--gray-500);">${user.badge}</div>` : ''}
+                </div>
             </li>
         `).join('');
     },

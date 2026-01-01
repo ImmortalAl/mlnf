@@ -420,6 +420,224 @@
             }
         });
     </script>
+
+    <!-- Blog Posts Loading Script -->
+    <script>
+        // Load blog posts from API
+        async function loadBlogPosts(category = 'all', page = 1) {
+            const blogGrid = document.getElementById('blogGrid');
+
+            // Show loading state
+            blogGrid.innerHTML = `
+                <div class="skeleton-card card">
+                    <div class="skeleton" style="height: 200px;"></div>
+                    <div class="card-body">
+                        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                        <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card card">
+                    <div class="skeleton" style="height: 200px;"></div>
+                    <div class="card-body">
+                        <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                        <div class="skeleton skeleton-text" style="width: 50%;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card card">
+                    <div class="skeleton" style="height: 200px;"></div>
+                    <div class="card-body">
+                        <div class="skeleton skeleton-text" style="width: 90%;"></div>
+                        <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                    </div>
+                </div>
+            `;
+
+            try {
+                const url = category === 'all'
+                    ? `/api/blog?page=${page}&limit=9`
+                    : `/api/blog?category=${category}&page=${page}&limit=9`;
+
+                const response = await fetch(url);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderBlogPosts(data.posts || []);
+                } else {
+                    // Use sample data if API not available
+                    renderSamplePosts();
+                }
+            } catch (error) {
+                console.log('Blog API not available, using sample data');
+                renderSamplePosts();
+            }
+        }
+
+        function renderBlogPosts(posts) {
+            const blogGrid = document.getElementById('blogGrid');
+
+            if (posts.length === 0) {
+                blogGrid.innerHTML = `
+                    <div class="col-span-3 text-center" style="padding: 3rem;">
+                        <i class="fas fa-feather-alt" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--gray-600);">No Articles Yet</h3>
+                        <p class="text-muted">Be the first to share your wisdom!</p>
+                        <button class="btn btn-viking mt-2" onclick="document.getElementById('writeBlogBtn').click()">
+                            <i class="fas fa-pen"></i> Write the First Article
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            blogGrid.innerHTML = posts.map(post => `
+                <article class="card blog-post-card" onclick="viewBlogPost('${post._id || post.slug}')" style="cursor: pointer; transition: all 0.3s ease;">
+                    <div style="position: relative; overflow: hidden;">
+                        <img src="${post.image || 'https://via.placeholder.com/400x200/4A90E2/FFFFFF?text=Blog+Post'}" alt="${post.title}" style="width: 100%; height: 180px; object-fit: cover;">
+                        ${post.featured ? '<span class="badge badge-gold" style="position: absolute; top: 10px; right: 10px;">Featured</span>' : ''}
+                        <span class="badge" style="position: absolute; top: 10px; left: 10px; background: var(--indigo); color: white;">${post.category || 'General'}</span>
+                    </div>
+                    <div class="card-body">
+                        <h4 style="margin-bottom: 0.5rem; color: var(--navy); line-height: 1.3;">${post.title}</h4>
+                        <p class="text-muted text-sm" style="margin-bottom: 1rem; line-height: 1.5;">${post.excerpt || post.content?.substring(0, 120) + '...'}</p>
+                        <div class="flex flex-between text-sm text-muted">
+                            <span><i class="fas fa-user"></i> ${post.author?.username || 'Anonymous'}</span>
+                            <span><i class="fas fa-eye"></i> ${formatNumber(post.views || 0)}</span>
+                        </div>
+                        <div class="flex gap-md text-sm text-muted" style="margin-top: 0.5rem;">
+                            <span><i class="fas fa-heart"></i> ${post.likes || 0}</span>
+                            <span><i class="fas fa-comment"></i> ${post.comments?.length || 0}</span>
+                            <span><i class="fas fa-clock"></i> ${formatDate(post.createdAt)}</span>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            // Add hover effects
+            document.querySelectorAll('.blog-post-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-8px)';
+                    card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.15)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '';
+                });
+            });
+        }
+
+        function renderSamplePosts() {
+            const samplePosts = [
+                {
+                    title: 'The Great Awakening: Why Truth Matters Now',
+                    excerpt: 'In an age of information warfare, understanding the nature of truth becomes paramount for survival and freedom.',
+                    category: 'Freedom',
+                    author: { username: 'TruthSeeker' },
+                    views: 12500,
+                    likes: 342,
+                    comments: { length: 89 },
+                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Natural Remedies: What They Don\'t Want You to Know',
+                    excerpt: 'Discover the ancient healing wisdom that modern medicine has suppressed for profit.',
+                    category: 'Health',
+                    author: { username: 'HealerWarrior' },
+                    views: 8700,
+                    likes: 256,
+                    comments: { length: 45 },
+                    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Financial Freedom: Breaking Free from the System',
+                    excerpt: 'Learn how to build wealth outside the traditional banking system using crypto and alternative investments.',
+                    category: 'Finance',
+                    author: { username: 'CryptoViking' },
+                    views: 6200,
+                    likes: 189,
+                    comments: { length: 32 },
+                    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'The Technology of Control: Surveillance State Exposed',
+                    excerpt: 'How modern technology is being weaponized against the population and what you can do about it.',
+                    category: 'Technology',
+                    author: { username: 'DigitalResistance' },
+                    views: 9800,
+                    likes: 445,
+                    comments: { length: 67 },
+                    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Spiritual Warfare: Protecting Your Consciousness',
+                    excerpt: 'Understanding the metaphysical battle for your mind and spirit in the modern age.',
+                    category: 'Spirituality',
+                    author: { username: 'SpiritGuide' },
+                    views: 5400,
+                    likes: 312,
+                    comments: { length: 78 },
+                    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Homeschooling Revolution: Taking Back Education',
+                    excerpt: 'Why parents are withdrawing children from public schools and how to create effective learning environments.',
+                    category: 'Education',
+                    author: { username: 'FreedomEducator' },
+                    views: 4100,
+                    likes: 156,
+                    comments: { length: 23 },
+                    createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+
+            renderBlogPosts(samplePosts);
+        }
+
+        function viewBlogPost(postId) {
+            // Navigate to blog post detail page
+            window.location.href = `blog-post.html?id=${postId}`;
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Recently';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Category filter buttons
+        document.querySelectorAll('[data-category]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('[data-category]').forEach(b => {
+                    b.classList.remove('active', 'btn-viking');
+                    b.classList.add('btn-outline');
+                });
+                this.classList.add('active');
+                this.classList.remove('btn-outline');
+
+                // Load posts for category
+                loadBlogPosts(this.dataset.category);
+            });
+        });
+
+        // Initialize blog posts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBlogPosts();
+        });
+    </script>
     <script src="../js/site-enhancements.js"></script>
     <script src="js/mobile-viewport-handler.js"></script>
 </body>

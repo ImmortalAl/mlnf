@@ -466,6 +466,223 @@
             }
         });
     </script>
+
+    <!-- News Loading Script -->
+    <script>
+        // Load news articles from API
+        async function loadNewsArticles(category = 'all', page = 1) {
+            const newsFeed = document.getElementById('newsFeed');
+
+            // Show loading state
+            newsFeed.innerHTML = `
+                <div class="card mb-2" style="padding: 1rem;">
+                    <div class="skeleton" style="height: 24px; width: 80%; margin-bottom: 0.5rem;"></div>
+                    <div class="skeleton" style="height: 16px; width: 60%;"></div>
+                </div>
+                <div class="card mb-2" style="padding: 1rem;">
+                    <div class="skeleton" style="height: 24px; width: 70%; margin-bottom: 0.5rem;"></div>
+                    <div class="skeleton" style="height: 16px; width: 50%;"></div>
+                </div>
+                <div class="card mb-2" style="padding: 1rem;">
+                    <div class="skeleton" style="height: 24px; width: 90%; margin-bottom: 0.5rem;"></div>
+                    <div class="skeleton" style="height: 16px; width: 40%;"></div>
+                </div>
+            `;
+
+            try {
+                const url = category === 'all'
+                    ? `/api/news?page=${page}&limit=10`
+                    : `/api/news?category=${category}&page=${page}&limit=10`;
+
+                const response = await fetch(url);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderNewsArticles(data.articles || []);
+                } else {
+                    // Use sample data if API not available
+                    renderSampleNews();
+                }
+            } catch (error) {
+                console.log('News API not available, using sample data');
+                renderSampleNews();
+            }
+        }
+
+        function renderNewsArticles(articles) {
+            const newsFeed = document.getElementById('newsFeed');
+
+            if (articles.length === 0) {
+                newsFeed.innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <i class="fas fa-newspaper" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--gray-600);">No News Yet</h3>
+                        <p class="text-muted">Be the first to break a story!</p>
+                        <button class="btn btn-viking mt-2" onclick="document.getElementById('submitNewsBtn').click()">
+                            <i class="fas fa-plus-circle"></i> Submit News
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            newsFeed.innerHTML = articles.map(article => `
+                <article class="card news-article-card mb-2" onclick="viewNewsArticle('${article._id || article.slug}')" style="cursor: pointer; transition: all 0.3s ease;">
+                    <div class="card-body">
+                        <div class="flex gap-sm mb-2">
+                            ${article.breaking ? '<span class="badge badge-error">BREAKING</span>' : ''}
+                            <span class="badge" style="background: var(--indigo); color: white;">${article.category || 'News'}</span>
+                            ${article.trending ? '<span class="badge badge-peach">Trending</span>' : ''}
+                        </div>
+                        <h4 style="color: var(--navy); margin-bottom: 0.5rem;">${article.title}</h4>
+                        <p class="text-muted" style="margin-bottom: 1rem; line-height: 1.5;">${article.excerpt || article.content?.substring(0, 150) + '...'}</p>
+                        <div class="flex flex-between text-sm text-muted">
+                            <div class="flex gap-md">
+                                <span><i class="fas fa-user"></i> ${article.source || article.author?.username || 'Community'}</span>
+                                <span><i class="fas fa-clock"></i> ${formatTimeAgo(article.createdAt)}</span>
+                            </div>
+                            <div class="flex gap-md">
+                                <span><i class="fas fa-eye"></i> ${formatNumber(article.views || 0)}</span>
+                                <span><i class="fas fa-comment"></i> ${article.comments?.length || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            // Add hover effects
+            document.querySelectorAll('.news-article-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-4px)';
+                    card.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '';
+                });
+            });
+        }
+
+        function renderSampleNews() {
+            const sampleNews = [
+                {
+                    title: 'Major Whistleblower Exposes Government Surveillance Program',
+                    excerpt: 'Documents reveal extensive monitoring of citizen communications without warrants, sparking outrage among privacy advocates.',
+                    category: 'Politics',
+                    source: 'Independent Reporters Network',
+                    breaking: true,
+                    trending: true,
+                    views: 45200,
+                    comments: { length: 234 },
+                    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Alternative Health Breakthrough Censored by Mainstream Media',
+                    excerpt: 'Promising natural treatment shows remarkable results in clinical trials but faces coordinated suppression from establishment interests.',
+                    category: 'Health',
+                    source: 'Natural Health Weekly',
+                    breaking: false,
+                    trending: true,
+                    views: 32800,
+                    comments: { length: 156 },
+                    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Financial Markets Show Signs of Manipulation',
+                    excerpt: 'Insider trading patterns detected across multiple exchanges as regulators remain silent on investigation status.',
+                    category: 'Finance',
+                    source: 'Financial Watchdog',
+                    breaking: false,
+                    trending: false,
+                    views: 18500,
+                    comments: { length: 89 },
+                    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'New Evidence Emerges in Controversial Case',
+                    excerpt: 'Previously sealed documents reveal critical information that contradicts official narrative.',
+                    category: 'Politics',
+                    source: 'Truth Investigators',
+                    breaking: false,
+                    trending: false,
+                    views: 24100,
+                    comments: { length: 178 },
+                    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Tech Giants Face Antitrust Lawsuit from Coalition',
+                    excerpt: 'Multiple states join forces to challenge monopolistic practices in the digital marketplace.',
+                    category: 'Technology',
+                    source: 'Digital Rights Watch',
+                    breaking: false,
+                    trending: false,
+                    views: 15700,
+                    comments: { length: 67 },
+                    createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    title: 'Local Community Fights Back Against Corporate Overreach',
+                    excerpt: 'Grassroots movement successfully blocks development project that threatened environmental and community interests.',
+                    category: 'World',
+                    source: 'Community Voice',
+                    breaking: false,
+                    trending: false,
+                    views: 8900,
+                    comments: { length: 45 },
+                    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+
+            renderNewsArticles(sampleNews);
+        }
+
+        function viewNewsArticle(articleId) {
+            window.location.href = `news-article.html?id=${articleId}`;
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        function formatTimeAgo(dateStr) {
+            if (!dateStr) return 'Just now';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            if (diffDays < 7) return `${diffDays} days ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Category filter buttons
+        document.querySelectorAll('[data-category]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('[data-category]').forEach(b => {
+                    b.classList.remove('active', 'btn-viking');
+                    b.classList.add('btn-outline');
+                });
+                this.classList.add('active');
+                this.classList.remove('btn-outline');
+
+                // Load articles for category
+                loadNewsArticles(this.dataset.category);
+            });
+        });
+
+        // Initialize news articles on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNewsArticles();
+        });
+    </script>
     <script src="../js/site-enhancements.js"></script>
     <script src="js/mobile-viewport-handler.js"></script>
 </body>
