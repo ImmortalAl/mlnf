@@ -387,19 +387,24 @@ router.post('/verify', async (req, res) => {
   try {
     const { name } = req.body; // Stream key from nginx
 
+    // Accept streams that are offline (waiting to go live) or already live
     const stream = await Livestream.findOne({
       streamKey: name,
-      status: 'offline'
+      status: { $in: ['offline', 'live'] }
     });
 
     if (!stream) {
       // Reject stream
+      console.log('Stream verify failed - key not found or invalid status:', name);
       return res.status(403).send('Invalid stream key');
     }
 
-    // Accept stream and mark as live
-    await stream.startStream();
+    // If offline, mark as live
+    if (stream.status === 'offline') {
+      await stream.startStream();
+    }
 
+    console.log('Stream verified successfully:', stream._id);
     res.status(200).send('OK');
   } catch (error) {
     console.error('Verify stream error:', error);
