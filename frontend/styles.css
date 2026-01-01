@@ -10,7 +10,7 @@
 :root {
   /* Mobile viewport fix - will be set by JavaScript */
   --vh: 1vh;
-  --header-height: 80px;
+  --header-height: 115px;
   
   /* Primary Colors */
   --peach: #FF6B6B;
@@ -111,8 +111,14 @@ body {
   min-height: 100vh;
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
-  padding-top: 120px; /* Space for fixed header (115px header + 5px breathing room) */
+  padding-top: var(--header-height); /* Space for fixed header */
   margin-right: 280px; /* Make room for sidebar on desktop */
+}
+
+/* Hero sections snap to header (for dark hero that blends with header) */
+.hero {
+  margin-top: calc(-1 * var(--header-height)); /* Pull up into header space */
+  padding-top: calc(var(--header-height) + 4rem); /* Header height + content padding */
 }
 
 /* Remove margin when sidebar is collapsed */
