@@ -157,30 +157,56 @@
 
                     <!-- Creator Studio - Livestreaming Section (hidden by default) -->
                     <div id="livestreamSection" class="hidden">
-                        <!-- Live Status Banner -->
+                        <!-- Live Status Banner - Enhanced -->
                         <div class="card mb-3" id="liveStatusBanner" style="display: none; background: linear-gradient(135deg, var(--error) 0%, var(--peach) 100%); color: white; border: none; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4); position: relative; overflow: hidden;">
                             <!-- Animated background effect -->
                             <div style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); opacity: 0.5;"></div>
 
                             <div class="card-body" style="position: relative; z-index: 1;">
-                                <div class="flex flex-between" style="align-items: center;">
+                                <div class="flex flex-between" style="align-items: center; flex-wrap: wrap; gap: 1rem;">
                                     <div>
                                         <h3 style="color: white; margin: 0; font-size: 1.75rem;">
                                             <i class="fas fa-circle" style="animation: pulse-live 2s infinite; margin-right: 0.5rem;"></i>
                                             You're Live!
                                         </h3>
-                                        <p style="margin: 0.5rem 0 0; opacity: 0.95; font-size: 1rem;">
-                                            <i class="fas fa-clock"></i> Stream started <span id="streamStartTime">--</span> ago
+                                        <p style="margin: 0.5rem 0 0; opacity: 0.95; font-size: 1rem;" id="liveStreamTitle">
+                                            Streaming now...
                                         </p>
                                     </div>
-                                    <div style="display: flex; gap: 1.5rem; align-items: center;">
-                                        <!-- Viewer count card -->
-                                        <div style="text-align: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 1.25rem 1.5rem; border-radius: var(--radius-lg); min-width: 120px;">
-                                            <div style="font-size: 2.5rem; font-weight: 800; line-height: 1;">
-                                                <span id="currentViewers">0</span>
+                                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                        <!-- Live Stats Cards -->
+                                        <div style="display: flex; gap: 0.75rem;">
+                                            <div style="text-align: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 0.75rem 1rem; border-radius: var(--radius-md); min-width: 80px;">
+                                                <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;">
+                                                    <span id="currentViewers">0</span>
+                                                </div>
+                                                <div style="font-size: 0.7rem; opacity: 0.9; margin-top: 0.25rem;">
+                                                    <i class="fas fa-users"></i> Viewers
+                                                </div>
                                             </div>
-                                            <div style="font-size: 0.875rem; opacity: 0.95; margin-top: 0.25rem; font-weight: 600;">
-                                                <i class="fas fa-users"></i> Warriors
+                                            <div style="text-align: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 0.75rem 1rem; border-radius: var(--radius-md); min-width: 80px;">
+                                                <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;">
+                                                    <span id="peakViewers">0</span>
+                                                </div>
+                                                <div style="font-size: 0.7rem; opacity: 0.9; margin-top: 0.25rem;">
+                                                    <i class="fas fa-chart-line"></i> Peak
+                                                </div>
+                                            </div>
+                                            <div style="text-align: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 0.75rem 1rem; border-radius: var(--radius-md); min-width: 80px;">
+                                                <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;">
+                                                    <span id="streamStartTime">0:00</span>
+                                                </div>
+                                                <div style="font-size: 0.7rem; opacity: 0.9; margin-top: 0.25rem;">
+                                                    <i class="fas fa-clock"></i> Duration
+                                                </div>
+                                            </div>
+                                            <div style="text-align: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 0.75rem 1rem; border-radius: var(--radius-md); min-width: 80px;">
+                                                <div style="font-size: 1.5rem; font-weight: 800; line-height: 1; color: var(--gold);">
+                                                    <span id="liveRunegold">0</span>
+                                                </div>
+                                                <div style="font-size: 0.7rem; opacity: 0.9; margin-top: 0.25rem;">
+                                                    <i class="fas fa-coins"></i> Earned
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- End stream button -->
@@ -189,6 +215,41 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                <!-- Stream Health Indicator -->
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="flex flex-between" style="align-items: center;">
+                                        <div class="flex gap-md" style="align-items: center;">
+                                            <span style="font-size: 0.875rem;"><i class="fas fa-signal"></i> Stream Health:</span>
+                                            <span id="streamHealth" style="background: var(--success); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+                                                <i class="fas fa-check-circle"></i> Excellent
+                                            </span>
+                                            <span style="font-size: 0.75rem; opacity: 0.8;" id="streamBitrate">-- kbps</span>
+                                        </div>
+                                        <div class="flex gap-sm">
+                                            <button class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white; border: none;" onclick="openStreamChat()">
+                                                <i class="fas fa-comments"></i> Chat
+                                            </button>
+                                            <button class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white; border: none;" onclick="copyStreamLink()">
+                                                <i class="fas fa-share-alt"></i> Share
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stream Preview (when live) -->
+                        <div class="card mb-3" id="streamPreviewCard" style="display: none;">
+                            <div class="card-body">
+                                <h4 class="mb-2"><i class="fas fa-tv"></i> Stream Preview</h4>
+                                <div id="streamPreview" style="background: #000; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 16/9; position: relative;">
+                                    <video id="previewPlayer" style="width: 100%; height: 100%; object-fit: contain;" autoplay muted></video>
+                                    <div style="position: absolute; top: 10px; left: 10px; background: var(--error); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">
+                                        <i class="fas fa-circle" style="animation: pulse-live 1s infinite;"></i> LIVE
+                                    </div>
+                                </div>
+                                <p class="text-sm text-muted mt-2"><i class="fas fa-info-circle"></i> This is how viewers see your stream</p>
                             </div>
                         </div>
 
@@ -206,6 +267,7 @@
                                 </div>
 
                                 <form id="createStreamForm" class="mb-3">
+                                    <!-- Row 1: Title and Category -->
                                     <div class="grid grid-2 gap-md mb-3">
                                         <div class="form-group">
                                             <label for="streamTitle">Stream Title *</label>
@@ -217,31 +279,127 @@
                                             <label for="streamCategory">Category</label>
                                             <select id="streamCategory" class="form-control">
                                                 <option value="General">General</option>
-                                                <option value="Politics">Politics</option>
+                                                <option value="Politics">Politics & News</option>
                                                 <option value="Health">Health & Wellness</option>
                                                 <option value="Finance">Finance & Economics</option>
                                                 <option value="Tech">Technology</option>
+                                                <option value="Spirituality">Spirituality</option>
                                                 <option value="Education">Education</option>
                                                 <option value="Entertainment">Entertainment</option>
+                                                <option value="Gaming">Gaming</option>
+                                                <option value="Music">Music</option>
                                                 <option value="Other">Other</option>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <div class="form-group mb-3">
-                                        <label for="streamDescription">Description (Optional)</label>
-                                        <textarea id="streamDescription" class="form-control" rows="3" placeholder="What will you be discussing?" maxlength="1000"></textarea>
+                                    <!-- Row 2: Thumbnail and Tags -->
+                                    <div class="grid grid-2 gap-md mb-3">
+                                        <div class="form-group">
+                                            <label>Stream Thumbnail</label>
+                                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                                <div id="thumbnailPreview" style="width: 160px; height: 90px; background: var(--gray-100); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px dashed var(--gray-300);">
+                                                    <span class="text-muted text-sm"><i class="fas fa-image"></i> No image</span>
+                                                </div>
+                                                <div>
+                                                    <input type="file" id="streamThumbnail" accept="image/*" style="display: none;" onchange="previewThumbnail(this)">
+                                                    <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('streamThumbnail').click()">
+                                                        <i class="fas fa-upload"></i> Upload
+                                                    </button>
+                                                    <p class="text-muted text-sm mt-1">16:9 ratio, max 2MB</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="streamTags">Tags</label>
+                                            <input type="text" id="streamTags" class="form-control" placeholder="truth, freedom, awakening (comma separated)">
+                                            <small class="text-muted">Help warriors find your stream</small>
+                                        </div>
                                     </div>
 
-                                    <div class="flex gap-md">
+                                    <!-- Row 3: Description -->
+                                    <div class="form-group mb-3">
+                                        <label for="streamDescription">Description</label>
+                                        <textarea id="streamDescription" class="form-control" rows="3" placeholder="What will you be discussing? Add links, resources, or talking points..." maxlength="2000"></textarea>
+                                    </div>
+
+                                    <!-- Row 4: Stream Settings -->
+                                    <div class="grid grid-3 gap-md mb-3" style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-md);">
+                                        <div class="form-group" style="margin: 0;">
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                                <input type="checkbox" id="streamChatEnabled" checked style="width: 18px; height: 18px;">
+                                                <span><i class="fas fa-comments text-indigo"></i> Enable Chat</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group" style="margin: 0;">
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                                <input type="checkbox" id="streamNotifyFollowers" checked style="width: 18px; height: 18px;">
+                                                <span><i class="fas fa-bell text-gold"></i> Notify Followers</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group" style="margin: 0;">
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                                <input type="checkbox" id="streamSaveVOD" checked style="width: 18px; height: 18px;">
+                                                <span><i class="fas fa-archive text-peach"></i> Save Recording</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pre-Stream Checklist -->
+                                    <div id="preStreamChecklist" style="background: linear-gradient(135deg, var(--cream), #fff); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--gold);">
+                                        <h5 style="margin-bottom: 0.75rem; color: var(--navy);"><i class="fas fa-clipboard-check text-gold"></i> Pre-Stream Checklist</h5>
+                                        <div class="grid grid-2 gap-sm">
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem;">
+                                                <input type="checkbox" class="checklist-item" style="width: 16px; height: 16px;">
+                                                <span>Audio levels tested</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem;">
+                                                <input type="checkbox" class="checklist-item" style="width: 16px; height: 16px;">
+                                                <span>Camera/screen share ready</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem;">
+                                                <input type="checkbox" class="checklist-item" style="width: 16px; height: 16px;">
+                                                <span>OBS scenes configured</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem;">
+                                                <input type="checkbox" class="checklist-item" style="width: 16px; height: 16px;">
+                                                <span>Notifications silenced</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-md" style="flex-wrap: wrap;">
                                         <button type="submit" class="btn btn-viking">
                                             <i class="fas fa-plus-circle"></i> Create Stream & Get Key
                                         </button>
                                         <button type="button" class="btn btn-outline" onclick="toggleOBSGuide()">
                                             <i class="fas fa-question-circle"></i> OBS Setup Guide
                                         </button>
+                                        <button type="button" class="btn btn-outline" onclick="toggleScheduleStream()">
+                                            <i class="fas fa-calendar-alt"></i> Schedule for Later
+                                        </button>
                                     </div>
                                 </form>
+
+                                <!-- Schedule Stream Panel (hidden by default) -->
+                                <div id="scheduleStreamPanel" class="hidden" style="background: var(--gray-50); padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1rem;">
+                                    <h4 class="mb-2"><i class="fas fa-calendar-alt text-indigo"></i> Schedule Your Stream</h4>
+                                    <div class="grid grid-2 gap-md mb-3">
+                                        <div class="form-group">
+                                            <label for="scheduleDate">Date</label>
+                                            <input type="date" id="scheduleDate" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="scheduleTime">Time</label>
+                                            <input type="time" id="scheduleTime" class="form-control">
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-muted mb-2"><i class="fas fa-info-circle"></i> Followers will be notified before your scheduled stream</p>
+                                    <button type="button" class="btn btn-viking" onclick="scheduleStream()">
+                                        <i class="fas fa-clock"></i> Schedule Stream
+                                    </button>
+                                </div>
 
                                 <!-- OBS Setup Guide (collapsed by default) -->
                                 <div id="obsGuide" class="hidden" style="background: var(--gray-50); padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1rem;">
@@ -1062,6 +1220,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="api-client.js"></script>
     <script src="auth-handler.js"></script>
     <script src="mock-data.js"></script>
@@ -2484,6 +2643,183 @@
             guide.classList.toggle('hidden');
         }
 
+        // Toggle Schedule Stream Panel
+        function toggleScheduleStream() {
+            const panel = document.getElementById('scheduleStreamPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Preview Thumbnail
+        function previewThumbnail(input) {
+            const preview = document.getElementById('thumbnailPreview');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                // Check file size (2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Thumbnail must be under 2MB', 'error');
+                    input.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Schedule Stream
+        async function scheduleStream() {
+            const date = document.getElementById('scheduleDate').value;
+            const time = document.getElementById('scheduleTime').value;
+            const title = document.getElementById('streamTitle').value;
+
+            if (!date || !time) {
+                showNotification('Please select both date and time', 'error');
+                return;
+            }
+
+            if (!title) {
+                showNotification('Please enter a stream title first', 'error');
+                return;
+            }
+
+            const scheduledFor = new Date(`${date}T${time}`);
+            if (scheduledFor <= new Date()) {
+                showNotification('Scheduled time must be in the future', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/schedule`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    },
+                    body: JSON.stringify({
+                        title,
+                        category: document.getElementById('streamCategory').value,
+                        description: document.getElementById('streamDescription').value,
+                        tags: document.getElementById('streamTags').value.split(',').map(t => t.trim()).filter(t => t),
+                        scheduledFor: scheduledFor.toISOString()
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification(`Stream scheduled for ${scheduledFor.toLocaleString()}!`, 'success');
+                    document.getElementById('scheduleStreamPanel').classList.add('hidden');
+                    loadUserStreams();
+                } else {
+                    showNotification(data.error || 'Failed to schedule stream', 'error');
+                }
+            } catch (error) {
+                console.error('Schedule error:', error);
+                showNotification('Failed to schedule stream', 'error');
+            }
+        }
+
+        // Open Stream Chat
+        function openStreamChat() {
+            if (!currentStream) return;
+            // Open chat in new window or modal
+            window.open(`/pages/live.html?stream=${currentStream._id}&chat=true`, 'StreamChat', 'width=400,height=600');
+        }
+
+        // Copy Stream Link
+        function copyStreamLink() {
+            if (!currentStream) return;
+            const link = `${window.location.origin}/pages/live.html?stream=${currentStream._id}`;
+            navigator.clipboard.writeText(link).then(() => {
+                showNotification('Stream link copied! Share it with warriors!', 'success');
+            }).catch(() => {
+                showNotification('Failed to copy link', 'error');
+            });
+        }
+
+        // Update stream health indicator
+        function updateStreamHealth(bitrate) {
+            const healthEl = document.getElementById('streamHealth');
+            const bitrateEl = document.getElementById('streamBitrate');
+
+            if (!healthEl) return;
+
+            bitrateEl.textContent = `${bitrate} kbps`;
+
+            if (bitrate >= 4000) {
+                healthEl.innerHTML = '<i class="fas fa-check-circle"></i> Excellent';
+                healthEl.style.background = 'var(--success)';
+            } else if (bitrate >= 2500) {
+                healthEl.innerHTML = '<i class="fas fa-check-circle"></i> Good';
+                healthEl.style.background = 'var(--success)';
+            } else if (bitrate >= 1500) {
+                healthEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Fair';
+                healthEl.style.background = 'var(--warning)';
+            } else {
+                healthEl.innerHTML = '<i class="fas fa-times-circle"></i> Poor';
+                healthEl.style.background = 'var(--error)';
+            }
+        }
+
+        // Track peak viewers and stream timing
+        let peakViewerCount = 0;
+        let streamStartTimestamp = null;
+        let streamDurationInterval = null;
+
+        // Update stream duration display
+        function updateStreamDuration() {
+            if (!streamStartTimestamp) return;
+
+            const elapsed = Date.now() - streamStartTimestamp;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+
+            let display;
+            if (hours > 0) {
+                display = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            document.getElementById('streamStartTime').textContent = display;
+        }
+
+        // Initialize stream preview player
+        function initStreamPreview() {
+            if (!currentStream) return;
+
+            const previewPlayer = document.getElementById('previewPlayer');
+            if (!previewPlayer) return;
+
+            // Use HLS.js for stream preview
+            const streamUrl = `https://150.136.140.253:8443/hls/${currentStream.streamKey}.m3u8`;
+
+            if (Hls && Hls.isSupported()) {
+                const hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: true
+                });
+                hls.loadSource(streamUrl);
+                hls.attachMedia(previewPlayer);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    previewPlayer.play().catch(e => console.log('Preview autoplay blocked'));
+                });
+            } else if (previewPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                previewPlayer.src = streamUrl;
+                previewPlayer.addEventListener('loadedmetadata', () => {
+                    previewPlayer.play().catch(e => console.log('Preview autoplay blocked'));
+                });
+            } else {
+                console.log('HLS not supported, preview unavailable');
+                document.getElementById('streamPreviewCard').style.display = 'none';
+            }
+        }
+
         // Create Stream Form
         document.getElementById('createStreamForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2576,7 +2912,22 @@
                 if (response.ok) {
                     // Show live status banner
                     document.getElementById('liveStatusBanner').style.display = 'block';
-                    document.getElementById('streamStartTime').textContent = 'just now';
+                    document.getElementById('streamStartTime').textContent = '0:00';
+
+                    // Update stream title in banner
+                    const titleEl = document.getElementById('liveStreamTitle');
+                    if (titleEl && currentStream.title) {
+                        titleEl.textContent = currentStream.title;
+                    }
+
+                    // Show stream preview
+                    document.getElementById('streamPreviewCard').style.display = 'block';
+                    initStreamPreview();
+
+                    // Reset peak viewers
+                    peakViewerCount = 0;
+                    document.getElementById('peakViewers').textContent = '0';
+                    document.getElementById('liveRunegold').textContent = '0';
 
                     // Hide Go Live button
                     document.getElementById('goLiveButton').disabled = true;
@@ -2584,9 +2935,13 @@
 
                     showNotification('You\'re now live! Warriors can see your stream.', 'success');
 
-                    // Start viewer count updates
+                    // Start viewer count updates (more frequent - every 5 seconds)
                     updateViewerCount();
-                    viewerCountInterval = setInterval(updateViewerCount, 10000); // Update every 10 seconds
+                    viewerCountInterval = setInterval(updateViewerCount, 5000);
+
+                    // Start duration timer
+                    streamStartTimestamp = Date.now();
+                    streamDurationInterval = setInterval(updateStreamDuration, 1000);
                 } else {
                     showNotification(data.error || 'Failed to go live', 'error');
                 }
@@ -2614,14 +2969,32 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Hide live status banner
+                    // Hide live status banner and preview
                     document.getElementById('liveStatusBanner').style.display = 'none';
+                    document.getElementById('streamPreviewCard').style.display = 'none';
+
+                    // Stop preview player
+                    const previewPlayer = document.getElementById('previewPlayer');
+                    if (previewPlayer) {
+                        previewPlayer.pause();
+                        previewPlayer.src = '';
+                    }
 
                     // Clear viewer count interval
                     if (viewerCountInterval) {
                         clearInterval(viewerCountInterval);
                         viewerCountInterval = null;
                     }
+
+                    // Clear duration timer
+                    if (streamDurationInterval) {
+                        clearInterval(streamDurationInterval);
+                        streamDurationInterval = null;
+                    }
+                    streamStartTimestamp = null;
+
+                    // Reset peak viewers
+                    peakViewerCount = 0;
 
                     // Reset stream
                     currentStream = null;
@@ -2642,7 +3015,7 @@
             }
         }
 
-        // Update Viewer Count
+        // Update Viewer Count and Stats
         async function updateViewerCount() {
             if (!currentStream) return;
 
@@ -2651,21 +3024,23 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    document.getElementById('currentViewers').textContent = data.currentViewers || 0;
+                    const currentViewers = data.currentViewers || 0;
+                    document.getElementById('currentViewers').textContent = currentViewers;
 
-                    // Update stream start time
-                    if (data.startedAt) {
-                        const startTime = new Date(data.startedAt);
-                        const now = new Date();
-                        const diff = now - startTime;
-                        const hours = Math.floor(diff / 3600000);
-                        const minutes = Math.floor((diff % 3600000) / 60000);
+                    // Track peak viewers
+                    if (currentViewers > peakViewerCount) {
+                        peakViewerCount = currentViewers;
+                        document.getElementById('peakViewers').textContent = peakViewerCount;
+                    }
 
-                        if (hours > 0) {
-                            document.getElementById('streamStartTime').textContent = `${hours}h ${minutes}m`;
-                        } else {
-                            document.getElementById('streamStartTime').textContent = `${minutes}m`;
-                        }
+                    // Update Runegold earned (if provided by API)
+                    if (data.runegoldEarned !== undefined) {
+                        document.getElementById('liveRunegold').textContent = data.runegoldEarned;
+                    }
+
+                    // Update stream health (if bitrate is available)
+                    if (data.bitrate) {
+                        updateStreamHealth(data.bitrate);
                     }
                 }
             } catch (error) {
