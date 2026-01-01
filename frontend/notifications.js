@@ -131,16 +131,16 @@ const NotificationSystem = {
                 }
 
                 .notification-panel {
-                    position: absolute;
-                    top: calc(100% + 10px);
-                    right: 0;
+                    position: fixed;
+                    top: 120px; /* Below header */
+                    right: 300px; /* Account for sidebar */
                     width: 380px;
-                    max-width: 90vw;
+                    max-width: calc(100vw - 320px);
                     background: white;
                     border: 2px solid var(--gold);
                     border-radius: var(--radius-lg);
                     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-                    z-index: 1000;
+                    z-index: 1100; /* Higher than sidebar (1001) */
                     display: none;
                     max-height: 600px;
                     overflow: hidden;
@@ -261,10 +261,8 @@ const NotificationSystem = {
             document.head.appendChild(styles);
         }
 
-        // Append to bell container
-        const bellContainer = this.bell.parentElement;
-        bellContainer.style.position = 'relative';
-        bellContainer.appendChild(this.panel);
+        // Append to body for proper z-index stacking (above sidebar)
+        document.body.appendChild(this.panel);
     },
 
     async loadNotifications(silent = false) {

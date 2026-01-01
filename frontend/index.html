@@ -253,11 +253,13 @@
         </div>
     </footer>
 
+    <!-- Sidebar Toggle Button (outside sidebar for proper fixed positioning) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
     <!-- Sidebar - Online Users -->
     <aside class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-chevron-right"></i>
-        </button>
         
         <div class="runegold-display" id="runegoldDisplay">
             <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
@@ -294,7 +296,7 @@
                 } else if (spacer.style.display === 'none' || spacer.style.height === '0px') {
                     console.error('⚠️ HEADER SPACER WAS HIDDEN! Fixing...');
                     spacer.style.display = 'block';
-                    spacer.style.height = '90px';
+                    spacer.style.height = '115px'; /* Must match header height */
                 }
             });
             

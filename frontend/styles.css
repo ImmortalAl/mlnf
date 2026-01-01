@@ -10,7 +10,7 @@
 :root {
   /* Mobile viewport fix - will be set by JavaScript */
   --vh: 1vh;
-  --header-height: 115px;
+  --header-height: 115px; /* Must match .site-header height */
   
   /* Primary Colors */
   --peach: #FF6B6B;
@@ -284,11 +284,28 @@ a:hover {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  width: 100%;
+  right: 280px; /* Account for sidebar width */
+  width: auto; /* Auto width respecting left/right */
   z-index: 1000;
   border-bottom: 3px solid var(--gold);
   height: 115px; /* Fixed height to prevent jumping */
+}
+
+/* Header expands when sidebar is collapsed */
+body.sidebar-collapsed .site-header {
+  right: 0;
+}
+
+/* Extend header background below to prevent sub-pixel gaps */
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #1A2332;
+  z-index: -1;
 }
 
 /* Header container should fill height and center content */
@@ -348,18 +365,22 @@ body.debug-mobile .mobile-menu-toggle {
 
 .site-nav {
   display: flex;
-  gap: var(--space-xl);
+  gap: var(--space-md); /* Reduced from xl to fit with sidebar */
   align-items: center;
-  margin-left: var(--space-2xl); /* Add space after logo to prevent collision */
+  margin-left: var(--space-lg); /* Reduced from 2xl */
+  flex-wrap: nowrap;
+  overflow: hidden; /* Prevent nav from overflowing header */
 }
 
 .nav-link {
   color: var(--cream);
   font-weight: 500;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-xs) var(--space-sm); /* Reduced padding to fit more links */
   border-radius: var(--radius-md);
   transition: all var(--transition-base);
   position: relative;
+  white-space: nowrap;
+  font-size: 0.9rem; /* Slightly smaller text */
 }
 
 .nav-link:hover {
