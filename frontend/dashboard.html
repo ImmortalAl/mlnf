@@ -2157,14 +2157,15 @@
             }
         }
 
-        // End Stream
-        async function endStream() {
-            if (!currentStream) return;
+        // End Stream (accepts optional streamId for ending from list)
+        async function endStream(streamId = null) {
+            const idToEnd = streamId || (currentStream ? currentStream._id : null);
+            if (!idToEnd) return;
 
-            if (!confirm('Are you sure you want to end your stream?')) return;
+            if (!confirm('Are you sure you want to end this stream?')) return;
 
             try {
-                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}/end`, {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${idToEnd}/end`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
@@ -2272,6 +2273,11 @@
                                             <div class="text-sm text-muted" style="margin-top: 0.5rem;">
                                                 Duration: ${Math.floor(stream.duration / 60)} min
                                             </div>
+                                        ` : ''}
+                                        ${stream.status === 'offline' || stream.status === 'live' ? `
+                                            <button class="btn btn-sm btn-outline" style="margin-top: 0.5rem;" onclick="endStream('${stream._id}')">
+                                                <i class="fas fa-stop-circle"></i> End Stream
+                                            </button>
                                         ` : ''}
                                     </div>
                                 </div>
