@@ -85,27 +85,30 @@ The command center for content creation:
 - Topic categories
 - Threaded conversations
 
-### 4. GAMIFICATION - RUNEGOLD SYSTEM
+### 4. RUNEGOLD VIRTUAL CURRENCY
 
-Virtual currency that drives engagement:
+Purchase-only virtual currency (like Twitch Bits):
 
-**How Users Earn Runegold:**
-- Watching streams (+1 RG per minute)
-- Commenting (+5 RG)
-- Uploading videos (+50 RG)
-- Going live (+100 RG)
-- Daily login bonuses
-- Achievements
+**How Users Get Runegold:**
+- Purchase with real money
+- 100 RG = $1.99
+- 500 RG = $7.99
+- 1,000 RG = $14.99
+- 5,000 RG = $59.99
 
 **How Users Spend Runegold:**
+- Tip creators during streams
 - Boost videos (increased visibility)
 - Highlight comments
 - Custom badges
-- Tip other creators
-- Exclusive content access
+
+**Creator Payouts:**
+- Creators receive tips in Runegold
+- Cash out at ~$0.01 per RG
+- Platform takes 10-20% cut
 
 **Why It Works:**
-Creates a self-sustaining engagement loop. Users are incentivized to participate, which increases content visibility, which attracts more users.
+Sustainable revenue model proven by Twitch. Real value exchange between viewers and creators. No free currency bleeding money - every Runegold in circulation was purchased.
 
 ### 5. HALL OF VIKINGS (Leaderboard)
 

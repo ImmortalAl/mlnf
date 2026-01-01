@@ -319,10 +319,10 @@ Leaderboard system in dashboard:
   ██████    ██████
 ```
 
-**How Points Are Earned:**
+**How Viking Honor Points Are Earned:**
+(Status points only - NO cash value, separate from Runegold)
 - Upload Video: +50 pts
 - Comment: +5 pts
-- Watch streams: +1 pt/min
 - Go Live: +100 pts
 - Get followed: +10 pts
 
@@ -331,35 +331,40 @@ Leaderboard system in dashboard:
 - Points needed for next rank
 - Progress tracking
 
+**Note:** Viking Honor is for bragging rights and leaderboard status only. It cannot be converted to Runegold or cashed out. This keeps the gamification fun without creating financial liability.
+
 ---
 
 # 🪙 RUNEGOLD SYSTEM
 
-Virtual currency ecosystem:
+Virtual currency ecosystem (Purchase-Only Model):
 
-**Earning Runegold:**
-| Action | Reward |
-|--------|--------|
-| Daily login | +10 RG |
-| Watch stream (per min) | +1 RG |
-| Comment | +5 RG |
-| Upload video | +50 RG |
-| Go live | +100 RG |
-| Get a follower | +10 RG |
+**Purchasing Runegold:**
+| Package | Price |
+|---------|-------|
+| 100 RG | $1.99 |
+| 500 RG | $7.99 |
+| 1,000 RG | $14.99 |
+| 5,000 RG | $59.99 |
 
 **Spending Runegold:**
 | Action | Cost |
 |--------|------|
+| Tip creator | Variable |
 | Boost video | 100 RG |
 | Highlight comment | 25 RG |
 | Custom badge | 500 RG |
-| Tip creator | Variable |
+
+**Creator Payouts:**
+- Creators accumulate tips in Runegold
+- Cash out at ~$0.01 per RG (after platform cut)
+- Platform takes small percentage (10-20%)
 
 **Why It Works:**
-- Creates engagement loop
-- Rewards active participation
-- Builds community investment
-- Gamifies the experience
+- Sustainable revenue model (like Twitch Bits)
+- Real value exchange between viewers and creators
+- No free money bleeding out
+- Proven model in streaming industry
 
 ---
 
