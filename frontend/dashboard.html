@@ -42,7 +42,7 @@
                     <!-- User Menu -->
                     <div class="user-menu">
                         <button class="user-menu-toggle" id="userMenuToggle">
-                            <img src="https://via.placeholder.com/150/4A90E2/FFFFFF?text=User" alt="User" class="avatar-sm">
+                            <img src="https://via.placeholder.com/150/4A90E2/FFFFFF?text=User" alt="User" class="avatar-sm user-avatar">
                             <span class="username-display">User</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
@@ -75,7 +75,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                <img src="https://via.placeholder.com/150/4A90E2/FFFFFF?text=User" alt="User" class="avatar-lg mb-2">
+                                <img src="https://via.placeholder.com/150/4A90E2/FFFFFF?text=User" alt="User" class="avatar-lg mb-2 user-avatar">
                                 <h4 class="username-display">User</h4>
                                 <div class="badge badge-gold user-badge">New Viking</div>
                             </div>
@@ -83,7 +83,7 @@
                             <div class="runegold-display mb-3" style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-md);">
                                 <div class="flex flex-between">
                                     <span>Runegold Balance</span>
-                                    <strong style="color: var(--gold);">1,250</strong>
+                                    <strong style="color: var(--gold);" class="runegold-amount" id="sidebarRunegold">0</strong>
                                 </div>
                             </div>
                             
@@ -111,7 +111,7 @@
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Total Views</p>
-                                        <h3 id="totalViews">45,892</h3>
+                                        <h3 id="totalViews">0</h3>
                                     </div>
                                     <i class="fas fa-eye text-indigo" style="font-size: 2rem;"></i>
                                 </div>
@@ -123,7 +123,7 @@
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Followers</p>
-                                        <h3 id="totalFollowers">1,234</h3>
+                                        <h3 id="totalFollowers">0</h3>
                                     </div>
                                     <i class="fas fa-users text-peach" style="font-size: 2rem;"></i>
                                 </div>
@@ -135,7 +135,7 @@
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Videos</p>
-                                        <h3 id="totalVideos">28</h3>
+                                        <h3 id="totalVideos">0</h3>
                                     </div>
                                     <i class="fas fa-video text-gold" style="font-size: 2rem;"></i>
                                 </div>
@@ -147,7 +147,7 @@
                                 <div class="flex flex-between">
                                     <div>
                                         <p class="text-muted text-sm">Comments</p>
-                                        <h3 id="totalComments">892</h3>
+                                        <h3 id="totalComments">0</h3>
                                     </div>
                                     <i class="fas fa-comments text-success" style="font-size: 2rem;"></i>
                                 </div>
@@ -1178,16 +1178,42 @@
                 const userData = localStorage.getItem('mlnf_user');
                 if (userData) {
                     const user = JSON.parse(userData);
+                    console.log('📦 Using cached user data:', user);
+
+                    // Update runegold
                     const runegoldElements = document.querySelectorAll('.runegold-balance, .runegold-amount, #runegoldAmount');
                     runegoldElements.forEach(el => {
                         el.textContent = user.runegoldBalance || 0;
                     });
+
+                    // Update stats from cached data
+                    updateDashboardStats(user);
                 }
             }
         });
 
         // Update dashboard stats with real data
         function updateDashboardStats(user) {
+            // Update username displays
+            const username = user.username || user.displayName || 'User';
+            document.querySelectorAll('.username-display').forEach(el => {
+                el.textContent = username;
+            });
+
+            // Update avatar images
+            const avatarUrl = user.avatar || user.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=D4AF37&color=1A2332&size=150`;
+            document.querySelectorAll('.user-avatar').forEach(img => {
+                img.src = avatarUrl;
+                img.alt = username;
+            });
+
+            // Update user badge based on subscription or role
+            const badgeEl = document.querySelector('.user-badge');
+            if (badgeEl) {
+                const badge = user.badge || user.role || 'New Viking';
+                badgeEl.textContent = badge;
+            }
+
             // Total Videos (from uploadedVideos array)
             const totalVideos = user.uploadedVideos ? user.uploadedVideos.length : 0;
             const totalVideosEl = document.getElementById('totalVideos');
@@ -1219,6 +1245,14 @@
                 totalCommentsEl.textContent = '0';
                 totalCommentsEl.style.opacity = '0.5';
             }
+
+            console.log('✅ Dashboard stats updated:', {
+                username,
+                avatarUrl,
+                totalVideos,
+                totalFollowers,
+                totalViews
+            });
         }
 
         // Animate number changes (smooth counting effect)
