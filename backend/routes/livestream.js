@@ -158,13 +158,15 @@ router.post('/:id/start', authMiddleware, async (req, res) => {
 
     await stream.startStream();
 
-    // Emit socket event
+    // Emit socket event (if io is available)
     const io = req.app.get('io');
-    io.emit('streamStarted', {
-      streamId: stream._id,
-      creator: req.user.username,
-      title: stream.title
-    });
+    if (io) {
+      io.emit('streamStarted', {
+        streamId: stream._id,
+        creator: req.user.username,
+        title: stream.title
+      });
+    }
 
     res.json({
       message: 'Stream started - you are now live!',
@@ -172,7 +174,7 @@ router.post('/:id/start', authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error('Start stream error:', error);
-    res.status(500).json({ error: 'Failed to start stream' });
+    res.status(500).json({ error: `Failed to start stream: ${error.message}` });
   }
 });
 
