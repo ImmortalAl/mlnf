@@ -123,10 +123,12 @@ router.post('/create', authMiddleware, [
     res.json({
       message: 'Stream created successfully',
       stream: {
+        _id: streamWithKey._id,
         id: streamWithKey._id,
         title: streamWithKey.title,
         description: streamWithKey.description,
         streamKey: streamWithKey.streamKey,
+        status: streamWithKey.status,
         rtmpUrl: `rtmp://150.136.140.253:1935/live`,
         streamUrl: streamWithKey.rtmpUrl,
         obsSetup: {
