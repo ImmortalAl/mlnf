@@ -3,6 +3,18 @@
  * Real-time notifications for warriors of MLNF
  */
 
+// API Configuration - Auto-detect environment
+const NOTIF_API_BASE_URL = (function() {
+    const hostname = window.location.hostname;
+    if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+        return 'https://much-love-no-fear.onrender.com/api';
+    }
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:5000/api';
+    }
+    return 'https://much-love-no-fear.onrender.com/api';
+})();
+
 const NotificationSystem = {
     panel: null,
     bell: null,
@@ -270,7 +282,7 @@ const NotificationSystem = {
 
         try {
             const token = localStorage.getItem('mlnf_token');
-            const response = await fetch('http://localhost:5000/api/auth/notifications', {
+            const response = await fetch(`${NOTIF_API_BASE_URL}/auth/notifications`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -428,7 +440,7 @@ const NotificationSystem = {
     async markAsRead(notificationId) {
         try {
             const token = localStorage.getItem('mlnf_token');
-            await fetch(`http://localhost:5000/api/auth/notifications/${notificationId}/read`, {
+            await fetch(`${NOTIF_API_BASE_URL}/auth/notifications/${notificationId}/read`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`

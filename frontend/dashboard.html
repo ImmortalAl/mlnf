@@ -1453,6 +1453,18 @@
     
     <!-- Dashboard JavaScript -->
     <script>
+        // API Configuration - Auto-detect environment
+        const DASHBOARD_API_BASE = (function() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            }
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000/api';
+            }
+            return 'https://much-love-no-fear.onrender.com/api';
+        })();
+
         // User menu toggle
         document.getElementById('userMenuToggle')?.addEventListener('click', function() {
             const dropdown = document.getElementById('userMenuDropdown');
@@ -1539,7 +1551,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                const response = await fetch(`${DASHBOARD_API_BASE}/runegold/spend/badge`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1578,7 +1590,7 @@
 
             try {
                 // For now, use badge endpoint (will create dedicated feature endpoint later)
-                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                const response = await fetch(`${DASHBOARD_API_BASE}/runegold/spend/badge`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1615,7 +1627,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:5000/api/runegold/spend/badge', {
+                const response = await fetch(`${DASHBOARD_API_BASE}/runegold/spend/badge`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1830,7 +1842,7 @@
                 }
 
                 // Send update to backend
-                const response = await fetch('http://localhost:5000/api/auth/update-profile', {
+                const response = await fetch(`${DASHBOARD_API_BASE}/auth/update-profile`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2042,7 +2054,7 @@
             const description = document.getElementById('streamDescription').value;
 
             try {
-                const response = await fetch('/api/livestream/create', {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/create`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2113,7 +2125,7 @@
             }
 
             try {
-                const response = await fetch(`/api/livestream/${currentStream._id}/start`, {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}/start`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -2152,7 +2164,7 @@
             if (!confirm('Are you sure you want to end your stream?')) return;
 
             try {
-                const response = await fetch(`/api/livestream/${currentStream._id}/end`, {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}/end`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -2195,7 +2207,7 @@
             if (!currentStream) return;
 
             try {
-                const response = await fetch(`/api/livestream/${currentStream._id}`);
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}`);
                 const data = await response.json();
 
                 if (response.ok) {
@@ -2224,7 +2236,7 @@
         // Load User Streams
         async function loadUserStreams() {
             try {
-                const response = await fetch('/api/livestream/my-streams', {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/my-streams`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }

@@ -217,6 +217,18 @@
     
     <!-- Profiles Page Script -->
     <script>
+        // API Configuration - Auto-detect environment
+        const PROFILES_API_BASE = (function() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            }
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000/api';
+            }
+            return 'https://much-love-no-fear.onrender.com/api';
+        })();
+
         document.addEventListener('DOMContentLoaded', async function() {
             await loadWarriors();
 
@@ -243,7 +255,7 @@
                 params.append('limit', '50');
 
                 // Fetch users from backend
-                const response = await fetch(`http://localhost:5000/api/auth/users?${params.toString()}`);
+                const response = await fetch(`${PROFILES_API_BASE}/auth/users?${params.toString()}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to load warriors');
@@ -366,7 +378,7 @@
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
             try {
-                const response = await fetch(`http://localhost:5000/api/auth/follow/${userId}`, {
+                const response = await fetch(`${PROFILES_API_BASE}/auth/follow/${userId}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
