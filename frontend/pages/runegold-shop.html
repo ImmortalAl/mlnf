@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Runegold Shop - Much Love, No Fear Virtual Economy">
+    <title>Runegold Shop - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/viking-components.css">
+    <link rel="stylesheet" href="../css/mobile-optimized.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .runegold-icon { color: #D4AF37; }
+        .package-card { transition: transform 0.3s, box-shadow 0.3s; border: 2px solid transparent; }
+        .package-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); border-color: var(--gold); }
+        .package-card.popular { border: 2px solid var(--gold); }
+        .balance-display {
+            background: linear-gradient(135deg, #D4AF37 0%, #cd7f32 100%);
+            padding: 1.5rem 2rem; border-radius: var(--radius-lg);
+            display: inline-flex; align-items: center; gap: 1rem;
+            color: var(--navy); font-weight: bold; font-size: 1.5rem;
+        }
+        .spend-item {
+            background: var(--gray-800); border-radius: var(--radius-md);
+            padding: 1.5rem; display: flex; align-items: center; gap: 1rem;
+            transition: all 0.3s; border: 1px solid var(--gray-700);
+        }
+        .spend-item:hover { border-color: var(--gold); background: var(--gray-750); }
+        .journey-item {
+            padding: 1rem; border-left: 3px solid var(--gold);
+            background: var(--gray-800); margin-bottom: 0.5rem;
+        }
+        .journey-item.earn { border-left-color: var(--success); }
+        .journey-item.spend { border-left-color: var(--error); }
+        .leaderboard-item {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1rem; background: var(--gray-800);
+            border-radius: var(--radius-md); margin-bottom: 0.5rem;
+        }
+        .leaderboard-item:nth-child(1) { background: linear-gradient(135deg, #D4AF37 0%, #cd7f32 100%); color: var(--navy); }
+        .leaderboard-item:nth-child(2) { background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%); color: var(--navy); }
+        .leaderboard-item:nth-child(3) { background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%); color: white; }
+        .rank-badge {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; background: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="live.html" class="nav-link">Live</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </nav>
+
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section style="background: linear-gradient(135deg, var(--navy) 0%, #1a1a2e 100%); padding: 3rem 0; color: white; text-align: center;">
+        <div class="container">
+            <h1 style="color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5); font-size: 2.5rem;">
+                <i class="fas fa-coins runegold-icon"></i> Runegold Shop
+            </h1>
+            <p style="font-size: 1.25rem; margin-top: 1rem; opacity: 0.9;">
+                The Viking Economy - Boost videos, unlock badges, and support creators
+            </p>
+
+            <!-- Balance Display -->
+            <div id="balanceSection" style="margin-top: 2rem;">
+                <div class="balance-display">
+                    <i class="fas fa-coins" style="font-size: 2rem;"></i>
+                    <span id="runegoldBalance">0</span>
+                    <span style="font-size: 1rem; opacity: 0.8;">Runegold</span>
+                </div>
+                <p style="margin-top: 0.5rem; font-size: 0.875rem; opacity: 0.7;" id="loginPrompt">
+                    <a href="auth.html" style="color: var(--gold);">Login</a> to view your balance
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purchase Packages -->
+    <section style="padding: 3rem 0; background: var(--gray-900);">
+        <div class="container">
+            <h2 style="color: var(--gold); margin-bottom: 2rem; text-align: center;">
+                <i class="fas fa-shopping-bag"></i> Purchase Runegold
+            </h2>
+
+            <div class="grid grid-3" id="packagesGrid">
+                <!-- Small Package -->
+                <div class="card package-card">
+                    <div class="card-body text-center" style="padding: 2rem;">
+                        <i class="fas fa-coins runegold-icon" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>Warrior Pack</h3>
+                        <div style="font-size: 2.5rem; color: var(--gold); margin: 1rem 0;">
+                            1,000 <span style="font-size: 1rem;">ᚱ</span>
+                        </div>
+                        <div style="font-size: 1.5rem; margin-bottom: 1rem;">$10</div>
+                        <p class="text-muted mb-3">Great for trying out the Runegold economy</p>
+                        <button class="btn-viking-secondary" style="width: 100%;" onclick="RunegoldShop.purchase('small')">
+                            <i class="fas fa-credit-card"></i> Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Medium Package -->
+                <div class="card package-card popular">
+                    <div class="ribbon">BEST VALUE</div>
+                    <div class="card-body text-center" style="padding: 2rem;">
+                        <i class="fas fa-gem runegold-icon" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>Champion Pack</h3>
+                        <div style="font-size: 2.5rem; color: var(--gold); margin: 1rem 0;">
+                            5,000 <span style="font-size: 1rem;">ᚱ</span>
+                        </div>
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">$45</div>
+                        <div style="color: var(--success); margin-bottom: 1rem;"><i class="fas fa-tag"></i> Save 10%</div>
+                        <p class="text-muted mb-3">Perfect for active community members</p>
+                        <button class="btn-viking-primary" style="width: 100%;" onclick="RunegoldShop.purchase('medium')">
+                            <i class="fas fa-credit-card"></i> Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Large Package -->
+                <div class="card package-card">
+                    <div class="card-body text-center" style="padding: 2rem;">
+                        <i class="fas fa-crown runegold-icon" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>Jarl Pack</h3>
+                        <div style="font-size: 2.5rem; color: var(--gold); margin: 1rem 0;">
+                            10,000 <span style="font-size: 1rem;">ᚱ</span>
+                        </div>
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">$85</div>
+                        <div style="color: var(--success); margin-bottom: 1rem;"><i class="fas fa-tag"></i> Save 15%</div>
+                        <p class="text-muted mb-3">For the most dedicated warriors</p>
+                        <button class="btn-viking-secondary" style="width: 100%;" onclick="RunegoldShop.purchase('large')">
+                            <i class="fas fa-credit-card"></i> Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Spend Options -->
+    <section style="padding: 3rem 0;">
+        <div class="container">
+            <h2 style="color: var(--gold); margin-bottom: 2rem;">
+                <i class="fas fa-fire"></i> Spend Your Runegold
+            </h2>
+
+            <div class="grid grid-2">
+                <div class="spend-item">
+                    <div style="width: 60px; height: 60px; background: var(--gold); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-rocket" style="font-size: 1.5rem; color: var(--navy);"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>Boost Video</h4>
+                        <p class="text-muted text-sm">Push any video to the top of the feed for 1 hour</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">50 ᚱ</div>
+                        <a href="archive.html" class="btn btn-sm btn-outline" style="margin-top: 0.5rem; color: var(--cream);">Go to Videos</a>
+                    </div>
+                </div>
+
+                <div class="spend-item">
+                    <div style="width: 60px; height: 60px; background: var(--peach); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-star" style="font-size: 1.5rem; color: var(--navy);"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>Highlight Comment</h4>
+                        <p class="text-muted text-sm">Make your comment stand out with golden highlighting</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">20 ᚱ</div>
+                    </div>
+                </div>
+
+                <div class="spend-item">
+                    <div style="width: 60px; height: 60px; background: var(--indigo); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-medal" style="font-size: 1.5rem; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>Buy Badge</h4>
+                        <p class="text-muted text-sm">Show off your dedication with exclusive profile badges</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">100 ᚱ</div>
+                        <button class="btn btn-sm btn-outline" style="margin-top: 0.5rem; color: var(--cream);" onclick="RunegoldShop.showBadgeShop()">Browse</button>
+                    </div>
+                </div>
+
+                <div class="spend-item">
+                    <div style="width: 60px; height: 60px; background: var(--success); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-gift" style="font-size: 1.5rem; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>Tip a Creator</h4>
+                        <p class="text-muted text-sm">Send Runegold directly to your favorite creators</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--gold); font-size: 1.25rem; font-weight: bold;">10-100 ᚱ</div>
+                        <a href="profiles.html" class="btn btn-sm btn-outline" style="margin-top: 0.5rem; color: var(--cream);">Find Warriors</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard & History -->
+    <section style="padding: 3rem 0; background: var(--gray-900);">
+        <div class="container">
+            <div class="grid grid-2">
+                <!-- Leaderboard -->
+                <div>
+                    <h2 style="color: var(--gold); margin-bottom: 1.5rem;">
+                        <i class="fas fa-trophy"></i> Top Warriors
+                    </h2>
+                    <div id="leaderboard">
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--gold);"></i>
+                            <p style="margin-top: 1rem;">Loading leaderboard...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction History -->
+                <div>
+                    <h2 style="color: var(--gold); margin-bottom: 1.5rem;">
+                        <i class="fas fa-history"></i> Your Journey
+                    </h2>
+                    <div id="journey">
+                        <div style="text-align: center; padding: 2rem; color: var(--gray-500);">
+                            <i class="fas fa-user-lock" style="font-size: 2rem; opacity: 0.5;"></i>
+                            <p style="margin-top: 1rem;">Login to view your transaction history</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--navy); color: var(--cream); padding: 2rem 0;">
+        <div class="container text-center">
+            <p>&copy; 2024 Much Love, No Fear. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../api-client.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+
+    <script>
+        const RunegoldShop = {
+            apiBase: (function() {
+                const hostname = window.location.hostname;
+                if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                    return 'https://much-love-no-fear.onrender.com/api';
+                }
+                return 'http://localhost:5000/api';
+            })(),
+
+            async init() {
+                await this.loadLeaderboard();
+                if (MLNFAuth.isLoggedIn()) {
+                    document.getElementById('loginPrompt').style.display = 'none';
+                    await this.loadBalance();
+                    await this.loadJourney();
+                }
+            },
+
+            async loadBalance() {
+                try {
+                    const response = await fetch(`${this.apiBase}/runegold/balance`, {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}` }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById('runegoldBalance').textContent = data.balance.toLocaleString();
+                    }
+                } catch (error) {
+                    console.error('Failed to load balance:', error);
+                }
+            },
+
+            async loadLeaderboard() {
+                try {
+                    const response = await fetch(`${this.apiBase}/runegold/leaderboard?limit=10`);
+                    const data = await response.json();
+
+                    const leaderboard = data.leaderboard || [];
+                    const container = document.getElementById('leaderboard');
+
+                    if (leaderboard.length > 0) {
+                        container.innerHTML = leaderboard.map((user, index) => `
+                            <div class="leaderboard-item">
+                                <div class="rank-badge">${index + 1}</div>
+                                <div style="flex: 1;">
+                                    <strong>${user.username}</strong>
+                                    ${user.badges?.length > 0 ? `<span style="margin-left: 0.5rem; opacity: 0.7;">${user.badges[0].icon}</span>` : ''}
+                                </div>
+                                <div style="font-weight: bold;">
+                                    ${user.runegoldBalance.toLocaleString()} ᚱ
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: var(--gray-500);">No warriors on the leaderboard yet!</p>';
+                    }
+                } catch (error) {
+                    console.error('Failed to load leaderboard:', error);
+                    document.getElementById('leaderboard').innerHTML = '<p style="color: var(--error);">Failed to load leaderboard</p>';
+                }
+            },
+
+            async loadJourney() {
+                try {
+                    const response = await fetch(`${this.apiBase}/runegold/journey?limit=10`, {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}` }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to load journey');
+
+                    const data = await response.json();
+                    const journey = data.journey || [];
+                    const container = document.getElementById('journey');
+
+                    if (journey.length > 0) {
+                        container.innerHTML = journey.map(tx => {
+                            const isEarn = ['purchase', 'receive', 'admin_injection', 'daily_reward'].includes(tx.type);
+                            const icon = isEarn ? 'plus' : 'minus';
+                            const colorClass = isEarn ? 'earn' : 'spend';
+                            const date = new Date(tx.createdAt).toLocaleDateString();
+
+                            return `
+                                <div class="journey-item ${colorClass}">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <i class="fas fa-${icon}-circle" style="color: var(--${isEarn ? 'success' : 'error'}); margin-right: 0.5rem;"></i>
+                                            ${tx.description}
+                                        </div>
+                                        <div style="font-weight: bold; color: var(--${isEarn ? 'success' : 'error'});">
+                                            ${isEarn ? '+' : '-'}${tx.amount} ᚱ
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">${date}</div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: var(--gray-500);">No transactions yet. Buy some Runegold to get started!</p>';
+                    }
+                } catch (error) {
+                    console.error('Failed to load journey:', error);
+                }
+            },
+
+            async purchase(packageName) {
+                if (!MLNFAuth.isLoggedIn()) {
+                    this.showNotification('Please login to purchase Runegold', 'error');
+                    window.location.href = 'auth.html';
+                    return;
+                }
+
+                this.showPaymentModal(packageName);
+            },
+
+            showPaymentModal(packageName) {
+                const packages = {
+                    small: { name: 'Warrior Pack', runegold: 1000, price: 10 },
+                    medium: { name: 'Champion Pack', runegold: 5000, price: 45 },
+                    large: { name: 'Jarl Pack', runegold: 10000, price: 85 }
+                };
+                const pkg = packages[packageName];
+
+                const modal = document.createElement('div');
+                modal.id = 'paymentModal';
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.8); z-index: 10000;
+                    display: flex; align-items: center; justify-content: center;
+                `;
+
+                modal.innerHTML = `
+                    <div style="background: var(--gray-900); border: 2px solid var(--gold); border-radius: var(--radius-lg);
+                                max-width: 450px; width: 90%; padding: 2rem; color: var(--cream);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 style="color: var(--gold); margin: 0;">
+                                <i class="fas fa-coins"></i> ${pkg.name}
+                            </h2>
+                            <button onclick="document.getElementById('paymentModal').remove()"
+                                    style="background: none; border: none; color: var(--cream); font-size: 1.5rem; cursor: pointer;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div style="background: var(--gray-800); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; color: var(--gold); font-weight: bold;">${pkg.runegold.toLocaleString()} ᚱ</div>
+                            <div style="font-size: 1.25rem;">$${pkg.price}</div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <button onclick="RunegoldShop.processPayment('${packageName}', 'stripe')" class="btn-viking-primary" style="width: 100%; padding: 1rem;">
+                                <i class="fas fa-credit-card"></i> Pay with Card
+                            </button>
+                            <button onclick="RunegoldShop.processPayment('${packageName}', 'paypal')" style="width: 100%; padding: 1rem; background: #0070ba; color: white; border: none; border-radius: var(--radius-md); cursor: pointer; font-weight: 600;">
+                                <i class="fab fa-paypal"></i> Pay with PayPal
+                            </button>
+                        </div>
+
+                        <div id="paymentStatus" style="margin-top: 1rem; text-align: center; display: none;"></div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            async processPayment(packageName, method) {
+                const statusDiv = document.getElementById('paymentStatus');
+                statusDiv.style.display = 'block';
+                statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                try {
+                    const response = await fetch(`${this.apiBase}/runegold/purchase/${method}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                        },
+                        body: JSON.stringify({ package: packageName })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Payment failed');
+                    }
+
+                    if (method === 'paypal' && data.approvalUrl) {
+                        window.location.href = data.approvalUrl;
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div style="background: var(--warning); color: var(--navy); padding: 1rem; border-radius: var(--radius-md);">
+                                <i class="fas fa-info-circle"></i> Payment processing not configured.<br>
+                                <small>Configure ${method.toUpperCase()} API keys to enable.</small>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    statusDiv.innerHTML = `<div style="color: var(--error);"><i class="fas fa-exclamation-circle"></i> ${error.message}</div>`;
+                }
+            },
+
+            showBadgeShop() {
+                const badges = [
+                    { name: 'Truth Seeker', icon: '🔍', description: 'For those who dig deep' },
+                    { name: 'Viking Warrior', icon: '⚔️', description: 'Fearless defender of freedom' },
+                    { name: 'Community Builder', icon: '🏛️', description: 'Brings people together' },
+                    { name: 'Early Adopter', icon: '🌟', description: 'Among the first warriors' },
+                    { name: 'Content Creator', icon: '🎬', description: 'Creates amazing content' },
+                    { name: 'Night Owl', icon: '🦉', description: 'Active after dark' }
+                ];
+
+                const modal = document.createElement('div');
+                modal.id = 'badgeModal';
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.8); z-index: 10000;
+                    display: flex; align-items: center; justify-content: center;
+                `;
+
+                modal.innerHTML = `
+                    <div style="background: var(--gray-900); border: 2px solid var(--gold); border-radius: var(--radius-lg);
+                                max-width: 600px; width: 90%; padding: 2rem; color: var(--cream); max-height: 80vh; overflow-y: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 style="color: var(--gold); margin: 0;"><i class="fas fa-medal"></i> Badge Shop</h2>
+                            <button onclick="document.getElementById('badgeModal').remove()"
+                                    style="background: none; border: none; color: var(--cream); font-size: 1.5rem; cursor: pointer;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-2" style="gap: 1rem;">
+                            ${badges.map(badge => `
+                                <div style="background: var(--gray-800); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
+                                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">${badge.icon}</div>
+                                    <h4 style="color: var(--gold);">${badge.name}</h4>
+                                    <p style="font-size: 0.875rem; color: var(--gray-400); margin-bottom: 1rem;">${badge.description}</p>
+                                    <button onclick="RunegoldShop.buyBadge('${badge.name}', '${badge.icon}')"
+                                            class="btn btn-sm btn-outline" style="color: var(--gold); border-color: var(--gold);">
+                                        100 ᚱ - Buy
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            async buyBadge(badgeName, badgeIcon) {
+                if (!MLNFAuth.isLoggedIn()) {
+                    this.showNotification('Please login to buy badges', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/runegold/spend/badge`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                        },
+                        body: JSON.stringify({ badgeName, badgeIcon })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to buy badge');
+                    }
+
+                    this.showNotification(`Badge "${badgeName}" purchased!`, 'success');
+                    document.getElementById('badgeModal')?.remove();
+                    await this.loadBalance();
+                    await this.loadJourney();
+                } catch (error) {
+                    this.showNotification(error.message, 'error');
+                }
+            },
+
+            showNotification(message, type = 'info') {
+                const notif = document.createElement('div');
+                notif.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem;
+                    background: var(--${type === 'success' ? 'success' : type === 'error' ? 'error' : 'indigo'});
+                    color: white; border-radius: var(--radius-md); z-index: 10001;
+                    box-shadow: var(--shadow-lg);
+                `;
+                notif.textContent = message;
+                document.body.appendChild(notif);
+                setTimeout(() => notif.remove(), 4000);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => RunegoldShop.init());
+    </script>
+    <script src="../js/site-enhancements.js"></script>
+    <script src="js/mobile-viewport-handler.js"></script>
+</body>
+</html>
