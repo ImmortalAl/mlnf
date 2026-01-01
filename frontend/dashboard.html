@@ -305,44 +305,10 @@
                         <div class="card-body">
                             <h3 class="mb-3">Recent Activity</h3>
                             <div class="activity-timeline">
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: var(--success);">
-                                        <i class="fas fa-video"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <p><strong>Your video "Truth About Health Freedom"</strong> reached 10k views!</p>
-                                        <small class="text-muted">2 hours ago</small>
-                                    </div>
-                                </div>
-                                
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: var(--indigo);">
-                                        <i class="fas fa-comment"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <p><strong>FreedomFighter</strong> commented on your video</p>
-                                        <small class="text-muted">5 hours ago</small>
-                                    </div>
-                                </div>
-                                
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: var(--gold);">
-                                        <i class="fas fa-coins"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <p>You earned <strong>50 Runegold</strong> from video boosts</p>
-                                        <small class="text-muted">1 day ago</small>
-                                    </div>
-                                </div>
-                                
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: var(--peach);">
-                                        <i class="fas fa-user-plus"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <p><strong>12 new followers</strong> this week</p>
-                                        <small class="text-muted">2 days ago</small>
-                                    </div>
+                                <!-- Activity items loaded dynamically -->
+                                <div class="text-center text-muted" style="padding: 2rem;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                    <p>Loading activity...</p>
                                 </div>
                             </div>
                         </div>
@@ -1188,6 +1154,12 @@
 
                     // Update stats from cached data
                     updateDashboardStats(user);
+
+                    // Load activity from cached data
+                    loadRecentActivity(user._id);
+                } else {
+                    // No cached data - show empty states
+                    showEmptyActivityState();
                 }
             }
         });
@@ -1458,6 +1430,20 @@
 
         function hideLoadingState() {
             // Loading complete - stats will be populated by updateDashboardStats
+        }
+
+        // Show empty state when no user data available
+        function showEmptyActivityState() {
+            const activityTimeline = document.querySelector('.activity-timeline');
+            if (activityTimeline) {
+                activityTimeline.innerHTML = `
+                    <div class="text-center text-muted" style="padding: 2rem;">
+                        <i class="fas fa-history" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
+                        <p>No recent activity</p>
+                        <small>Log in to see your activity feed!</small>
+                    </div>
+                `;
+            }
         }
 
         // ==========================================
