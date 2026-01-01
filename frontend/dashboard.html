@@ -402,45 +402,14 @@
                                 </button>
                             </div>
 
-                            <div class="grid grid-3">
-                                <div class="video-card">
-                                    <div class="video-thumbnail" style="position: relative;">
-                                        <img src="https://via.placeholder.com/320x180/333333/FFFFFF?text=Video" alt="Video" style="width: 100%; border-radius: var(--radius-md);">
-                                        <span class="badge badge-error" style="position: absolute; top: 10px; right: 10px;">LIVE</span>
-                                    </div>
-                                    <h5 class="mt-2">Truth About Health Freedom</h5>
-                                    <div class="flex gap-md text-sm text-muted">
-                                        <span><i class="fas fa-eye"></i> 10.2k</span>
-                                        <span><i class="fas fa-thumbs-up"></i> 892</span>
-                                        <span><i class="fas fa-comment"></i> 145</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="video-card">
-                                    <div class="video-thumbnail">
-                                        <img src="https://via.placeholder.com/320x180/333333/FFFFFF?text=Video" alt="Video" style="width: 100%; border-radius: var(--radius-md);">
-                                    </div>
-                                    <h5 class="mt-2">Exposing the Financial System</h5>
-                                    <div class="flex gap-md text-sm text-muted">
-                                        <span><i class="fas fa-eye"></i> 8.5k</span>
-                                        <span><i class="fas fa-thumbs-up"></i> 723</span>
-                                        <span><i class="fas fa-comment"></i> 89</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="video-card">
-                                    <div class="video-thumbnail">
-                                        <img src="https://via.placeholder.com/320x180/333333/FFFFFF?text=Video" alt="Video" style="width: 100%; border-radius: var(--radius-md);">
-                                    </div>
-                                    <h5 class="mt-2">Natural Immunity Evidence</h5>
-                                    <div class="flex gap-md text-sm text-muted">
-                                        <span><i class="fas fa-eye"></i> 6.3k</span>
-                                        <span><i class="fas fa-thumbs-up"></i> 567</span>
-                                        <span><i class="fas fa-comment"></i> 67</span>
-                                    </div>
+                            <div class="grid grid-3" id="yourVideosGrid">
+                                <!-- Videos loaded dynamically -->
+                                <div class="col-span-3 text-center" style="padding: 2rem;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--indigo);"></i>
+                                    <p class="mt-2 text-muted">Loading your videos...</p>
                                 </div>
                             </div>
-                            
+
                             <div class="text-center mt-3">
                                 <a href="#" class="btn btn-outline">View All Videos</a>
                             </div>
@@ -1157,9 +1126,13 @@
 
                     // Load activity from cached data
                     loadRecentActivity(user._id);
+
+                    // Load videos from cached data
+                    loadUserVideos(user._id);
                 } else {
                     // No cached data - show empty states
                     showEmptyActivityState();
+                    showEmptyVideosState();
                 }
             }
         });
@@ -1252,10 +1225,10 @@
 
         // Load user's actual videos
         async function loadUserVideos(userId) {
-            const videosContainer = document.querySelector('.grid.grid-3');
+            const videosContainer = document.getElementById('yourVideosGrid');
             if (!videosContainer) return;
 
-            // Clear placeholder videos
+            // Show loading state (already set in HTML, but reset if needed)
             videosContainer.innerHTML = '<div class="col-span-3 text-center" style="padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--indigo);"></i><p class="mt-2 text-muted">Loading your videos...</p></div>';
 
             try {
@@ -1441,6 +1414,23 @@
                         <i class="fas fa-history" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
                         <p>No recent activity</p>
                         <small>Log in to see your activity feed!</small>
+                    </div>
+                `;
+            }
+        }
+
+        // Show empty videos state
+        function showEmptyVideosState() {
+            const videosContainer = document.getElementById('yourVideosGrid');
+            if (videosContainer) {
+                videosContainer.innerHTML = `
+                    <div class="col-span-3 text-center" style="padding: 3rem;">
+                        <i class="fas fa-video" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                        <h4 style="color: var(--gray-600);">No videos yet</h4>
+                        <p class="text-muted">Upload your first video to share with warriors!</p>
+                        <button class="btn btn-viking mt-3">
+                            <i class="fas fa-upload"></i> Upload Video
+                        </button>
                     </div>
                 `;
             }
