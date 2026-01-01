@@ -313,71 +313,13 @@
     }
 
     // ===== MOBILE MENU (HAMBURGER) =====
+    // NOTE: Event handlers are managed in scripts.js to avoid double-toggle bugs
+    // This function only exists to inject CSS animations
 
     function initMobileMenu() {
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mainNav = document.getElementById('mainNav');
-        const body = document.body;
-
-        if (!mobileMenuToggle || !mainNav) return;
-
-        // Toggle mobile menu
-        mobileMenuToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            mainNav.classList.toggle('active');
-            body.classList.toggle('mobile-nav-open');
-
-            // Update icon
-            const icon = this.querySelector('i');
-            if (icon) {
-                if (mainNav.classList.contains('active')) {
-                    icon.className = 'fas fa-times';
-                } else {
-                    icon.className = 'fas fa-bars';
-                }
-            }
-
-            // Add animation
-            if (mainNav.classList.contains('active')) {
-                mainNav.style.animation = 'vikingSlideDown 0.3s ease';
-            }
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (mainNav.classList.contains('active') &&
-                !mainNav.contains(e.target) &&
-                !mobileMenuToggle.contains(e.target)) {
-                mainNav.classList.remove('active');
-                body.classList.remove('mobile-nav-open');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (icon) icon.className = 'fas fa-bars';
-            }
-        });
-
-        // Close menu when clicking a link
-        mainNav.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function() {
-                mainNav.classList.remove('active');
-                body.classList.remove('mobile-nav-open');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (icon) icon.className = 'fas fa-bars';
-            });
-        });
-
-        // Handle window resize
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                if (window.innerWidth > 768 && mainNav.classList.contains('active')) {
-                    mainNav.classList.remove('active');
-                    body.classList.remove('mobile-nav-open');
-                    const icon = mobileMenuToggle.querySelector('i');
-                    if (icon) icon.className = 'fas fa-bars';
-                }
-            }, 250);
-        });
+        // Handlers disabled - scripts.js handles mobile menu toggle
+        // Keeping this function for CSS injection below
+        console.log('📱 Mobile menu handlers delegated to scripts.js');
     }
 
     // Add slide down animation

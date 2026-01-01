@@ -284,9 +284,15 @@
 
     <!-- Scripts -->
     <script>
-        // CRITICAL: Protect header spacer from being removed or hidden
+        // CRITICAL: Protect header spacer from being removed or hidden (desktop only)
+        // On mobile (<=768px), the header is sticky and spacer should be hidden
         (function() {
+            const isMobile = () => window.innerWidth <= 768;
+
             const observer = new MutationObserver(function(mutations) {
+                // Skip on mobile - spacer is intentionally hidden
+                if (isMobile()) return;
+
                 const spacer = document.querySelector('.header-spacer');
                 if (!spacer) {
                     console.error('⚠️ HEADER SPACER WAS REMOVED! Recreating...');
@@ -299,15 +305,15 @@
                     spacer.style.height = '150px'; /* Must match header-spacer CSS */
                 }
             });
-            
+
             document.addEventListener('DOMContentLoaded', function() {
-                observer.observe(document.body, { 
-                    childList: true, 
+                observer.observe(document.body, {
+                    childList: true,
                     subtree: true,
                     attributes: true,
                     attributeFilter: ['style', 'class']
                 });
-                console.log('✅ Header spacer protection active');
+                console.log('✅ Header spacer protection active (desktop only)');
             });
         })();
     </script>

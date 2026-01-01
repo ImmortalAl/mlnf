@@ -1446,15 +1446,16 @@ body.sidebar-collapsed .sidebar-toggle::after {
     margin-right: 0 !important;
   }
   
-  /* Hide sidebar by default on mobile */
+  /* Hide sidebar by default on mobile - toggle adds 'open' class to show */
   .sidebar {
     transform: translateX(100%);
     width: 85%;
     max-width: 320px;
     z-index: 1001; /* Higher than header (1000) to prevent overlap */
   }
-  
-  .sidebar.mobile-active {
+
+  /* Show sidebar when 'open' class is added (matches JS toggle) */
+  .sidebar.open {
     transform: translateX(0);
   }
   

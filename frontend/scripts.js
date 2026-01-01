@@ -1321,11 +1321,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         logDimensions('INITIAL');
 
+        const updateMenuIcon = (isOpen) => {
+            const icon = mobileToggle.querySelector('i');
+            if (icon) {
+                icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+            }
+        };
+
         const closeMenu = () => {
             console.log('🚪 CLOSING MENU');
             mainNav.classList.remove('active');
             document.body.classList.remove('mobile-nav-open');
             mobileToggle.setAttribute('aria-expanded', 'false');
+            updateMenuIcon(false);
             logDimensions('AFTER CLOSE');
         };
 
@@ -1333,7 +1341,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const isOpen = mainNav.classList.toggle('active');
             document.body.classList.toggle('mobile-nav-open', isOpen);
             mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            
+            updateMenuIcon(isOpen);
+
+            // Add slide animation when opening
+            if (isOpen) {
+                mainNav.style.animation = 'vikingSlideDown 0.3s ease';
+            }
+
             console.log(`🔄 MENU TOGGLED - Now ${isOpen ? 'OPEN' : 'CLOSED'}`);
             logDimensions('AFTER TOGGLE');
         };
@@ -1350,6 +1364,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     closeMenu();
                 }
             });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (mainNav.classList.contains('active') &&
+                !mainNav.contains(e.target) &&
+                !mobileToggle.contains(e.target)) {
+                console.log('🖱️ CLICKED OUTSIDE - Closing menu');
+                closeMenu();
+            }
         });
 
         window.addEventListener('resize', Utils.debounce(() => {
@@ -1376,32 +1400,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
     if (sidebarToggle && sidebar) {
+        const isMobile = () => window.innerWidth <= 768;
+
         sidebarToggle.addEventListener('click', () => {
-            const isCollapsed = sidebar.classList.toggle('collapsed');
-            
-            // Toggle body class to adjust main content margin
-            document.body.classList.toggle('sidebar-collapsed', isCollapsed);
-            
-            // Update toggle icon direction
-            const icon = sidebarToggle.querySelector('i');
-            if (icon) {
-                icon.className = isCollapsed 
-                    ? 'fas fa-chevron-left' 
-                    : 'fas fa-chevron-right';
+            if (isMobile()) {
+                // Mobile: toggle 'open' class to slide in from right
+                const isOpen = sidebar.classList.toggle('open');
+                document.body.classList.toggle('sidebar-mobile-open', isOpen);
+                console.log(`📱 SIDEBAR TOGGLED (mobile) - Now ${isOpen ? 'OPEN' : 'CLOSED'}`);
+            } else {
+                // Desktop: toggle collapsed state
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+
+                // Update toggle icon direction
+                const icon = sidebarToggle.querySelector('i');
+                if (icon) {
+                    icon.className = isCollapsed
+                        ? 'fas fa-chevron-left'
+                        : 'fas fa-chevron-right';
+                }
+
+                // Save state to localStorage
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                console.log(`🖥️ SIDEBAR TOGGLED (desktop) - Now ${isCollapsed ? 'COLLAPSED' : 'EXPANDED'}`);
             }
-            
-            // Save state to localStorage
-            localStorage.setItem('sidebarCollapsed', isCollapsed);
         });
-        
-        // Restore sidebar state from localStorage on page load
-        const savedState = localStorage.getItem('sidebarCollapsed');
-        if (savedState === 'true') {
-            sidebar.classList.add('collapsed');
-            document.body.classList.add('sidebar-collapsed');
-            const icon = sidebarToggle.querySelector('i');
-            if (icon) {
-                icon.className = 'fas fa-chevron-left';
+
+        // Close mobile sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (isMobile() &&
+                sidebar.classList.contains('open') &&
+                !sidebar.contains(e.target) &&
+                !sidebarToggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+                document.body.classList.remove('sidebar-mobile-open');
+                console.log('📱 SIDEBAR CLOSED (clicked outside)');
+            }
+        });
+
+        // Restore sidebar state from localStorage on page load (desktop only)
+        if (!isMobile()) {
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            if (savedState === 'true') {
+                sidebar.classList.add('collapsed');
+                document.body.classList.add('sidebar-collapsed');
+                const icon = sidebarToggle.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-chevron-left';
+                }
             }
         }
     }
