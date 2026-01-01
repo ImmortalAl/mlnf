@@ -2058,7 +2058,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
                     },
                     body: JSON.stringify({ title, category, description })
                 });
@@ -2128,7 +2128,7 @@
                 const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}/start`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
                     }
                 });
 
@@ -2167,7 +2167,7 @@
                 const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}/end`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
                     }
                 });
 
@@ -2238,7 +2238,7 @@
             try {
                 const response = await fetch(`${DASHBOARD_API_BASE}/livestream/my-streams`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
                     }
                 });
 
