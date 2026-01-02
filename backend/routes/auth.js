@@ -629,15 +629,16 @@ router.get('/users', async (req, res) => {
 
 // Update user profile
 router.put('/update-profile', authMiddleware, [
-  body('firstName').optional().trim().isLength({ min: 1, max: 50 }).withMessage('First name must be 1-50 characters'),
-  body('lastName').optional().trim().isLength({ min: 1, max: 50 }).withMessage('Last name must be 1-50 characters'),
-  body('email').optional().trim().isEmail().withMessage('Invalid email'),
-  body('bio').optional().trim().isLength({ max: 500 }).withMessage('Bio must be less than 500 characters'),
-  body('location').optional().trim().isLength({ max: 100 }).withMessage('Location must be less than 100 characters'),
-  body('socialLinks.twitter').optional().trim().isURL().withMessage('Invalid Twitter URL'),
-  body('socialLinks.youtube').optional().trim().isURL().withMessage('Invalid YouTube URL'),
-  body('socialLinks.telegram').optional().trim().isURL().withMessage('Invalid Telegram URL'),
-  body('socialLinks.website').optional().trim().isURL().withMessage('Invalid website URL'),
+  body('firstName').optional({ values: 'falsy' }).trim().isLength({ min: 1, max: 50 }).withMessage('First name must be 1-50 characters'),
+  body('lastName').optional({ values: 'falsy' }).trim().isLength({ min: 1, max: 50 }).withMessage('Last name must be 1-50 characters'),
+  body('email').optional({ values: 'falsy' }).trim().isEmail().withMessage('Invalid email'),
+  body('bio').optional({ values: 'falsy' }).trim().isLength({ max: 500 }).withMessage('Bio must be less than 500 characters'),
+  body('location').optional({ values: 'falsy' }).trim().isLength({ max: 100 }).withMessage('Location must be less than 100 characters'),
+  // Social links: skip validation for empty strings, validate as URL if provided
+  body('socialLinks.twitter').optional({ values: 'falsy' }).trim().isURL().withMessage('Invalid Twitter URL'),
+  body('socialLinks.youtube').optional({ values: 'falsy' }).trim().isURL().withMessage('Invalid YouTube URL'),
+  body('socialLinks.telegram').optional({ values: 'falsy' }).trim().isURL().withMessage('Invalid Telegram URL'),
+  body('socialLinks.website').optional({ values: 'falsy' }).trim().isURL().withMessage('Invalid website URL'),
   body('privateProfile').optional().isBoolean().withMessage('Private profile must be boolean'),
   body('hideEmail').optional().isBoolean().withMessage('Hide email must be boolean')
 ], async (req, res) => {
