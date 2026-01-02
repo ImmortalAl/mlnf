@@ -2797,7 +2797,7 @@
             if (!previewPlayer) return;
 
             // Use HLS.js for stream preview
-            const streamUrl = `http://150.136.140.253:8080/hls/${currentStream.streamKey}.m3u8`;
+            const streamUrl = `https://stream.mlnf.net/hls/${currentStream.streamKey}.m3u8`;
 
             if (Hls && Hls.isSupported()) {
                 const hls = new Hls({

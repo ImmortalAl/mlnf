@@ -20,11 +20,19 @@ router.get('/fleet', async (req, res) => {
     }
 
     const streams = await Livestream.find({ status: 'live' })
+      .select('+streamKey')  // Include streamKey for HLS URL construction
       .populate('creator', 'username profilePicture badges')
       .sort(sortOption)
       .limit(parseInt(limit));
 
-    res.json({ streams });
+    // Add streamKey back to each stream (toJSON transform removes it)
+    const streamsWithKeys = streams.map(stream => {
+      const streamObj = stream.toJSON();
+      streamObj.streamKey = stream.streamKey;
+      return streamObj;
+    });
+
+    res.json({ streams: streamsWithKeys });
   } catch (error) {
     console.error('Get fleet error:', error);
     res.status(500).json({ error: 'Failed to get live streams' });
