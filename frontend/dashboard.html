@@ -2541,6 +2541,17 @@
 
             messagingSocket.on('newMessage', (data) => {
                 console.log('📨 New message received:', data);
+
+                // Get current user ID
+                const currentUser = JSON.parse(localStorage.getItem('mlnf_user') || '{}');
+                const currentUserId = currentUser._id || currentUser.id;
+
+                // Skip if this is our own message (we already added it locally after sending)
+                if (data.from === currentUserId) {
+                    console.log('📨 Skipping own message (already added locally)');
+                    return;
+                }
+
                 // If this message is for the current conversation, append it
                 if (currentConversation && (data.from === currentConversation || data.to === currentConversation)) {
                     appendMessageToChat({
