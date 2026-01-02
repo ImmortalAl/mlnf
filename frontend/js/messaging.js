@@ -115,26 +115,37 @@ class RavenMessenger {
 
     async loadConversations() {
         try {
+            console.log('📨 Loading conversations...');
             const response = await fetch('https://much-love-no-fear.onrender.com/api/messages/conversations', {
                 headers: { 'Authorization': `Bearer ${this.token}` }
             });
             const data = await response.json();
+            console.log('📨 Conversations response:', data);
+            if (!response.ok) {
+                console.error('📨 Conversations API error:', data);
+            }
             this.conversations = data.conversations || [];
+            console.log('📨 Loaded', this.conversations.length, 'conversations');
         } catch (error) {
-            console.error('Failed to load conversations:', error);
+            console.error('📨 Failed to load conversations:', error);
             this.conversations = [];
         }
     }
 
     async loadMessages(userId) {
         try {
+            console.log('📨 Loading messages for user:', userId);
             const response = await fetch(`https://much-love-no-fear.onrender.com/api/messages/conversation/${userId}`, {
                 headers: { 'Authorization': `Bearer ${this.token}` }
             });
             const data = await response.json();
+            console.log('📨 Messages response:', data);
+            if (!response.ok) {
+                console.error('📨 Messages API error:', data);
+            }
             return data.messages || [];
         } catch (error) {
-            console.error('Failed to load messages:', error);
+            console.error('📨 Failed to load messages:', error);
             return [];
         }
     }
