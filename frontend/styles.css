@@ -128,14 +128,24 @@ body.sidebar-collapsed {
 
 /* Physical spacer for fixed header - prevents content overlap */
 .header-spacer {
-  height: var(--header-height) !important; /* Must match header height exactly */
+  height: var(--header-height) !important;
   width: 100% !important;
   display: block !important;
   flex-shrink: 0 !important;
   min-height: var(--header-height) !important;
   max-height: var(--header-height) !important;
-  visibility: hidden !important; /* Hide but maintain space */
+  visibility: hidden !important;
   opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure no gap between header-spacer and content */
+.header-spacer + header + *,
+.header-spacer + header + section,
+.header-spacer ~ section:first-of-type,
+.page-hero {
+  margin-top: 0 !important;
 }
 
 body.mobile-nav-open {
