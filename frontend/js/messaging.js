@@ -128,7 +128,7 @@ class RavenMessenger {
 
     async loadMessages(userId) {
         try {
-            const response = await fetch(`https://much-love-no-fear.onrender.com/api/messages/${userId}`, {
+            const response = await fetch(`https://much-love-no-fear.onrender.com/api/messages/conversation/${userId}`, {
                 headers: { 'Authorization': `Bearer ${this.token}` }
             });
             const data = await response.json();

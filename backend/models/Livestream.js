@@ -93,6 +93,20 @@ const livestreamSchema = new mongoose.Schema({
     }
   }],
 
+  // Chat history (persisted messages)
+  chatHistory: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    username: String,
+    text: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+
   // Viking features
   raidedFrom: {
     type: mongoose.Schema.Types.ObjectId,

@@ -628,6 +628,17 @@
                 // Join stream room for Socket.io
                 socket.emit('join-stream', streamId);
 
+                // Load chat history
+                try {
+                    const chatResponse = await fetch(`${LIVE_API_BASE}/livestream/${streamId}/chat?limit=50`);
+                    const chatData = await chatResponse.json();
+                    if (chatData.messages && chatData.messages.length > 0) {
+                        chatData.messages.forEach(msg => addMessage(msg));
+                    }
+                } catch (chatError) {
+                    console.error('Failed to load chat history:', chatError);
+                }
+
             } catch (error) {
                 console.error('Error loading stream:', error);
                 video.style.display = 'none';

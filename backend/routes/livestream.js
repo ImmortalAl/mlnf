@@ -85,6 +85,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Get chat history for a stream
+router.get('/:id/chat', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { limit = 100 } = req.query;
+
+    const stream = await Livestream.findById(id)
+      .select('chatHistory')
+      .slice('chatHistory', -parseInt(limit)); // Get last N messages
+
+    if (!stream) {
+      return res.status(404).json({ error: 'Stream not found' });
+    }
+
+    res.json({ messages: stream.chatHistory || [] });
+  } catch (error) {
+    console.error('Get chat history error:', error);
+    res.status(500).json({ error: 'Failed to get chat history' });
+  }
+});
+
 // Create new stream (Prepare for Voyage)
 router.post('/create', authMiddleware, [
   body('title').trim().isLength({ min: 3, max: 100 }).withMessage('Title must be 3-100 characters'),

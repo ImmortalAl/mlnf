@@ -385,6 +385,20 @@ io.on('connection', (socket) => {
   socket.on('chat-message', async (data) => {
     try {
       const { streamId, userId, username, text } = data;
+      const timestamp = new Date();
+
+      // Save message to database
+      const Livestream = require('./models/Livestream');
+      await Livestream.findByIdAndUpdate(streamId, {
+        $push: {
+          chatHistory: {
+            userId,
+            username,
+            text,
+            timestamp
+          }
+        }
+      });
 
       // Broadcast message to all viewers in this stream
       io.to(`stream-${streamId}`).emit('new-message', {
@@ -392,7 +406,7 @@ io.on('connection', (socket) => {
         userId,
         username,
         text,
-        timestamp: new Date()
+        timestamp
       });
 
       console.log(`Chat message in stream ${streamId} from ${username}: ${text}`);
