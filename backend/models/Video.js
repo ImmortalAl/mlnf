@@ -293,9 +293,11 @@ videoSchema.index({ status: 1 });
 
 // Virtual for engagement score
 videoSchema.virtual('engagementScore').get(function() {
-  const totalVotes = this.upvotes.length + this.downvotes.length;
-  const commentCount = this.comments.filter(c => !c.isDeleted).length;
-  return (totalVotes * 2) + (commentCount * 3) + (this.views * 0.1);
+  const upvoteCount = this.upvotes?.length || 0;
+  const downvoteCount = this.downvotes?.length || 0;
+  const totalVotes = upvoteCount + downvoteCount;
+  const commentCount = this.comments ? this.comments.filter(c => !c.isDeleted).length : 0;
+  return (totalVotes * 2) + (commentCount * 3) + ((this.views || 0) * 0.1);
 });
 
 // Pre-save middleware to calculate net score
