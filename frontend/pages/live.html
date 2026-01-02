@@ -495,9 +495,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         const streamId = urlParams.get('stream');
 
-        // Initialize Socket.io connection to Oracle backend server
-        // Note: Socket.io WebSocket connections can't be proxied through Netlify redirects
-        const socket = io('http://150.136.140.253:5000', {
+        // Initialize Socket.io connection - use same server as API
+        const SOCKET_URL = (function() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com';
+            }
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000';
+            }
+            return 'https://much-love-no-fear.onrender.com';
+        })();
+
+        const socket = io(SOCKET_URL, {
             transports: ['websocket', 'polling'],
             reconnection: true,
             reconnectionDelay: 1000,
@@ -749,6 +759,6 @@
         }, 10000);
     </script>
     <script src="../js/site-enhancements.js"></script>
-    <script src="js/mobile-viewport-handler.js"></script>
+    <script src="../js/mobile-viewport-handler.js"></script>
 </body>
 </html>
