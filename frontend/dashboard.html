@@ -1388,25 +1388,45 @@
 
         // Load user's actual videos
         async function loadUserVideos(userId) {
+            console.log('🎬 loadUserVideos called with userId:', userId);
             const videosContainer = document.getElementById('yourVideosGrid');
-            if (!videosContainer) return;
+            if (!videosContainer) {
+                console.log('🎬 videosContainer not found, returning');
+                return;
+            }
 
             // Show loading state
             videosContainer.innerHTML = '<div class="col-span-3 text-center" style="padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--indigo);"></i><p class="mt-2 text-muted">Loading your videos...</p></div>';
 
             try {
+                // Determine API base URL based on hostname
+                const hostname = window.location.hostname;
+                const apiBase = (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app'))
+                    ? 'https://much-love-no-fear.onrender.com/api'
+                    : (hostname === 'localhost' || hostname === '127.0.0.1')
+                        ? 'http://localhost:5000/api'
+                        : 'https://much-love-no-fear.onrender.com/api';
+
+                console.log('🎬 Videos API base:', apiBase);
+
                 // Fetch user's videos from API
                 const token = localStorage.getItem('mlnf_token');
-                const response = await fetch(`/api/videos/user/${userId}`, {
+                const videoUrl = `${apiBase}/videos/user/${userId}`;
+                console.log('🎬 Fetching videos from:', videoUrl);
+
+                const response = await fetch(videoUrl, {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                 });
 
+                console.log('🎬 Videos response status:', response.status);
                 if (!response.ok) {
-                    throw new Error('Failed to fetch videos');
+                    throw new Error(`Failed to fetch videos: ${response.status}`);
                 }
 
                 const data = await response.json();
+                console.log('🎬 Videos data received:', data);
                 const videos = data.videos || [];
+                console.log('🎬 Videos count:', videos.length);
 
                 if (videos.length > 0) {
                     // Clear loading message
