@@ -264,4 +264,36 @@ router.post('/:id/comments', authMiddleware, [
   }
 });
 
+// Toggle featured status (admin only)
+router.post('/:id/toggle-featured', authMiddleware, async (req, res) => {
+  try {
+    // Only admins can feature posts
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can feature posts' });
+    }
+
+    const post = await BlogPost.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // If featuring this post, unfeatured any currently featured post first
+    if (!post.featured) {
+      await BlogPost.updateMany({ featured: true }, { featured: false });
+    }
+
+    post.featured = !post.featured;
+    await post.save();
+
+    res.json({
+      message: `Post ${post.featured ? 'featured' : 'unfeatured'} successfully`,
+      featured: post.featured
+    });
+  } catch (error) {
+    console.error('Toggle featured error:', error);
+    res.status(500).json({ error: 'Failed to toggle featured status' });
+  }
+});
+
 module.exports = router;

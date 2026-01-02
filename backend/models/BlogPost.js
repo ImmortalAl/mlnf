@@ -83,6 +83,7 @@ blogPostSchema.index({ slug: 1 });
 blogPostSchema.index({ author: 1 });
 blogPostSchema.index({ published: 1, createdAt: -1 });
 blogPostSchema.index({ category: 1 });
+blogPostSchema.index({ featured: 1, published: 1 });
 
 // Methods
 blogPostSchema.methods.incrementViews = function() {

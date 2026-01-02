@@ -198,6 +198,125 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// Get trending topics (based on categories and recent article activity)
+router.get('/stats/trending', async (req, res) => {
+  try {
+    // Get category counts from recent articles (last 7 days)
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const categoryStats = await NewsArticle.aggregate([
+      {
+        $match: {
+          published: true,
+          createdAt: { $gte: sevenDaysAgo }
+        }
+      },
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+          totalViews: { $sum: '$views' }
+        }
+      },
+      {
+        $sort: { totalViews: -1 }
+      },
+      {
+        $limit: 5
+      }
+    ]);
+
+    // Format as trending topics with hashtags
+    const trendingTopics = categoryStats.map(cat => ({
+      hashtag: `#${cat._id || 'General'}`,
+      category: cat._id || 'General',
+      count: cat.count,
+      views: cat.totalViews
+    }));
+
+    res.json({ trending: trendingTopics });
+  } catch (error) {
+    console.error('Get trending topics error:', error);
+    res.status(500).json({ error: 'Failed to get trending topics' });
+  }
+});
+
+// Get most discussed articles (by views, since we don't have comments yet)
+router.get('/stats/most-discussed', async (req, res) => {
+  try {
+    const articles = await NewsArticle.find({ published: true })
+      .select('title views category createdAt')
+      .sort({ views: -1 })
+      .limit(5);
+
+    res.json({ articles });
+  } catch (error) {
+    console.error('Get most discussed error:', error);
+    res.status(500).json({ error: 'Failed to get most discussed articles' });
+  }
+});
+
+// Get featured/breaking article
+router.get('/stats/featured', async (req, res) => {
+  try {
+    // First try to find a breaking article
+    let featured = await NewsArticle.findOne({ published: true, breaking: true })
+      .populate('author', 'username')
+      .sort({ publishedAt: -1 });
+
+    // If no breaking article, get the most viewed from last 24 hours
+    if (!featured) {
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      featured = await NewsArticle.findOne({
+        published: true,
+        createdAt: { $gte: oneDayAgo }
+      })
+        .populate('author', 'username')
+        .sort({ views: -1 });
+    }
+
+    // If still nothing, get the most recent article
+    if (!featured) {
+      featured = await NewsArticle.findOne({ published: true })
+        .populate('author', 'username')
+        .sort({ publishedAt: -1 });
+    }
+
+    res.json({ featured });
+  } catch (error) {
+    console.error('Get featured article error:', error);
+    res.status(500).json({ error: 'Failed to get featured article' });
+  }
+});
+
+// Get breaking news for ticker
+router.get('/stats/breaking-ticker', async (req, res) => {
+  try {
+    // Get recent breaking/trending articles for the ticker
+    const articles = await NewsArticle.find({
+      published: true,
+      $or: [{ breaking: true }, { trending: true }]
+    })
+      .select('title')
+      .sort({ publishedAt: -1 })
+      .limit(5);
+
+    // If no breaking/trending, get most recent
+    if (articles.length === 0) {
+      const recent = await NewsArticle.find({ published: true })
+        .select('title')
+        .sort({ publishedAt: -1 })
+        .limit(5);
+      return res.json({ headlines: recent.map(a => a.title) });
+    }
+
+    res.json({ headlines: articles.map(a => a.title) });
+  } catch (error) {
+    console.error('Get breaking ticker error:', error);
+    res.status(500).json({ error: 'Failed to get breaking headlines' });
+  }
+});
+
 // Toggle article visibility (admin only) - hide without deleting
 router.post('/:id/toggle-visibility', authMiddleware, async (req, res) => {
   try {

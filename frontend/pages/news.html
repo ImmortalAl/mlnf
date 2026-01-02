@@ -70,7 +70,7 @@
     </section>
 
     <!-- Breaking News Ticker -->
-    <section style="background: var(--error); color: white; padding: 1rem 0;">
+    <section id="breakingTickerSection" style="background: var(--error); color: white; padding: 1rem 0; display: none;">
         <div class="container">
             <div class="flex gap-md">
                 <span class="badge badge-light" style="background: white; color: var(--error);">
@@ -78,7 +78,7 @@
                 </span>
                 <div class="news-ticker" style="flex: 1; overflow: hidden;">
                     <span id="tickerText" style="display: inline-block; white-space: nowrap; animation: scroll-left 30s linear infinite;">
-                        Major whistleblower reveals government surveillance program • Alternative health breakthrough censored by mainstream media • Financial markets show signs of manipulation • New evidence emerges in controversial case
+                        Loading latest headlines...
                     </span>
                 </div>
             </div>
@@ -109,27 +109,10 @@
             <div class="grid news-layout-grid" style="gap: 2rem;">
                 <!-- Main News Feed -->
                 <div>
-                    <!-- Featured Story -->
-                    <article class="card card-viking mb-3">
-                        <div class="card-body">
-                            <div class="badge badge-error mb-2">BREAKING</div>
-                            <h2 class="mb-2">Leaked Documents Reveal Mass Censorship Coordination</h2>
-                            <div class="flex gap-md text-muted mb-3">
-                                <span><i class="fas fa-user"></i> Independent Reporter</span>
-                                <span><i class="fas fa-clock"></i> 2 hours ago</span>
-                                <span><i class="fas fa-eye"></i> 45.2k views</span>
-                            </div>
-                            <img src="https://via.placeholder.com/400x300/FF6B6B/FFFFFF?text=News+Image" alt="News" style="width: 100%; height: 300px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 1rem;">
-                            <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                                Explosive new documents obtained by independent journalists reveal a coordinated effort between Big Tech companies and government agencies to suppress dissenting voices across all major platforms. The documents, which span over 1000 pages, detail specific targeting criteria and automated censorship systems...
-                            </p>
-                            <div class="flex flex-between">
-                                <a href="#" class="btn-viking-primary">Read Full Story</a>
-                                <div class="flex gap-md">
-                                    <button class="btn btn-outline btn-sm"><i class="fas fa-share"></i> Share</button>
-                                    <button class="btn btn-outline btn-sm"><i class="fas fa-bookmark"></i> Save</button>
-                                </div>
-                            </div>
+                    <!-- Featured Story (dynamically loaded) -->
+                    <article class="card card-viking mb-3" id="featuredStory" style="display: none;">
+                        <div class="card-body" id="featuredStoryContent">
+                            <!-- Featured article will be loaded here -->
                         </div>
                     </article>
 
@@ -148,66 +131,22 @@
 
                 <!-- Sidebar -->
                 <aside>
-                    <!-- Trending Topics -->
-                    <div class="card mb-3">
+                    <!-- Trending Topics (dynamically loaded) -->
+                    <div class="card mb-3" id="trendingTopicsCard" style="display: none;">
                         <div class="card-body">
                             <h3 class="mb-3"><i class="fas fa-fire text-peach"></i> Trending Topics</h3>
-                            <ul style="list-style: none;">
-                                <li class="mb-2">
-                                    <a href="#" class="flex flex-between">
-                                        <span>#GreatAwakening</span>
-                                        <span class="badge badge-secondary">45.2k</span>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="#" class="flex flex-between">
-                                        <span>#NaturalImmunity</span>
-                                        <span class="badge badge-secondary">32.8k</span>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="#" class="flex flex-between">
-                                        <span>#FinancialReset</span>
-                                        <span class="badge badge-secondary">28.5k</span>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="#" class="flex flex-between">
-                                        <span>#FreeSpeech</span>
-                                        <span class="badge badge-secondary">24.1k</span>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="#" class="flex flex-between">
-                                        <span>#Decentralization</span>
-                                        <span class="badge badge-secondary">19.7k</span>
-                                    </a>
-                                </li>
+                            <ul style="list-style: none;" id="trendingTopicsList">
+                                <!-- Trending topics will be loaded here -->
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Most Discussed -->
-                    <div class="card mb-3">
+                    <!-- Most Discussed (dynamically loaded) -->
+                    <div class="card mb-3" id="mostDiscussedCard" style="display: none;">
                         <div class="card-body">
-                            <h3 class="mb-3"><i class="fas fa-comments text-indigo"></i> Most Discussed</h3>
-                            <div class="mb-3">
-                                <h5 class="mb-1">WHO Treaty Leaked: Shocking Details</h5>
-                                <div class="text-muted" style="font-size: 0.875rem;">
-                                    <span><i class="fas fa-comment"></i> 2.3k comments</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <h5 class="mb-1">Alternative Energy Breakthrough Suppressed</h5>
-                                <div class="text-muted" style="font-size: 0.875rem;">
-                                    <span><i class="fas fa-comment"></i> 1.8k comments</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <h5 class="mb-1">Banking System on Verge of Collapse?</h5>
-                                <div class="text-muted" style="font-size: 0.875rem;">
-                                    <span><i class="fas fa-comment"></i> 1.5k comments</span>
-                                </div>
+                            <h3 class="mb-3"><i class="fas fa-eye text-indigo"></i> Most Viewed</h3>
+                            <div id="mostDiscussedList">
+                                <!-- Most discussed articles will be loaded here -->
                             </div>
                         </div>
                     </div>
@@ -645,76 +584,160 @@
         }
 
         function renderSampleNews() {
-            const sampleNews = [
-                {
-                    title: 'Major Whistleblower Exposes Government Surveillance Program',
-                    excerpt: 'Documents reveal extensive monitoring of citizen communications without warrants, sparking outrage among privacy advocates.',
-                    category: 'Politics',
-                    source: 'Independent Reporters Network',
-                    breaking: true,
-                    trending: true,
-                    views: 45200,
-                    comments: { length: 234 },
-                    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Alternative Health Breakthrough Censored by Mainstream Media',
-                    excerpt: 'Promising natural treatment shows remarkable results in clinical trials but faces coordinated suppression from establishment interests.',
-                    category: 'Health',
-                    source: 'Natural Health Weekly',
-                    breaking: false,
-                    trending: true,
-                    views: 32800,
-                    comments: { length: 156 },
-                    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Financial Markets Show Signs of Manipulation',
-                    excerpt: 'Insider trading patterns detected across multiple exchanges as regulators remain silent on investigation status.',
-                    category: 'Finance',
-                    source: 'Financial Watchdog',
-                    breaking: false,
-                    trending: false,
-                    views: 18500,
-                    comments: { length: 89 },
-                    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'New Evidence Emerges in Controversial Case',
-                    excerpt: 'Previously sealed documents reveal critical information that contradicts official narrative.',
-                    category: 'Politics',
-                    source: 'Truth Investigators',
-                    breaking: false,
-                    trending: false,
-                    views: 24100,
-                    comments: { length: 178 },
-                    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Tech Giants Face Antitrust Lawsuit from Coalition',
-                    excerpt: 'Multiple states join forces to challenge monopolistic practices in the digital marketplace.',
-                    category: 'Technology',
-                    source: 'Digital Rights Watch',
-                    breaking: false,
-                    trending: false,
-                    views: 15700,
-                    comments: { length: 67 },
-                    createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Local Community Fights Back Against Corporate Overreach',
-                    excerpt: 'Grassroots movement successfully blocks development project that threatened environmental and community interests.',
-                    category: 'World',
-                    source: 'Community Voice',
-                    breaking: false,
-                    trending: false,
-                    views: 8900,
-                    comments: { length: 45 },
-                    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
-                }
-            ];
+            // Show empty state instead of fake sample news
+            renderNewsArticles([]);
+        }
 
-            renderNewsArticles(sampleNews);
+        // Load breaking news ticker
+        async function loadBreakingTicker() {
+            try {
+                const response = await fetch('/api/news/stats/breaking-ticker');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.headlines && data.headlines.length > 0) {
+                        const tickerText = data.headlines.join(' • ');
+                        document.getElementById('tickerText').textContent = tickerText;
+                        document.getElementById('breakingTickerSection').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.log('Breaking ticker not available');
+            }
+        }
+
+        // Load featured story
+        async function loadFeaturedStory() {
+            try {
+                const response = await fetch('/api/news/stats/featured');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.featured) {
+                        renderFeaturedStory(data.featured);
+                    }
+                }
+            } catch (error) {
+                console.log('Featured story not available');
+            }
+        }
+
+        function renderFeaturedStory(article) {
+            const container = document.getElementById('featuredStory');
+            const content = document.getElementById('featuredStoryContent');
+
+            const authorName = article.author?.username || article.source || 'Anonymous';
+            const imageUrl = article.featuredImage || `https://picsum.photos/seed/${article._id}/800/400`;
+
+            content.innerHTML = `
+                <div class="badge ${article.breaking ? 'badge-error' : 'badge-gold'} mb-2">
+                    ${article.breaking ? 'BREAKING' : 'FEATURED'}
+                </div>
+                <h2 class="mb-2">${article.title}</h2>
+                <div class="flex gap-md text-muted mb-3" style="flex-wrap: wrap;">
+                    <span><i class="fas fa-user"></i> ${authorName}</span>
+                    <span><i class="fas fa-clock"></i> ${formatTimeAgo(article.createdAt)}</span>
+                    <span><i class="fas fa-eye"></i> ${formatNumber(article.views || 0)} views</span>
+                </div>
+                <img src="${imageUrl}"
+                     alt="${article.title}"
+                     style="width: 100%; height: 300px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 1rem;"
+                     onerror="this.style.display='none'">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    ${article.excerpt || (article.content ? article.content.substring(0, 300) + '...' : '')}
+                </p>
+                <div class="flex flex-between" style="flex-wrap: wrap; gap: 1rem;">
+                    <a href="news-article.html?id=${article._id}" class="btn-viking-primary">Read Full Story</a>
+                    <div class="flex gap-md">
+                        <button class="btn btn-outline btn-sm" onclick="shareArticle('${article._id}', '${article.title.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.style.display = 'block';
+        }
+
+        // Load trending topics
+        async function loadTrendingTopics() {
+            try {
+                const response = await fetch('/api/news/stats/trending');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.trending && data.trending.length > 0) {
+                        renderTrendingTopics(data.trending);
+                    }
+                }
+            } catch (error) {
+                console.log('Trending topics not available');
+            }
+        }
+
+        function renderTrendingTopics(topics) {
+            const container = document.getElementById('trendingTopicsList');
+            const card = document.getElementById('trendingTopicsCard');
+
+            container.innerHTML = topics.map(topic => `
+                <li class="mb-2">
+                    <a href="#" class="flex flex-between" onclick="filterByCategory('${topic.category}'); return false;" style="text-decoration: none; color: inherit;">
+                        <span style="color: var(--peach); font-weight: 600;">${topic.hashtag}</span>
+                        <span class="badge badge-secondary">${formatNumber(topic.views)}</span>
+                    </a>
+                </li>
+            `).join('');
+
+            card.style.display = 'block';
+        }
+
+        function filterByCategory(category) {
+            // Find and click the category button
+            const btn = document.querySelector(`[data-category="${category.toLowerCase()}"]`);
+            if (btn) {
+                btn.click();
+            } else {
+                loadNewsArticles(category);
+            }
+        }
+
+        // Load most discussed/viewed articles
+        async function loadMostDiscussed() {
+            try {
+                const response = await fetch('/api/news/stats/most-discussed');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.articles && data.articles.length > 0) {
+                        renderMostDiscussed(data.articles);
+                    }
+                }
+            } catch (error) {
+                console.log('Most discussed not available');
+            }
+        }
+
+        function renderMostDiscussed(articles) {
+            const container = document.getElementById('mostDiscussedList');
+            const card = document.getElementById('mostDiscussedCard');
+
+            container.innerHTML = articles.map(article => `
+                <div class="mb-3" style="cursor: pointer;" onclick="viewNewsArticle('${article._id}')">
+                    <h5 class="mb-1" style="font-size: 0.95rem; line-height: 1.4;">${article.title}</h5>
+                    <div class="text-muted" style="font-size: 0.875rem;">
+                        <span><i class="fas fa-eye"></i> ${formatNumber(article.views)} views</span>
+                        <span style="margin-left: 0.75rem;"><i class="fas fa-folder"></i> ${article.category}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            card.style.display = 'block';
+        }
+
+        function shareArticle(articleId, title) {
+            const url = `${window.location.origin}/pages/news-article.html?id=${articleId}`;
+            if (navigator.share) {
+                navigator.share({ title, url });
+            } else {
+                navigator.clipboard.writeText(url);
+                alert('Link copied to clipboard!');
+            }
         }
 
         function viewNewsArticle(articleId) {
@@ -759,9 +782,14 @@
             });
         });
 
-        // Initialize news articles on page load
+        // Initialize news page on load
         document.addEventListener('DOMContentLoaded', function() {
+            // Load all dynamic content in parallel
             loadNewsArticles();
+            loadBreakingTicker();
+            loadFeaturedStory();
+            loadTrendingTopics();
+            loadMostDiscussed();
         });
     </script>
     <script src="../js/site-enhancements.js"></script>
