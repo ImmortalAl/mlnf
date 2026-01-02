@@ -351,10 +351,6 @@
 
                 const response = await fetch(`${API_BASE}/livestream/fleet?limit=6`);
                 const data = await response.json();
-                console.log('🎥 Fleet API response:', data);
-                if (data.streams) {
-                    data.streams.forEach(s => console.log(`🎥 Stream "${s.title}" - viewers: ${s.currentViewers}`));
-                }
 
                 // Hide loading
                 loadingEl.style.display = 'none';
