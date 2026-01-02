@@ -13,15 +13,24 @@ class RavenMessenger {
     }
 
     async init() {
+        console.log('📨 RavenMessenger initializing...');
+        console.log('📨 Token present:', !!this.token);
+
         // Get current user
         try {
             const response = await fetch('https://much-love-no-fear.onrender.com/api/auth/me', {
                 headers: { 'Authorization': `Bearer ${this.token}` }
             });
             const data = await response.json();
+            console.log('📨 Auth/me response:', response.ok ? 'OK' : 'FAILED', data);
+            if (!response.ok) {
+                console.error('📨 Auth failed, cannot load messages');
+                return;
+            }
             this.currentUser = data.user;
+            console.log('📨 Current user:', this.currentUser?.username);
         } catch (error) {
-            console.error('Failed to load user:', error);
+            console.error('📨 Failed to load user:', error);
             return;
         }
 
