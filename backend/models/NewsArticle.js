@@ -16,6 +16,10 @@ const newsArticleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   category: {
     type: String,
     enum: ['Breaking', 'Health', 'Politics', 'Economics', 'Technology', 'World', 'General'],

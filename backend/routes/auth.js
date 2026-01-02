@@ -533,6 +533,32 @@ router.post('/debug-token', async (req, res) => {
   }
 });
 
+// Search users (for messaging - simple search by username)
+router.get('/search', authMiddleware, async (req, res) => {
+  try {
+    const { q, limit = 10 } = req.query;
+
+    if (!q || q.length < 2) {
+      return res.json({ users: [] });
+    }
+
+    // Search by username (case-insensitive)
+    const users = await User.find({
+      username: { $regex: q, $options: 'i' },
+      _id: { $ne: req.user._id }, // Exclude current user
+      isActive: { $ne: false }
+    })
+    .select('_id username role profilePicture avatar')
+    .limit(parseInt(limit))
+    .lean();
+
+    res.json({ users });
+  } catch (error) {
+    console.error('Search users error:', error);
+    res.status(500).json({ error: 'Failed to search users' });
+  }
+});
+
 // Get all users (for warriors list)
 router.get('/users', async (req, res) => {
   try {

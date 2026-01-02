@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>News Article - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/viking-components.css">
+    <link rel="stylesheet" href="../css/mobile-optimized.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .news-article-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .news-article-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid var(--gold);
+        }
+
+        .news-article-title {
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .news-article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .news-article-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-article-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--indigo);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .news-article-breaking {
+            background: var(--error);
+            color: white;
+        }
+
+        .news-article-trending {
+            background: var(--peach);
+            color: var(--navy);
+        }
+
+        .news-article-featured-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+        }
+
+        .news-article-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .news-article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .news-article-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--navy);
+        }
+
+        .news-article-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--navy);
+        }
+
+        .news-article-source {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            margin-top: 1.5rem;
+        }
+
+        .news-article-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            flex-wrap: wrap;
+        }
+
+        .admin-controls {
+            background: rgba(255, 0, 0, 0.05);
+            border: 1px solid var(--error);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .admin-controls h4 {
+            color: var(--error);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--error);
+        }
+
+        @media (max-width: 768px) {
+            .news-article-title {
+                font-size: 1.75rem;
+            }
+
+            .news-article-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .news-article-header,
+            .news-article-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="live.html" class="nav-link">Live</a>
+                    <a href="archive.html" class="nav-link">The Vault</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="news.html" class="nav-link active">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                </nav>
+
+                <button id="mobileMenuToggle" class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content container">
+        <div class="news-article-container">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--gold);"></i>
+                <p style="margin-top: 1rem;">Loading news article...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state hidden">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+                <h2 style="margin-top: 1rem;">Article Not Found</h2>
+                <p>The news article you're looking for doesn't exist or has been removed.</p>
+                <a href="news.html" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-arrow-left"></i> Back to News
+                </a>
+            </div>
+
+            <!-- News Article Content (hidden until loaded) -->
+            <div id="articleContent" class="hidden">
+                <!-- Header -->
+                <div class="news-article-header">
+                    <div class="flex gap-sm mb-2 flex-wrap">
+                        <span class="news-article-category" id="articleCategory">General</span>
+                        <span class="news-article-category news-article-breaking hidden" id="articleBreaking">BREAKING</span>
+                        <span class="news-article-category news-article-trending hidden" id="articleTrending">Trending</span>
+                        <span class="badge hidden" id="articleHidden" style="background: var(--gray-500); color: white;">Hidden</span>
+                    </div>
+                    <h1 class="news-article-title" id="articleTitle">Loading...</h1>
+                    <div class="news-article-meta">
+                        <div class="news-article-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span id="articleAuthor">Unknown</span>
+                        </div>
+                        <div class="news-article-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="articleDate">-</span>
+                        </div>
+                        <div class="news-article-meta-item">
+                            <i class="fas fa-eye"></i>
+                            <span id="articleViews">0</span> views
+                        </div>
+                    </div>
+
+                    <!-- Featured Image -->
+                    <img id="articleImage" class="news-article-featured-image hidden" src="" alt="">
+                </div>
+
+                <!-- Content -->
+                <div class="news-article-content">
+                    <p id="articleExcerpt" style="font-size: 1.2rem; color: var(--gray-700); font-style: italic; border-left: 4px solid var(--gold); padding-left: 1rem; margin-bottom: 2rem;"></p>
+                    <div id="articleBody">
+                        <!-- Content injected here -->
+                    </div>
+
+                    <!-- Source -->
+                    <div class="news-article-source" id="articleSourceContainer">
+                        <i class="fas fa-external-link-alt" style="color: var(--gray-500);"></i>
+                        <span>Source: <a href="#" id="articleSourceLink" target="_blank"><span id="articleSource">-</span></a></span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="news-article-actions">
+                    <button class="btn btn-outline" onclick="shareArticle()">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                    <a href="news.html" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to News
+                    </a>
+                </div>
+
+                <!-- Admin Controls (shown only for admins) -->
+                <div class="admin-controls hidden" id="adminControls">
+                    <h4><i class="fas fa-shield-alt"></i> Admin Controls</h4>
+                    <div class="flex gap-md flex-wrap">
+                        <button class="btn btn-outline btn-sm" id="toggleVisibilityBtn" onclick="toggleVisibility()">
+                            <i class="fas fa-eye-slash"></i> <span id="toggleVisibilityText">Hide Article</span>
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="toggleBreakingBtn" onclick="toggleBreaking()">
+                            <i class="fas fa-bolt"></i> <span id="toggleBreakingText">Mark Breaking</span>
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="toggleTrendingBtn" onclick="toggleTrending()">
+                            <i class="fas fa-fire"></i> <span id="toggleTrendingText">Mark Trending</span>
+                        </button>
+                        <button class="btn btn-outline btn-sm" style="color: var(--error); border-color: var(--error);" onclick="deleteArticle()">
+                            <i class="fas fa-trash"></i> Delete Article
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with love and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="runegold-shop.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-coins"></i> Runegold Shop
+            </a>
+        </div>
+
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+    <script src="../js/site-enhancements.js"></script>
+    <script src="js/mobile-viewport-handler.js"></script>
+
+    <script>
+        // API Configuration
+        const API_BASE = (function() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            }
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000/api';
+            }
+            return 'https://much-love-no-fear.onrender.com/api';
+        })();
+
+        let currentArticle = null;
+
+        // Check if current user is admin
+        function isUserAdmin() {
+            const userStr = localStorage.getItem('mlnf_user');
+            if (!userStr) return false;
+            try {
+                const user = JSON.parse(userStr);
+                return user.role === 'admin';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Get article ID from URL
+        function getArticleId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // Load news article
+        async function loadNewsArticle() {
+            const articleId = getArticleId();
+            if (!articleId) {
+                showError();
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('mlnf_token');
+                const headers = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(`${API_BASE}/news/${articleId}`, { headers });
+
+                if (!response.ok) {
+                    showError();
+                    return;
+                }
+
+                const data = await response.json();
+                currentArticle = data.article || data;
+
+                displayArticle(currentArticle);
+            } catch (error) {
+                console.error('Error loading news article:', error);
+                showError();
+            }
+        }
+
+        // Display the news article
+        function displayArticle(article) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('articleContent').classList.remove('hidden');
+
+            // Update page title
+            document.title = `${article.title} - Much Love, No Fear`;
+
+            // Populate content
+            document.getElementById('articleCategory').textContent = article.category || 'General';
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleAuthor').textContent = article.source || article.author?.username || 'Community';
+            document.getElementById('articleDate').textContent = formatDate(article.publishedAt || article.createdAt);
+            document.getElementById('articleViews').textContent = article.views || 0;
+            document.getElementById('articleExcerpt').textContent = article.excerpt || '';
+
+            // Breaking/Trending badges
+            if (article.breaking) {
+                document.getElementById('articleBreaking').classList.remove('hidden');
+            }
+            if (article.trending) {
+                document.getElementById('articleTrending').classList.remove('hidden');
+            }
+            if (!article.published) {
+                document.getElementById('articleHidden').classList.remove('hidden');
+            }
+
+            // Featured image
+            if (article.featuredImage) {
+                const img = document.getElementById('articleImage');
+                img.src = article.featuredImage;
+                img.alt = article.title;
+                img.classList.remove('hidden');
+            }
+
+            // Content (handle HTML or plain text)
+            const contentEl = document.getElementById('articleBody');
+            if (article.content.includes('<')) {
+                contentEl.innerHTML = article.content;
+            } else {
+                // Convert plain text to paragraphs
+                contentEl.innerHTML = article.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            }
+
+            // Source
+            if (article.source) {
+                document.getElementById('articleSource').textContent = article.source;
+                if (article.sourceUrl) {
+                    document.getElementById('articleSourceLink').href = article.sourceUrl;
+                } else {
+                    document.getElementById('articleSourceLink').removeAttribute('href');
+                }
+            } else {
+                document.getElementById('articleSourceContainer').classList.add('hidden');
+            }
+
+            // Show admin controls if user is admin
+            if (isUserAdmin()) {
+                document.getElementById('adminControls').classList.remove('hidden');
+                updateAdminButtons(article);
+            }
+        }
+
+        // Update admin button states
+        function updateAdminButtons(article) {
+            document.getElementById('toggleVisibilityText').textContent = article.published ? 'Hide Article' : 'Show Article';
+            document.getElementById('toggleBreakingText').textContent = article.breaking ? 'Remove Breaking' : 'Mark Breaking';
+            document.getElementById('toggleTrendingText').textContent = article.trending ? 'Remove Trending' : 'Mark Trending';
+        }
+
+        // Toggle visibility
+        async function toggleVisibility() {
+            const token = localStorage.getItem('mlnf_token');
+            try {
+                const response = await fetch(`${API_BASE}/news/${currentArticle._id}/toggle-visibility`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentArticle.published = data.published;
+                    updateAdminButtons(currentArticle);
+
+                    if (data.published) {
+                        document.getElementById('articleHidden').classList.add('hidden');
+                    } else {
+                        document.getElementById('articleHidden').classList.remove('hidden');
+                    }
+
+                    alert(`Article ${data.published ? 'published' : 'hidden'} successfully`);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Failed to toggle visibility'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to toggle visibility');
+            }
+        }
+
+        // Toggle breaking status
+        async function toggleBreaking() {
+            const token = localStorage.getItem('mlnf_token');
+            try {
+                const response = await fetch(`${API_BASE}/news/${currentArticle._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ breaking: !currentArticle.breaking })
+                });
+
+                if (response.ok) {
+                    currentArticle.breaking = !currentArticle.breaking;
+                    updateAdminButtons(currentArticle);
+
+                    if (currentArticle.breaking) {
+                        document.getElementById('articleBreaking').classList.remove('hidden');
+                    } else {
+                        document.getElementById('articleBreaking').classList.add('hidden');
+                    }
+
+                    alert(`Breaking status ${currentArticle.breaking ? 'enabled' : 'disabled'}`);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Failed to update'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update breaking status');
+            }
+        }
+
+        // Toggle trending status
+        async function toggleTrending() {
+            const token = localStorage.getItem('mlnf_token');
+            try {
+                const response = await fetch(`${API_BASE}/news/${currentArticle._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ trending: !currentArticle.trending })
+                });
+
+                if (response.ok) {
+                    currentArticle.trending = !currentArticle.trending;
+                    updateAdminButtons(currentArticle);
+
+                    if (currentArticle.trending) {
+                        document.getElementById('articleTrending').classList.remove('hidden');
+                    } else {
+                        document.getElementById('articleTrending').classList.add('hidden');
+                    }
+
+                    alert(`Trending status ${currentArticle.trending ? 'enabled' : 'disabled'}`);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Failed to update'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update trending status');
+            }
+        }
+
+        // Delete article
+        async function deleteArticle() {
+            if (!confirm('Are you sure you want to delete this article? This cannot be undone.')) {
+                return;
+            }
+
+            const token = localStorage.getItem('mlnf_token');
+            try {
+                const response = await fetch(`${API_BASE}/news/${currentArticle._id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    alert('Article deleted successfully');
+                    window.location.href = 'news.html';
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Failed to delete article'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to delete article');
+            }
+        }
+
+        // Share article
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: currentArticle.title,
+                    text: currentArticle.excerpt || 'Check out this news article!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+
+        // Show error state
+        function showError() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNewsArticle();
+        });
+    </script>
+</body>
+</html>

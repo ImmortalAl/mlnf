@@ -37,8 +37,33 @@ const upload = multer({
 router.post('/upload', authMiddleware, upload.single('video'), [
   body('title').notEmpty().isLength({ max: 200 }).withMessage('Title is required and must be under 200 characters'),
   body('description').optional().isLength({ max: 5000 }).withMessage('Description must be under 5000 characters'),
-  body('tags').isArray({ min: 1, max: 3 }).withMessage('Select 1-3 tags'),
-  body('tags.*').isIn(['Truths', 'Rebels', 'General']).withMessage('Invalid tag')
+  // Custom validator for tags (comes as JSON string from FormData)
+  body('tags').custom((value) => {
+    // Parse if string
+    let tags = value;
+    if (typeof value === 'string') {
+      try {
+        tags = JSON.parse(value);
+      } catch (e) {
+        throw new Error('Invalid tags format');
+      }
+    }
+    // Validate array
+    if (!Array.isArray(tags)) {
+      throw new Error('Tags must be an array');
+    }
+    if (tags.length < 1 || tags.length > 3) {
+      throw new Error('Select 1-3 tags');
+    }
+    // Validate each tag
+    const validTags = ['Truths', 'Rebels', 'General'];
+    for (const tag of tags) {
+      if (!validTags.includes(tag)) {
+        throw new Error(`Invalid tag: ${tag}`);
+      }
+    }
+    return true;
+  })
 ], async (req, res) => {
   try {
     const errors = validationResult(req);

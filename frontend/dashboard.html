@@ -2517,39 +2517,248 @@
         // ===== MESSAGING FUNCTIONALITY =====
 
         let currentConversation = null;
+        let currentConversationUsername = null;
+        let messagingSocket = null;
+        let conversationsCache = [];
+
+        // Initialize messaging socket
+        function initMessagingSocket() {
+            if (messagingSocket) return; // Already initialized
+
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) return;
+
+            messagingSocket = io(DASHBOARD_API_BASE.replace('/api', ''), {
+                auth: { token },
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionAttempts: 5
+            });
+
+            messagingSocket.on('connect', () => {
+                console.log('📨 Messaging socket connected');
+            });
+
+            messagingSocket.on('newMessage', (data) => {
+                console.log('📨 New message received:', data);
+                // If this message is for the current conversation, append it
+                if (currentConversation && (data.from === currentConversation || data.to === currentConversation)) {
+                    appendMessageToChat({
+                        sender: data.from,
+                        message: data.message,
+                        createdAt: data.timestamp || new Date()
+                    });
+                }
+                // Refresh conversations list to update preview
+                loadConversations();
+            });
+
+            messagingSocket.on('disconnect', () => {
+                console.log('📨 Messaging socket disconnected');
+            });
+        }
 
         // Load user's conversations
         async function loadConversations() {
             const conversationsList = document.getElementById('conversationsList');
             if (!conversationsList) return;
 
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                conversationsList.innerHTML = '<div class="text-center text-muted" style="padding: 2rem;">Please log in to view messages</div>';
+                return;
+            }
+
             conversationsList.innerHTML = '<div class="text-center text-muted" style="padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading conversations...</div>';
 
             try {
-                // In full implementation, this would fetch from /api/messages or similar
-                // For now, show empty state
-                conversationsList.innerHTML = `
-                    <div class="text-center text-muted" style="padding: 3rem 1rem;">
-                        <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-                        <p>No conversations yet</p>
-                        <small>Send a message to start chatting!</small>
+                const response = await fetch(`${DASHBOARD_API_BASE}/messages/conversations`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch conversations');
+                }
+
+                const data = await response.json();
+                conversationsCache = data.conversations || [];
+
+                if (conversationsCache.length === 0) {
+                    conversationsList.innerHTML = `
+                        <div class="text-center text-muted" style="padding: 3rem 1rem;">
+                            <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                            <p>No conversations yet</p>
+                            <small>Send a message to start chatting!</small>
+                        </div>
+                    `;
+                    return;
+                }
+
+                conversationsList.innerHTML = conversationsCache.map(conv => `
+                    <div class="conversation-item ${conv.unreadCount > 0 ? 'unread' : ''}"
+                         data-user-id="${conv.userId}"
+                         data-username="${conv.username}"
+                         onclick="openConversation('${conv.userId}', '${conv.username}')">
+                        <div class="thread-avatar" style="width: 48px; height: 48px; font-size: 1.25rem;">
+                            ${conv.username.charAt(0).toUpperCase()}
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div class="flex flex-between" style="align-items: center;">
+                                <strong style="color: var(--navy);">${conv.username}</strong>
+                                <small class="text-muted">${formatTimeAgo(conv.lastMessageTime)}</small>
+                            </div>
+                            <p class="text-muted text-sm" style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${conv.lastMessage || 'No messages yet'}
+                            </p>
+                        </div>
+                        ${conv.unreadCount > 0 ? `<span class="badge badge-primary" style="min-width: 24px;">${conv.unreadCount}</span>` : ''}
                     </div>
-                `;
+                `).join('');
+
+                // Initialize socket after loading conversations
+                initMessagingSocket();
+
             } catch (error) {
                 console.error('Error loading conversations:', error);
-                conversationsList.innerHTML = '<div class="text-center text-error">Failed to load conversations</div>';
+                conversationsList.innerHTML = '<div class="text-center text-error" style="padding: 2rem;">Failed to load conversations</div>';
             }
+        }
+
+        // Format time ago
+        function formatTimeAgo(timestamp) {
+            if (!timestamp) return '';
+            const now = new Date();
+            const then = new Date(timestamp);
+            const diffMs = now - then;
+            const diffMins = Math.floor(diffMs / 60000);
+
+            if (diffMins < 1) return 'now';
+            if (diffMins < 60) return `${diffMins}m`;
+            if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h`;
+            if (diffMins < 10080) return `${Math.floor(diffMins / 1440)}d`;
+            return then.toLocaleDateString();
         }
 
         // Open new message dialog
         function openNewMessage() {
-            showNotification('Direct messaging coming soon! For now, connect with warriors in the Message Board.', 'info');
-            // In full implementation, this would open a modal to select a user and start a conversation
+            // Create modal for searching users
+            const modal = document.createElement('div');
+            modal.id = 'newMessageModal';
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-feather-alt text-gold"></i> Send New Message</h3>
+                        <button class="btn-close" onclick="closeNewMessageModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label class="form-label">Find Warrior</label>
+                            <input type="text" class="form-control" id="userSearchInput" placeholder="Search by username..." oninput="searchUsers(this.value)">
+                        </div>
+                        <div id="userSearchResults" style="max-height: 300px; overflow-y: auto;">
+                            <div class="text-center text-muted" style="padding: 2rem;">
+                                <i class="fas fa-search" style="font-size: 2rem; opacity: 0.3;"></i>
+                                <p class="mt-2">Type a username to search</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Focus search input
+            setTimeout(() => document.getElementById('userSearchInput')?.focus(), 100);
+        }
+
+        // Close new message modal
+        function closeNewMessageModal() {
+            const modal = document.getElementById('newMessageModal');
+            if (modal) modal.remove();
+        }
+
+        // Search users
+        let searchTimeout = null;
+        async function searchUsers(query) {
+            const resultsDiv = document.getElementById('userSearchResults');
+            if (!resultsDiv) return;
+
+            if (!query || query.length < 2) {
+                resultsDiv.innerHTML = `
+                    <div class="text-center text-muted" style="padding: 2rem;">
+                        <i class="fas fa-search" style="font-size: 2rem; opacity: 0.3;"></i>
+                        <p class="mt-2">Type at least 2 characters to search</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Debounce search
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                resultsDiv.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+
+                try {
+                    const token = localStorage.getItem('mlnf_token');
+                    const response = await fetch(`${DASHBOARD_API_BASE}/auth/search?q=${encodeURIComponent(query)}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (!response.ok) throw new Error('Search failed');
+
+                    const data = await response.json();
+                    const users = data.users || [];
+
+                    if (users.length === 0) {
+                        resultsDiv.innerHTML = `
+                            <div class="text-center text-muted" style="padding: 2rem;">
+                                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                                <p class="mt-2">No users found</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    resultsDiv.innerHTML = users.map(user => `
+                        <div class="conversation-item" style="cursor: pointer;" onclick="startConversationWith('${user._id}', '${user.username}')">
+                            <div class="thread-avatar" style="width: 40px; height: 40px; font-size: 1rem;">
+                                ${user.username.charAt(0).toUpperCase()}
+                            </div>
+                            <div style="flex: 1;">
+                                <strong>${user.username}</strong>
+                                ${user.role === 'admin' ? '<span class="badge badge-gold" style="margin-left: 0.5rem;">Admin</span>' : ''}
+                            </div>
+                            <i class="fas fa-paper-plane text-muted"></i>
+                        </div>
+                    `).join('');
+
+                } catch (error) {
+                    console.error('Error searching users:', error);
+                    resultsDiv.innerHTML = '<div class="text-center text-error">Search failed</div>';
+                }
+            }, 300);
+        }
+
+        // Start conversation with a user
+        function startConversationWith(userId, username) {
+            closeNewMessageModal();
+            openConversation(userId, username);
         }
 
         // Open a conversation
-        function openConversation(conversationId, username) {
-            currentConversation = conversationId;
+        function openConversation(userId, username) {
+            currentConversation = userId;
+            currentConversationUsername = username;
+
+            // Highlight active conversation in list
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.userId === userId) {
+                    item.classList.add('active');
+                    item.classList.remove('unread');
+                }
+            });
 
             // Show chat header and input
             document.getElementById('chatHeader')?.classList.remove('hidden');
@@ -2557,35 +2766,124 @@
 
             // Update chat header
             document.getElementById('chatUsername').textContent = username;
+            const avatar = document.querySelector('#chatHeader .thread-avatar');
+            if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
 
             // Load messages for this conversation
-            loadMessages(conversationId);
+            loadMessages(userId);
+
+            // Mark as read
+            markConversationAsRead(userId);
+        }
+
+        // Mark conversation as read
+        async function markConversationAsRead(userId) {
+            try {
+                const token = localStorage.getItem('mlnf_token');
+                await fetch(`${DASHBOARD_API_BASE}/messages/mark-read/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+            } catch (error) {
+                console.error('Error marking as read:', error);
+            }
         }
 
         // Load messages for a conversation
-        async function loadMessages(conversationId) {
+        async function loadMessages(userId) {
             const chatMessages = document.getElementById('chatMessages');
             if (!chatMessages) return;
 
-            chatMessages.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Loading messages...</div>';
+            chatMessages.innerHTML = '<div class="text-center text-muted" style="padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading messages...</div>';
 
             try {
-                // In full implementation, fetch from /api/messages/{conversationId}
-                // For now, show empty state
-                chatMessages.innerHTML = `
-                    <div class="text-center text-muted" style="padding: 2rem;">
-                        <p>No messages yet. Say hi!</p>
-                    </div>
-                `;
+                const token = localStorage.getItem('mlnf_token');
+                const response = await fetch(`${DASHBOARD_API_BASE}/messages/conversation/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load messages');
+
+                const data = await response.json();
+                const messages = data.messages || [];
+
+                if (messages.length === 0) {
+                    chatMessages.innerHTML = `
+                        <div class="text-center text-muted" style="padding: 3rem 1rem;">
+                            <i class="fas fa-dove" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                            <p>No messages yet</p>
+                            <small>Send a raven to ${currentConversationUsername}!</small>
+                        </div>
+                    `;
+                    return;
+                }
+
+                chatMessages.innerHTML = messages.map(msg => renderMessage(msg)).join('');
+
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
             } catch (error) {
                 console.error('Error loading messages:', error);
-                chatMessages.innerHTML = '<div class="text-center text-error">Failed to load messages</div>';
+                chatMessages.innerHTML = '<div class="text-center text-error" style="padding: 2rem;">Failed to load messages</div>';
             }
+        }
+
+        // Render a single message
+        function renderMessage(msg) {
+            const currentUser = JSON.parse(localStorage.getItem('mlnf_user') || '{}');
+            const isOwn = msg.sender === currentUser._id || msg.sender === currentUser.id;
+            const time = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            return `
+                <div class="message ${isOwn ? 'message-own' : 'message-other'}" style="display: flex; margin-bottom: 1rem; ${isOwn ? 'flex-direction: row-reverse;' : ''}">
+                    ${!isOwn ? `<div class="thread-avatar" style="width: 36px; height: 36px; font-size: 0.9rem; margin-right: 0.75rem; flex-shrink: 0;">${msg.senderUsername?.charAt(0).toUpperCase() || 'U'}</div>` : ''}
+                    <div style="max-width: 70%;">
+                        <div class="message-bubble" style="padding: 0.75rem 1rem; border-radius: 18px; ${isOwn ? 'background: linear-gradient(135deg, var(--indigo), var(--navy)); color: white; border-bottom-right-radius: 4px;' : 'background: var(--gray-100); color: var(--navy); border-bottom-left-radius: 4px;'}">
+                            ${escapeHtml(msg.message)}
+                        </div>
+                        <div class="message-time" style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem; ${isOwn ? 'text-align: right;' : ''}">${time}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Append message to chat (for real-time messages)
+        function appendMessageToChat(msg) {
+            const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages) return;
+
+            // Remove empty state if present
+            const emptyState = chatMessages.querySelector('.text-muted');
+            if (emptyState && emptyState.querySelector('.fa-dove')) {
+                chatMessages.innerHTML = '';
+            }
+
+            const messageEl = document.createElement('div');
+            messageEl.innerHTML = renderMessage(msg);
+            chatMessages.appendChild(messageEl.firstElementChild);
+
+            // Scroll to bottom
+            chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
         }
 
         // Close chat
         function closeChat() {
             currentConversation = null;
+            currentConversationUsername = null;
+
+            // Remove active state from conversations
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
             document.getElementById('chatHeader')?.classList.add('hidden');
             document.getElementById('messageInput')?.classList.add('hidden');
 
@@ -2605,20 +2903,56 @@
             e.preventDefault();
 
             const messageText = document.getElementById('messageText');
-            if (!messageText || !messageText.value.trim()) return;
+            if (!messageText || !messageText.value.trim() || !currentConversation) return;
 
             const message = messageText.value.trim();
+            const sendBtn = e.target.querySelector('button[type="submit"]');
+
+            // Disable button while sending
+            if (sendBtn) {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
 
             try {
-                // In full implementation, POST to /api/messages
-                // For now, show notification
-                showNotification('Direct messaging API coming soon!', 'info');
+                const token = localStorage.getItem('mlnf_token');
+                const response = await fetch(`${DASHBOARD_API_BASE}/messages/send`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        recipientId: currentConversation,
+                        message: message
+                    })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error || 'Failed to send message');
+                }
+
+                const data = await response.json();
+
+                // Add message to chat
+                appendMessageToChat(data.message);
 
                 // Clear input
                 messageText.value = '';
+
+                // Refresh conversations to update preview
+                loadConversations();
+
             } catch (error) {
                 console.error('Error sending message:', error);
-                showNotification('Failed to send message', 'error');
+                showNotification(error.message || 'Failed to send message', 'error');
+            } finally {
+                // Re-enable button
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                }
             }
         });
 
