@@ -198,6 +198,18 @@ const activeUsers = new Map();
 const userSockets = new Map();
 const streamViewers = new Map(); // Track viewers per stream
 
+// Helper to get unique online users (deduplicates multiple tabs/connections)
+function getUniqueOnlineUsers() {
+  const usersById = new Map();
+  activeUsers.forEach(user => {
+    // Only keep first occurrence of each userId
+    if (!usersById.has(user.userId)) {
+      usersById.set(user.userId, user);
+    }
+  });
+  return Array.from(usersById.values());
+}
+
 io.on('connection', (socket) => {
   console.log('New socket connection:', socket.id);
 
@@ -207,9 +219,9 @@ io.on('connection', (socket) => {
     if (userId && username) {
       activeUsers.set(socket.id, { userId, username, socketId: socket.id });
       userSockets.set(userId, socket.id);
-      
-      // Broadcast updated online users list
-      io.emit('onlineUsers', Array.from(activeUsers.values()));
+
+      // Broadcast updated online users list (deduplicated)
+      io.emit('onlineUsers', getUniqueOnlineUsers());
       console.log(`User ${username} authenticated`);
     }
   });
@@ -309,9 +321,13 @@ io.on('connection', (socket) => {
     const user = activeUsers.get(socket.id);
     if (user) {
       activeUsers.delete(socket.id);
-      userSockets.delete(user.userId);
-      io.emit('onlineUsers', Array.from(activeUsers.values()));
-      console.log(`User ${user.username} disconnected`);
+      // Only remove from userSockets if no other connections exist for this user
+      const userStillConnected = Array.from(activeUsers.values()).some(u => u.userId === user.userId);
+      if (!userStillConnected) {
+        userSockets.delete(user.userId);
+      }
+      io.emit('onlineUsers', getUniqueOnlineUsers());
+      console.log(`User ${user.username} disconnected (socket: ${socket.id})`);
     }
 
     // Remove socket from all stream viewer counts
