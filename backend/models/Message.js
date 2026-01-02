@@ -101,12 +101,15 @@ messageSchema.statics.getUnreadCount = async function(userId) {
 
 // Static method to get recent conversations
 messageSchema.statics.getRecentConversations = async function(userId, limit = 20) {
+  // Convert userId to ObjectId (compatible with Mongoose 6+)
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+
   const messages = await this.aggregate([
     {
       $match: {
         $or: [
-          { sender: mongoose.Types.ObjectId(userId) },
-          { recipient: mongoose.Types.ObjectId(userId) }
+          { sender: userObjectId },
+          { recipient: userObjectId }
         ]
       }
     },
@@ -117,7 +120,7 @@ messageSchema.statics.getRecentConversations = async function(userId, limit = 20
       $group: {
         _id: {
           $cond: [
-            { $eq: ['$sender', mongoose.Types.ObjectId(userId)] },
+            { $eq: ['$sender', userObjectId] },
             '$recipient',
             '$sender'
           ]
@@ -126,9 +129,9 @@ messageSchema.statics.getRecentConversations = async function(userId, limit = 20
         unreadCount: {
           $sum: {
             $cond: [
-              { 
+              {
                 $and: [
-                  { $eq: ['$recipient', mongoose.Types.ObjectId(userId)] },
+                  { $eq: ['$recipient', userObjectId] },
                   { $eq: ['$read', false] }
                 ]
               },
