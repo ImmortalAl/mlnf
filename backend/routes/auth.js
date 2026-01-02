@@ -706,127 +706,173 @@ router.put('/update-profile', authMiddleware, [
 router.get('/activity', authMiddleware, async (req, res) => {
   try {
     const userId = req.user._id;
+    const userIdStr = userId.toString();
     const activities = [];
     const now = new Date();
 
-    // Import models
-    const Video = require('../models/Video');
-    const BlogPost = require('../models/BlogPost');
-    const NewsArticle = require('../models/NewsArticle');
-    const Message = require('../models/Message');
+    // Import models (with error handling)
+    let Video, BlogPost, NewsArticle, Message;
+    try {
+      Video = require('../models/Video');
+      BlogPost = require('../models/BlogPost');
+      NewsArticle = require('../models/NewsArticle');
+      Message = require('../models/Message');
+    } catch (modelError) {
+      console.error('Model import error:', modelError);
+    }
 
     // Get user's recent videos
-    const userVideos = await Video.find({ uploader: userId })
-      .sort({ createdAt: -1 })
-      .limit(3)
-      .select('title views createdAt');
+    if (Video) {
+      try {
+        const userVideos = await Video.find({ uploader: userId })
+          .sort({ createdAt: -1 })
+          .limit(3)
+          .select('title views createdAt');
 
-    userVideos.forEach(video => {
-      activities.push({
-        type: 'video_upload',
-        icon: 'fa-video',
-        color: 'var(--success)',
-        text: `You uploaded "${video.title}"`,
-        subtext: `${video.views || 0} views`,
-        time: video.createdAt,
-        link: `/pages/video.html?id=${video._id}`
-      });
-    });
+        userVideos.forEach(video => {
+          activities.push({
+            type: 'video_upload',
+            icon: 'fa-video',
+            color: 'var(--success)',
+            text: `You uploaded "${video.title}"`,
+            subtext: `${video.views || 0} views`,
+            time: video.createdAt,
+            link: `/pages/video.html?id=${video._id}`
+          });
+        });
+      } catch (e) {
+        console.error('Error fetching user videos:', e.message);
+      }
+    }
 
     // Get user's recent blog posts
-    const userBlogs = await BlogPost.find({ author: userId })
-      .sort({ createdAt: -1 })
-      .limit(3)
-      .select('title views createdAt');
+    if (BlogPost) {
+      try {
+        const userBlogs = await BlogPost.find({ author: userId })
+          .sort({ createdAt: -1 })
+          .limit(3)
+          .select('title views createdAt');
 
-    userBlogs.forEach(post => {
-      activities.push({
-        type: 'blog_post',
-        icon: 'fa-pen-fancy',
-        color: 'var(--indigo)',
-        text: `You published "${post.title}"`,
-        subtext: `${post.views || 0} views`,
-        time: post.createdAt,
-        link: `/pages/blog-post.html?id=${post._id}`
-      });
-    });
+        userBlogs.forEach(post => {
+          activities.push({
+            type: 'blog_post',
+            icon: 'fa-pen-fancy',
+            color: 'var(--indigo)',
+            text: `You published "${post.title}"`,
+            subtext: `${post.views || 0} views`,
+            time: post.createdAt,
+            link: `/pages/blog-post.html?id=${post._id}`
+          });
+        });
+      } catch (e) {
+        console.error('Error fetching user blogs:', e.message);
+      }
+    }
 
     // Get user's recent news posts
-    const userNews = await NewsArticle.find({ author: userId })
-      .sort({ createdAt: -1 })
-      .limit(3)
-      .select('title views createdAt');
+    if (NewsArticle) {
+      try {
+        const userNews = await NewsArticle.find({ author: userId })
+          .sort({ createdAt: -1 })
+          .limit(3)
+          .select('title views createdAt');
 
-    userNews.forEach(article => {
-      activities.push({
-        type: 'news_post',
-        icon: 'fa-newspaper',
-        color: 'var(--peach)',
-        text: `You posted news: "${article.title}"`,
-        subtext: `${article.views || 0} views`,
-        time: article.createdAt,
-        link: `/pages/news-article.html?id=${article._id}`
-      });
-    });
+        userNews.forEach(article => {
+          activities.push({
+            type: 'news_post',
+            icon: 'fa-newspaper',
+            color: 'var(--peach)',
+            text: `You posted news: "${article.title}"`,
+            subtext: `${article.views || 0} views`,
+            time: article.createdAt,
+            link: `/pages/news-article.html?id=${article._id}`
+          });
+        });
+      } catch (e) {
+        console.error('Error fetching user news:', e.message);
+      }
+    }
 
     // Get recent messages received
-    const recentMessages = await Message.find({ recipient: userId })
-      .sort({ createdAt: -1 })
-      .limit(3)
-      .select('senderUsername createdAt');
+    if (Message) {
+      try {
+        const recentMessages = await Message.find({ recipient: userId })
+          .sort({ createdAt: -1 })
+          .limit(3)
+          .select('senderUsername createdAt');
 
-    recentMessages.forEach(msg => {
-      activities.push({
-        type: 'message',
-        icon: 'fa-envelope',
-        color: 'var(--navy)',
-        text: `New message from ${msg.senderUsername}`,
-        subtext: '',
-        time: msg.createdAt,
-        link: '#messages'
-      });
-    });
+        recentMessages.forEach(msg => {
+          if (msg.senderUsername) {
+            activities.push({
+              type: 'message',
+              icon: 'fa-envelope',
+              color: 'var(--navy)',
+              text: `New message from ${msg.senderUsername}`,
+              subtext: '',
+              time: msg.createdAt,
+              link: '#messages'
+            });
+          }
+        });
+      } catch (e) {
+        console.error('Error fetching messages:', e.message);
+      }
+    }
 
     // Get new followers (if user has followers array)
-    const user = await User.findById(userId).populate('followers', 'username createdAt');
-    if (user.followers && user.followers.length > 0) {
-      const recentFollowers = user.followers.slice(-3).reverse();
-      recentFollowers.forEach(follower => {
-        activities.push({
-          type: 'new_follower',
-          icon: 'fa-user-plus',
-          color: 'var(--gold)',
-          text: `${follower.username} started following you`,
-          subtext: '',
-          time: follower.createdAt || now,
-          link: `/pages/profiles.html?id=${follower._id}`
+    try {
+      const user = await User.findById(userId).populate('followers', 'username createdAt');
+      if (user && user.followers && user.followers.length > 0) {
+        const recentFollowers = user.followers.slice(-3).reverse();
+        recentFollowers.forEach(follower => {
+          if (follower && follower.username) {
+            activities.push({
+              type: 'new_follower',
+              icon: 'fa-user-plus',
+              color: 'var(--gold)',
+              text: `${follower.username} started following you`,
+              subtext: '',
+              time: follower.createdAt || now,
+              link: `/pages/profiles.html?id=${follower._id}`
+            });
+          }
         });
-      });
+      }
+    } catch (e) {
+      console.error('Error fetching followers:', e.message);
     }
 
     // Get videos user has voted on recently
-    const votedVideos = await Video.find({
-      $or: [
-        { upvotes: userId },
-        { downvotes: userId }
-      ]
-    })
-      .sort({ updatedAt: -1 })
-      .limit(3)
-      .select('title upvotes downvotes updatedAt');
+    if (Video) {
+      try {
+        const votedVideos = await Video.find({
+          $or: [
+            { upvotes: userId },
+            { downvotes: userId }
+          ]
+        })
+          .sort({ updatedAt: -1 })
+          .limit(3)
+          .select('title upvotes downvotes updatedAt');
 
-    votedVideos.forEach(video => {
-      const isUpvote = video.upvotes.includes(userId);
-      activities.push({
-        type: 'video_vote',
-        icon: isUpvote ? 'fa-thumbs-up' : 'fa-thumbs-down',
-        color: isUpvote ? 'var(--success)' : 'var(--error)',
-        text: `You ${isUpvote ? 'upvoted' : 'downvoted'} "${video.title}"`,
-        subtext: '',
-        time: video.updatedAt,
-        link: `/pages/video.html?id=${video._id}`
-      });
-    });
+        votedVideos.forEach(video => {
+          // Convert ObjectIds to strings for comparison
+          const upvoteIds = video.upvotes.map(id => id.toString());
+          const isUpvote = upvoteIds.includes(userIdStr);
+          activities.push({
+            type: 'video_vote',
+            icon: isUpvote ? 'fa-thumbs-up' : 'fa-thumbs-down',
+            color: isUpvote ? 'var(--success)' : 'var(--error)',
+            text: `You ${isUpvote ? 'upvoted' : 'downvoted'} "${video.title}"`,
+            subtext: '',
+            time: video.updatedAt,
+            link: `/pages/video.html?id=${video._id}`
+          });
+        });
+      } catch (e) {
+        console.error('Error fetching voted videos:', e.message);
+      }
+    }
 
     // Sort all activities by time, most recent first
     activities.sort((a, b) => new Date(b.time) - new Date(a.time));
@@ -836,6 +882,7 @@ router.get('/activity', authMiddleware, async (req, res) => {
 
     // Format times
     const formatTimeAgo = (date) => {
+      if (!date) return 'Recently';
       const diffMs = now - new Date(date);
       const diffMins = Math.floor(diffMs / (1000 * 60));
       const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -856,7 +903,7 @@ router.get('/activity', authMiddleware, async (req, res) => {
     res.json({ activities: formattedActivities });
   } catch (error) {
     console.error('Get activity error:', error);
-    res.status(500).json({ error: 'Failed to get activity feed' });
+    res.status(500).json({ error: 'Failed to get activity feed', details: error.message });
   }
 });
 
