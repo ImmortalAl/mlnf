@@ -744,6 +744,15 @@ const Socket = {
             users = MockData.onlineUsers;
         }
 
+        // Deduplicate users by userId or username (frontend safety net)
+        const seenUsernames = new Set();
+        users = users.filter(user => {
+            const key = user.userId || user.username;
+            if (seenUsernames.has(key)) return false;
+            seenUsernames.add(key);
+            return true;
+        });
+
         if (count) count.textContent = `(${users.length})`;
 
         if (users.length === 0) {
