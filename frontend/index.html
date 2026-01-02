@@ -325,6 +325,18 @@
     <script src="notifications.js"></script>
 
     <script>
+        // API base - detect environment
+        const API_BASE = (function() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            }
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000/api';
+            }
+            return 'https://much-love-no-fear.onrender.com/api';
+        })();
+
         // Load live streams on homepage
         async function loadLiveStreams() {
             const loadingEl = document.getElementById('liveStreamsLoading');
@@ -337,7 +349,7 @@
                 noStreamsEl.style.display = 'none';
                 gridEl.style.display = 'none';
 
-                const response = await fetch('/api/livestream/fleet?limit=6');
+                const response = await fetch(`${API_BASE}/livestream/fleet?limit=6`);
                 const data = await response.json();
 
                 // Hide loading

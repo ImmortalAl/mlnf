@@ -546,9 +546,9 @@
         // Initialize stream
         async function initStream() {
             if (!streamId) {
-                console.error('No stream ID provided');
-                video.style.display = 'none';
-                offlineMessage.style.display = 'flex';
+                console.log('No stream ID provided, redirecting to Fleet...');
+                // Redirect to homepage where they can pick a stream
+                window.location.href = '../index.html';
                 return;
             }
 
