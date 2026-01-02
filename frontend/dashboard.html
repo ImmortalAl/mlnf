@@ -1387,24 +1387,45 @@
             const videosContainer = document.getElementById('yourVideosGrid');
             if (!videosContainer) return;
 
-            // Show loading state (already set in HTML, but reset if needed)
+            // Show loading state
             videosContainer.innerHTML = '<div class="col-span-3 text-center" style="padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--indigo);"></i><p class="mt-2 text-muted">Loading your videos...</p></div>';
 
             try {
                 // Fetch user's videos from API
-                const response = await fetch(`${APIClient.auth.getProfile().then(r => r.user._id) === userId ? '/api' : 'https://much-love-no-fear.onrender.com/api'}/videos?userId=${userId}`);
-                const data = await response.json();
+                const token = localStorage.getItem('mlnf_token');
+                const response = await fetch(`/api/videos/user/${userId}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
 
-                if (data.videos && data.videos.length > 0) {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch videos');
+                }
+
+                const data = await response.json();
+                const videos = data.videos || [];
+
+                if (videos.length > 0) {
                     // Clear loading message
                     videosContainer.innerHTML = '';
 
-                    // Display up to 3 most recent videos
-                    const recentVideos = data.videos.slice(0, 3);
+                    // Display up to 6 most recent videos
+                    const recentVideos = videos.slice(0, 6);
                     recentVideos.forEach(video => {
                         const videoCard = createVideoCard(video);
                         videosContainer.appendChild(videoCard);
                     });
+
+                    // Add "View All" button if there are more videos
+                    if (videos.length > 6) {
+                        const viewAllBtn = document.createElement('div');
+                        viewAllBtn.className = 'col-span-3 text-center mt-2';
+                        viewAllBtn.innerHTML = `
+                            <button class="btn btn-outline" onclick="window.location.href='pages/archive.html?uploader=${userId}'">
+                                <i class="fas fa-th"></i> View All ${videos.length} Videos
+                            </button>
+                        `;
+                        videosContainer.appendChild(viewAllBtn);
+                    }
                 } else {
                     // No videos uploaded yet
                     videosContainer.innerHTML = `
@@ -1421,8 +1442,12 @@
             } catch (error) {
                 console.error('Error loading videos:', error);
                 videosContainer.innerHTML = `
-                    <div class="col-span-3 text-center text-error" style="padding: 2rem;">
-                        <i class="fas fa-exclamation-triangle"></i> Failed to load videos
+                    <div class="col-span-3 text-center" style="padding: 2rem;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                        <p class="text-muted">Could not load videos</p>
+                        <button class="btn btn-outline btn-sm mt-2" onclick="loadUserVideos('${userId}')">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
                     </div>
                 `;
             }

@@ -242,6 +242,16 @@
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
     </style>
 
     <!-- Submit News Modal -->
@@ -481,15 +491,19 @@
                 });
 
                 if (response.ok) {
-                    alert('✅ Article deleted successfully');
+                    showNotification('Article deleted successfully', 'success');
                     loadNewsArticles();
+                    loadFeaturedStory();
+                    loadBreakingTicker();
+                    loadTrendingTopics();
+                    loadMostDiscussed();
                 } else {
                     const data = await response.json();
-                    alert('❌ ' + (data.error || 'Failed to delete article'));
+                    showNotification(data.error || 'Failed to delete article', 'error');
                 }
             } catch (error) {
                 console.error('Delete error:', error);
-                alert('❌ Failed to delete article');
+                showNotification('Failed to delete article', 'error');
             }
         }
 
@@ -505,16 +519,98 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(`✅ Article ${data.published ? 'published' : 'hidden'} successfully`);
+                    showNotification(`Article ${data.published ? 'published' : 'hidden'} successfully`, 'success');
                     loadNewsArticles();
+                    loadFeaturedStory();
+                    loadBreakingTicker();
                 } else {
                     const data = await response.json();
-                    alert('❌ ' + (data.error || 'Failed to toggle visibility'));
+                    showNotification(data.error || 'Failed to toggle visibility', 'error');
                 }
             } catch (error) {
                 console.error('Toggle visibility error:', error);
-                alert('❌ Failed to toggle visibility');
+                showNotification('Failed to toggle visibility', 'error');
             }
+        }
+
+        async function toggleNewsBreaking(articleId, event) {
+            event.stopPropagation(); // Prevent card click
+
+            try {
+                const token = localStorage.getItem('mlnf_token');
+                const response = await fetch(`/api/news/${articleId}/toggle-breaking`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showNotification(data.message, 'success');
+                    loadNewsArticles();
+                    loadFeaturedStory();
+                    loadBreakingTicker();
+                } else {
+                    const data = await response.json();
+                    showNotification(data.error || 'Failed to toggle breaking status', 'error');
+                }
+            } catch (error) {
+                console.error('Toggle breaking error:', error);
+                showNotification('Failed to toggle breaking status', 'error');
+            }
+        }
+
+        async function toggleNewsTrending(articleId, event) {
+            event.stopPropagation(); // Prevent card click
+
+            try {
+                const token = localStorage.getItem('mlnf_token');
+                const response = await fetch(`/api/news/${articleId}/toggle-trending`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showNotification(data.message, 'success');
+                    loadNewsArticles();
+                    loadTrendingTopics();
+                    loadBreakingTicker();
+                } else {
+                    const data = await response.json();
+                    showNotification(data.error || 'Failed to toggle trending status', 'error');
+                }
+            } catch (error) {
+                console.error('Toggle trending error:', error);
+                showNotification('Failed to toggle trending status', 'error');
+            }
+        }
+
+        // Simple notification function
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius-md);
+                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--navy)'};
+                color: white;
+                font-weight: 500;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+            `;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+
+            document.body.appendChild(notification);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
 
         function renderNewsArticles(articles) {
@@ -557,12 +653,18 @@
                             </div>
                         </div>
                         ${isAdmin ? `
-                        <div class="admin-controls mt-2 pt-2" style="border-top: 1px solid var(--gray-200);">
+                        <div class="admin-controls mt-2 pt-2" style="border-top: 1px solid var(--gray-200); display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-sm ${article.breaking ? 'btn-viking' : 'btn-outline'}" onclick="toggleNewsBreaking('${article._id}', event)" title="${article.breaking ? 'Remove from breaking' : 'Mark as breaking'}">
+                                <i class="fas fa-bolt"></i> ${article.breaking ? 'Breaking ✓' : 'Breaking'}
+                            </button>
+                            <button class="btn btn-sm ${article.trending ? 'btn-viking' : 'btn-outline'}" onclick="toggleNewsTrending('${article._id}', event)" title="${article.trending ? 'Remove from trending' : 'Mark as trending'}">
+                                <i class="fas fa-fire"></i> ${article.trending ? 'Trending ✓' : 'Trending'}
+                            </button>
                             <button class="btn btn-outline btn-sm" onclick="toggleNewsVisibility('${article._id}', event)" title="${article.published ? 'Hide' : 'Show'} article">
                                 <i class="fas fa-${article.published ? 'eye-slash' : 'eye'}"></i> ${article.published ? 'Hide' : 'Show'}
                             </button>
                             <button class="btn btn-outline btn-sm" style="color: var(--error); border-color: var(--error);" onclick="deleteNewsArticle('${article._id}', event)" title="Delete article">
-                                <i class="fas fa-trash"></i> Delete
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                         ` : ''}

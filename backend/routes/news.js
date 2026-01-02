@@ -317,6 +317,58 @@ router.get('/stats/breaking-ticker', async (req, res) => {
   }
 });
 
+// Toggle breaking status (admin only)
+router.post('/:id/toggle-breaking', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can toggle breaking status' });
+    }
+
+    const article = await NewsArticle.findById(req.params.id);
+
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    article.breaking = !article.breaking;
+    await article.save();
+
+    res.json({
+      message: `Article ${article.breaking ? 'marked as breaking' : 'removed from breaking'}`,
+      breaking: article.breaking
+    });
+  } catch (error) {
+    console.error('Toggle breaking error:', error);
+    res.status(500).json({ error: 'Failed to toggle breaking status' });
+  }
+});
+
+// Toggle trending status (admin only)
+router.post('/:id/toggle-trending', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can toggle trending status' });
+    }
+
+    const article = await NewsArticle.findById(req.params.id);
+
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    article.trending = !article.trending;
+    await article.save();
+
+    res.json({
+      message: `Article ${article.trending ? 'marked as trending' : 'removed from trending'}`,
+      trending: article.trending
+    });
+  } catch (error) {
+    console.error('Toggle trending error:', error);
+    res.status(500).json({ error: 'Failed to toggle trending status' });
+  }
+});
+
 // Toggle article visibility (admin only) - hide without deleting
 router.post('/:id/toggle-visibility', authMiddleware, async (req, res) => {
   try {
