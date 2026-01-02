@@ -132,6 +132,14 @@ body {
   padding-bottom: 2rem;
 }
 
+/* Dashboard content snaps to header bottom */
+.dashboard-content {
+  margin-top: calc(-1 * var(--header-height)); /* Pull up into header space */
+  padding-top: calc(var(--header-height) + 2rem); /* Header height + content padding */
+  padding-bottom: 2rem;
+  min-height: calc(100vh - var(--header-height));
+}
+
 /* Remove margin when sidebar is collapsed */
 body.sidebar-collapsed {
   margin-right: 0;
