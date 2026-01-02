@@ -60,7 +60,28 @@ router.get('/my-streams', authMiddleware, async (req, res) => {
   }
 });
 
-// Get single stream details
+// Get chat history for a stream - MUST be before /:id route
+router.get('/:id/chat', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { limit = 100 } = req.query;
+
+    const stream = await Livestream.findById(id)
+      .select('chatHistory')
+      .slice('chatHistory', -parseInt(limit)); // Get last N messages
+
+    if (!stream) {
+      return res.status(404).json({ error: 'Stream not found' });
+    }
+
+    res.json({ messages: stream.chatHistory || [] });
+  } catch (error) {
+    console.error('Get chat history error:', error);
+    res.status(500).json({ error: 'Failed to get chat history' });
+  }
+});
+
+// Get single stream details - Keep this LAST among /:id routes
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,27 +103,6 @@ router.get('/:id', async (req, res) => {
   } catch (error) {
     console.error('Get stream error:', error);
     res.status(500).json({ error: 'Failed to get stream' });
-  }
-});
-
-// Get chat history for a stream
-router.get('/:id/chat', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { limit = 100 } = req.query;
-
-    const stream = await Livestream.findById(id)
-      .select('chatHistory')
-      .slice('chatHistory', -parseInt(limit)); // Get last N messages
-
-    if (!stream) {
-      return res.status(404).json({ error: 'Stream not found' });
-    }
-
-    res.json({ messages: stream.chatHistory || [] });
-  } catch (error) {
-    console.error('Get chat history error:', error);
-    res.status(500).json({ error: 'Failed to get chat history' });
   }
 });
 
