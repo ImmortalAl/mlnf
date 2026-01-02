@@ -69,7 +69,9 @@ router.get('/conversation/:userId', authenticate, async (req, res) => {
 router.post('/send', authenticate, async (req, res) => {
   try {
     const { recipientId, message } = req.body;
-    
+
+    console.log('📨 Send message request:', { from: req.userId, to: recipientId, messageLength: message?.length });
+
     if (!recipientId || !message) {
       return res.status(400).json({ error: 'Recipient and message are required' });
     }
@@ -95,7 +97,9 @@ router.post('/send', authenticate, async (req, res) => {
     });
     
     await newMessage.save();
-    
+
+    console.log('📨 Message saved successfully:', newMessage._id);
+
     // Emit socket event if socket.io is available
     const io = req.app.get('io');
     if (io) {
@@ -122,19 +126,23 @@ router.post('/send', authenticate, async (req, res) => {
 router.get('/conversations', authenticate, async (req, res) => {
   try {
     const { limit = 20 } = req.query;
-    
+
+    console.log('📨 Fetching conversations for user:', req.userId);
+
     const conversations = await Message.getRecentConversations(
       req.userId,
       parseInt(limit)
     );
-    
+
+    console.log('📨 Found', conversations.length, 'conversations');
+
     res.json({
       success: true,
       conversations
     });
   } catch (error) {
-    console.error('Error fetching conversations:', error);
-    res.status(500).json({ error: 'Failed to fetch conversations' });
+    console.error('📨 Error fetching conversations:', error);
+    res.status(500).json({ error: 'Failed to fetch conversations', details: error.message });
   }
 });
 
