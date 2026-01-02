@@ -76,6 +76,8 @@ mongoose.connect(mongoUri, {
   bucket = new GridFSBucket(db, {
     bucketName: 'videos'
   });
+  // Set bucket on app AFTER it's initialized
+  app.set('bucket', bucket);
   console.log('✅ GridFS bucket initialized');
 })
 .catch(err => {
@@ -156,8 +158,7 @@ const limiter = rateLimit({
 
 app.use('/api/', limiter);
 
-// Make bucket available to routes
-app.set('bucket', bucket);
+// Make io available to routes (bucket is set in MongoDB connect callback)
 app.set('io', io);
 
 // Routes

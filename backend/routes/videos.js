@@ -74,9 +74,21 @@ router.post('/upload', authMiddleware, upload.single('video'), [
     if (!req.file) {
       return res.status(400).json({ error: 'No video file provided' });
     }
-    
+
+    console.log('📹 Video upload started:', {
+      filename: req.file.originalname,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      user: req.user.username
+    });
+
     const { title, description, tags, category, isExclusive, exclusivePrice } = req.body;
     const bucket = req.app.get('bucket');
+
+    if (!bucket) {
+      console.error('❌ GridFS bucket not initialized');
+      return res.status(500).json({ error: 'Video storage not available. Please try again later.' });
+    }
     
     // Create upload stream to GridFS
     const uploadStream = bucket.openUploadStream(req.file.originalname, {
@@ -140,8 +152,11 @@ router.post('/upload', authMiddleware, upload.single('video'), [
       }
     });
   } catch (error) {
-    console.error('Video upload error:', error);
-    res.status(500).json({ error: 'Failed to upload video' });
+    console.error('❌ Video upload error:', error.message, error.stack);
+    res.status(500).json({
+      error: 'Failed to upload video',
+      details: error.message
+    });
   }
 });
 
