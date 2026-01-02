@@ -532,14 +532,22 @@
         // Current user info (from auth)
         let currentUser = null;
 
-        // Load user from localStorage
+        // Load user from localStorage (keys match auth-handler.js)
         function loadUser() {
-            const token = localStorage.getItem('token');
-            const username = localStorage.getItem('username');
-            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('mlnf_token');
+            const userStr = localStorage.getItem('mlnf_user');
 
-            if (token && username && userId) {
-                currentUser = { token, username, userId };
+            if (token && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    currentUser = {
+                        token,
+                        username: user.username,
+                        userId: user._id || user.id
+                    };
+                } catch (e) {
+                    console.error('Failed to parse user data:', e);
+                }
             }
         }
 
