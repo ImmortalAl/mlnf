@@ -323,28 +323,11 @@
         </div>
     </section>
 
-    <!-- Featured Article -->
-    <section style="padding: 3rem 0;">
+    <!-- Featured Article (dynamically loaded) -->
+    <section id="featuredArticleSection" style="padding: 3rem 0; display: none;">
         <div class="container">
-            <div class="card card-viking" style="padding: 2rem;">
-                <div class="flex gap-lg">
-                    <div style="flex: 1;">
-                        <div class="badge badge-gold" style="margin-bottom: 1rem;">Featured Article</div>
-                        <h2 style="color: var(--navy); margin-bottom: 1rem;">The Awakening: Why Truth Matters More Than Ever</h2>
-                        <div class="flex gap-md text-muted mb-2">
-                            <span><i class="fas fa-user"></i> Sarah Truth-Seeker</span>
-                            <span><i class="fas fa-calendar"></i> November 1, 2024</span>
-                            <span><i class="fas fa-eye"></i> 15.2k views</span>
-                        </div>
-                        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                            In an age of unprecedented censorship and information control, the need for platforms that protect free speech has never been more critical. This article explores the systematic suppression of dissenting voices and why we must stand together...
-                        </p>
-                        <a href="#" class="btn-viking-primary">Read Full Article <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div style="width: 300px;">
-                        <img src="https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=Featured+Article" alt="Featured Article" style="width: 100%; border-radius: var(--radius-lg);" onerror="this.style.display='none'">
-                    </div>
-                </div>
+            <div class="card card-viking" style="padding: 2rem;" id="featuredArticleCard">
+                <!-- Featured article will be loaded here dynamically -->
             </div>
         </div>
     </section>
@@ -699,14 +682,63 @@
                 if (response.ok) {
                     const data = await response.json();
                     renderBlogPosts(data.posts || []);
+
+                    // Check for featured article
+                    const featured = (data.posts || []).find(p => p.featured);
+                    if (featured) {
+                        renderFeaturedArticle(featured);
+                    }
                 } else {
-                    // Use sample data if API not available
+                    // Show empty state if API not available
                     renderSamplePosts();
                 }
             } catch (error) {
-                console.log('Blog API not available, using sample data');
+                console.log('Blog API not available, showing empty state');
                 renderSamplePosts();
             }
+        }
+
+        function renderFeaturedArticle(post) {
+            const section = document.getElementById('featuredArticleSection');
+            const card = document.getElementById('featuredArticleCard');
+
+            if (!post) {
+                section.style.display = 'none';
+                return;
+            }
+
+            const authorName = post.author?.username || 'Anonymous';
+            const imageUrl = post.featuredImage || post.image || `https://picsum.photos/seed/${post._id}/400/250`;
+
+            card.innerHTML = `
+                <div class="flex gap-lg" style="flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <div class="badge badge-gold" style="margin-bottom: 1rem;">
+                            <i class="fas fa-star"></i> Featured Article
+                        </div>
+                        <h2 style="color: var(--navy); margin-bottom: 1rem;">${post.title}</h2>
+                        <div class="flex gap-md text-muted mb-2" style="flex-wrap: wrap;">
+                            <span><i class="fas fa-user"></i> ${authorName}</span>
+                            <span><i class="fas fa-calendar"></i> ${formatDate(post.createdAt)}</span>
+                            <span><i class="fas fa-eye"></i> ${formatNumber(post.views || 0)} views</span>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            ${post.excerpt || (post.content ? post.content.substring(0, 250) + '...' : 'Click to read this featured article.')}
+                        </p>
+                        <a href="blog-post.html?id=${post._id}" class="btn-viking-primary">
+                            Read Full Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div style="width: 300px; flex-shrink: 0;">
+                        <img src="${imageUrl}"
+                             alt="${post.title}"
+                             style="width: 100%; border-radius: var(--radius-lg); object-fit: cover; aspect-ratio: 4/3;"
+                             onerror="this.style.display='none'">
+                    </div>
+                </div>
+            `;
+
+            section.style.display = 'block';
         }
 
         function renderBlogPosts(posts) {
@@ -776,70 +808,8 @@
         }
 
         function renderSamplePosts() {
-            const samplePosts = [
-                {
-                    title: 'The Great Awakening: Why Truth Matters Now',
-                    excerpt: 'In an age of information warfare, understanding the nature of truth becomes paramount for survival and freedom.',
-                    category: 'Freedom',
-                    author: { username: 'TruthSeeker' },
-                    views: 12500,
-                    likes: 342,
-                    comments: { length: 89 },
-                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Natural Remedies: What They Don\'t Want You to Know',
-                    excerpt: 'Discover the ancient healing wisdom that modern medicine has suppressed for profit.',
-                    category: 'Health',
-                    author: { username: 'HealerWarrior' },
-                    views: 8700,
-                    likes: 256,
-                    comments: { length: 45 },
-                    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Financial Freedom: Breaking Free from the System',
-                    excerpt: 'Learn how to build wealth outside the traditional banking system using crypto and alternative investments.',
-                    category: 'Finance',
-                    author: { username: 'CryptoViking' },
-                    views: 6200,
-                    likes: 189,
-                    comments: { length: 32 },
-                    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'The Technology of Control: Surveillance State Exposed',
-                    excerpt: 'How modern technology is being weaponized against the population and what you can do about it.',
-                    category: 'Technology',
-                    author: { username: 'DigitalResistance' },
-                    views: 9800,
-                    likes: 445,
-                    comments: { length: 67 },
-                    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Spiritual Warfare: Protecting Your Consciousness',
-                    excerpt: 'Understanding the metaphysical battle for your mind and spirit in the modern age.',
-                    category: 'Spirituality',
-                    author: { username: 'SpiritGuide' },
-                    views: 5400,
-                    likes: 312,
-                    comments: { length: 78 },
-                    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    title: 'Homeschooling Revolution: Taking Back Education',
-                    excerpt: 'Why parents are withdrawing children from public schools and how to create effective learning environments.',
-                    category: 'Education',
-                    author: { username: 'FreedomEducator' },
-                    views: 4100,
-                    likes: 156,
-                    comments: { length: 23 },
-                    createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString()
-                }
-            ];
-
-            renderBlogPosts(samplePosts);
+            // Show empty state instead of fake placeholder posts
+            renderBlogPosts([]);
         }
 
         function viewBlogPost(postId) {
