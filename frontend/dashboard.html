@@ -1253,9 +1253,9 @@
                 updateDashboardStats(user);
 
                 // Load user's actual videos
-                console.log('📹 Loading user videos...');
+                console.log('📹 Loading user videos... [BUILD: 20260102-v2]');
                 await loadUserVideos(user._id);
-                console.log('📹 User videos loaded');
+                console.log('📹 User videos loaded [BUILD: 20260102-v2]');
 
                 // Load real activity feed
                 console.log('📋 About to call loadRecentActivity...');
@@ -1386,9 +1386,9 @@
             requestAnimationFrame(update);
         }
 
-        // Load user's actual videos
+        // Load user's actual videos [BUILD: 20260102-v2]
         async function loadUserVideos(userId) {
-            console.log('🎬 loadUserVideos called with userId:', userId);
+            console.log('🎬 [v2] loadUserVideos called with userId:', userId);
             const videosContainer = document.getElementById('yourVideosGrid');
             if (!videosContainer) {
                 console.log('🎬 videosContainer not found, returning');
@@ -1517,9 +1517,9 @@
             return num.toString();
         }
 
-        // Load recent activity feed
+        // Load recent activity feed [BUILD: 20260102-v2]
         async function loadRecentActivity(userId) {
-            console.log('📋 loadRecentActivity called with userId:', userId);
+            console.log('📋 [v2] loadRecentActivity called with userId:', userId);
 
             const activityTimeline = document.querySelector('.activity-timeline');
             if (!activityTimeline) {
