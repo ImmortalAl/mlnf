@@ -226,43 +226,51 @@ router.get('/stream/:videoId', async (req, res) => {
 // Get all videos with filters
 router.get('/', async (req, res) => {
   try {
-    const { 
-      tag, 
-      category, 
-      search, 
-      sortBy = 'createdAt', 
+    const {
+      tag,
+      category,
+      search,
+      sortBy = 'createdAt',
       order = 'desc',
       page = 1,
       limit = 20,
       boosted = false
     } = req.query;
-    
+
     const query = { status: 'active', isPublic: true };
-    
+
     // Apply filters
     if (tag) query.tags = tag;
     if (category) query.category = category;
+    // Use regex search instead of $text (more reliable, no index required)
     if (search) {
-      query.$text = { $search: search };
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
     }
     if (boosted === 'true') {
       query.isBoosted = true;
       query.boostExpiresAt = { $gt: new Date() };
     }
-    
+
     // Sorting
     const sortOptions = {};
     sortOptions[sortBy] = order === 'asc' ? 1 : -1;
-    
+
+    console.log('📹 Fetching videos with query:', JSON.stringify(query));
+
     const videos = await Video.find(query)
       .populate('uploader', 'username profilePicture')
       .sort(sortOptions)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .select('-comments');
-    
+
     const total = await Video.countDocuments(query);
-    
+
+    console.log(`📹 Found ${videos.length} videos (total: ${total})`);
+
     res.json({
       videos,
       pagination: {
@@ -273,8 +281,11 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get videos error:', error);
-    res.status(500).json({ error: 'Failed to get videos' });
+    console.error('❌ Get videos error:', error.message, error.stack);
+    res.status(500).json({
+      error: 'Failed to get videos',
+      details: error.message
+    });
   }
 });
 
