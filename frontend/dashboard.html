@@ -1231,8 +1231,14 @@
     
     <!-- Dashboard Real Data Loader -->
     <script>
+        console.log('🔧 [v2] Dashboard script block executing');
+
         // Load real user data from API with proper loading states
         document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🔧 [v2] DOMContentLoaded fired');
+            console.log('🔧 [v2] typeof loadUserVideos:', typeof loadUserVideos);
+            console.log('🔧 [v2] typeof loadRecentActivity:', typeof loadRecentActivity);
+
             // Show loading indicators
             showLoadingState();
 
@@ -1253,14 +1259,24 @@
                 updateDashboardStats(user);
 
                 // Load user's actual videos
-                console.log('📹 Loading user videos... [BUILD: 20260102-v2]');
-                await loadUserVideos(user._id);
-                console.log('📹 User videos loaded [BUILD: 20260102-v2]');
+                console.log('📹 [v2] Loading user videos...');
+                console.log('📹 [v2] loadUserVideos function:', loadUserVideos ? loadUserVideos.toString().substring(0, 100) : 'UNDEFINED');
+                try {
+                    await loadUserVideos(user._id);
+                    console.log('📹 [v2] User videos loaded successfully');
+                } catch (videoErr) {
+                    console.error('📹 [v2] Error in loadUserVideos:', videoErr);
+                }
 
                 // Load real activity feed
-                console.log('📋 About to call loadRecentActivity...');
-                await loadRecentActivity(user._id);
-                console.log('📋 loadRecentActivity completed');
+                console.log('📋 [v2] About to call loadRecentActivity...');
+                console.log('📋 [v2] loadRecentActivity function:', loadRecentActivity ? loadRecentActivity.toString().substring(0, 100) : 'UNDEFINED');
+                try {
+                    await loadRecentActivity(user._id);
+                    console.log('📋 [v2] loadRecentActivity completed successfully');
+                } catch (activityErr) {
+                    console.error('📋 [v2] Error in loadRecentActivity:', activityErr);
+                }
 
                 // Hide loading indicators
                 hideLoadingState();
