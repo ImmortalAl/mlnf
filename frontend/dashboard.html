@@ -3561,7 +3561,9 @@
     <!-- MLNF Dashboard Integration -->
     <script src="js/dashboard-api.js"></script>
     <script src="js/messaging.js"></script>
-    <script src="js/dashboard-init.js"></script>
+    <!-- Disabled: dashboard-init.js has conflicting function definitions that override inline implementations
+         The inline implementations (above) use correct backend API URLs for production -->
+    <!-- <script src="js/dashboard-init.js"></script> -->
     <script src="js/site-enhancements.js"></script>
     <script src="js/mobile-viewport-handler.js"></script>
 
