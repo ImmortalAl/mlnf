@@ -577,8 +577,8 @@
                 // Update stream info
                 document.querySelector('.stream-title h1').textContent = stream.title || 'MLNF Live Stream';
 
-                // Load HLS stream (direct from Oracle server nginx via HTTPS)
-                const streamUrl = `https://stream.mlnf.net/hls/${stream.streamKey}.m3u8`;
+                // Load HLS stream (direct from Oracle server nginx)
+                const streamUrl = `http://150.136.140.253:8080/hls/${stream.streamKey}.m3u8`;
 
                 console.log('Loading HLS stream:', streamUrl);
 
