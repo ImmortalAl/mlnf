@@ -297,7 +297,7 @@
 
         function renderWarriorCard(warrior, currentUserId) {
             const isCurrentUser = currentUserId && (warrior._id === currentUserId || warrior.id === currentUserId);
-            const avatarUrl = warrior.avatar || warrior.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(warrior.username)}&background=4A90E2&color=fff&size=150`;
+            const avatarUrl = warrior.profilePicture || warrior.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(warrior.username)}&background=4A90E2&color=fff&size=150`;
             
             const followerCount = warrior.followers?.length || warrior.followerCount || 0;
             const followingCount = warrior.following?.length || warrior.followingCount || 0;

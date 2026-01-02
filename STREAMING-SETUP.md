@@ -73,9 +73,8 @@ Viewers on mlnf.net/pages/live.html
 ## Databases
 
 **Production (Render + Oracle):**
-```
-mongodb+srv://cooldude1343:TestPass123@mlnf.5zppehf.mongodb.net/?appName=mlnf
-```
+- MongoDB Atlas cluster: `mlnf.5zppehf.mongodb.net`
+- Credentials: Stored in Render environment variables (never commit to repo)
 
 ---
 

@@ -281,7 +281,7 @@ class RavenMessenger {
 
         return this.conversations.map(conv => `
             <div class="conversation-item ${conv.unread ? 'unread' : ''}" data-user-id="${conv.userId}">
-                <img src="${conv.avatar || 'https://via.placeholder.com/150/4A90E2/FFFFFF?text=' + conv.username[0]}"
+                <img src="${conv.profilePicture || conv.avatar || 'https://via.placeholder.com/150/4A90E2/FFFFFF?text=' + conv.username[0]}"
                      alt="${conv.username}"
                      class="conversation-avatar">
                 <div class="conversation-info">
@@ -312,7 +312,7 @@ class RavenMessenger {
         const header = document.getElementById('threadHeader');
         header.innerHTML = `
             <div class="thread-user-info">
-                <img src="${conv?.avatar || 'https://via.placeholder.com/150'}" alt="${conv?.username}">
+                <img src="${conv?.profilePicture || conv?.avatar || 'https://via.placeholder.com/150'}" alt="${conv?.username}">
                 <div>
                     <h4>${conv?.username || 'Warrior'}</h4>
                     <span class="status-online"><i class="fas fa-circle"></i> Online</span>

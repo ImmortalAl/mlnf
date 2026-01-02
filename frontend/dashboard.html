@@ -1305,7 +1305,7 @@
             });
 
             // Update avatar images
-            const avatarUrl = user.avatar || user.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=D4AF37&color=1A2332&size=150`;
+            const avatarUrl = user.profilePicture || user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=D4AF37&color=1A2332&size=150`;
             document.querySelectorAll('.user-avatar').forEach(img => {
                 img.src = avatarUrl;
                 img.alt = username;
