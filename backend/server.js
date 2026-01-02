@@ -186,11 +186,13 @@ app.use('/api/livestream', livestreamRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
+  const bucket = req.app.get('bucket');
   res.json({
     status: 'healthy',
     timestamp: new Date(),
     environment: process.env.NODE_ENV,
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    gridfs: bucket ? 'ready' : 'not initialized'
   });
 });
 
