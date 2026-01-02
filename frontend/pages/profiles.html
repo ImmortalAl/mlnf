@@ -467,5 +467,34 @@
     </script>
     <script src="../js/site-enhancements.js"></script>
     <script src="js/mobile-viewport-handler.js"></script>
+
+    <!-- Sidebar Toggle Button (outside sidebar for proper fixed positioning) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
 </body>
 </html>
