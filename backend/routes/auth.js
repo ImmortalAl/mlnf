@@ -672,8 +672,8 @@ router.put('/update-profile', authMiddleware, [
     if (email !== undefined) user.email = email;
     if (bio !== undefined) user.bio = bio;
     if (location !== undefined) user.location = location;
-    if (avatar !== undefined) user.avatar = avatar;
-    if (privateProfile !== undefined) user.privateProfile = privateProfile;
+    if (avatar !== undefined) user.profilePicture = avatar;
+    if (privateProfile !== undefined) user.preferences.privateProfile = privateProfile;
     if (hideEmail !== undefined) user.hideEmail = hideEmail;
 
     // Update social links if provided

@@ -40,6 +40,34 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  firstName: {
+    type: String,
+    trim: true,
+    maxlength: [50, 'First name cannot exceed 50 characters'],
+    default: ''
+  },
+  lastName: {
+    type: String,
+    trim: true,
+    maxlength: [50, 'Last name cannot exceed 50 characters'],
+    default: ''
+  },
+  location: {
+    type: String,
+    trim: true,
+    maxlength: [100, 'Location cannot exceed 100 characters'],
+    default: ''
+  },
+  socialLinks: {
+    twitter: { type: String, trim: true, default: '' },
+    youtube: { type: String, trim: true, default: '' },
+    telegram: { type: String, trim: true, default: '' },
+    website: { type: String, trim: true, default: '' }
+  },
+  hideEmail: {
+    type: Boolean,
+    default: false
+  },
   runegoldBalance: {
     type: Number,
     default: 0,
