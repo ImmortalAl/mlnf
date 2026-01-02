@@ -988,14 +988,19 @@ const Messaging = {
     // Load chat history
     async loadChatHistory(userId) {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-            
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                console.log('📨 No token found, cannot load chat history');
+                return;
+            }
+
+            console.log('📨 Loading chat history for user:', userId);
             const response = await fetch(`${CONFIG.API_URL}/messages/conversation/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            console.log('📨 Chat history response:', response.ok ? 'OK' : 'FAILED');
             
             if (!response.ok) {
                 throw new Error('Failed to load chat history');
