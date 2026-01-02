@@ -124,15 +124,22 @@ body {
   padding-top: calc(var(--header-height) + 4rem); /* Header height + content padding */
 }
 
+/* Page hero sections also snap to header bottom */
+.page-hero,
+.mead-hall-hero {
+  margin-top: calc(-1 * var(--header-height)); /* Pull up into header space */
+  padding-top: calc(var(--header-height) + 2rem); /* Header height + smaller content padding */
+  padding-bottom: 2rem;
+}
+
 /* Remove margin when sidebar is collapsed */
 body.sidebar-collapsed {
   margin-right: 0;
 }
 
 /* Page content starts below fixed header via body padding-top */
-.page-hero,
 main > section:first-child,
-body > section:first-of-type {
+body > section:first-of-type:not(.page-hero):not(.mead-hall-hero):not(.hero) {
   margin-top: 0 !important;
 }
 
