@@ -393,8 +393,10 @@ router.patch('/:id/pin', authMiddleware, [
   param('id').isMongoId()
 ], async (req, res) => {
   try {
-    // TODO: Add admin check here
-    // For now, any logged in user can pin (you should add isAdmin middleware)
+    // Admin/moderator check
+    if (!['admin', 'moderator'].includes(req.user.role)) {
+      return res.status(403).json({ error: 'Only admins and moderators can pin threads' });
+    }
 
     const thread = await Forum.findById(req.params.id);
     if (!thread) {
@@ -419,7 +421,10 @@ router.patch('/:id/lock', authMiddleware, [
   param('id').isMongoId()
 ], async (req, res) => {
   try {
-    // TODO: Add admin check here
+    // Admin/moderator check
+    if (!['admin', 'moderator'].includes(req.user.role)) {
+      return res.status(403).json({ error: 'Only admins and moderators can lock threads' });
+    }
 
     const thread = await Forum.findById(req.params.id);
     if (!thread) {

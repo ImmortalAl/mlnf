@@ -596,18 +596,18 @@ router.get('/users', async (req, res) => {
     
     // Fetch users
     const users = await User.find(query)
-      .select('username email bio profilePicture avatar badges followers following createdAt')
+      .select('username email bio profilePicture avatar badges followers following uploadedVideos createdAt')
       .sort(sortQuery)
       .limit(parseInt(limit))
       .skip(skip)
       .lean();
-    
+
     // Add computed fields
     const usersWithCounts = users.map(user => ({
       ...user,
       followerCount: user.followers?.length || 0,
       followingCount: user.following?.length || 0,
-      videoCount: 0 // TODO: Add actual video count from Video model
+      videoCount: user.uploadedVideos?.length || 0
     }));
     
     const total = await User.countDocuments(query);
