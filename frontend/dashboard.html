@@ -1231,14 +1231,8 @@
     
     <!-- Dashboard Real Data Loader -->
     <script>
-        console.log('🔧 [v2] Dashboard script block executing');
-
         // Load real user data from API with proper loading states
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🔧 [v2] DOMContentLoaded fired');
-            console.log('🔧 [v2] typeof loadUserVideos:', typeof loadUserVideos);
-            console.log('🔧 [v2] typeof loadRecentActivity:', typeof loadRecentActivity);
-
             // Show loading indicators
             showLoadingState();
 
@@ -1259,24 +1253,10 @@
                 updateDashboardStats(user);
 
                 // Load user's actual videos
-                console.log('📹 [v2] Loading user videos...');
-                console.log('📹 [v2] loadUserVideos function:', loadUserVideos ? loadUserVideos.toString().substring(0, 100) : 'UNDEFINED');
-                try {
-                    await loadUserVideos(user._id);
-                    console.log('📹 [v2] User videos loaded successfully');
-                } catch (videoErr) {
-                    console.error('📹 [v2] Error in loadUserVideos:', videoErr);
-                }
+                await loadUserVideos(user._id);
 
                 // Load real activity feed
-                console.log('📋 [v2] About to call loadRecentActivity...');
-                console.log('📋 [v2] loadRecentActivity function:', loadRecentActivity ? loadRecentActivity.toString().substring(0, 100) : 'UNDEFINED');
-                try {
-                    await loadRecentActivity(user._id);
-                    console.log('📋 [v2] loadRecentActivity completed successfully');
-                } catch (activityErr) {
-                    console.error('📋 [v2] Error in loadRecentActivity:', activityErr);
-                }
+                await loadRecentActivity(user._id);
 
                 // Hide loading indicators
                 hideLoadingState();
@@ -1402,14 +1382,10 @@
             requestAnimationFrame(update);
         }
 
-        // Load user's actual videos [BUILD: 20260102-v2]
+        // Load user's actual videos
         async function loadUserVideos(userId) {
-            console.log('🎬 [v2] loadUserVideos called with userId:', userId);
             const videosContainer = document.getElementById('yourVideosGrid');
-            if (!videosContainer) {
-                console.log('🎬 videosContainer not found, returning');
-                return;
-            }
+            if (!videosContainer) return;
 
             // Show loading state
             videosContainer.innerHTML = '<div class="col-span-3 text-center" style="padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--indigo);"></i><p class="mt-2 text-muted">Loading your videos...</p></div>';
@@ -1423,26 +1399,18 @@
                         ? 'http://localhost:5000/api'
                         : 'https://much-love-no-fear.onrender.com/api';
 
-                console.log('🎬 Videos API base:', apiBase);
-
                 // Fetch user's videos from API
                 const token = localStorage.getItem('mlnf_token');
-                const videoUrl = `${apiBase}/videos/user/${userId}`;
-                console.log('🎬 Fetching videos from:', videoUrl);
-
-                const response = await fetch(videoUrl, {
+                const response = await fetch(`${apiBase}/videos/user/${userId}`, {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                 });
 
-                console.log('🎬 Videos response status:', response.status);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch videos: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log('🎬 Videos data received:', data);
                 const videos = data.videos || [];
-                console.log('🎬 Videos count:', videos.length);
 
                 if (videos.length > 0) {
                     // Clear loading message
@@ -1533,16 +1501,10 @@
             return num.toString();
         }
 
-        // Load recent activity feed [BUILD: 20260102-v2]
+        // Load recent activity feed
         async function loadRecentActivity(userId) {
-            console.log('📋 [v2] loadRecentActivity called with userId:', userId);
-
             const activityTimeline = document.querySelector('.activity-timeline');
-            if (!activityTimeline) {
-                console.error('❌ Activity timeline element not found!');
-                return;
-            }
-            console.log('✅ Activity timeline element found');
+            if (!activityTimeline) return;
 
             // Clear placeholder activity
             activityTimeline.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Loading activity...</div>';
@@ -1551,28 +1513,22 @@
                 // Fetch from activity API endpoint (use proper backend URL)
                 const token = localStorage.getItem('mlnf_token');
                 const hostname = window.location.hostname;
-                console.log('🌐 Hostname:', hostname);
-
                 const apiBase = (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app'))
                     ? 'https://much-love-no-fear.onrender.com/api'
                     : (hostname === 'localhost' || hostname === '127.0.0.1')
                         ? 'http://localhost:5000/api'
                         : 'https://much-love-no-fear.onrender.com/api';
 
-                console.log('📡 Fetching activity from:', `${apiBase}/auth/activity`);
                 const response = await fetch(`${apiBase}/auth/activity`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                console.log('📡 Activity response status:', response.status);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch activity');
                 }
 
                 const data = await response.json();
-                console.log('📋 Activity data received:', data);
                 const activities = data.activities || [];
-                console.log('📋 Activities count:', activities.length);
 
                 // Display activities or show empty state
                 if (activities.length > 0) {
