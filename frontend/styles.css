@@ -10,7 +10,7 @@
 :root {
   /* Mobile viewport fix - will be set by JavaScript */
   --vh: 1vh;
-  --header-height: 115px; /* Must match .site-header height */
+  --header-height: 70px; /* Compact header height */
   
   /* Primary Colors */
   --peach: #FF6B6B;
@@ -288,7 +288,7 @@ a:hover {
   width: auto; /* Auto width respecting left/right */
   z-index: 1000;
   border-bottom: 3px solid var(--gold);
-  height: 115px; /* Fixed height to prevent jumping */
+  height: var(--header-height); /* Use variable for consistent height */
 }
 
 /* Header expands when sidebar is collapsed */
@@ -296,17 +296,7 @@ body.sidebar-collapsed .site-header {
   right: 0;
 }
 
-/* Extend header background below to prevent sub-pixel gaps */
-.site-header::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: #1A2332;
-  z-index: -1;
-}
+/* Header border extension removed - cleaner appearance */
 
 /* Header container should fill height and center content */
 .site-header .container {
