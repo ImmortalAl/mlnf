@@ -1008,12 +1008,13 @@ const Messaging = {
             
             const data = await response.json();
             
-            if (data.success && data.messages) {
+            if (data.success && data.messages && data.messages.length > 0) {
                 const container = document.getElementById('messagesContainer');
                 if (!container) return;
-                
+
+                console.log('📨 Displaying', data.messages.length, 'messages from history');
                 container.innerHTML = '';
-                
+
                 // Display all messages
                 data.messages.forEach(msg => {
                     const isSent = msg.sender === (State.user.id || State.user._id);
