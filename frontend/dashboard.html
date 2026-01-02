@@ -1477,60 +1477,30 @@
             activityTimeline.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Loading activity...</div>';
 
             try {
-                // In a full implementation, this would fetch from an activity/notifications endpoint
-                // For now, we'll generate activity from user's actual data
-                const response = await APIClient.auth.getProfile();
-                const user = response.user;
+                // Fetch from activity API endpoint
+                const token = localStorage.getItem('mlnf_token');
+                const response = await fetch('/api/auth/activity', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
 
-                const activities = [];
-
-                // Check if user has videos with views
-                if (user.uploadedVideos && user.uploadedVideos.length > 0) {
-                    const topVideo = user.uploadedVideos.reduce((prev, current) =>
-                        (current.views > (prev?.views || 0)) ? current : prev
-                    , null);
-
-                    if (topVideo && topVideo.views > 0) {
-                        activities.push({
-                            icon: 'fa-video',
-                            color: 'var(--success)',
-                            text: `Your video "${topVideo.title}" has ${formatNumber(topVideo.views)} views!`,
-                            time: 'Recently'
-                        });
-                    }
+                if (!response.ok) {
+                    throw new Error('Failed to fetch activity');
                 }
 
-                // Check if user has followers
-                if (user.followers && user.followers.length > 0) {
-                    const recentFollower = user.followers[user.followers.length - 1];
-                    activities.push({
-                        icon: 'fa-user-plus',
-                        color: 'var(--peach)',
-                        text: `<strong>${recentFollower.username}</strong> started following you`,
-                        time: 'Recently'
-                    });
-                }
-
-                // If user has Runegold
-                if (user.runegoldBalance > 0) {
-                    activities.push({
-                        icon: 'fa-coins',
-                        color: 'var(--gold)',
-                        text: `Your Runegold balance: <strong>${user.runegoldBalance} RG</strong>`,
-                        time: 'Current'
-                    });
-                }
+                const data = await response.json();
+                const activities = data.activities || [];
 
                 // Display activities or show empty state
                 if (activities.length > 0) {
                     activityTimeline.innerHTML = activities.map(activity => `
-                        <div class="activity-item">
+                        <div class="activity-item" ${activity.link ? `onclick="navigateToActivity('${activity.link}')" style="cursor: pointer;"` : ''}>
                             <div class="activity-icon" style="background: ${activity.color};">
                                 <i class="fas ${activity.icon}"></i>
                             </div>
                             <div class="activity-content">
                                 <p>${activity.text}</p>
-                                <small class="text-muted">${activity.time}</small>
+                                ${activity.subtext ? `<small class="text-muted" style="display: block;">${activity.subtext}</small>` : ''}
+                                <small class="text-muted">${activity.timeFormatted}</small>
                             </div>
                         </div>
                     `).join('');
@@ -1539,14 +1509,63 @@
                         <div class="text-center text-muted" style="padding: 2rem;">
                             <i class="fas fa-history" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
                             <p>No recent activity</p>
-                            <small>Start uploading videos and engaging with the community!</small>
+                            <small>Start uploading videos, writing blogs, and engaging with the community!</small>
                         </div>
                     `;
                 }
 
             } catch (error) {
                 console.error('Error loading activity:', error);
-                activityTimeline.innerHTML = '<div class="text-center text-error">Failed to load activity</div>';
+                // Fallback to basic activity from profile
+                try {
+                    const profileResponse = await APIClient.auth.getProfile();
+                    const user = profileResponse.user;
+                    const fallbackActivities = [];
+
+                    if (user.runegoldBalance > 0) {
+                        fallbackActivities.push({
+                            icon: 'fa-coins',
+                            color: 'var(--gold)',
+                            text: `Your Runegold balance: <strong>${user.runegoldBalance} RG</strong>`,
+                            timeFormatted: 'Current'
+                        });
+                    }
+
+                    if (fallbackActivities.length > 0) {
+                        activityTimeline.innerHTML = fallbackActivities.map(activity => `
+                            <div class="activity-item">
+                                <div class="activity-icon" style="background: ${activity.color};">
+                                    <i class="fas ${activity.icon}"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>${activity.text}</p>
+                                    <small class="text-muted">${activity.timeFormatted}</small>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        activityTimeline.innerHTML = `
+                            <div class="text-center text-muted" style="padding: 2rem;">
+                                <i class="fas fa-history" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
+                                <p>No recent activity</p>
+                            </div>
+                        `;
+                    }
+                } catch (e) {
+                    activityTimeline.innerHTML = '<div class="text-center text-muted">Activity feed unavailable</div>';
+                }
+            }
+        }
+
+        // Navigate to activity link
+        function navigateToActivity(link) {
+            if (link.startsWith('#')) {
+                // Handle internal section navigation (e.g., #messages)
+                const sectionId = link.substring(1);
+                const navBtn = document.querySelector(`[onclick*="${sectionId}"]`);
+                if (navBtn) navBtn.click();
+            } else {
+                window.location.href = link;
             }
         }
 
