@@ -10,7 +10,7 @@
 :root {
   /* Mobile viewport fix - will be set by JavaScript */
   --vh: 1vh;
-  --header-height: 70px; /* Compact header height */
+  --header-height: 60px; /* Compact header height */
   
   /* Primary Colors */
   --peach: #FF6B6B;
