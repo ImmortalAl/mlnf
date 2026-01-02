@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Blog Post - Much Love, No Fear</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/viking-components.css">
+    <link rel="stylesheet" href="../css/mobile-optimized.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .blog-post-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .blog-post-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid var(--gold);
+        }
+
+        .blog-post-title {
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .blog-post-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .blog-post-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blog-post-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--gold);
+            color: var(--navy);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .blog-post-featured-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+        }
+
+        .blog-post-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .blog-post-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-post-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--navy);
+        }
+
+        .blog-post-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--navy);
+        }
+
+        .blog-post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .blog-post-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+        }
+
+        .blog-post-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .author-card {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            margin-top: 2rem;
+        }
+
+        .author-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .author-info h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--navy);
+        }
+
+        .author-info p {
+            margin: 0;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .comments-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 1rem;
+        }
+
+        .comment-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--error);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-title {
+                font-size: 1.75rem;
+            }
+
+            .blog-post-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .blog-post-header,
+            .blog-post-content,
+            .comments-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header Spacer -->
+    <div class="header-spacer"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="flex flex-between">
+                <div class="site-logo">
+                    <i class="fas fa-shield-alt site-logo-icon"></i>
+                    <span>Much Love, No Fear</span>
+                </div>
+
+                <nav class="site-nav" id="mainNav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="live.html" class="nav-link">Live</a>
+                    <a href="archive.html" class="nav-link">Love Vault</a>
+                    <a href="blog.html" class="nav-link active">Blog</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="messageboard.html" class="nav-link">Board</a>
+                    <a href="donations.html" class="nav-link">Support</a>
+                    <a href="merch.html" class="nav-link">Merch</a>
+                    <a href="auth.html" class="nav-link" id="authLink">Login</a>
+                    <a href="../dashboard.html" class="nav-link hidden" id="dashboardLink">Dashboard</a>
+                </nav>
+
+                <button id="mobileMenuToggle" class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content container">
+        <div class="blog-post-container">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--gold);"></i>
+                <p style="margin-top: 1rem;">Loading blog post...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state hidden">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+                <h2 style="margin-top: 1rem;">Post Not Found</h2>
+                <p>The blog post you're looking for doesn't exist or has been removed.</p>
+                <a href="blog.html" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-arrow-left"></i> Back to Blog
+                </a>
+            </div>
+
+            <!-- Blog Post Content (hidden until loaded) -->
+            <div id="postContent" class="hidden">
+                <!-- Header -->
+                <div class="blog-post-header">
+                    <span class="blog-post-category" id="postCategory">General</span>
+                    <h1 class="blog-post-title" id="postTitle">Loading...</h1>
+                    <div class="blog-post-meta">
+                        <div class="blog-post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span id="postAuthor">Unknown</span>
+                        </div>
+                        <div class="blog-post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="postDate">-</span>
+                        </div>
+                        <div class="blog-post-meta-item">
+                            <i class="fas fa-eye"></i>
+                            <span id="postViews">0</span> views
+                        </div>
+                        <div class="blog-post-meta-item">
+                            <i class="fas fa-heart"></i>
+                            <span id="postLikes">0</span> likes
+                        </div>
+                    </div>
+
+                    <!-- Featured Image -->
+                    <img id="postImage" class="blog-post-featured-image hidden" src="" alt="">
+                </div>
+
+                <!-- Content -->
+                <div class="blog-post-content" id="postBody">
+                    <!-- Content injected here -->
+                </div>
+
+                <!-- Tags -->
+                <div class="blog-post-tags" id="postTags">
+                    <!-- Tags injected here -->
+                </div>
+
+                <!-- Actions -->
+                <div class="blog-post-actions">
+                    <button class="btn btn-outline" id="likeBtn" onclick="toggleLike()">
+                        <i class="fas fa-heart"></i> Like
+                    </button>
+                    <button class="btn btn-outline" onclick="sharePost()">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                    <a href="blog.html" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Blog
+                    </a>
+                </div>
+
+                <!-- Author Card -->
+                <div class="author-card">
+                    <div class="author-avatar" id="authorAvatar">A</div>
+                    <div class="author-info">
+                        <h4 id="authorName">Author</h4>
+                        <p id="authorBio">Writer at Much Love, No Fear</p>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h3><i class="fas fa-comments"></i> Comments (<span id="commentCount">0</span>)</h3>
+
+                    <!-- Comment Form -->
+                    <div class="comment-form" id="commentForm">
+                        <textarea id="commentInput" placeholder="Share your thoughts..."></textarea>
+                        <button class="btn btn-primary" onclick="submitComment()">
+                            <i class="fas fa-paper-plane"></i> Post Comment
+                        </button>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div id="commentsList">
+                        <!-- Comments injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2024 Much Love, No Fear. All rights reserved. Built with love and Viking spirit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Sidebar - Online Users -->
+    <aside class="sidebar" id="sidebar">
+        <div class="runegold-display" id="runegoldDisplay">
+            <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Your Runegold</div>
+            <div class="runegold-amount" id="runegoldAmount">0</div>
+            <a href="../dashboard.html" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Shop
+            </a>
+        </div>
+
+        <h6 style="margin-bottom: 1rem;">
+            <i class="fas fa-users"></i> Online Users
+            <span id="onlineCount" style="font-size: 0.75rem; opacity: 0.7;">(0)</span>
+        </h6>
+
+        <ul class="online-users-list" id="onlineUsersList">
+            <li class="text-center text-muted" style="padding: 2rem 0;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">No users online</p>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="../auth-handler.js"></script>
+    <script src="../scripts.js"></script>
+    <script src="../js/site-enhancements.js"></script>
+    <script src="js/mobile-viewport-handler.js"></script>
+
+    <script>
+        // API Configuration
+        const API_BASE = (function() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('netlify.app') || hostname.includes('mlnf.net') || hostname.includes('vercel.app')) {
+                return 'https://much-love-no-fear.onrender.com/api';
+            }
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5000/api';
+            }
+            return 'https://much-love-no-fear.onrender.com/api';
+        })();
+
+        let currentPost = null;
+
+        // Get post ID from URL
+        function getPostId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // Load blog post
+        async function loadBlogPost() {
+            const postId = getPostId();
+            if (!postId) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/blog/${postId}`);
+
+                if (!response.ok) {
+                    showError();
+                    return;
+                }
+
+                const data = await response.json();
+                currentPost = data.post || data;
+
+                displayPost(currentPost);
+            } catch (error) {
+                console.error('Error loading blog post:', error);
+                showError();
+            }
+        }
+
+        // Display the blog post
+        function displayPost(post) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('postContent').classList.remove('hidden');
+
+            // Update page title
+            document.title = `${post.title} - Much Love, No Fear`;
+
+            // Populate content
+            document.getElementById('postCategory').textContent = post.category || 'General';
+            document.getElementById('postTitle').textContent = post.title;
+            document.getElementById('postAuthor').textContent = post.author?.username || 'Anonymous';
+            document.getElementById('postDate').textContent = formatDate(post.createdAt);
+            document.getElementById('postViews').textContent = post.views || 0;
+            document.getElementById('postLikes').textContent = post.likes?.length || 0;
+
+            // Featured image
+            if (post.featuredImage) {
+                const img = document.getElementById('postImage');
+                img.src = post.featuredImage;
+                img.alt = post.title;
+                img.classList.remove('hidden');
+            }
+
+            // Content (handle HTML or plain text)
+            const contentEl = document.getElementById('postBody');
+            if (post.content.includes('<')) {
+                contentEl.innerHTML = post.content;
+            } else {
+                // Convert plain text to paragraphs
+                contentEl.innerHTML = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            }
+
+            // Tags
+            const tagsEl = document.getElementById('postTags');
+            if (post.tags && post.tags.length > 0) {
+                tagsEl.innerHTML = '<i class="fas fa-tags" style="color: var(--gray-500);"></i> ' +
+                    post.tags.map(tag => `<span class="blog-post-tag">${tag}</span>`).join('');
+            } else {
+                tagsEl.classList.add('hidden');
+            }
+
+            // Author card
+            if (post.author) {
+                document.getElementById('authorAvatar').textContent = post.author.username?.charAt(0).toUpperCase() || 'A';
+                document.getElementById('authorName').textContent = post.author.username || 'Anonymous';
+                document.getElementById('authorBio').textContent = post.author.bio || 'Writer at Much Love, No Fear';
+            }
+
+            // Comments
+            displayComments(post.comments || []);
+
+            // Update like button state
+            updateLikeButton();
+        }
+
+        // Display comments
+        function displayComments(comments) {
+            document.getElementById('commentCount').textContent = comments.length;
+
+            const listEl = document.getElementById('commentsList');
+            if (comments.length === 0) {
+                listEl.innerHTML = '<p class="text-muted text-center" style="padding: 2rem;">No comments yet. Be the first to share your thoughts!</p>';
+                return;
+            }
+
+            listEl.innerHTML = comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-author">
+                        <div class="comment-avatar">${comment.user?.username?.charAt(0).toUpperCase() || 'A'}</div>
+                        <div>
+                            <strong>${comment.user?.username || 'Anonymous'}</strong>
+                            <span class="text-muted" style="margin-left: 0.5rem; font-size: 0.85rem;">
+                                ${formatDate(comment.createdAt)}
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin: 0; color: var(--gray-700);">${escapeHtml(comment.content)}</p>
+                </div>
+            `).join('');
+        }
+
+        // Toggle like
+        async function toggleLike() {
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                alert('Please log in to like posts');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/blog/${currentPost._id}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('postLikes').textContent = data.likes || 0;
+                    updateLikeButton();
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+            }
+        }
+
+        // Update like button state
+        function updateLikeButton() {
+            const userStr = localStorage.getItem('mlnf_user');
+            if (!userStr || !currentPost) return;
+
+            try {
+                const user = JSON.parse(userStr);
+                const userId = user._id || user.id;
+                const isLiked = currentPost.likes?.includes(userId);
+
+                const btn = document.getElementById('likeBtn');
+                if (isLiked) {
+                    btn.classList.add('btn-primary');
+                    btn.classList.remove('btn-outline');
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline');
+                }
+            } catch (e) {}
+        }
+
+        // Submit comment
+        async function submitComment() {
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                alert('Please log in to comment');
+                return;
+            }
+
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+            if (!content) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/blog/${currentPost._id}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    // Reload post to get updated comments
+                    loadBlogPost();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to post comment');
+                }
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                alert('Failed to post comment');
+            }
+        }
+
+        // Share post
+        function sharePost() {
+            if (navigator.share) {
+                navigator.share({
+                    title: currentPost.title,
+                    text: currentPost.excerpt || 'Check out this blog post!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+
+        // Show error state
+        function showError() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBlogPost();
+        });
+    </script>
+</body>
+</html>
