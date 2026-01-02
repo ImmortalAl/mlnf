@@ -2416,8 +2416,8 @@
                 document.getElementById('bioCharCount').textContent = (user.bio || '').length;
                 
                 // Update avatar preview if exists
-                if (user.avatar) {
-                    document.getElementById('profileAvatarPreview').src = user.avatar;
+                if (user.profilePicture) {
+                    document.getElementById('profileAvatarPreview').src = user.profilePicture;
                 }
             } catch (error) {
                 console.error('Error loading profile:', error);

@@ -49,8 +49,8 @@ function updateWelcomeMessage(user) {
 
     // Update profile avatar if exists
     const avatarElement = document.querySelector('.user-avatar');
-    if (avatarElement && user.avatar) {
-        avatarElement.src = user.avatar;
+    if (avatarElement && user.profilePicture) {
+        avatarElement.src = user.profilePicture;
     }
 }
 
