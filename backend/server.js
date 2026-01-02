@@ -200,6 +200,7 @@ app.get('/api/health', (req, res) => {
 const activeUsers = new Map();
 const userSockets = new Map();
 const streamViewers = new Map(); // Track viewers per stream
+app.locals.streamViewers = streamViewers; // Make accessible to routes
 
 // Helper to get unique online users (deduplicates multiple tabs/connections)
 function getUniqueOnlineUsers() {

@@ -25,10 +25,23 @@ router.get('/fleet', async (req, res) => {
       .sort(sortOption)
       .limit(parseInt(limit));
 
-    // Add streamKey back to each stream (toJSON transform removes it)
+    // Get real-time viewer counts from Socket.io tracking
+    const streamViewers = req.app.locals.streamViewers || new Map();
+
+    // Add streamKey and real-time viewer counts to each stream
     const streamsWithKeys = streams.map(stream => {
       const streamObj = stream.toJSON();
       streamObj.streamKey = stream.streamKey;
+
+      // Use real-time viewer count if available, otherwise fall back to DB value
+      const streamId = stream._id.toString();
+      const realtimeViewers = streamViewers.has(streamId)
+        ? streamViewers.get(streamId).size
+        : 0;
+
+      // Use the higher of real-time or database count (real-time is more accurate when available)
+      streamObj.currentViewers = realtimeViewers > 0 ? realtimeViewers : (stream.currentViewers || 0);
+
       return streamObj;
     });
 
