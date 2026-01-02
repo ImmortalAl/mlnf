@@ -115,7 +115,7 @@ class RavenMessenger {
 
     async loadConversations() {
         try {
-            const response = await fetch('https://much-love-no-fear.onrender.com/api/messages', {
+            const response = await fetch('https://much-love-no-fear.onrender.com/api/messages/conversations', {
                 headers: { 'Authorization': `Bearer ${this.token}` }
             });
             const data = await response.json();
@@ -149,7 +149,7 @@ class RavenMessenger {
                 },
                 body: JSON.stringify({
                     recipientId,
-                    content
+                    message: content
                 })
             });
 
@@ -167,7 +167,7 @@ class RavenMessenger {
 
     handleIncomingMessage(message) {
         // Add to active conversation if relevant
-        if (this.activeConversation && message.senderId === this.activeConversation.userId) {
+        if (this.activeConversation && message.sender === this.activeConversation.userId) {
             this.appendMessageToChat(message);
         }
 
@@ -354,7 +354,7 @@ class RavenMessenger {
     }
 
     renderMessage(message) {
-        const isOwn = message.senderId === this.currentUser._id;
+        const isOwn = message.sender === this.currentUser._id || message.sender?.toString() === this.currentUser._id;
         const time = new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         return `
@@ -362,7 +362,7 @@ class RavenMessenger {
                 ${!isOwn ? `<img src="${message.senderAvatar || 'https://via.placeholder.com/40'}" alt="${message.senderName}" class="message-avatar">` : ''}
                 <div class="message-content">
                     <div class="message-bubble">
-                        ${message.content}
+                        ${message.message || message.content}
                     </div>
                     <div class="message-time">${time}</div>
                 </div>
