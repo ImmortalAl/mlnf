@@ -2192,25 +2192,29 @@
             }
         });
 
-        // User menu toggle - wait for DOM to be ready
-        document.addEventListener('DOMContentLoaded', function() {
+        // User menu toggle - runs immediately since we're at bottom of body
+        (function initUserMenu() {
             const userMenuToggle = document.getElementById('userMenuToggle');
             const userMenuDropdown = document.getElementById('userMenuDropdown');
 
+            console.log('🔧 User menu init - toggle:', !!userMenuToggle, 'dropdown:', !!userMenuDropdown);
+
             if (userMenuToggle && userMenuDropdown) {
                 userMenuToggle.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent document click from immediately closing
+                    e.stopPropagation();
+                    console.log('🔧 User menu clicked');
                     userMenuDropdown.classList.toggle('hidden');
                 });
 
-                // Close dropdown when clicking outside
                 document.addEventListener('click', function(e) {
                     if (!userMenuToggle.contains(e.target) && !userMenuDropdown.contains(e.target)) {
                         userMenuDropdown.classList.add('hidden');
                     }
                 });
+            } else {
+                console.error('❌ User menu elements not found!');
             }
-        });
+        })();
 
         // Runegold Shop Functions
         function openRunegoldShop() {
@@ -2617,10 +2621,15 @@
         let currentStream = null;
         let viewerCountInterval = null;
 
-        // Dashboard Navigation - wait for DOM
-        document.addEventListener('DOMContentLoaded', function() {
+        // Dashboard Navigation - runs immediately since we're at bottom of body
+        (function initDashboardNav() {
             const navLinks = document.querySelectorAll('.dashboard-nav a');
             console.log('📍 Dashboard nav links found:', navLinks.length);
+
+            if (navLinks.length === 0) {
+                console.error('❌ No dashboard nav links found!');
+                return;
+            }
 
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -2649,11 +2658,11 @@
                     } else if (section === 'messages') {
                         document.getElementById('messagesSection')?.classList.remove('hidden');
                         loadConversations();
-                        initMessagingSocket(); // Initialize socket when viewing messages
+                        initMessagingSocket();
                     }
                 });
             });
-        });
+        })();
 
         // ===== MESSAGING FUNCTIONALITY =====
 
