@@ -35,12 +35,24 @@
     
     // Validate token with backend
     async function validateToken(token) {
-        // Check if this is a local token (offline mode)
+        // Local tokens are only valid if we're truly offline
+        // If we can reach the server, we should validate properly
         if (token.startsWith('local_')) {
-            console.log('✅ Local token detected, skipping backend validation');
-            return true;
+            console.log('⚠️ Local token detected - checking if we can reach server...');
+            try {
+                const testResponse = await fetch(getAPIBaseURL() + '/health', { method: 'GET' });
+                if (testResponse.ok) {
+                    // Server is reachable, local token is not valid
+                    console.log('❌ Server reachable but using local token - clearing session');
+                    return false;
+                }
+            } catch (e) {
+                // Server not reachable, allow local token for offline mode
+                console.log('✅ Server unreachable - allowing local token for offline mode');
+                return true;
+            }
         }
-        
+
         try {
             // Get API URL based on environment
             const API_BASE_URL = getAPIBaseURL();
