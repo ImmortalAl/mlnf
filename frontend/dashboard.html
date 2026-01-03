@@ -2209,16 +2209,59 @@
                 const data = await response.json();
 
                 if (data.streams && data.streams.length > 0) {
+                    // Check for live stream first, then offline (pending) stream
                     const liveStream = data.streams.find(s => s.status === 'live');
-                    if (liveStream) {
-                        console.log('🔴 Active stream found:', liveStream.title);
-                        window.globalActiveStreamId = liveStream._id;
+                    const offlineStream = data.streams.find(s => s.status === 'offline');
+                    const activeStream = liveStream || offlineStream;
 
-                        const titleEl = document.getElementById('globalStreamTitle');
-                        const bannerEl = document.getElementById('globalLiveBanner');
+                    if (activeStream) {
+                        console.log('🔴 Active stream found:', activeStream.title, 'Status:', activeStream.status);
+                        window.globalActiveStreamId = activeStream._id;
+                        currentStream = activeStream;
 
-                        if (titleEl) titleEl.textContent = liveStream.title;
-                        if (bannerEl) bannerEl.style.display = 'block';
+                        // Show global banner for live streams
+                        if (liveStream) {
+                            const titleEl = document.getElementById('globalStreamTitle');
+                            const bannerEl = document.getElementById('globalLiveBanner');
+                            if (titleEl) titleEl.textContent = liveStream.title;
+                            if (bannerEl) bannerEl.style.display = 'block';
+                        }
+
+                        // Fetch full stream details (including streamKey)
+                        const detailResponse = await fetch(`${DASHBOARD_API_BASE}/livestream/${activeStream._id}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+
+                        if (detailResponse.ok) {
+                            const detailData = await detailResponse.json();
+                            const stream = detailData.stream;
+
+                            // Populate stream key
+                            if (stream.streamKey) {
+                                document.getElementById('streamKeyValue').value = stream.streamKey;
+                                document.getElementById('streamKeyDisplay').classList.remove('hidden');
+                            }
+
+                            // Populate watch URL
+                            const watchUrl = `${window.location.origin}/pages/live.html?stream=${stream._id}`;
+                            document.getElementById('watchUrlValue').value = watchUrl;
+
+                            // Show OBS guide
+                            document.getElementById('obsGuide').classList.remove('hidden');
+
+                            // Update status indicators
+                            if (stream.status === 'live') {
+                                document.getElementById('streamStatusOffline').classList.add('hidden');
+                                document.getElementById('streamStatusLive').classList.remove('hidden');
+                            } else {
+                                document.getElementById('streamStatusOffline').classList.remove('hidden');
+                                document.getElementById('streamStatusLive').classList.add('hidden');
+                                // Start polling for when stream goes live
+                                startStreamStatusPolling();
+                            }
+
+                            console.log('✅ Stream info restored - Watch URL:', watchUrl);
+                        }
                     }
                 }
             } catch (error) {
