@@ -1283,10 +1283,13 @@
                 hideLoadingState();
 
                 // Check if this is an authentication error
-                if (error.message && (error.message.includes('authentication') ||
-                    error.message.includes('token') ||
-                    error.message.includes('unauthorized') ||
-                    error.message.includes('401'))) {
+                const errMsg = (error.message || '').toLowerCase();
+                if (errMsg.includes('authenticat') ||  // Catches "authenticate", "authentication"
+                    errMsg.includes('token') ||
+                    errMsg.includes('unauthorized') ||
+                    errMsg.includes('401') ||
+                    errMsg.includes('please log') ||
+                    errMsg.includes('session')) {
                     // Clear invalid session and redirect to login
                     console.log('🔐 Authentication failed - redirecting to login');
                     localStorage.removeItem('mlnf_token');
