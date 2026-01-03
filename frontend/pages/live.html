@@ -722,6 +722,9 @@
             }
         }
 
+        // Fleet auto-refresh interval
+        let fleetRefreshInterval = null;
+
         // Show Fleet (browse all live streams)
         async function showFleet() {
             // Show fleet content, hide stream content
@@ -731,6 +734,11 @@
             const fleetGrid = document.getElementById('fleetGrid');
             const fleetEmpty = document.getElementById('fleetEmpty');
             const fleetLoading = document.getElementById('fleetLoading');
+
+            // Start auto-refresh (every 15 seconds)
+            if (!fleetRefreshInterval) {
+                fleetRefreshInterval = setInterval(refreshFleet, 15000);
+            }
 
             try {
                 const response = await fetch(`${LIVE_API_BASE}/livestream/fleet`);
@@ -754,13 +762,13 @@
                                    </div>`
                             }
                             <span class="live-badge"><i class="fas fa-circle"></i> LIVE</span>
-                            <span class="viewer-count"><i class="fas fa-eye"></i> ${stream.viewerCount || 0}</span>
+                            <span class="viewer-count"><i class="fas fa-eye"></i> ${stream.currentViewers || 0}</span>
                         </div>
                         <div class="fleet-card-body">
                             <div class="fleet-card-title">${escapeHtml(stream.title)}</div>
                             <div class="fleet-card-creator">
-                                ${stream.creator?.avatar
-                                    ? `<img src="${stream.creator.avatar}" alt="${stream.creator.username}">`
+                                ${stream.creator?.profilePicture
+                                    ? `<img src="${stream.creator.profilePicture}" alt="${stream.creator.username}">`
                                     : `<i class="fas fa-user-circle"></i>`
                                 }
                                 <span>${stream.creator?.username || 'Anonymous'}</span>
@@ -776,6 +784,74 @@
                 fleetEmpty.querySelector('p').textContent = 'Failed to load streams. Please try again.';
             }
         }
+
+        // Refresh Fleet without showing loading spinner (for auto-refresh)
+        async function refreshFleet() {
+            const fleetGrid = document.getElementById('fleetGrid');
+            const fleetEmpty = document.getElementById('fleetEmpty');
+
+            try {
+                const response = await fetch(`${LIVE_API_BASE}/livestream/fleet`);
+                const data = await response.json();
+
+                if (!data.streams || data.streams.length === 0) {
+                    fleetGrid.innerHTML = '';
+                    fleetEmpty.style.display = 'block';
+                    return;
+                }
+
+                fleetEmpty.style.display = 'none';
+
+                // Render stream cards
+                fleetGrid.innerHTML = data.streams.map(stream => `
+                    <div class="fleet-card" onclick="window.location.href='live.html?stream=${stream._id}'">
+                        <div class="fleet-card-thumbnail">
+                            ${stream.thumbnail
+                                ? `<img src="${stream.thumbnail}" alt="${escapeHtml(stream.title)}">`
+                                : `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy), var(--indigo));">
+                                    <i class="fas fa-broadcast-tower" style="font-size: 3rem; color: var(--gold); opacity: 0.5;"></i>
+                                   </div>`
+                            }
+                            <span class="live-badge"><i class="fas fa-circle"></i> LIVE</span>
+                            <span class="viewer-count"><i class="fas fa-eye"></i> ${stream.currentViewers || 0}</span>
+                        </div>
+                        <div class="fleet-card-body">
+                            <div class="fleet-card-title">${escapeHtml(stream.title)}</div>
+                            <div class="fleet-card-creator">
+                                ${stream.creator?.profilePicture
+                                    ? `<img src="${stream.creator.profilePicture}" alt="${stream.creator.username}">`
+                                    : `<i class="fas fa-user-circle"></i>`
+                                }
+                                <span>${stream.creator?.username || 'Anonymous'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                console.log(`Fleet refreshed: ${data.streams.length} live streams`);
+
+            } catch (error) {
+                console.error('Error refreshing Fleet:', error);
+            }
+        }
+
+        // Listen for new streams going live (instant update)
+        socket.on('streamStarted', (data) => {
+            console.log('🚀 New stream started:', data);
+            // If we're on the Fleet view, refresh immediately
+            if (document.getElementById('fleetContent').style.display !== 'none') {
+                refreshFleet();
+            }
+        });
+
+        // Listen for streams ending
+        socket.on('streamEnded', (data) => {
+            console.log('📴 Stream ended:', data);
+            // If we're on the Fleet view, refresh immediately
+            if (document.getElementById('fleetContent').style.display !== 'none') {
+                refreshFleet();
+            }
+        });
 
         // Initialize stream or show Fleet
         async function initStream() {
