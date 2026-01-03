@@ -1282,7 +1282,23 @@
                 console.error('❌ Error loading dashboard data:', error);
                 hideLoadingState();
 
-                // Show error message to user
+                // Check if this is an authentication error
+                if (error.message && (error.message.includes('authentication') ||
+                    error.message.includes('token') ||
+                    error.message.includes('unauthorized') ||
+                    error.message.includes('401'))) {
+                    // Clear invalid session and redirect to login
+                    console.log('🔐 Authentication failed - redirecting to login');
+                    localStorage.removeItem('mlnf_token');
+                    localStorage.removeItem('mlnf_user');
+                    showNotification('Session expired. Please log in again.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'pages/auth.html';
+                    }, 1500);
+                    return;
+                }
+
+                // Show error message for non-auth errors
                 showNotification('Failed to load dashboard data. Please refresh the page.', 'error');
 
                 // Fallback to localStorage data
