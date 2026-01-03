@@ -451,6 +451,21 @@
                                     <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: var(--radius-md);">
                                         <strong style="color: var(--gold);"><i class="fas fa-exclamation-triangle"></i> Keep this secret!</strong> Anyone with your stream key can broadcast to your channel.
                                     </div>
+
+                                    <!-- Watch URL Display -->
+                                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.2); border: 2px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius-md);">
+                                        <strong style="color: #10b981;"><i class="fas fa-link"></i> Share This Link With Viewers:</strong>
+                                        <div class="flex gap-md" style="align-items: center; margin-top: 0.5rem;">
+                                            <input type="text" id="watchUrlValue" class="form-control" style="flex: 1; font-family: monospace; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; font-size: 0.875rem;" readonly>
+                                            <button class="btn" style="background: #10b981; color: white;" onclick="copyWatchUrl()">
+                                                <i class="fas fa-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <small style="display: block; margin-top: 0.5rem; opacity: 0.8;">
+                                            <i class="fas fa-info-circle"></i> Viewers will see your stream at this URL once you go live
+                                        </small>
+                                    </div>
+
                                     <div style="margin-top: 1rem;">
                                         <button class="btn btn-viking" onclick="goLive()" id="goLiveButton">
                                             <i class="fas fa-play-circle"></i> ⚡ Go Live!
@@ -3342,6 +3357,10 @@
                     document.getElementById('streamKeyValue').value = data.stream.streamKey;
                     document.getElementById('streamKeyDisplay').classList.remove('hidden');
 
+                    // Show watch URL
+                    const watchUrl = `${window.location.origin}/pages/live.html?stream=${data.stream._id || data.stream.id}`;
+                    document.getElementById('watchUrlValue').value = watchUrl;
+
                     // Show OBS guide
                     document.getElementById('obsGuide').classList.remove('hidden');
 
@@ -3384,6 +3403,21 @@
                 keyInput.select();
                 document.execCommand('copy');
                 showNotification('Stream key copied!', 'success');
+            }
+        }
+
+        // Copy Watch URL (for sharing with viewers)
+        async function copyWatchUrl() {
+            const urlInput = document.getElementById('watchUrlValue');
+
+            try {
+                await navigator.clipboard.writeText(urlInput.value);
+                showNotification('Watch URL copied! Share this with your viewers!', 'success');
+            } catch (error) {
+                // Fallback for older browsers
+                urlInput.select();
+                document.execCommand('copy');
+                showNotification('Watch URL copied!', 'success');
             }
         }
 
