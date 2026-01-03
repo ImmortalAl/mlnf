@@ -110,7 +110,7 @@
                                 <a href="#videos"><i class="fas fa-video"></i> My Videos</a>
                                 <a href="#blog-posts"><i class="fas fa-pen"></i> Blog Posts</a>
                                 <a href="#runegold"><i class="fas fa-coins"></i> Runegold Shop</a>
-                                <a href="#messages"><i class="fas fa-envelope"></i> Messages</a>
+                                <a href="#messages" id="messagesNavLink"><i class="fas fa-envelope"></i> Messages <span id="messagesNavBadge" class="nav-badge hidden">0</span></a>
                                 <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
                                 <a href="#badges"><i class="fas fa-medal"></i> Badges</a>
                                 <a href="#subscription"><i class="fas fa-crown"></i> Subscription</a>
@@ -1309,6 +1309,9 @@
 
                 // Load real activity feed
                 await loadRecentActivity(user._id);
+
+                // Initialize unread message count for nav badge
+                initUnreadMessageCount();
 
                 // Hide loading indicators
                 hideLoadingState();
@@ -2748,6 +2751,44 @@
         let currentConversationUsername = null;
         let messagingSocket = null;
         let conversationsCache = [];
+        let globalUnreadMessages = 0;
+
+        // Update the nav badge for unread messages
+        function updateMessagesNavBadge(count) {
+            const badge = document.getElementById('messagesNavBadge');
+            if (!badge) return;
+
+            globalUnreadMessages = count;
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Fetch unread count on page load (without full conversation UI)
+        async function initUnreadMessageCount() {
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${DASHBOARD_API_BASE}/messages/conversations`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const conversations = data.conversations || [];
+                const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+                updateMessagesNavBadge(totalUnread);
+
+                // Also init socket for real-time updates
+                initMessagingSocket();
+            } catch (error) {
+                console.error('Error fetching unread count:', error);
+            }
+        }
 
         // Initialize messaging socket
         function initMessagingSocket() {
@@ -2787,6 +2828,14 @@
                         message: data.message,
                         createdAt: data.timestamp || new Date()
                     });
+                } else {
+                    // Message is for a different conversation - increment nav badge
+                    const messagesSection = document.getElementById('messagesSection');
+                    const isViewingMessages = messagesSection && !messagesSection.classList.contains('hidden');
+                    if (!isViewingMessages) {
+                        globalUnreadMessages++;
+                        updateMessagesNavBadge(globalUnreadMessages);
+                    }
                 }
                 // Refresh conversations list to update preview
                 loadConversations();
@@ -2853,6 +2902,10 @@
                         ${conv.unreadCount > 0 ? `<span class="badge badge-primary" style="min-width: 24px;">${conv.unreadCount}</span>` : ''}
                     </div>
                 `).join('');
+
+                // Update nav badge with total unread count
+                const totalUnread = conversationsCache.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+                updateMessagesNavBadge(totalUnread);
 
                 // Initialize socket after loading conversations
                 initMessagingSocket();
