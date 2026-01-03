@@ -2140,7 +2140,8 @@
         })();
 
         // Check for active streams on page load (shows global banner if user has live stream)
-        (async function checkForActiveStreams() {
+        // Runs after DOM is ready to ensure elements exist
+        document.addEventListener('DOMContentLoaded', async function() {
             const token = localStorage.getItem('mlnf_token');
             if (!token) return;
 
@@ -2148,6 +2149,9 @@
                 const response = await fetch(`${DASHBOARD_API_BASE}/livestream/my-streams`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+
+                if (!response.ok) return; // Silently fail if API returns error
+
                 const data = await response.json();
 
                 if (data.streams && data.streams.length > 0) {
@@ -2155,14 +2159,19 @@
                     if (liveStream) {
                         console.log('🔴 Active stream found:', liveStream.title);
                         window.globalActiveStreamId = liveStream._id;
-                        document.getElementById('globalStreamTitle').textContent = liveStream.title;
-                        document.getElementById('globalLiveBanner').style.display = 'block';
+
+                        const titleEl = document.getElementById('globalStreamTitle');
+                        const bannerEl = document.getElementById('globalLiveBanner');
+
+                        if (titleEl) titleEl.textContent = liveStream.title;
+                        if (bannerEl) bannerEl.style.display = 'block';
                     }
                 }
             } catch (error) {
-                console.error('Error checking for active streams:', error);
+                // Silently fail - don't disrupt dashboard loading
+                console.log('Could not check for active streams:', error.message);
             }
-        })();
+        });
 
         // User menu toggle
         document.getElementById('userMenuToggle')?.addEventListener('click', function() {
