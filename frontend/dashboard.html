@@ -66,6 +66,23 @@
         </div>
     </header>
 
+    <!-- Global Live Stream Banner (shown when user has active stream) -->
+    <div id="globalLiveBanner" class="global-live-banner" style="display: none; background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); color: white; padding: 0.75rem 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span class="live-badge" style="background: white; color: var(--error); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-circle" style="font-size: 0.5rem; animation: pulse-live 1s infinite;"></i> LIVE
+                    </span>
+                    <span id="globalStreamTitle" style="font-weight: 600;">Your stream is live!</span>
+                </div>
+                <button class="btn" style="background: white; color: var(--error); font-weight: 700; padding: 0.5rem 1.5rem;" onclick="endStream(window.globalActiveStreamId)">
+                    <i class="fas fa-stop-circle"></i> End Stream
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Dashboard Content -->
     <section class="dashboard-content">
         <div class="container">
@@ -2122,6 +2139,31 @@
             return 'https://much-love-no-fear.onrender.com/api';
         })();
 
+        // Check for active streams on page load (shows global banner if user has live stream)
+        (async function checkForActiveStreams() {
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/my-streams`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.streams && data.streams.length > 0) {
+                    const liveStream = data.streams.find(s => s.status === 'live');
+                    if (liveStream) {
+                        console.log('🔴 Active stream found:', liveStream.title);
+                        window.globalActiveStreamId = liveStream._id;
+                        document.getElementById('globalStreamTitle').textContent = liveStream.title;
+                        document.getElementById('globalLiveBanner').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking for active streams:', error);
+            }
+        })();
+
         // User menu toggle
         document.getElementById('userMenuToggle')?.addEventListener('click', function() {
             const dropdown = document.getElementById('userMenuDropdown');
@@ -3373,9 +3415,11 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Hide live status banner and preview
+                    // Hide live status banner, global banner, and preview
                     document.getElementById('liveStatusBanner').style.display = 'none';
+                    document.getElementById('globalLiveBanner').style.display = 'none';
                     document.getElementById('streamPreviewCard').style.display = 'none';
+                    window.globalActiveStreamId = null;
 
                     // Stop preview player
                     const previewPlayer = document.getElementById('previewPlayer');

@@ -412,6 +412,19 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Streamer Controls (visible only to stream owner) -->
+                <div id="streamerControls" class="card" style="display: none; margin-top: 1rem; background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); border: none;">
+                    <div class="card-body" style="color: white;">
+                        <h4 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-broadcast-tower"></i> Streamer Controls
+                        </h4>
+                        <p style="opacity: 0.9; margin-bottom: 1rem;">You are broadcasting this stream.</p>
+                        <button class="btn" style="background: white; color: #ef4444; font-weight: 700; padding: 0.75rem 1.5rem;" onclick="endMyStream()">
+                            <i class="fas fa-stop-circle"></i> End Stream
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Chat Section -->
@@ -637,10 +650,53 @@
                     console.error('Failed to load chat history:', chatError);
                 }
 
+                // Check if current user is the streamer (show controls if owner)
+                const token = localStorage.getItem('mlnf_token');
+                if (token && stream.creator) {
+                    try {
+                        const userResponse = await fetch(`${LIVE_API_BASE}/auth/me`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        const userData = await userResponse.json();
+                        if (userData.user && stream.creator._id === userData.user._id) {
+                            console.log('🎥 You are the streamer - showing controls');
+                            document.getElementById('streamerControls').style.display = 'block';
+                        }
+                    } catch (authError) {
+                        console.log('Not logged in or auth error');
+                    }
+                }
+
             } catch (error) {
                 console.error('Error loading stream:', error);
                 video.style.display = 'none';
                 offlineMessage.style.display = 'flex';
+            }
+        }
+
+        // End stream function (for streamers viewing their own stream)
+        async function endMyStream() {
+            if (!streamId) return;
+            if (!confirm('Are you sure you want to end this stream?')) return;
+
+            try {
+                const response = await fetch(`${LIVE_API_BASE}/livestream/${streamId}/end`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Stream ended successfully!');
+                    window.location.href = '/dashboard.html';
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to end stream');
+                }
+            } catch (error) {
+                console.error('Error ending stream:', error);
+                alert('Failed to end stream. Please try again.');
             }
         }
 
