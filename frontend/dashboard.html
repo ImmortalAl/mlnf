@@ -429,7 +429,7 @@
                                         <li>Server: <code style="background: var(--gray-100); padding: 0.25rem 0.5rem; border-radius: 4px;">rtmp://150.136.140.253:1935/live</code></li>
                                         <li>Stream Key: <strong>Paste your key from below</strong></li>
                                         <li>Click "Start Streaming" in OBS</li>
-                                        <li>Come back here and click "Go Live" to make your stream visible to warriors!</li>
+                                        <li>Your stream will automatically go live when OBS connects!</li>
                                     </ol>
                                     <div style="margin-top: 1rem; padding: 1rem; background: var(--indigo); color: white; border-radius: var(--radius-md);">
                                         <strong><i class="fas fa-shield-alt"></i> Pro Tip:</strong> Test your stream settings before going live. Recommended bitrate: 3500-6000 Kbps for 1080p.
@@ -466,11 +466,31 @@
                                         </small>
                                     </div>
 
-                                    <div style="margin-top: 1rem;">
-                                        <button class="btn btn-viking" onclick="goLive()" id="goLiveButton">
-                                            <i class="fas fa-play-circle"></i> ⚡ Go Live!
-                                        </button>
-                                        <small style="display: block; margin-top: 0.5rem; opacity: 0.8;">Make sure OBS is streaming before clicking this!</small>
+                                    <!-- Stream Status Indicator (auto-updates) -->
+                                    <div id="streamStatusIndicator" style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: var(--radius-md); border: 2px solid var(--gray-600);">
+                                        <div id="streamStatusOffline">
+                                            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-400);">
+                                                <i class="fas fa-circle" style="color: var(--gray-500);"></i>
+                                                <span><strong>Status:</strong> Waiting for OBS connection...</span>
+                                            </div>
+                                            <small style="display: block; margin-top: 0.5rem; opacity: 0.8;">
+                                                <i class="fas fa-info-circle"></i> Start streaming in OBS and this will automatically update when you're live
+                                            </small>
+                                        </div>
+                                        <div id="streamStatusLive" class="hidden">
+                                            <div style="display: flex; align-items: center; gap: 0.5rem; color: #10b981;">
+                                                <i class="fas fa-circle" style="animation: pulse 1s infinite;"></i>
+                                                <span><strong>🎉 You're LIVE!</strong></span>
+                                            </div>
+                                            <div style="margin-top: 0.75rem;">
+                                                <a id="watchStreamLink" href="#" target="_blank" class="btn" style="background: #10b981; color: white;">
+                                                    <i class="fas fa-external-link-alt"></i> Watch Your Stream
+                                                </a>
+                                                <button class="btn" style="background: var(--error); color: white; margin-left: 0.5rem;" onclick="endStream()">
+                                                    <i class="fas fa-stop-circle"></i> End Stream
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -3364,7 +3384,10 @@
                     // Show OBS guide
                     document.getElementById('obsGuide').classList.remove('hidden');
 
-                    showNotification('Stream created successfully! Copy your stream key and configure OBS.', 'success');
+                    // Start polling for stream status (will detect when OBS connects)
+                    startStreamStatusPolling();
+
+                    showNotification('Stream created! Configure OBS and start streaming. Status will update automatically.', 'success');
 
                     // Clear form
                     document.getElementById('createStreamForm').reset();
@@ -3421,63 +3444,121 @@
             }
         }
 
-        // Go Live
-        async function goLive() {
+        // Stream status polling
+        let streamStatusInterval = null;
+
+        function startStreamStatusPolling() {
+            if (!currentStream) return;
+
+            // Clear any existing polling
+            if (streamStatusInterval) {
+                clearInterval(streamStatusInterval);
+            }
+
+            // Reset UI to "waiting" state
+            document.getElementById('streamStatusOffline').classList.remove('hidden');
+            document.getElementById('streamStatusLive').classList.add('hidden');
+
+            // Poll every 3 seconds
+            streamStatusInterval = setInterval(checkStreamStatus, 3000);
+            checkStreamStatus(); // Check immediately
+        }
+
+        async function checkStreamStatus() {
             if (!currentStream) {
-                showNotification('No stream found. Please create a stream first.', 'error');
+                if (streamStatusInterval) {
+                    clearInterval(streamStatusInterval);
+                    streamStatusInterval = null;
+                }
                 return;
             }
 
             try {
-                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}/start`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('mlnf_token')}`
-                    }
-                });
-
+                const response = await fetch(`${DASHBOARD_API_BASE}/livestream/${currentStream._id}`);
                 const data = await response.json();
 
-                if (response.ok) {
-                    // Show live status banner
-                    document.getElementById('liveStatusBanner').style.display = 'block';
-                    document.getElementById('streamStartTime').textContent = '0:00';
-
-                    // Update stream title in banner
-                    const titleEl = document.getElementById('liveStreamTitle');
-                    if (titleEl && currentStream.title) {
-                        titleEl.textContent = currentStream.title;
-                    }
-
-                    // Show stream preview
-                    document.getElementById('streamPreviewCard').style.display = 'block';
-                    initStreamPreview();
-
-                    // Reset peak viewers
-                    peakViewerCount = 0;
-                    document.getElementById('peakViewers').textContent = '0';
-                    document.getElementById('liveRunegold').textContent = '0';
-
-                    // Hide Go Live button
-                    document.getElementById('goLiveButton').disabled = true;
-                    document.getElementById('goLiveButton').innerHTML = '<i class="fas fa-check-circle"></i> You\'re Live!';
-
-                    showNotification('You\'re now live! Warriors can see your stream.', 'success');
-
-                    // Start viewer count updates (more frequent - every 5 seconds)
-                    updateViewerCount();
-                    viewerCountInterval = setInterval(updateViewerCount, 5000);
-
-                    // Start duration timer
-                    streamStartTimestamp = Date.now();
-                    streamDurationInterval = setInterval(updateStreamDuration, 1000);
-                } else {
-                    showNotification(data.error || 'Failed to go live', 'error');
+                if (data.stream && data.stream.status === 'live') {
+                    // Stream is now live!
+                    onStreamWentLive();
+                } else if (data.stream && data.stream.status === 'ended') {
+                    // Stream ended (maybe via OBS disconnect)
+                    onStreamEnded();
                 }
             } catch (error) {
-                console.error('Go live error:', error);
-                showNotification('Failed to go live. Make sure OBS is streaming first!', 'error');
+                console.error('Status check error:', error);
             }
+        }
+
+        function onStreamWentLive() {
+            // Update status indicator
+            document.getElementById('streamStatusOffline').classList.add('hidden');
+            document.getElementById('streamStatusLive').classList.remove('hidden');
+
+            // Set watch link
+            const watchUrl = `${window.location.origin}/pages/live.html?stream=${currentStream._id}`;
+            document.getElementById('watchStreamLink').href = watchUrl;
+
+            // Show live status banner
+            document.getElementById('liveStatusBanner').style.display = 'block';
+            document.getElementById('streamStartTime').textContent = '0:00';
+
+            // Update stream title in banner
+            const titleEl = document.getElementById('liveStreamTitle');
+            if (titleEl && currentStream.title) {
+                titleEl.textContent = currentStream.title;
+            }
+
+            // Show stream preview
+            document.getElementById('streamPreviewCard').style.display = 'block';
+            initStreamPreview();
+
+            // Reset peak viewers
+            peakViewerCount = 0;
+            document.getElementById('peakViewers').textContent = '0';
+            document.getElementById('liveRunegold').textContent = '0';
+
+            showNotification('🎉 You\'re now LIVE! OBS connected successfully.', 'success');
+
+            // Start viewer count updates
+            updateViewerCount();
+            viewerCountInterval = setInterval(updateViewerCount, 5000);
+
+            // Start duration timer
+            streamStartTimestamp = Date.now();
+            streamDurationInterval = setInterval(updateStreamDuration, 1000);
+
+            // Stop status polling (we're live now, will rely on endStream or manual checks)
+            if (streamStatusInterval) {
+                clearInterval(streamStatusInterval);
+                streamStatusInterval = null;
+            }
+        }
+
+        function onStreamEnded() {
+            // Reset status indicator
+            document.getElementById('streamStatusOffline').classList.remove('hidden');
+            document.getElementById('streamStatusLive').classList.add('hidden');
+
+            // Hide live status banner
+            document.getElementById('liveStatusBanner').style.display = 'none';
+            document.getElementById('globalLiveBanner').style.display = 'none';
+            document.getElementById('streamPreviewCard').style.display = 'none';
+
+            // Stop intervals
+            if (streamStatusInterval) {
+                clearInterval(streamStatusInterval);
+                streamStatusInterval = null;
+            }
+            if (viewerCountInterval) {
+                clearInterval(viewerCountInterval);
+                viewerCountInterval = null;
+            }
+            if (streamDurationInterval) {
+                clearInterval(streamDurationInterval);
+                streamDurationInterval = null;
+            }
+
+            currentStream = null;
         }
 
         // End Stream (accepts optional streamId for ending from list)
@@ -3530,8 +3611,10 @@
                     // Reset stream
                     currentStream = null;
                     document.getElementById('streamKeyDisplay').classList.add('hidden');
-                    document.getElementById('goLiveButton').disabled = false;
-                    document.getElementById('goLiveButton').innerHTML = '<i class="fas fa-play-circle"></i> ⚡ Go Live!';
+
+                    // Reset status indicator
+                    document.getElementById('streamStatusOffline').classList.remove('hidden');
+                    document.getElementById('streamStatusLive').classList.add('hidden');
 
                     showNotification('Stream ended successfully!', 'success');
 

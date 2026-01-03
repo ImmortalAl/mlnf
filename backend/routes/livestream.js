@@ -459,4 +459,29 @@ router.post('/verify', async (req, res) => {
   }
 });
 
+// Stream ended (called by nginx on publish_done when OBS disconnects)
+router.post('/publish_done', async (req, res) => {
+  try {
+    const streamKey = req.body.name;
+    console.log(`RTMP stream disconnected: ${streamKey}`);
+
+    const stream = await Livestream.findOne({ streamKey, status: 'live' });
+    if (stream) {
+      await stream.endStream();
+      console.log(`Stream ${stream._id} ended via RTMP disconnect`);
+
+      // Emit socket event to notify viewers
+      const io = req.app.get('io');
+      if (io) {
+        io.to(stream._id.toString()).emit('stream-ended');
+      }
+    }
+
+    res.status(200).send('OK');
+  } catch (error) {
+    console.error('Error in publish_done:', error);
+    res.status(500).send('Error');
+  }
+});
+
 module.exports = router;
