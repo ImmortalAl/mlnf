@@ -132,9 +132,14 @@ body {
   padding-bottom: 2rem;
 }
 
-/* Dashboard and video content snap to header bottom */
+/* All main content sections snap to header bottom */
 .dashboard-content,
-.video-content {
+.video-content,
+.main-content,
+.auth-content,
+.shop-content,
+.thread-content,
+.live-content {
   margin-top: calc(-1 * var(--header-height)); /* Pull up into header space */
   padding-top: calc(var(--header-height) + 2rem); /* Header height + content padding */
   padding-bottom: 2rem;
