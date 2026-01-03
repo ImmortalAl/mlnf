@@ -84,9 +84,11 @@ router.post('/register', [
     }
     
     const { username, password, email, secretQuestion, secretAnswer } = req.body;
-    
-    // Check if username already exists
-    const existingUser = await User.findOne({ username });
+
+    // Check if username already exists (case-insensitive)
+    const existingUser = await User.findOne({
+      username: { $regex: new RegExp(`^${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+    });
     if (existingUser) {
       return res.status(400).json({ error: 'Username already taken' });
     }
@@ -154,9 +156,11 @@ router.post('/login', [
     }
     
     const { username, password } = req.body;
-    
-    // Find user by username
-    const user = await User.findOne({ username });
+
+    // Find user by username (case-insensitive)
+    const user = await User.findOne({
+      username: { $regex: new RegExp(`^${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+    });
     
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -290,14 +294,17 @@ router.post('/recovery/question', [
     }
     
     const { username } = req.body;
-    
-    const user = await User.findOne({ username }).select('secretQuestion');
-    
+
+    // Case-insensitive username lookup
+    const user = await User.findOne({
+      username: { $regex: new RegExp(`^${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+    }).select('secretQuestion');
+
     if (!user) {
       // Don't reveal if user exists or not
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     res.json({ secretQuestion: user.secretQuestion });
   } catch (error) {
     console.error('Recovery question error:', error);
@@ -318,9 +325,12 @@ router.post('/recovery/reset', [
     }
     
     const { username, secretAnswer, newPassword } = req.body;
-    
-    const user = await User.findOne({ username });
-    
+
+    // Case-insensitive username lookup
+    const user = await User.findOne({
+      username: { $regex: new RegExp(`^${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+    });
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid recovery information' });
     }
