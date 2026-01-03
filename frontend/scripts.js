@@ -920,7 +920,7 @@ const Messaging = {
                     <div id="typing-indicator" class="hidden" style="font-size: 0.875rem; color: var(--gray-500); margin-top: 0.5rem;"></div>
                 </div>
                 <div class="modal-footer">
-                    <input type="text" id="messageInput" class="form-input" placeholder="Type a message..." style="flex: 1;">
+                    <input type="text" id="sidebarMessageInput" class="form-input" placeholder="Type a message..." style="flex: 1;">
                     <button class="btn btn-primary" onclick="Messaging.sendMessage()">
                         <i class="fas fa-paper-plane"></i> Send
                     </button>
@@ -930,7 +930,7 @@ const Messaging = {
 
         // Handle Enter key
         setTimeout(() => {
-            const input = document.getElementById('messageInput');
+            const input = document.getElementById('sidebarMessageInput');
             if (input) {
                 input.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
@@ -958,18 +958,71 @@ const Messaging = {
     },
 
     // Send message
-    sendMessage() {
-        const input = document.getElementById('messageInput');
+    async sendMessage() {
+        const input = document.getElementById('sidebarMessageInput');
         if (!input || !this.currentChat) return;
 
         const message = input.value.trim();
         if (!message) return;
 
-        Socket.sendMessage(this.currentChat.userId, message);
-        this.addMessageToChat({ message, timestamp: new Date() }, 'sent');
-        
-        input.value = '';
-        Socket.sendTyping(this.currentChat.userId, false);
+        const sendBtn = document.querySelector('#messagingModal .btn-primary');
+
+        // Disable button while sending
+        if (sendBtn) {
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        try {
+            // Use REST API to ensure message is saved (like dashboard does)
+            const token = localStorage.getItem('mlnf_token');
+            if (!token) {
+                Utils.showToast('Please login to send messages', 'error');
+                return;
+            }
+
+            const response = await fetch(`${CONFIG.API_URL}/messages/send`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    recipientId: this.currentChat.userId,
+                    message: message
+                })
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to send message');
+            }
+
+            const data = await response.json();
+
+            // Add message to chat UI
+            this.addMessageToChat({ message, timestamp: new Date() }, 'sent');
+
+            // Clear input
+            input.value = '';
+
+            // Also emit via Socket.io for real-time delivery (optional, backend handles this too)
+            if (State.socket) {
+                Socket.sendTyping(this.currentChat.userId, false);
+            }
+
+            console.log('📨 Message sent successfully via REST API');
+
+        } catch (error) {
+            console.error('Error sending message:', error);
+            Utils.showToast(error.message || 'Failed to send message', 'error');
+        } finally {
+            // Re-enable button
+            if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+            }
+        }
     },
 
     // Add message to chat
