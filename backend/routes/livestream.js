@@ -449,6 +449,19 @@ router.post('/verify', async (req, res) => {
     // If offline, mark as live
     if (stream.status === 'offline') {
       await stream.startStream();
+
+      // Emit socket event to notify Fleet viewers
+      const io = req.app.get('io');
+      if (io) {
+        // Need to populate creator for the event
+        const populatedStream = await Livestream.findById(stream._id)
+          .populate('creator', 'username profilePicture');
+        io.emit('streamStarted', {
+          streamId: stream._id,
+          creator: populatedStream.creator?.username || 'Anonymous',
+          title: stream.title
+        });
+      }
     }
 
     console.log('Stream verified successfully:', stream._id);
