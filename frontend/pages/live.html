@@ -524,7 +524,7 @@
             <div class="stream-section">
                 <div class="stream-wrapper">
                     <!-- HLS Video Player -->
-                    <video id="videoPlayer" controls autoplay muted style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></video>
+                    <video id="videoPlayer" controls autoplay style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></video>
 
                     <!-- Offline Message (shown when stream is offline) -->
                     <div class="offline-message" id="offlineMessage" style="display: none;">
@@ -1106,6 +1106,83 @@
                 socket.emit('get-warrior-count', streamId);
             }
         }, 10000);
+
+        // Keyboard shortcuts for video player
+        document.addEventListener('keydown', (e) => {
+            // Don't trigger shortcuts when typing in chat
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            // Only handle shortcuts when viewing a stream
+            if (!streamId || !video) return;
+
+            switch (e.key.toLowerCase()) {
+                case ' ':
+                case 'k':
+                    // Space or K: Play/Pause
+                    e.preventDefault();
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                    break;
+
+                case 'm':
+                    // M: Mute/Unmute
+                    e.preventDefault();
+                    video.muted = !video.muted;
+                    break;
+
+                case 'f':
+                    // F: Toggle Fullscreen
+                    e.preventDefault();
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    } else {
+                        video.requestFullscreen();
+                    }
+                    break;
+
+                case 'arrowup':
+                    // Up Arrow: Volume +10%
+                    e.preventDefault();
+                    video.volume = Math.min(1, video.volume + 0.1);
+                    break;
+
+                case 'arrowdown':
+                    // Down Arrow: Volume -10%
+                    e.preventDefault();
+                    video.volume = Math.max(0, video.volume - 0.1);
+                    break;
+
+                case 'arrowleft':
+                    // Left Arrow: Seek back 10s (for DVR/buffer)
+                    e.preventDefault();
+                    video.currentTime = Math.max(0, video.currentTime - 10);
+                    break;
+
+                case 'arrowright':
+                    // Right Arrow: Seek forward 10s (catch up to live)
+                    e.preventDefault();
+                    video.currentTime = Math.min(video.duration, video.currentTime + 10);
+                    break;
+
+                case 'l':
+                    // L: Jump to live edge
+                    e.preventDefault();
+                    if (hls && hls.liveSyncPosition) {
+                        video.currentTime = hls.liveSyncPosition;
+                    } else {
+                        video.currentTime = video.duration;
+                    }
+                    break;
+            }
+        });
+
+        // Show keyboard shortcuts hint
+        console.log('🎮 Keyboard shortcuts: Space/K=Play/Pause, M=Mute, F=Fullscreen, ↑↓=Volume, ←→=Seek, L=Live');
     </script>
     <script src="../js/site-enhancements.js"></script>
     <script src="../js/mobile-viewport-handler.js"></script>
